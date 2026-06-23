@@ -106,11 +106,22 @@ function createCourseCard(course) {
   const card = document.createElement('div');
   card.className = 'course-card reveal';
   card.dataset.style = course.style;
-  const labels = { classique: 'Classique', contemporain: 'Contemporain', jazz: 'Jazz', hiphop: 'Hip-Hop', eveil: 'Éveil' };
+  const labels = {
+    classique:    'Classique',
+    contemporain: 'Contemporain',
+    jazz:         'Jazz',
+    hiphop:       'Hip-Hop',
+    eveil:        'Éveil',
+    ragga:        'Ragga',
+    compagnie:    'Compagnie',
+    special:      'Spécial',
+  };
   const img = course.image
     ? `<img src="${course.image}" alt="${course.name}" class="course-img" loading="lazy">`
     : `<div class="course-img-placeholder" style="background:linear-gradient(135deg,#1a1a1a,#242424)">${course.emoji}</div>`;
-  card.innerHTML = `${img}<div class="course-body"><span class="course-tag tag-${course.style}">${labels[course.style]}</span><h3 class="course-name">${course.name}</h3><p class="course-desc">${course.desc}</p><div class="course-meta"><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${course.schedule[0]}</span><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${course.ages}</span><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>${course.levels}</span></div></div>`;
+  const lieuName = DATA.locations.find(l => l.id === course.lieu)?.name || '';
+  const lieuBadge = lieuName !== 'Studio ADK' ? `<span style="font-size:0.7rem;color:var(--gold);margin-left:0.5rem;">📍 ${lieuName}</span>` : '';
+  card.innerHTML = `${img}<div class="course-body"><div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem;"><span class="course-tag tag-${course.style}">${labels[course.style] || course.style}</span>${lieuBadge}${course.biweekly ? '<span style="font-size:0.65rem;color:var(--text-muted);border:1px solid var(--glass-border);padding:0.1rem 0.5rem;border-radius:50px;">1 sem/2</span>' : ''}</div><h3 class="course-name">${course.name}</h3><p class="course-desc">${course.desc}</p><div class="course-meta"><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${course.schedule}</span><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${course.ages}</span><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>${course.levels}</span><span class="course-meta-item" style="color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${course.prof}</span></div></div>`;
   return card;
 }
 
@@ -143,7 +154,7 @@ function renderPlanning(grid, weekLabel, offset) {
     cell.innerHTML = `<div class="day">${day}</div><div class="date" style="color:${isToday ? 'var(--gold)' : ''}">${dates[i].getDate()}</div>`;
     grid.appendChild(cell);
   });
-  ["09h00","10h00","11h00","14h00","15h00","16h00","17h00","18h00","19h00"].forEach(hour => {
+  ["09h00","10h00","11h00","12h00","13h00","14h00","15h00","16h00","17h00","18h00","19h00","20h00"].forEach(hour => {
     const tc = document.createElement('div');
     tc.className = 'planning-time-cell';
     tc.textContent = hour;
@@ -153,7 +164,7 @@ function renderPlanning(grid, weekLabel, offset) {
       const match = DATA.schedule.slots.find(s => s.day === di && s.hour === hour);
       if (match) {
         slot.className = `planning-course-block block-${match.style}`;
-        slot.innerHTML = `<div class="block-name">${match.course}</div><div class="block-time">${match.hour}</div>`;
+        slot.innerHTML = `<div class="block-name">${match.course}</div><div class="block-time">${match.hour}</div>${match.lieu && match.lieu !== 'ADK' ? `<span class="block-lieu">${match.lieu}</span>` : ''}`;
       } else { slot.className = 'planning-slot'; }
       grid.appendChild(slot);
     });
