@@ -295,6 +295,11 @@ function initInscription() {
   const courseSearchInput = document.getElementById('course-search-input');
   const courseOptionsList = document.getElementById('course-options-list');
 
+  // Sécurité anti-crash si la page est en cache ou si l'élément n'existe pas
+  if (!form || !courseSelectContainer || !courseOptionsList) {
+    return;
+  }
+
   let selectedCourses = new Set();
 
   function renderOptions(filterText = '') {
