@@ -468,7 +468,7 @@ function initPortal() {
 
   // Tabs admin
   initTabs('admin-tabs', ['tab-inscriptions', 'tab-eleves', 'tab-profs']);
-  initTabs('prof-tabs', ['tab-appel', 'tab-mes-eleves', 'tab-mon-planning']);
+  initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves']);
 }
 
 function showPortalDashboard(user) {
