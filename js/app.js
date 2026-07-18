@@ -969,12 +969,40 @@ document.getElementById('absence-form')?.addEventListener('submit', (e) => {
   e.preventDefault();
   const cid = parseInt(document.getElementById('absence-course-id').value);
   const sid = parseInt(document.getElementById('absence-student-id').value);
-  const date = document.getElementById('absence-date').value.split('-').reverse().join('/');
-  const status = document.getElementById('absence-status').value;
+  const dateVal = document.getElementById('absence-date').value;
+  const dateStr = dateVal.split('-').reverse().join('/');
+  let status = document.getElementById('absence-status').value;
   
-  if (date) {
-    DATA.markAttendance(sid, cid, date, status);
-    alert('Vos indications ont été sauvegardées.');
+  if (dateVal && status === 'excuse') {
+    const course = DATA.getCourseWithOverride(cid);
+    if (course) {
+      const timeStr = course.hour || (course.schedule ? course.schedule.split(' ')[1] : null);
+      if (timeStr) {
+        const h = parseInt(timeStr.split('h')[0], 10);
+        const m = parseInt(timeStr.split('h')[1] || '0', 10);
+        
+        const courseDate = new Date(dateVal);
+        courseDate.setHours(h, m, 0, 0);
+        
+        const now = new Date();
+        const diffHours = (courseDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+        
+        if (diffHours >= 0 && diffHours < 4) {
+          status = 'absent';
+          alert("Attention : L'absence est signalée moins de 4h avant le début du cours. Elle sera donc enregistrée comme 'Absence non-excusée'.");
+        } else if (diffHours < 0) {
+          status = 'absent';
+          alert("Attention : L'absence est signalée après le début du cours. Elle sera donc enregistrée comme 'Absence non-excusée'.");
+        }
+      }
+    }
+  }
+  
+  if (dateStr) {
+    DATA.markAttendance(sid, cid, dateStr, status);
+    if (status !== 'absent' || document.getElementById('absence-status').value !== 'excuse') {
+      alert('Vos indications ont été sauvegardées.');
+    }
     document.getElementById('modal-absence').classList.remove('open');
     // Refresh the view if looking at a student
     if (AUTH.currentUser.role === 'parent') {
