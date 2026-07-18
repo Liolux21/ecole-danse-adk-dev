@@ -752,7 +752,7 @@ function renderChildData(child) {
   const presents = att.filter(a => a.status === 'present').length;
   const absents  = att.filter(a => a.status === 'absent').length;
 
-  renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.', window.currentUser);
+  renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.', AUTH.currentUser);
 
   document.getElementById('parent-stat-cours').textContent = child.courseIds.length;
   document.getElementById('parent-stat-presence').textContent = presents;
@@ -913,7 +913,7 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
 
     // Boutons d'action
     let actionButtons = `<div style="display:flex; gap:0.5rem; margin-top:0.8rem;">`;
-    if (user && user.role === 'prof' && !isSubstitute) {
+    if (user && user.role === 'prof' && user.courseIds && user.courseIds.includes(c.courseId)) {
       // Le prof titulaire peut gérer
       actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.courseId}">⚙️ Gérer</button>`;
     }
@@ -1009,7 +1009,7 @@ function openManageCourseModal(courseId) {
   // Remplir les subs
   const subSelect = document.getElementById('manage-course-sub');
   subSelect.innerHTML = '<option value="">-- Aucun --</option>' + 
-    DATA.getProfessors().filter(p => p.id !== window.currentUser.id).map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+    DATA.getProfessors().filter(p => p.id !== AUTH.currentUser.id).map(p => `<option value="${p.id}">${p.name}</option>`).join('');
   subSelect.value = course.substituteId || '';
 
   document.getElementById('modal-manage-course').classList.add('open');
@@ -1037,7 +1037,7 @@ document.getElementById('manage-course-form')?.addEventListener('submit', (e) =>
   document.getElementById('modal-manage-course').classList.remove('open');
   
   // Refresh dashboard
-  if (window.currentUser) showPortalDashboard(window.currentUser);
+  if (AUTH.currentUser) showPortalDashboard(AUTH.currentUser);
 });
 
 // MESSAGES MODAL
