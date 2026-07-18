@@ -928,6 +928,30 @@
     </div>
   </div>
 
+  <!-- Modale Absence (Parent) -->
+  <div class="lightbox" id="modal-absence">
+    <div class="lightbox-content" style="max-width:400px; background:var(--dark); padding:2rem; border-radius:var(--radius); border:1px solid var(--border); text-align:left;">
+      <button class="lightbox-close" id="close-absence">×</button>
+      <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:1rem;">Présence / Absence</h3>
+      <form id="absence-form" style="display:flex; flex-direction:column; gap:1rem;">
+        <input type="hidden" id="absence-course-id">
+        <input type="hidden" id="absence-student-id">
+        <div>
+          <label class="form-label">Date de la séance</label>
+          <input type="date" class="form-input" id="absence-date" required>
+        </div>
+        <div>
+          <label class="form-label">Statut</label>
+          <select class="form-input" id="absence-status" required>
+            <option value="excuse">❌ Sera absent(e)</option>
+            <option value="present">✅ Sera présent(e)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Confirmer</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Modale Messagerie Cours -->
   <div class="lightbox" id="modal-messages">
     <div class="lightbox-content" style="max-width:600px; width:90%; height:80vh; background:var(--dark); border-radius:var(--radius); border:1px solid var(--border); display:flex; flex-direction:column; text-align:left;">
@@ -956,8 +980,8 @@
     </div>
   </div>
 
-  <script src="js/data.js?v=3"></script>
-  <script src="js/auth.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/data.js?v=4"></script>
+  <script src="js/auth.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>

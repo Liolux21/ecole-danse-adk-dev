@@ -744,7 +744,8 @@ function renderParentDashboard(user) {
 }
 
 function renderChildData(child) {
-  document.getElementById('parent-child-name').textContent = child.firstname;
+  const childNameEl = document.getElementById('parent-child-name');
+  if (childNameEl) childNameEl.textContent = child.firstname;
   const namePlanEl = document.getElementById('parent-child-name-plan');
   if (namePlanEl) namePlanEl.textContent = child.firstname;
   
@@ -752,7 +753,7 @@ function renderChildData(child) {
   const presents = att.filter(a => a.status === 'present').length;
   const absents  = att.filter(a => a.status === 'absent').length;
 
-  renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.', AUTH.currentUser);
+  renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.', AUTH.currentUser, child.id);
 
   document.getElementById('parent-stat-cours').textContent = child.courseIds.length;
   document.getElementById('parent-stat-presence').textContent = presents;
@@ -878,7 +879,7 @@ function showToast(msg, type = 'success') {
 // =============================================
 // HELPER PLANNINGS (Prof & Parents)
 // =============================================
-function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', user = null) {
+function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', user = null, studentId = null) {
   const container = document.getElementById(containerId);
   if (!container) return;
   
@@ -917,6 +918,9 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
       // Le prof titulaire peut gérer
       actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.id}">⚙️ Gérer</button>`;
     }
+    if (user && user.role === 'parent' && studentId) {
+      actionButtons += `<button class="btn btn-outline btn-sm btn-absent" data-course-id="${c.id}" data-student-id="${studentId}">📅 Présence</button>`;
+    }
     actionButtons += `<button class="btn btn-outline btn-sm btn-msg" data-course-id="${c.id}">💬 Messages</button>`;
     actionButtons += `</div>`;
 
@@ -943,10 +947,43 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
   container.querySelectorAll('.btn-manage').forEach(btn => {
     btn.onclick = () => openManageCourseModal(parseInt(btn.dataset.courseId));
   });
+  container.querySelectorAll('.btn-absent').forEach(btn => {
+    btn.onclick = () => openAbsenceModal(parseInt(btn.dataset.courseId), parseInt(btn.dataset.studentId));
+  });
   container.querySelectorAll('.btn-msg').forEach(btn => {
     btn.onclick = () => openMessagesModal(parseInt(btn.dataset.courseId), user);
   });
 }
+
+function openAbsenceModal(courseId, studentId) {
+  document.getElementById('absence-course-id').value = courseId;
+  document.getElementById('absence-student-id').value = studentId;
+  document.getElementById('modal-absence').classList.add('open');
+}
+
+document.getElementById('close-absence')?.addEventListener('click', () => {
+  document.getElementById('modal-absence').classList.remove('open');
+});
+
+document.getElementById('absence-form')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const cid = parseInt(document.getElementById('absence-course-id').value);
+  const sid = parseInt(document.getElementById('absence-student-id').value);
+  const date = document.getElementById('absence-date').value.split('-').reverse().join('/');
+  const status = document.getElementById('absence-status').value;
+  
+  if (date) {
+    DATA.markAttendance(sid, cid, date, status);
+    alert('Vos indications ont été sauvegardées.');
+    document.getElementById('modal-absence').classList.remove('open');
+    // Refresh the view if looking at a student
+    if (AUTH.currentUser.role === 'parent') {
+      const currentChildId = sid;
+      const child = DATA.getStudentById(sid);
+      if (child) renderChildData(child);
+    }
+  }
+});
 
 function calculateNextCourse(children) {
   const daysMap = { 'Lundi': 1, 'Mardi': 2, 'Mercredi': 3, 'Jeudi': 4, 'Vendredi': 5, 'Samedi': 6, 'Dimanche': 0 };
