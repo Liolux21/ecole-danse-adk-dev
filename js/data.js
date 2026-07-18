@@ -34,8 +34,8 @@ const DATA = {
     // Admin
     { id: 1,  email: 'admin@adk.be',       password: 'admin2026',  role: 'admin',  name: 'Anne Dubois',   avatar: '👑', title: 'Directrice' },
     // Profs (compte générique + comptes nominatifs)
-    { id: 2,  email: 'prof@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  courseIds: [10, 12, 13, 25, 30] },
-    { id: 3,  email: 'janis@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  courseIds: [10, 12, 13, 25, 30] },
+    { id: 2,  email: 'prof@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
+    { id: 3,  email: 'janis@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
     { id: 4,  email: 'maurine@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Maurine',       avatar: '💃',  title: 'Professeure',  courseIds: [3, 5, 8, 28, 29] },
     { id: 5,  email: 'corentin@adk.be',    password: 'prof2026',   role: 'prof',   name: 'Corentin',      avatar: '🕺',  title: 'Professeur',   courseIds: [15, 31, 32] },
     { id: 6,  email: 'charlotte@adk.be',   password: 'prof2026',   role: 'prof',   name: 'Charlotte',     avatar: '👩‍🏫', title: 'Professeure',  courseIds: [11, 14] },

@@ -560,6 +560,7 @@
         <div class="dash-tabs" id="prof-tabs">
           <button class="dash-tab active" data-tab="appel">📋 Feuille d'appel</button>
           <button class="dash-tab" data-tab="mes-eleves">🩰 Mes élèves</button>
+          <button class="dash-tab" data-tab="mon-planning">🗓️ Mon Planning</button>
         </div>
 
         <!-- Tab: Appel -->
@@ -590,6 +591,15 @@
             </table>
           </div>
         </div>
+
+        <!-- Tab: Mon Planning -->
+        <div class="tab-content" id="tab-mon-planning">
+          <div class="prof-planning-controls">
+            <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-enseignes">Cours enseignés</button>
+            <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
+          </div>
+          <div class="planning-cards-list" id="prof-planning-list"></div>
+        </div>
       </div>
 
       <!-- ===== DASHBOARD PARENT ===== -->
@@ -607,24 +617,36 @@
 
         <div class="child-tabs" id="child-tabs"></div>
 
+        <div class="parent-notification-banner" id="parent-next-course-banner" style="display: none;">
+          <div class="banner-icon">🔔</div>
+          <div class="banner-content" id="parent-next-course-content"></div>
+        </div>
+
         <div class="parent-stats">
           <div class="stat-card">
             <div class="stat-card-label">Cours inscrits</div>
-            <div class="stat-card-value" id="parent-stat-cours">2</div>
+            <div class="stat-card-value" id="parent-stat-cours">0</div>
           </div>
           <div class="stat-card">
             <div class="stat-card-label">Présences</div>
-            <div class="stat-card-value" id="parent-stat-presence" style="color:#90CC90">4</div>
+            <div class="stat-card-value" id="parent-stat-presence" style="color:#90CC90">0</div>
           </div>
           <div class="stat-card">
             <div class="stat-card-label">Absences</div>
-            <div class="stat-card-value" id="parent-stat-absence" style="color:#DC6464">1</div>
+            <div class="stat-card-value" id="parent-stat-absence" style="color:#DC6464">0</div>
           </div>
         </div>
 
-        <div class="parent-attendance-section">
-          <div class="parent-attendance-header">📋 Historique des présences — <span id="parent-child-name">Léa</span></div>
-          <div class="parent-attendance-list" id="parent-attendance-list"></div>
+        <div class="parent-dashboard-grid">
+          <div class="parent-planning-section">
+            <div class="parent-section-header">🗓️ Planning de la semaine — <span id="parent-child-name-plan"></span></div>
+            <div class="planning-cards-list" id="parent-planning-list"></div>
+          </div>
+
+          <div class="parent-attendance-section">
+            <div class="parent-section-header">📋 Historique des présences</div>
+            <div class="parent-attendance-list" id="parent-attendance-list"></div>
+          </div>
         </div>
       </div>
 

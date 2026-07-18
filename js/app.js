@@ -468,7 +468,7 @@ function initPortal() {
 
   // Tabs admin
   initTabs('admin-tabs', ['tab-inscriptions', 'tab-eleves', 'tab-profs']);
-  initTabs('prof-tabs', ['tab-appel', 'tab-mes-eleves']);
+  initTabs('prof-tabs', ['tab-appel', 'tab-mes-eleves', 'tab-mon-planning']);
 }
 
 function showPortalDashboard(user) {
@@ -622,6 +622,23 @@ function renderProfDashboard(user) {
 
   if (selectedCourseId) renderAppelList(selectedCourseId);
   renderProfEleves(user);
+  
+  // Onglet: Mon Planning
+  const btnEnseignes = document.getElementById('prof-planning-toggle-enseignes');
+  const btnSuivis = document.getElementById('prof-planning-toggle-suivis');
+  
+  btnEnseignes.onclick = () => {
+    btnEnseignes.classList.add('active');
+    btnSuivis.classList.remove('active');
+    renderPlanningCards(user.courseIds || [], 'prof-planning-list');
+  };
+  btnSuivis.onclick = () => {
+    btnSuivis.classList.add('active');
+    btnEnseignes.classList.remove('active');
+    renderPlanningCards(user.takenCourseIds || [], 'prof-planning-list', 'Vous ne suivez aucun cours.');
+  };
+  // Init default view
+  btnEnseignes.click();
 
   // Bouton sauvegarder
   document.getElementById('appel-save-btn').onclick = () => {
@@ -700,6 +717,17 @@ function renderParentDashboard(user) {
     return;
   }
 
+  // Notification Prochain cours
+  const nextCourseData = calculateNextCourse(children);
+  const banner = document.getElementById('parent-next-course-banner');
+  const bannerContent = document.getElementById('parent-next-course-content');
+  if (nextCourseData && banner && bannerContent) {
+    banner.style.display = 'flex';
+    bannerContent.innerHTML = `Le prochain cours de <strong>${nextCourseData.child.firstname}</strong> est <strong>${nextCourseData.course.name}</strong>, ce ${nextCourseData.dayStr} à ${nextCourseData.hourStr}.`;
+  } else if (banner) {
+    banner.style.display = 'none';
+  }
+
   children.forEach((child, i) => {
     const tab = document.createElement('button');
     tab.className = `child-tab${i === 0 ? ' active' : ''}`;
@@ -717,9 +745,14 @@ function renderParentDashboard(user) {
 
 function renderChildData(child) {
   document.getElementById('parent-child-name').textContent = child.firstname;
+  const namePlanEl = document.getElementById('parent-child-name-plan');
+  if (namePlanEl) namePlanEl.textContent = child.firstname;
+  
   const att = DATA.getAttendanceByStudent(child.id);
   const presents = att.filter(a => a.status === 'present').length;
   const absents  = att.filter(a => a.status === 'absent').length;
+
+  renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.');
 
   document.getElementById('parent-stat-cours').textContent = child.courseIds.length;
   document.getElementById('parent-stat-presence').textContent = presents;
@@ -840,4 +873,73 @@ function showToast(msg, type = 'success') {
   document.body.appendChild(t);
   setTimeout(() => t.classList.add('show'), 100);
   setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 4000);
+}
+
+// =============================================
+// HELPER PLANNINGS (Prof & Parents)
+// =============================================
+function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  if (!courseIds || courseIds.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🗓️</div><p>${emptyMsg}</p></div>`;
+    return;
+  }
+
+  const courses = courseIds.map(id => DATA.getCourseById(id)).filter(Boolean);
+  
+  container.innerHTML = courses.map(c => {
+    return `<div class="portal-course-card">
+      <img src="${c.image}" class="portal-course-img" alt="${c.name}">
+      <div class="portal-course-info">
+        <div class="portal-course-title">${c.name}</div>
+        <div class="portal-course-meta">
+          <span>🗓️ ${c.schedule.split('·')[0].trim()}</span>
+          <span>👩‍🏫 ${c.prof}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function calculateNextCourse(children) {
+  const daysMap = { 'Lundi': 1, 'Mardi': 2, 'Mercredi': 3, 'Jeudi': 4, 'Vendredi': 5, 'Samedi': 6, 'Dimanche': 0 };
+  const now = new Date();
+  const currentDay = now.getDay();
+  const currentHour = now.getHours() * 60 + now.getMinutes();
+
+  let nextCourse = null;
+  let minDiff = Infinity;
+
+  children.forEach(child => {
+    (child.courseIds || []).forEach(cid => {
+      const c = DATA.getCourseById(cid);
+      if (!c) return;
+      
+      const parts = c.schedule.split(' ');
+      const dayStr = parts[0]; 
+      let hourStr = parts[1]; 
+      
+      if (!daysMap.hasOwnProperty(dayStr)) return;
+      
+      const targetDay = daysMap[dayStr];
+      const timeParts = hourStr.split('h');
+      const targetHour = parseInt(timeParts[0]) * 60 + (parseInt(timeParts[1]) || 0);
+
+      let diffDays = targetDay - currentDay;
+      if (diffDays < 0 || (diffDays === 0 && targetHour <= currentHour)) {
+        diffDays += 7; 
+      }
+      
+      const diffMins = diffDays * 24 * 60 + (targetHour - currentHour);
+      
+      if (diffMins < minDiff) {
+        minDiff = diffMins;
+        nextCourse = { child, course: c, diffMins, dayStr, hourStr };
+      }
+    });
+  });
+
+  return nextCourse;
 }
