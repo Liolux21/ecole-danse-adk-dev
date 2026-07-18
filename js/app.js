@@ -913,11 +913,11 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
 
     // Boutons d'action
     let actionButtons = `<div style="display:flex; gap:0.5rem; margin-top:0.8rem;">`;
-    if (user && user.role === 'prof' && user.courseIds && user.courseIds.includes(c.courseId)) {
+    if (user && user.role === 'prof' && user.courseIds && user.courseIds.includes(c.id)) {
       // Le prof titulaire peut gérer
-      actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.courseId}">⚙️ Gérer</button>`;
+      actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.id}">⚙️ Gérer</button>`;
     }
-    actionButtons += `<button class="btn btn-outline btn-sm btn-msg" data-course-id="${c.courseId}">💬 Messages</button>`;
+    actionButtons += `<button class="btn btn-outline btn-sm btn-msg" data-course-id="${c.id}">💬 Messages</button>`;
     actionButtons += `</div>`;
 
     return `<div class="portal-course-card" style="${isCancelled ? 'opacity:0.7;' : ''}">
