@@ -558,13 +558,22 @@
         </div>
 
         <div class="dash-tabs" id="prof-tabs">
-          <button class="dash-tab active" data-tab="appel">📋 Feuille d'appel</button>
+          <button class="dash-tab active" data-tab="mon-planning">🗓️ Mon Planning</button>
+          <button class="dash-tab" data-tab="appel">📋 Feuille d'appel</button>
           <button class="dash-tab" data-tab="mes-eleves">🩰 Mes élèves</button>
-          <button class="dash-tab" data-tab="mon-planning">🗓️ Mon Planning</button>
+        </div>
+
+        <!-- Tab: Mon Planning -->
+        <div class="tab-content active" id="tab-mon-planning">
+          <div class="prof-planning-controls">
+            <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-enseignes">Cours enseignés</button>
+            <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
+          </div>
+          <div class="planning-cards-list" id="prof-planning-list"></div>
         </div>
 
         <!-- Tab: Appel -->
-        <div class="tab-content active" id="tab-appel">
+        <div class="tab-content" id="tab-appel">
           <div class="appel-course-selector" id="appel-courses"></div>
           <div class="appel-date-row">
             <span class="appel-date-label">Date du cours :</span>
@@ -592,14 +601,7 @@
           </div>
         </div>
 
-        <!-- Tab: Mon Planning -->
-        <div class="tab-content" id="tab-mon-planning">
-          <div class="prof-planning-controls">
-            <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-enseignes">Cours enseignés</button>
-            <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
-          </div>
-          <div class="planning-cards-list" id="prof-planning-list"></div>
-        </div>
+
       </div>
 
       <!-- ===== DASHBOARD PARENT ===== -->
@@ -857,6 +859,101 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Agrandissement photo">
     <button class="lightbox-close" id="lightbox-close" aria-label="Fermer">✕</button>
     <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  </div>
+
+  <!-- ==================== MODALS (Gestion & Messages) ==================== -->
+  
+  <!-- Modale Gestion de Cours (Prof) -->
+  <div class="lightbox" id="modal-manage-course">
+    <div class="lightbox-content" style="max-width:500px; background:var(--dark); padding:2rem; border-radius:var(--radius); border:1px solid var(--border); text-align:left;">
+      <button class="lightbox-close" id="close-manage-course">×</button>
+      <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:1rem;" id="manage-course-title">Gérer le cours</h3>
+      
+      <form id="manage-course-form" style="display:flex; flex-direction:column; gap:1rem;">
+        <input type="hidden" id="manage-course-id">
+        
+        <div>
+          <label class="form-label">Type de modification</label>
+          <select class="form-input" id="manage-course-type" required>
+            <option value="temporaire">Temporaire (prochaine séance)</option>
+            <option value="definitif">Définitif (reste de l'année)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Statut</label>
+          <select class="form-input" id="manage-course-status" required>
+            <option value="maintenu">✅ Maintenu</option>
+            <option value="annule">❌ Annulé</option>
+          </select>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div>
+            <label class="form-label">Heure (ex: 18h00)</label>
+            <input type="text" class="form-input" id="manage-course-hour" required>
+          </div>
+          <div>
+            <label class="form-label">Date/Jour</label>
+            <input type="text" class="form-input" id="manage-course-date" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Lieu</label>
+          <select class="form-input" id="manage-course-lieu" required>
+            <option value="ADK">Studio ADK (Florenville)</option>
+            <option value="Rox">Le Rox (Rouvroy)</option>
+            <option value="Bertrix">Bertrix (Baudet d'Âne)</option>
+            <option value="Izel">Centre Culturel d'Izel</option>
+            <option value="Jamoigne">Complexe sportif de Jamoigne</option>
+            <option value="FloreSport">Complexe sportif de Florenville</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Déléguer à un(e) remplaçant(e) (Optionnel)</label>
+          <select class="form-input" id="manage-course-sub">
+            <option value="">-- Aucun --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Message d'information pour les parents</label>
+          <textarea class="form-input" id="manage-course-msg" rows="3" placeholder="Ex: Prenez des baskets propres pour la salle..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Enregistrer les modifications</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modale Messagerie Cours -->
+  <div class="lightbox" id="modal-messages">
+    <div class="lightbox-content" style="max-width:600px; width:90%; height:80vh; background:var(--dark); border-radius:var(--radius); border:1px solid var(--border); display:flex; flex-direction:column; text-align:left;">
+      <div style="padding:1.5rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin:0;" id="chat-course-title">Messages du cours</h3>
+        <button class="lightbox-close" id="close-messages" style="position:relative; top:0; right:0;">×</button>
+      </div>
+      
+      <div id="chat-history" style="flex:1; padding:1.5rem; overflow-y:auto; display:flex; flex-direction:column; gap:1rem; background:var(--dark-2);">
+        <!-- Messages will be injected here -->
+      </div>
+      
+      <form id="chat-form" style="padding:1.5rem; border-top:1px solid var(--border); background:var(--dark);">
+        <input type="hidden" id="chat-course-id">
+        <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+          <select id="chat-msg-type" class="form-input" style="width:auto; padding:0.5rem;" required>
+            <option value="public">🌍 Message Public (Tous les parents)</option>
+            <option value="private">🔒 Message Privé (Professeur uniquement)</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <input type="text" id="chat-input" class="form-input" placeholder="Écrire un message..." required style="flex:1;">
+          <button type="submit" class="btn btn-primary" style="padding:0.75rem 1.5rem;">Envoyer</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="js/data.js"></script>

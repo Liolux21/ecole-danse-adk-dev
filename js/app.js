@@ -630,12 +630,12 @@ function renderProfDashboard(user) {
   btnEnseignes.onclick = () => {
     btnEnseignes.classList.add('active');
     btnSuivis.classList.remove('active');
-    renderPlanningCards(user.courseIds || [], 'prof-planning-list');
+    renderPlanningCards(user.courseIds || [], 'prof-planning-list', 'Aucun cours.', user);
   };
   btnSuivis.onclick = () => {
     btnSuivis.classList.add('active');
     btnEnseignes.classList.remove('active');
-    renderPlanningCards(user.takenCourseIds || [], 'prof-planning-list', 'Vous ne suivez aucun cours.');
+    renderPlanningCards(user.takenCourseIds || [], 'prof-planning-list', 'Vous ne suivez aucun cours.', user);
   };
   // Init default view
   btnEnseignes.click();
@@ -752,7 +752,7 @@ function renderChildData(child) {
   const presents = att.filter(a => a.status === 'present').length;
   const absents  = att.filter(a => a.status === 'absent').length;
 
-  renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.');
+  renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.', window.currentUser);
 
   document.getElementById('parent-stat-cours').textContent = child.courseIds.length;
   document.getElementById('parent-stat-presence').textContent = presents;
@@ -878,7 +878,7 @@ function showToast(msg, type = 'success') {
 // =============================================
 // HELPER PLANNINGS (Prof & Parents)
 // =============================================
-function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.') {
+function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', user = null) {
   const container = document.getElementById(containerId);
   if (!container) return;
   
@@ -887,20 +887,65 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.') 
     return;
   }
 
-  const courses = courseIds.map(id => DATA.getCourseById(id)).filter(Boolean);
+  const courses = courseIds.map(id => DATA.getCourseWithOverride(id)).filter(Boolean);
   
   container.innerHTML = courses.map(c => {
-    return `<div class="portal-course-card">
+    const isCancelled = c.status === 'annule';
+    const isModified = c.status !== 'annule' && (c.date || c.hour || c.lieu !== c.originalLieu);
+    
+    // Si c'est annulé, on barre.
+    const titleStyle = isCancelled ? 'text-decoration: line-through; color: var(--text-muted);' : '';
+    const badge = isCancelled ? `<span class="role-badge badge-admin" style="background:#DC646422;color:#DC6464;">Annulé</span>` 
+                : isModified ? `<span class="role-badge badge-prof" style="background:var(--gold-22);color:var(--gold);">Modifié</span>` 
+                : '';
+
+    let scheduleText = c.schedule.split('·')[0].trim();
+    if (c.date && c.hour) scheduleText = `${c.date} à ${c.hour}`;
+    else if (c.hour) scheduleText = `${scheduleText.split(' ')[0]} à ${c.hour}`;
+
+    const profName = c.substituteId ? DATA.getUserById(c.substituteId)?.name || c.prof : c.prof;
+    const isSubstitute = !!c.substituteId;
+    const substituteHtml = isSubstitute && user && user.role === 'parent' ? 
+      `<div style="font-size:0.8rem; color:var(--gold); margin-top:0.3rem;">Remplaçant(e) : ${profName} (${DATA.getUserById(c.substituteId)?.phone || 'Pas de tel'})</div>` : '';
+
+    const msgHtml = c.message && user && user.role === 'parent' ? 
+      `<div style="background:var(--dark); padding:0.5rem; border-radius:4px; font-size:0.85rem; margin-top:0.5rem; border-left:2px solid var(--gold);"><strong style="color:var(--gold)">Info Prof :</strong> ${c.message}</div>` : '';
+
+    // Boutons d'action
+    let actionButtons = `<div style="display:flex; gap:0.5rem; margin-top:0.8rem;">`;
+    if (user && user.role === 'prof' && !isSubstitute) {
+      // Le prof titulaire peut gérer
+      actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.courseId}">⚙️ Gérer</button>`;
+    }
+    actionButtons += `<button class="btn btn-outline btn-sm btn-msg" data-course-id="${c.courseId}">💬 Messages</button>`;
+    actionButtons += `</div>`;
+
+    return `<div class="portal-course-card" style="${isCancelled ? 'opacity:0.7;' : ''}">
       <img src="${c.image}" class="portal-course-img" alt="${c.name}">
-      <div class="portal-course-info">
-        <div class="portal-course-title">${c.name}</div>
-        <div class="portal-course-meta">
-          <span>🗓️ ${c.schedule.split('·')[0].trim()}</span>
-          <span>👩‍🏫 ${c.prof}</span>
+      <div class="portal-course-info" style="flex:1;">
+        <div class="portal-course-title" style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="${titleStyle}">${c.name}</span>
+          ${badge}
         </div>
+        <div class="portal-course-meta">
+          <span style="${isCancelled ? 'text-decoration: line-through;' : ''}">🗓️ ${scheduleText}</span>
+          <span>📍 ${c.lieu}</span>
+          <span>👩‍🏫 ${profName}</span>
+        </div>
+        ${substituteHtml}
+        ${msgHtml}
+        ${actionButtons}
       </div>
     </div>`;
   }).join('');
+
+  // Attach event listeners
+  container.querySelectorAll('.btn-manage').forEach(btn => {
+    btn.onclick = () => openManageCourseModal(parseInt(btn.dataset.courseId));
+  });
+  container.querySelectorAll('.btn-msg').forEach(btn => {
+    btn.onclick = () => openMessagesModal(parseInt(btn.dataset.courseId), user);
+  });
 }
 
 function calculateNextCourse(children) {
@@ -914,13 +959,14 @@ function calculateNextCourse(children) {
 
   children.forEach(child => {
     (child.courseIds || []).forEach(cid => {
-      const c = DATA.getCourseById(cid);
-      if (!c) return;
+      const c = DATA.getCourseWithOverride(cid);
+      if (!c || c.status === 'annule') return; // Ignore annulés
       
-      const parts = c.schedule.split(' ');
-      const dayStr = parts[0]; 
-      let hourStr = parts[1]; 
-      
+      let dayStr = c.schedule.split(' ')[0];
+      let hourStr = c.schedule.split(' ')[1];
+      if (c.date && c.date.includes(' ')) dayStr = c.date.split(' ')[0]; // Very naive extraction si 'Lundi 25/09'
+      if (c.hour) hourStr = c.hour;
+
       if (!daysMap.hasOwnProperty(dayStr)) return;
       
       const targetDay = daysMap[dayStr];
@@ -943,3 +989,117 @@ function calculateNextCourse(children) {
 
   return nextCourse;
 }
+
+// =============================================
+// MODALS LOGIC
+// =============================================
+function openManageCourseModal(courseId) {
+  const course = DATA.getCourseWithOverride(courseId);
+  if (!course) return;
+
+  document.getElementById('manage-course-id').value = courseId;
+  document.getElementById('manage-course-title').textContent = `Gérer: ${course.name}`;
+  document.getElementById('manage-course-type').value = course.type || 'temporaire';
+  document.getElementById('manage-course-status').value = course.status || 'maintenu';
+  document.getElementById('manage-course-hour').value = course.hour || course.schedule.split(' ')[1];
+  document.getElementById('manage-course-date').value = course.date || course.schedule.split(' ')[0];
+  document.getElementById('manage-course-lieu').value = course.lieu;
+  document.getElementById('manage-course-msg').value = course.message || '';
+  
+  // Remplir les subs
+  const subSelect = document.getElementById('manage-course-sub');
+  subSelect.innerHTML = '<option value="">-- Aucun --</option>' + 
+    DATA.getProfessors().filter(p => p.id !== window.currentUser.id).map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  subSelect.value = course.substituteId || '';
+
+  document.getElementById('modal-manage-course').classList.add('open');
+}
+
+document.getElementById('close-manage-course')?.addEventListener('click', () => {
+  document.getElementById('modal-manage-course').classList.remove('open');
+});
+
+document.getElementById('manage-course-form')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const id = parseInt(document.getElementById('manage-course-id').value);
+  
+  DATA.courseOverrides[id] = {
+    type: document.getElementById('manage-course-type').value,
+    status: document.getElementById('manage-course-status').value,
+    hour: document.getElementById('manage-course-hour').value,
+    date: document.getElementById('manage-course-date').value,
+    lieu: document.getElementById('manage-course-lieu').value,
+    substituteId: document.getElementById('manage-course-sub').value ? parseInt(document.getElementById('manage-course-sub').value) : null,
+    message: document.getElementById('manage-course-msg').value
+  };
+
+  showToast('✅ Modifications enregistrées');
+  document.getElementById('modal-manage-course').classList.remove('open');
+  
+  // Refresh dashboard
+  if (window.currentUser) showPortalDashboard(window.currentUser);
+});
+
+// MESSAGES MODAL
+let currentChatCourseId = null;
+let currentChatUser = null;
+
+function openMessagesModal(courseId, user) {
+  const course = DATA.getCourseWithOverride(courseId);
+  if (!course) return;
+  currentChatCourseId = courseId;
+  currentChatUser = user;
+
+  document.getElementById('chat-course-title').textContent = `Messages : ${course.name}`;
+  renderChatHistory();
+
+  document.getElementById('modal-messages').classList.add('open');
+}
+
+document.getElementById('close-messages')?.addEventListener('click', () => {
+  document.getElementById('modal-messages').classList.remove('open');
+});
+
+function renderChatHistory() {
+  const historyEl = document.getElementById('chat-history');
+  const msgs = DATA.getMessagesForCourse(currentChatCourseId, currentChatUser);
+  
+  if (msgs.length === 0) {
+    historyEl.innerHTML = '<div class="empty-state"><p>Aucun message pour ce cours.</p></div>';
+    return;
+  }
+
+  historyEl.innerHTML = msgs.map(m => {
+    const isMe = m.senderId === currentChatUser.id;
+    const align = isMe ? 'flex-end' : 'flex-start';
+    const bg = isMe ? 'var(--gold)' : 'var(--dark)';
+    const color = isMe ? 'var(--black)' : 'var(--white)';
+    const badge = m.type === 'private' ? '<span style="font-size:0.7rem; background:#DC6464; color:white; padding:0.1rem 0.4rem; border-radius:4px; margin-left:0.5rem;">Privé</span>' : '';
+    
+    return `<div style="display:flex; flex-direction:column; align-items:${align}; margin-bottom:0.5rem;">
+      <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.2rem;">${m.senderName} (${m.senderRole}) ${badge}</div>
+      <div style="background:${bg}; color:${color}; padding:0.8rem 1rem; border-radius:8px; max-width:80%; line-height:1.4;">${m.content}</div>
+    </div>`;
+  }).join('');
+  
+  historyEl.scrollTop = historyEl.scrollHeight;
+}
+
+document.getElementById('chat-form')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const input = document.getElementById('chat-input');
+  if (!input.value.trim() || !currentChatCourseId || !currentChatUser) return;
+
+  DATA.messages.push({
+    courseId: currentChatCourseId,
+    senderId: currentChatUser.id,
+    senderName: currentChatUser.firstname || currentChatUser.name,
+    senderRole: currentChatUser.role === 'prof' ? 'Professeur' : 'Parent',
+    type: document.getElementById('chat-msg-type').value,
+    content: input.value.trim(),
+    timestamp: new Date().getTime()
+  });
+
+  input.value = '';
+  renderChatHistory();
+});

@@ -34,20 +34,20 @@ const DATA = {
     // Admin
     { id: 1,  email: 'admin@adk.be',       password: 'admin2026',  role: 'admin',  name: 'Anne Dubois',   avatar: '👑', title: 'Directrice' },
     // Profs (compte générique + comptes nominatifs)
-    { id: 2,  email: 'prof@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
-    { id: 3,  email: 'janis@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
-    { id: 4,  email: 'maurine@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Maurine',       avatar: '💃',  title: 'Professeure',  courseIds: [3, 5, 8, 28, 29] },
-    { id: 5,  email: 'corentin@adk.be',    password: 'prof2026',   role: 'prof',   name: 'Corentin',      avatar: '🕺',  title: 'Professeur',   courseIds: [15, 31, 32] },
-    { id: 6,  email: 'charlotte@adk.be',   password: 'prof2026',   role: 'prof',   name: 'Charlotte',     avatar: '👩‍🏫', title: 'Professeure',  courseIds: [11, 14] },
-    { id: 7,  email: 'margaux@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Margaux',       avatar: '💃',  title: 'Professeure',  courseIds: [18, 19, 22, 24, 37, 38] },
-    { id: 8,  email: 'jade@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Jade',          avatar: '👩‍🏫', title: 'Professeure',  courseIds: [16, 17] },
-    { id: 9,  email: 'adam@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Adam',          avatar: '🕺',  title: 'Professeur',   courseIds: [20, 21] },
-    { id: 10, email: 'daisy@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Daisy',         avatar: '🌸',  title: 'Professeure',  courseIds: [1, 2] },
-    { id: 11, email: 'loreen@adk.be',      password: 'prof2026',   role: 'prof',   name: 'Loreen',        avatar: '👩‍🏫', title: 'Professeure',  courseIds: [39, 40] },
-    { id: 12, email: 'zoe@adk.be',         password: 'prof2026',   role: 'prof',   name: 'Zoé',           avatar: '💃',  title: 'Professeure',  courseIds: [7, 35, 36] },
-    { id: 13, email: 'jeanne@adk.be',      password: 'prof2026',   role: 'prof',   name: 'Jeanne',        avatar: '👩‍🏫', title: 'Professeure',  courseIds: [4] },
-    { id: 14, email: 'pauline@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Pauline',       avatar: '💃',  title: 'Professeure',  courseIds: [6] },
-    { id: 15, email: 'clementine@adk.be',  password: 'prof2026',   role: 'prof',   name: 'Clémentine',    avatar: '👩‍🏫', title: 'Professeure',  courseIds: [9] },
+    { id: 2,  email: 'prof@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  phone: '0471/12.34.56', courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
+    { id: 3,  email: 'janis@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  phone: '0471/12.34.56', courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
+    { id: 4,  email: 'maurine@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Maurine',       avatar: '💃',  title: 'Professeure',  phone: '0472/23.45.67', courseIds: [3, 5, 8, 28, 29] },
+    { id: 5,  email: 'corentin@adk.be',    password: 'prof2026',   role: 'prof',   name: 'Corentin',      avatar: '🕺',  title: 'Professeur',   phone: '0473/34.56.78', courseIds: [15, 31, 32] },
+    { id: 6,  email: 'charlotte@adk.be',   password: 'prof2026',   role: 'prof',   name: 'Charlotte',     avatar: '👩‍🏫', title: 'Professeure',  phone: '0474/45.67.89', courseIds: [11, 14] },
+    { id: 7,  email: 'margaux@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Margaux',       avatar: '💃',  title: 'Professeure',  phone: '0475/56.78.90', courseIds: [18, 19, 22, 24, 37, 38] },
+    { id: 8,  email: 'jade@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Jade',          avatar: '👩‍🏫', title: 'Professeure',  phone: '0476/67.89.01', courseIds: [16, 17] },
+    { id: 9,  email: 'adam@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Adam',          avatar: '🕺',  title: 'Professeur',   phone: '0477/78.90.12', courseIds: [20, 21] },
+    { id: 10, email: 'daisy@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Daisy',         avatar: '🌸',  title: 'Professeure',  phone: '0478/89.01.23', courseIds: [1, 2] },
+    { id: 11, email: 'loreen@adk.be',      password: 'prof2026',   role: 'prof',   name: 'Loreen',        avatar: '👩‍🏫', title: 'Professeure',  phone: '0479/90.12.34', courseIds: [39, 40] },
+    { id: 12, email: 'zoe@adk.be',         password: 'prof2026',   role: 'prof',   name: 'Zoé',           avatar: '💃',  title: 'Professeure',  phone: '0480/01.23.45', courseIds: [7, 35, 36] },
+    { id: 13, email: 'jeanne@adk.be',      password: 'prof2026',   role: 'prof',   name: 'Jeanne',        avatar: '👩‍🏫', title: 'Professeure',  phone: '0481/12.34.56', courseIds: [4] },
+    { id: 14, email: 'pauline@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Pauline',       avatar: '💃',  title: 'Professeure',  phone: '0482/23.45.67', courseIds: [6] },
+    { id: 15, email: 'clementine@adk.be',  password: 'prof2026',   role: 'prof',   name: 'Clémentine',    avatar: '👩‍🏫', title: 'Professeure',  phone: '0483/34.56.78', courseIds: [9] },
     { id: 16, email: 'maeva@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Maeva',         avatar: '💃',  title: 'Professeure',  courseIds: [23] },
     { id: 17, email: 'alain@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Alain',         avatar: '🕺',  title: 'Professeur',   courseIds: [26] },
     { id: 18, email: 'florence@adk.be',    password: 'prof2026',   role: 'prof',   name: 'Florence',      avatar: '👩‍🏫', title: 'Professeure',  courseIds: [27] },
@@ -231,5 +231,38 @@ const DATA = {
     const existing = this.attendance.find(a => a.studentId === studentId && a.courseId === courseId && a.date === date);
     if (existing) existing.status = status;
     else this.attendance.push({ studentId, courseId, date, status });
+  },
+
+  // ---- ADVANCED COURSE MANAGEMENT ----
+  courseOverrides: {}, // { date, hour, lieu, status: 'maintenu'|'annule', substituteId, message, type: 'temporaire'|'definitif' }
+  messages: [],      // { courseId, senderId, senderName, senderRole, type: 'public'|'private', content, timestamp }
+
+  getCourseWithOverride(id) {
+    const base = this.getCourseById(id);
+    if (!base) return null;
+    const override = this.courseOverrides[id];
+    if (!override) return base;
+    return { ...base, ...override, originalSchedule: base.schedule, originalLieu: base.lieu };
+  },
+
+  getProfessors() {
+    return this.users.filter(u => u.role === 'prof');
+  },
+
+  getMessagesForCourse(courseId, user) {
+    return this.messages.filter(m => {
+      if (m.courseId !== courseId) return false;
+      if (m.type === 'public') return true;
+      if (user.role === 'admin') return true;
+      if (user.id === m.senderId) return true;
+      
+      const course = this.getCourseWithOverride(courseId);
+      if (user.role === 'prof') {
+        const isTitulaire = this.getUserById(user.id)?.courseIds?.includes(courseId);
+        const isSub = course.substituteId === user.id;
+        return isTitulaire || isSub;
+      }
+      return false;
+    });
   }
 };
