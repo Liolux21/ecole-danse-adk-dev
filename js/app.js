@@ -1051,6 +1051,25 @@ function openMessagesModal(courseId, user) {
   currentChatUser = user;
 
   document.getElementById('chat-course-title').textContent = `Messages : ${course.name}`;
+  
+  const msgTypeSelect = document.getElementById('chat-msg-type');
+  if (user.role === 'prof') {
+    const parents = DATA.getStudentsByCourse(courseId)
+      .map(s => s.parentId ? DATA.getUserById(s.parentId) : null)
+      .filter(Boolean);
+    const uniqueParents = [...new Map(parents.map(p => [p.id, p])).values()];
+    
+    msgTypeSelect.innerHTML = `
+      <option value="public">🌍 Message Public (Tous les parents)</option>
+      ${uniqueParents.map(p => `<option value="private-${p.id}">🔒 Privé à ${p.name}</option>`).join('')}
+    `;
+  } else {
+    msgTypeSelect.innerHTML = `
+      <option value="public">🌍 Message Public (Tous les parents)</option>
+      <option value="private">🔒 Message Privé (Professeur uniquement)</option>
+    `;
+  }
+
   renderChatHistory();
 
   document.getElementById('modal-messages').classList.add('open');
@@ -1074,10 +1093,11 @@ function renderChatHistory() {
     const align = isMe ? 'flex-end' : 'flex-start';
     const bg = isMe ? 'var(--gold)' : 'var(--dark)';
     const color = isMe ? 'var(--black)' : 'var(--white)';
-    const badge = m.type === 'private' ? '<span style="font-size:0.7rem; background:#DC6464; color:white; padding:0.1rem 0.4rem; border-radius:4px; margin-left:0.5rem;">Privé</span>' : '';
+    const badgeText = m.type === 'private' || m.type.startsWith('private-') ? 
+      '<span style="font-size:0.7rem; background:#DC6464; color:white; padding:0.1rem 0.4rem; border-radius:4px; margin-left:0.5rem;">Privé</span>' : '';
     
     return `<div style="display:flex; flex-direction:column; align-items:${align}; margin-bottom:0.5rem;">
-      <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.2rem;">${m.senderName} (${m.senderRole}) ${badge}</div>
+      <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.2rem;">${m.senderName} (${m.senderRole}) ${badgeText}</div>
       <div style="background:${bg}; color:${color}; padding:0.8rem 1rem; border-radius:8px; max-width:80%; line-height:1.4;">${m.content}</div>
     </div>`;
   }).join('');
@@ -1090,12 +1110,22 @@ document.getElementById('chat-form')?.addEventListener('submit', (e) => {
   const input = document.getElementById('chat-input');
   if (!input.value.trim() || !currentChatCourseId || !currentChatUser) return;
 
+  const typeVal = document.getElementById('chat-msg-type').value;
+  let type = typeVal;
+  let recipientId = null;
+  
+  if (typeVal.startsWith('private-')) {
+    type = 'private';
+    recipientId = parseInt(typeVal.split('-')[1]);
+  }
+
   DATA.messages.push({
     courseId: currentChatCourseId,
     senderId: currentChatUser.id,
     senderName: currentChatUser.firstname || currentChatUser.name,
     senderRole: currentChatUser.role === 'prof' ? 'Professeur' : 'Parent',
-    type: document.getElementById('chat-msg-type').value,
+    type: type,
+    recipientId: recipientId,
     content: input.value.trim(),
     timestamp: new Date().getTime()
   });

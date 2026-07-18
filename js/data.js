@@ -153,7 +153,7 @@ const DATA = {
 
   // ---- ÉLÈVES (démo) ----
   students: [
-    { id: 1, firstname: 'Léa',   lastname: 'Dupont',   age: 9,  courseIds: [1, 9],   parentId: 19, cotisation: 'payée',      montant: 480 },
+    { id: 1, firstname: 'Léa',   lastname: 'Dupont',   age: 9,  courseIds: [1, 10],   parentId: 19, cotisation: 'payée',      montant: 480 },
     { id: 2, firstname: 'Emma',  lastname: 'Petit',    age: 7,  courseIds: [3],      parentId: 20, cotisation: 'payée',      montant: 280 },
     { id: 3, firstname: 'Tom',   lastname: 'Petit',    age: 12, courseIds: [5],      parentId: 20, cotisation: 'en attente', montant: 280 },
     { id: 4, firstname: 'Chloé', lastname: 'Bernard',  age: 14, courseIds: [11, 15], parentId: null, cotisation: 'payée',   montant: 480 },
@@ -166,9 +166,9 @@ const DATA = {
   // ---- PRÉSENCES (démo) ----
   attendance: [
     { studentId: 1, courseId: 1,  date: '10/09', status: 'present' },
-    { studentId: 1, courseId: 9,  date: '10/09', status: 'present' },
+    { studentId: 1, courseId: 10, date: '10/09', status: 'present' },
     { studentId: 1, courseId: 1,  date: '17/09', status: 'absent'  },
-    { studentId: 1, courseId: 9,  date: '17/09', status: 'excuse'  },
+    { studentId: 1, courseId: 10, date: '17/09', status: 'excuse'  },
     { studentId: 1, courseId: 1,  date: '24/09', status: 'present' },
     { studentId: 2, courseId: 3,  date: '13/09', status: 'present' },
     { studentId: 2, courseId: 3,  date: '20/09', status: 'present' },
@@ -255,6 +255,7 @@ const DATA = {
       if (m.type === 'public') return true;
       if (user.role === 'admin') return true;
       if (user.id === m.senderId) return true;
+      if (m.recipientId === user.id) return true;
       
       const course = this.getCourseWithOverride(courseId);
       if (user.role === 'prof') {
