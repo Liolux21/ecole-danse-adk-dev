@@ -606,17 +606,23 @@ function renderProfDashboard(user) {
 
   // Boutons de cours
   courseIds.forEach((cid, i) => {
-    const course = DATA.getCourseById(cid);
-    if (!course) return;
+    const c = DATA.getCourseById(cid);
+    if (!c) return;
     const btn = document.createElement('button');
-    btn.className = `appel-course-btn${i === 0 ? ' active' : ''}`;
-    btn.textContent = `${course.emoji} ${course.name}`;
-    btn.addEventListener('click', () => {
+    btn.className = `appel-course-btn${cid === selectedCourseId ? ' active' : ''}`;
+    
+    // Check for absences in this course for today
+    const today = new Date().toLocaleDateString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric'}); // format DD/MM/YYYY
+    const absences = DATA.attendance.filter(a => a.courseId === cid && a.date === today && (a.status === 'absent' || a.status === 'excuse'));
+    const notifBadge = absences.length > 0 ? `<span style="background:var(--gold); color:black; padding:0.1rem 0.4rem; border-radius:50px; font-size:0.6rem; margin-left:0.5rem; font-weight:bold;">${absences.length} absent(s)</span>` : '';
+    
+    btn.innerHTML = `${c.emoji} ${c.name} ${notifBadge}`;
+    btn.onclick = () => {
       document.querySelectorAll('.appel-course-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       selectedCourseId = cid;
       renderAppelList(cid);
-    });
+    };
     courseSelector.appendChild(btn);
   });
 
@@ -1066,8 +1072,8 @@ function openManageCourseModal(courseId) {
   document.getElementById('manage-course-title').textContent = `Gérer: ${course.name}`;
   document.getElementById('manage-course-type').value = course.type || 'temporaire';
   document.getElementById('manage-course-status').value = course.status || 'maintenu';
-  document.getElementById('manage-course-hour').value = course.hour || course.schedule.split(' ')[1];
-  document.getElementById('manage-course-date').value = course.date || course.schedule.split(' ')[0];
+  document.getElementById('manage-course-hour').value = course.hour || course.schedule.split(' ')[0].split(' ')[1];
+  document.getElementById('manage-course-date').value = course.date || '';
   document.getElementById('manage-course-lieu').value = course.lieu;
   document.getElementById('manage-course-msg').value = course.message || '';
   
@@ -1097,6 +1103,8 @@ document.getElementById('manage-course-form')?.addEventListener('submit', (e) =>
     substituteId: document.getElementById('manage-course-sub').value ? parseInt(document.getElementById('manage-course-sub').value) : null,
     message: document.getElementById('manage-course-msg').value
   };
+
+  DATA.saveState();
 
   showToast('✅ Modifications enregistrées');
   document.getElementById('modal-manage-course').classList.remove('open');
@@ -1194,6 +1202,8 @@ document.getElementById('chat-form')?.addEventListener('submit', (e) => {
     content: input.value.trim(),
     timestamp: new Date().getTime()
   });
+
+  DATA.saveState();
 
   input.value = '';
   renderChatHistory();

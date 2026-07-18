@@ -231,6 +231,7 @@ const DATA = {
     const existing = this.attendance.find(a => a.studentId === studentId && a.courseId === courseId && a.date === date);
     if (existing) existing.status = status;
     else this.attendance.push({ studentId, courseId, date, status });
+    this.saveState();
   },
 
   // ---- ADVANCED COURSE MANAGEMENT ----
@@ -265,5 +266,28 @@ const DATA = {
       }
       return false;
     });
+  },
+
+  // ---- PERSISTENCE ----
+  saveState() {
+    localStorage.setItem('adk_state', JSON.stringify({
+      attendance: this.attendance,
+      messages: this.messages,
+      courseOverrides: this.courseOverrides
+    }));
+  },
+
+  loadState() {
+    const saved = localStorage.getItem('adk_state');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.attendance) this.attendance = parsed.attendance;
+        if (parsed.messages) this.messages = parsed.messages;
+        if (parsed.courseOverrides) this.courseOverrides = parsed.courseOverrides;
+      } catch(e) {}
+    }
   }
 };
+
+DATA.loadState();
