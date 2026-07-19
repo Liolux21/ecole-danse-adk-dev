@@ -9,10 +9,10 @@
   --gold: #CAA9A9;
   --gold-light: #E8D0C3;
   --gold-dark: #A98585;
-  --black: #FDFBF9; /* Very light cream background */
-  --dark: #FFFFFF; /* Pure white containers */
-  --dark-2: #F6EFEC; /* Secondary background */
-  --dark-3: #F0E5DF; /* Tertiary background */
+  --black: #F9ECEC; /* Very light pastel pink background */
+  --dark: #FFF5F5; /* Containers slightly tinted pink instead of pure white */
+  --dark-2: #F3E4E4; /* Secondary background */
+  --dark-3: #EDDBDB; /* Tertiary background */
   --rose: #D4A0A0;
   --rose-light: #F0D5D5;
   --cream: #F9F5EE;
@@ -67,7 +67,7 @@ ul { list-style: none; }
   transition: var(--transition);
 }
 .navbar.scrolled {
-  background: rgba(253, 251, 249, 0.95);
+  background: rgba(249, 236, 236, 0.95);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   box-shadow: 0 4px 30px rgba(202, 169, 169, 0.15);
@@ -152,7 +152,7 @@ ul { list-style: none; }
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(253, 251, 249, 0.98);
+  background: rgba(249, 236, 236, 0.98);
   backdrop-filter: blur(20px);
   z-index: 999;
   flex-direction: column;
@@ -240,9 +240,9 @@ ul { list-style: none; }
   inset: 0;
   background: linear-gradient(
     105deg,
-    rgba(253, 251, 249, 0.92) 0%,
-    rgba(253, 251, 249, 0.7) 50%,
-    rgba(253, 251, 249, 0.3) 100%
+    rgba(249, 236, 236, 0.92) 0%,
+    rgba(249, 236, 236, 0.7) 50%,
+    rgba(249, 236, 236, 0.3) 100%
   );
 }
 .hero-particles {
@@ -1201,7 +1201,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: rgba(253, 251, 249, 0.95);
+  background: rgba(249, 236, 236, 0.95);
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
