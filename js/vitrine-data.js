@@ -74,8 +74,10 @@ const VITRINE_DATA = {
     },
     "Maurine": {
       "title": "Maurine",
+      "avatar": "https://annedkdanse.be/gallery/Mau%20mau.jpg?ts=1784038327",
+      "modalImage": "https://annedkdanse.be/gallery_gen/0a716be772784745dccd4a8e75abef22_fit.png?ts=1784038327",
       "content": "Découvrez l'univers de Maurine."
-    }
+    },
   },
   "cours": {
     "Pole Dance": {
