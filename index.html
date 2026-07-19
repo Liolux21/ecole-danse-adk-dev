@@ -353,9 +353,14 @@
       if(VITRINE_DATA && VITRINE_DATA.cours && coursGrid) {
         for(let key in VITRINE_DATA.cours) {
           const c = VITRINE_DATA.cours[key];
+          const courseImgHtml = c.avatar 
+            ? `<img src="${c.avatar}" alt="${c.title}" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-sm); margin-bottom: 1rem; display: block;">`
+            : '';
+            
           coursGrid.innerHTML += `
             <div class="card-vitrine" onclick="openDynamic('cours', '${key.replace(/'/g, "\\'")}')">
-              <div class="card-vitrine-content">
+              <div class="card-vitrine-content" style="${c.avatar ? 'padding-top: 0;' : ''}">
+                ${c.avatar ? `<div style="margin: -1.5rem -1.5rem 1.5rem -1.5rem;"><img src="${c.avatar}" alt="${c.title}" style="width: 100%; height: 160px; object-fit: cover; border-top-left-radius: var(--radius-sm); border-top-right-radius: var(--radius-sm); display: block;"></div>` : ''}
                 <h3 class="card-vitrine-title">${c.title}</h3>
                 <p style="color: var(--text-muted); font-size: 0.9rem;">Cliquez pour en savoir plus</p>
               </div>

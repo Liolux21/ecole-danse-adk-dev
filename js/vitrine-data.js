@@ -86,7 +86,9 @@ const VITRINE_DATA = {
     },
     "Pomdance 1": {
       "title": "Pomdance 1",
-      "content": "Le pomdance est un style chorégraphique inspiré du cheerleading,\n\nqui repose sur un esprit d’équipe et une énergie positive.\n\nIl mêle des mouvements de danse très structurés à l’utilisation\n\nde pompoms, pour accentuer le rythme, l’énergie et la précision.\n\nce style repose sur la synchronisation, les lignes nettes,\n\nles transitions rapides et une forte présence scénique.\n\nCe cours te permettra de développer ta coordination, ton endurance\n\net ta confiance en toi, le tout sur des musiques modernes\n\nAu programme: Apprentissage des pommotions (mouvements\n\nde bras) et du vocabulaire propre à la danse pom, apprentissage\n\nde chorégraphies entrainantes, travail des pirouettes, des sauts,"
+      "avatar": "https://annedkdanse.be/gallery/Au%20studio%20adk%2014.png?ts=1784038327",
+      "modalImage": "https://annedkdanse.be/gallery_gen/d076a5d4d35f6cc853caf82b8c41743b_fit.png?ts=1784038328",
+      "content": "Le « pomdance » est une discipline de la « cheer dance », un style chorégraphié très rythmé utilisant les bases techniques du jazz et la manipulation des pompons, nécessitant de l’énergie et un bon esprit d'équipe."
     },
     "Compagnies ADK": {
       "title": "Compagnies Adk",
