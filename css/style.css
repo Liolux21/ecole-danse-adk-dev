@@ -9,22 +9,22 @@
   --gold: #CAA9A9;
   --gold-light: #E8D0C3;
   --gold-dark: #A98585;
-  --black: #171414;
-  --dark: #1F1B1B;
-  --dark-2: #2B2525;
-  --dark-3: #362E2E;
+  --black: #FDFBF9; /* Very light cream background */
+  --dark: #FFFFFF; /* Pure white containers */
+  --dark-2: #F6EFEC; /* Secondary background */
+  --dark-3: #F0E5DF; /* Tertiary background */
   --rose: #D4A0A0;
   --rose-light: #F0D5D5;
   --cream: #F9F5EE;
-  --white: #FFFFFF;
-  --text-muted: rgba(255,255,255,0.65);
-  --text-light: rgba(255,255,255,0.85);
-  --border: rgba(202, 169, 169, 0.2);
-  --glass: rgba(255,255,255,0.04);
-  --glass-border: rgba(255,255,255,0.08);
+  --white: #4A3E3E; /* Dark text */
+  --text-muted: #8B7E7E; /* Muted text */
+  --text-light: #6A5C5C;
+  --border: rgba(202, 169, 169, 0.25);
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(202, 169, 169, 0.35);
   --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  --shadow-gold: 0 0 40px rgba(202, 169, 169, 0.15);
-  --shadow-card: 0 20px 60px rgba(0,0,0,0.5);
+  --shadow-gold: 0 0 30px rgba(202, 169, 169, 0.25);
+  --shadow-card: 0 10px 40px rgba(202, 169, 169, 0.15);
   --radius: 16px;
   --radius-sm: 8px;
   --font-display: 'Montserrat', sans-serif;
@@ -67,10 +67,10 @@ ul { list-style: none; }
   transition: var(--transition);
 }
 .navbar.scrolled {
-  background: rgba(10,10,10,0.95);
+  background: rgba(253, 251, 249, 0.95);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 30px rgba(202, 169, 169, 0.15);
 }
 .nav-logo {
   display: flex;
@@ -151,8 +151,8 @@ ul { list-style: none; }
 .mobile-menu {
   display: none;
   position: fixed;
-  top: 72px; left: 0; right: 0; bottom: 0;
-  background: rgba(10,10,10,0.98);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(253, 251, 249, 0.98);
   backdrop-filter: blur(20px);
   z-index: 999;
   flex-direction: column;
@@ -240,9 +240,9 @@ ul { list-style: none; }
   inset: 0;
   background: linear-gradient(
     105deg,
-    rgba(10,10,10,0.92) 0%,
-    rgba(10,10,10,0.7) 50%,
-    rgba(10,10,10,0.3) 100%
+    rgba(253, 251, 249, 0.92) 0%,
+    rgba(253, 251, 249, 0.7) 50%,
+    rgba(253, 251, 249, 0.3) 100%
   );
 }
 .hero-particles {
@@ -1201,7 +1201,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: rgba(0,0,0,0.95);
+  background: rgba(253, 251, 249, 0.95);
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
