@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>École de Danse ADK — Une famille, une passion, une histoire, une vie</title>
+  <meta name="description" content="L'École de Danse ADK propose des cours de danse classique, contemporaine, jazz et hip-hop pour tous les âges. Inscrivez vos enfants dès maintenant à Ixelles.">
+  <meta name="keywords" content="école de danse, ADK, danse classique, contemporain, jazz, hip-hop, Ixelles, Belgique">
+  <meta property="og:title" content="École de Danse ADK">
+  <meta property="og:description" content="Une famille - Une passion - Une histoire - Une vie. L'École de Danse ADK vous accueille à Ixelles.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="http://annedkdanse.be/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩰</text></svg>">
+  <link rel="stylesheet" href="css/style.css?v=11">
+</head>
+<body>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <nav class="navbar scrolled">
+    <div class="nav-logo">
+      <span class="nav-logo-main">ADK</span>
+      <span class="nav-logo-sub">Espace Membre</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="btn btn-outline" style="padding: 0.4rem 1rem;">Retour au site</a>
+    </div>
+  </nav>
+
+  <style>
+    /* Adjust portal padding since it's the only element on the page now */
+    body { padding-top: 80px; background: var(--black); }
+    #parents { min-height: calc(100vh - 80px - 250px); display: flex; flex-direction: column; }
+  </style>
+
+  <!-- ==================== ESPACE ADK — PORTAIL ==================== -->
+  <section id="parents" style="background: var(--black); padding: 7rem 0;">
+    <div class="section" style="padding-top: 0; padding-bottom: 0;">
+      <div class="section-header">
+        <span class="section-eyebrow reveal">Accès sécurisé</span>
+        <h2 class="section-title reveal reveal-delay-1">Mon <em>Espace ADK</em></h2>
+        <p class="section-subtitle reveal reveal-delay-2">Connectez-vous avec votre compte pour accéder à votre espace personnalisé selon votre profil.</p>
+        <div class="divider"></div>
+      </div>
+
+      <!-- PORTAIL DE CONNEXION -->
+      <div class="portal-wrapper" id="portal-login-wrapper">
+        <div class="portal-login-card reveal">
+          <div class="portal-logo">ADK</div>
+          <h3 class="portal-title">Connexion</h3>
+          <p class="portal-subtitle">Accédez à votre espace personnel</p>
+
+          <!-- Sélecteur de rôle (aide visuelle) -->
+          <div class="portal-roles">
+            <div class="portal-role-hint" data-role="admin" id="hint-admin">
+              <div class="role-icon">👑</div>
+              <div class="role-label">Admin</div>
+            </div>
+            <div class="portal-role-hint" data-role="prof" id="hint-prof">
+              <div class="role-icon">👩‍🏫</div>
+              <div class="role-label">Professeur</div>
+            </div>
+            <div class="portal-role-hint" data-role="parent" id="hint-parent">
+              <div class="role-icon">👨‍👩‍👧</div>
+              <div class="role-label">Parent</div>
+            </div>
+          </div>
+
+          <form id="portal-login-form">
+            <div class="form-group">
+              <label class="form-label" for="portal-email">Email</label>
+              <input class="form-input" type="email" id="portal-email" placeholder="votre@email.com" required autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="portal-password">Mot de passe</label>
+              <input class="form-input" type="password" id="portal-password" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="portal-submit-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+              Se connecter
+            </button>
+          </form>
+
+          <div class="demo-creds" id="demo-creds"></div>
+        </div>
+
+        <!-- Info cards côté droit -->
+        <div class="portal-info-side reveal reveal-delay-1">
+          <div class="portal-info-card">
+            <div class="portal-info-icon icon-admin">👑</div>
+            <div>
+              <h4>Administrateur <span class="role-badge badge-admin">Admin</span></h4>
+              <p>Gestion globale : élèves, professeurs, inscriptions, cours, comptabilité et actualités de l'école.</p>
+            </div>
+          </div>
+          <div class="portal-info-card">
+            <div class="portal-info-icon icon-prof">👩‍🏫</div>
+            <div>
+              <h4>Professeur <span class="role-badge badge-prof">Prof</span></h4>
+              <p>Accès à vos cours, liste d'élèves, feuille d'appel et suivi des présences par séance.</p>
+            </div>
+          </div>
+          <div class="portal-info-card">
+            <div class="portal-info-icon icon-parent">👨‍👩‍👧</div>
+            <div>
+              <h4>Parent <span class="role-badge badge-parent">Parent</span></h4>
+              <p>Suivi des présences de vos enfants, planning personnalisé, paiements et messages de l'école.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DASHBOARD ADMIN ===== -->
+      <div class="dashboard-panel" id="panel-admin">
+        <div class="dash-header">
+          <div class="dash-header-left">
+            <div class="dash-avatar" id="admin-avatar">👑</div>
+            <div>
+              <div class="dash-user-name" id="admin-name">Anne Dubois</div>
+              <div class="dash-user-role"><span class="role-badge badge-admin">👑 Administratrice</span></div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="admin-logout">Déconnexion</button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-label">Élèves inscrits</div>
+            <div class="stat-card-value" id="admin-stat-eleves">8</div>
+            <div class="stat-card-sub">Saison 2025-2026</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Inscriptions en attente</div>
+            <div class="stat-card-value" id="admin-stat-pending" style="color:#DC9EC8">3</div>
+            <div class="stat-card-sub">À traiter</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Cours actifs</div>
+            <div class="stat-card-value">6</div>
+            <div class="stat-card-sub">5 disciplines</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Cotisations reçues</div>
+            <div class="stat-card-value" style="color:#90CC90">3 040€</div>
+            <div class="stat-card-sub">2 en attente</div>
+          </div>
+        </div>
+
+        <div class="dash-tabs" id="admin-tabs">
+          <button class="dash-tab active" data-tab="inscriptions">📝 Inscriptions <span class="tab-badge" id="pending-badge">3</span></button>
+          <button class="dash-tab" data-tab="eleves">🩰 Élèves</button>
+          <button class="dash-tab" data-tab="profs">👩‍🏫 Professeurs</button>
+        </div>
+
+        <!-- Tab: Inscriptions -->
+        <div class="tab-content active" id="tab-inscriptions">
+          <div class="inscription-list" id="admin-inscription-list"></div>
+        </div>
+
+        <!-- Tab: Élèves -->
+        <div class="tab-content" id="tab-eleves">
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <span class="data-table-title">📋 Liste des élèves</span>
+            </div>
+            <table class="data-table" id="admin-eleves-table">
+              <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Cotisation</th></tr></thead>
+              <tbody id="admin-eleves-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab: Professeurs -->
+        <div class="tab-content" id="tab-profs">
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <span class="data-table-title">👩‍🏫 Équipe pédagogique</span>
+            </div>
+            <table class="data-table" id="admin-profs-table">
+              <thead><tr><th>Professeur</th><th>Titre</th><th>Cours enseignés</th><th>Élèves</th></tr></thead>
+              <tbody id="admin-profs-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DASHBOARD PROF ===== -->
+      <div class="dashboard-panel" id="panel-prof">
+        <div class="dash-header">
+          <div class="dash-header-left">
+            <div class="dash-avatar" id="prof-avatar">👩‍🏫</div>
+            <div>
+              <div class="dash-user-name" id="prof-name">Sophie Martin</div>
+              <div class="dash-user-role"><span class="role-badge badge-prof">👩‍🏫 Professeure</span></div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="prof-logout">Déconnexion</button>
+        </div>
+
+        <div class="dash-tabs" id="prof-tabs">
+          <button class="dash-tab active" data-tab="mon-planning">🗓️ Mon Planning</button>
+          <button class="dash-tab" data-tab="appel">📋 Feuille d'appel</button>
+          <button class="dash-tab" data-tab="mes-eleves">🩰 Mes élèves</button>
+        </div>
+
+        <!-- Tab: Mon Planning -->
+        <div class="tab-content active" id="tab-mon-planning">
+          <div class="prof-planning-controls">
+            <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-enseignes">Cours enseignés</button>
+            <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
+          </div>
+          <div class="planning-cards-list" id="prof-planning-list"></div>
+        </div>
+
+        <!-- Tab: Appel -->
+        <div class="tab-content" id="tab-appel">
+          <div class="appel-course-selector" id="appel-courses"></div>
+          <div class="appel-date-row">
+            <span class="appel-date-label">Date du cours :</span>
+            <input class="form-input" type="date" id="appel-date" style="width:auto;padding:0.5rem 0.75rem;">
+          </div>
+          <div class="appel-list" id="appel-list"></div>
+          <div class="appel-save-row">
+            <button class="btn btn-primary btn-sm" id="appel-save-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+              Sauvegarder l'appel
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab: Mes élèves -->
+        <div class="tab-content" id="tab-mes-eleves">
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <span class="data-table-title" id="prof-eleves-title">Mes élèves</span>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Présence</th></tr></thead>
+              <tbody id="prof-eleves-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+
+      </div>
+
+      <!-- ===== DASHBOARD PARENT ===== -->
+      <div class="dashboard-panel" id="panel-parent">
+        <div class="dash-header">
+          <div class="dash-header-left">
+            <div class="dash-avatar" id="parent-avatar">👩</div>
+            <div>
+              <div class="dash-user-name" id="parent-name">Marie Dupont</div>
+              <div class="dash-user-role"><span class="role-badge badge-parent">👨‍👩‍👧 Parent</span></div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="parent-logout">Déconnexion</button>
+        </div>
+
+        <div class="child-tabs" id="child-tabs"></div>
+
+        <div class="parent-notification-banner" id="parent-next-course-banner" style="display: none;">
+          <div class="banner-icon">🔔</div>
+          <div class="banner-content" id="parent-next-course-content"></div>
+        </div>
+
+        <div class="parent-stats">
+          <div class="stat-card">
+            <div class="stat-card-label">Cours inscrits</div>
+            <div class="stat-card-value" id="parent-stat-cours">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Présences</div>
+            <div class="stat-card-value" id="parent-stat-presence" style="color:#90CC90">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Absences</div>
+            <div class="stat-card-value" id="parent-stat-absence" style="color:#DC6464">0</div>
+          </div>
+        </div>
+
+        <div class="parent-dashboard-grid">
+          <div class="parent-planning-section">
+            <div class="parent-section-header">🗓️ Planning de la semaine — <span id="parent-child-name-plan"></span></div>
+            <div class="planning-cards-list" id="parent-planning-list"></div>
+          </div>
+
+          <div class="parent-attendance-section">
+            <div class="parent-section-header">📋 Historique des présences</div>
+            <div class="parent-attendance-list" id="parent-attendance-list"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+            </div>
+            <div class="contact-item">
+              <div class="contact-item-icon">🕐</div>
+              <div class="contact-item-text">
+                <div class="contact-item-label">Accueil administratif</div>
+                <div class="contact-item-value">Lun–Ven 14h–19h · Sam 9h–13h</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="social-links">
+            <a href="https://facebook.com/annedkdanse" target="_blank" class="social-link" title="Facebook" aria-label="Facebook ADK">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://instagram.com/annedkdanse" target="_blank" class="social-link" title="Instagram" aria-label="Instagram ADK">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="mailto:contact@annedkdanse.be" class="social-link" title="Email" aria-label="Email ADK">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </a>
+          </div>
+
+          <div class="contact-map">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2519.8!2d4.3638!3d50.8264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDQ5JzM1LjAiTiA0wrAyMSc1MC4wIkU!5e0!3m2!1sfr!2sbe!4v1234567890"
+              allowfullscreen loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Localisation École de Danse ADK">
+            </iframe>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="reveal reveal-delay-1">
+          <form class="form-card" id="contact-form">
+            <h3 class="form-title">Nous écrire ✉️</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="contact-name">Nom *</label>
+                <input class="form-input" type="text" id="contact-name" placeholder="Votre nom" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-email">Email *</label>
+                <input class="form-input" type="email" id="contact-email" placeholder="votre@email.com" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contact-subject">Sujet</label>
+              <select class="form-select" id="contact-subject">
+                <option>Question sur les cours</option>
+                <option>Inscription</option>
+                <option>Tarifs</option>
+                <option>Stage</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contact-message">Message *</label>
+              <textarea class="form-textarea" id="contact-message" placeholder="Votre message..." style="min-height:150px;" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="contact-submit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              Envoyer le message
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer supprimé pour le portail -->
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Agrandissement photo">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Fermer">✕</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  </div>
+
+  <!-- ==================== MODALS (Gestion & Messages) ==================== -->
+  
+  <!-- Modale Gestion de Cours (Prof) -->
+  <div class="lightbox" id="modal-manage-course">
+    <div class="lightbox-content" style="max-width:500px; background:var(--dark); padding:2rem; border-radius:var(--radius); border:1px solid var(--border); text-align:left;">
+      <button class="lightbox-close" id="close-manage-course">×</button>
+      <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:1rem;" id="manage-course-title">Gérer le cours</h3>
+      
+      <form id="manage-course-form" style="display:flex; flex-direction:column; gap:1rem;">
+        <input type="hidden" id="manage-course-id">
+        
+        <div>
+          <label class="form-label">Type de modification</label>
+          <select class="form-input" id="manage-course-type" required>
+            <option value="temporaire">Temporaire (prochaine séance)</option>
+            <option value="definitif">Définitif (reste de l'année)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Statut</label>
+          <select class="form-input" id="manage-course-status" required>
+            <option value="maintenu">✅ Maintenu</option>
+            <option value="annule">❌ Annulé</option>
+          </select>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div>
+            <label class="form-label">Heure (ex: 18h00)</label>
+            <input type="text" class="form-input" id="manage-course-hour" required>
+          </div>
+          <div>
+            <label class="form-label">Date/Jour</label>
+            <input type="text" class="form-input" id="manage-course-date" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Lieu</label>
+          <select class="form-input" id="manage-course-lieu" required>
+            <option value="ADK">Studio ADK (Florenville)</option>
+            <option value="Rox">Le Rox (Rouvroy)</option>
+            <option value="Bertrix">Bertrix (Baudet d'Âne)</option>
+            <option value="Izel">Centre Culturel d'Izel</option>
+            <option value="Jamoigne">Complexe sportif de Jamoigne</option>
+            <option value="FloreSport">Complexe sportif de Florenville</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Déléguer à un(e) remplaçant(e) (Optionnel)</label>
+          <select class="form-input" id="manage-course-sub">
+            <option value="">-- Aucun --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Message d'information pour les parents</label>
+          <textarea class="form-input" id="manage-course-msg" rows="3" placeholder="Ex: Prenez des baskets propres pour la salle..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Enregistrer les modifications</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modale Absence (Parent) -->
+  <div class="lightbox" id="modal-absence">
+    <div class="lightbox-content" style="max-width:400px; background:var(--dark); padding:2rem; border-radius:var(--radius); border:1px solid var(--border); text-align:left;">
+      <button class="lightbox-close" id="close-absence">×</button>
+      <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:1rem;">Présence / Absence</h3>
+      <form id="absence-form" style="display:flex; flex-direction:column; gap:1rem;">
+        <input type="hidden" id="absence-course-id">
+        <input type="hidden" id="absence-student-id">
+        <div>
+          <label class="form-label">Date de la séance</label>
+          <input type="date" class="form-input" id="absence-date" required>
+        </div>
+        <div>
+          <label class="form-label">Statut</label>
+          <select class="form-input" id="absence-status" required>
+            <option value="excuse">❌ Sera absent(e)</option>
+            <option value="present">✅ Sera présent(e)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Confirmer</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modale Messagerie Cours -->
+  <div class="lightbox" id="modal-messages">
+    <div class="lightbox-content" style="max-width:600px; width:90%; height:80vh; background:var(--dark); border-radius:var(--radius); border:1px solid var(--border); display:flex; flex-direction:column; text-align:left;">
+      <div style="padding:1.5rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin:0;" id="chat-course-title">Messages du cours</h3>
+        <button class="lightbox-close" id="close-messages" style="position:relative; top:0; right:0;">×</button>
+      </div>
+      
+      <div id="chat-history" style="flex:1; padding:1.5rem; overflow-y:auto; display:flex; flex-direction:column; gap:1rem; background:var(--dark-2);">
+        <!-- Messages will be injected here -->
+      </div>
+      
+      <form id="chat-form" style="padding:1.5rem; border-top:1px solid var(--border); background:var(--dark);">
+        <input type="hidden" id="chat-course-id">
+        <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+          <select id="chat-msg-type" class="form-input" style="width:auto; padding:0.5rem;" required>
+            <option value="public">🌍 Message Public (Tous les parents)</option>
+            <option value="private">🔒 Message Privé (Professeur uniquement)</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <input type="text" id="chat-input" class="form-input" placeholder="Écrire un message..." required style="flex:1;">
+          <button type="submit" class="btn btn-primary" style="padding:0.75rem 1.5rem;">Envoyer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/data.js?v=11"></script>
+  <script src="js/auth.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
+</body>
+</html>

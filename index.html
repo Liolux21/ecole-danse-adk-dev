@@ -3,985 +3,413 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>École de Danse ADK — Une famille, une passion, une histoire, une vie</title>
-  <meta name="description" content="L'École de Danse ADK propose des cours de danse classique, contemporaine, jazz et hip-hop pour tous les âges. Inscrivez vos enfants dès maintenant à Ixelles.">
-  <meta name="keywords" content="école de danse, ADK, danse classique, contemporain, jazz, hip-hop, Ixelles, Belgique">
+  <title>École de Danse ADK | Accueil</title>
+  <meta name="description" content="Bienvenue dans notre école de danse familiale, un lieu où se rencontrent passion, énergie et exigence artistique.">
   <meta property="og:title" content="École de Danse ADK">
-  <meta property="og:description" content="Une famille - Une passion - Une histoire - Une vie. L'École de Danse ADK vous accueille à Ixelles.">
+  <meta property="og:description" content="Une famille - Une passion - Une histoire - Une vie">
   <meta property="og:type" content="website">
-  <link rel="canonical" href="http://annedkdanse.be/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩰</text></svg>">
-  <link rel="stylesheet" href="css/style.css?v=11">
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <style>
+    /* Vitrine Specific Styles */
+    .vitrine-section {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .vitrine-title {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--white);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .vitrine-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 3rem auto;
+      font-size: 1.1rem;
+    }
+    
+    /* Hero */
+    .hero {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 2rem;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/images/hero_dancer.png');
+      background-size: cover;
+      background-position: center top;
+      transform: scale(1.05);
+      transition: transform 8s ease-out;
+      z-index: 1;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        rgba(234, 213, 213, 0.92) 0%,
+        rgba(234, 213, 213, 0.7) 50%,
+        rgba(234, 213, 213, 0.3) 100%
+      );
+      z-index: 2;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      color: var(--white);
+    }
+    .text-gold {
+      color: var(--gold);
+    }
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-light);
+      margin-bottom: 2.5rem;
+    }
+    
+    /* Grids */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .card-vitrine {
+      background: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .card-vitrine:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-card);
+      border-color: var(--gold);
+    }
+    .card-vitrine-img {
+      height: 200px;
+      width: 100%;
+      object-fit: cover;
+    }
+    .card-vitrine-content {
+      padding: 1.5rem;
+    }
+    .card-vitrine-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--gold-dark);
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Modals for Vitrine */
+    .vitrine-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(234, 213, 213, 0.95);
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .vitrine-modal.active {
+      display: flex;
+    }
+    .vitrine-modal-content {
+      background: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .vitrine-modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--dark-2);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      color: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .vitrine-modal-close:hover {
+      background: var(--gold);
+    }
+    
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: var(--dark-2);
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- ==================== NAVBAR ==================== -->
-  <nav class="navbar" id="navbar">
-    <a href="#hero" class="nav-logo" data-target="#hero">
+  <!-- Navigation -->
+  <nav class="navbar scrolled">
+    <div class="nav-logo">
       <span class="nav-logo-main">ADK</span>
       <span class="nav-logo-sub">École de Danse</span>
-    </a>
-    <ul class="nav-links">
-      <li><a class="nav-link" href="#cours" data-target="#cours" data-section="cours">Cours</a></li>
-      <li><a class="nav-link" href="#planning" data-target="#planning" data-section="planning">Planning</a></li>
-      <li><a class="nav-link" href="#actualites" data-target="#actualites" data-section="actualites">Actualités</a></li>
-      <li><a class="nav-link" href="#galerie" data-target="#galerie" data-section="galerie">Galerie</a></li>
-      <li><a class="nav-link" href="#parents" data-target="#parents" data-section="parents">Mon Espace</a></li>
-      <li><a class="nav-link" href="#contact" data-target="#contact" data-section="contact">Contact</a></li>
-      <li><a class="nav-link nav-cta" href="#inscription" data-target="#inscription">S'inscrire</a></li>
-    </ul>
-    <button class="nav-burger" aria-label="Menu" id="burger">
-      <span></span><span></span><span></span>
-    </button>
+    </div>
+    <div class="nav-links">
+      <a href="#accueil" class="nav-link">Accueil</a>
+      <a href="#ecole" class="nav-link">L'École</a>
+      <a href="#cours" class="nav-link">Cours</a>
+      <a href="#equipe" class="nav-link">L'Équipe</a>
+      <a href="#contact" class="nav-link">Contact</a>
+      <a href="portail.html" class="btn btn-outline" style="padding: 0.4rem 1rem;">Portail</a>
+    </div>
   </nav>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobile-menu">
-    <a class="nav-link" href="#cours" data-target="#cours">Cours</a>
-    <a class="nav-link" href="#planning" data-target="#planning">Planning</a>
-    <a class="nav-link" href="#actualites" data-target="#actualites">Actualités</a>
-    <a class="nav-link" href="#galerie" data-target="#galerie">Galerie</a>
-    <a class="nav-link" href="#parents" data-target="#parents">Espace Parents</a>
-    <a class="nav-link" href="#contact" data-target="#contact">Contact</a>
-    <a class="btn btn-primary" href="#inscription" data-target="#inscription">S'inscrire</a>
-  </div>
-
-  <!-- ==================== HERO ==================== -->
-  <section id="hero">
-    <div class="hero-bg"></div>
+  <!-- Hero Section -->
+  <section id="accueil" class="hero">
+    <div class="hero-bg loaded"></div>
     <div class="hero-overlay"></div>
-    <div class="hero-particles"></div>
-
     <div class="hero-content">
-      <div class="hero-badge">✦ Saison 2026 – 2027 ouverte</div>
-
-      <h1 class="hero-title">
-        <span class="hero-title-main">École de Danse</span>
-        <span class="hero-title-accent">ADK</span>
-      </h1>
-
-      <p class="hero-tagline">Une famille · Une passion · Une histoire · Une vie</p>
-
-      <div class="hero-actions">
-        <a href="#inscription" class="btn btn-primary" data-target="#inscription" id="btn-inscription-hero">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-          S'inscrire maintenant
-        </a>
-        <a href="#cours" class="btn btn-outline" data-target="#cours" id="btn-cours-hero">
-          Découvrir nos cours
-        </a>
+      <h1 class="hero-title">Une famille, <span class="text-gold">une passion.</span></h1>
+      <p class="hero-subtitle">Bienvenue dans notre école de danse familiale, un lieu où se rencontrent passion, énergie et exigence artistique.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="#cours" class="btn btn-primary">Découvrir nos cours</a>
+        <a href="portail.html" class="btn btn-outline">Accéder au portail membres</a>
       </div>
-
-      <div class="hero-stats">
-        <div>
-          <div class="hero-stat-value" id="stat-ans">0</div>
-          <div class="hero-stat-label">Ans d'expérience</div>
-        </div>
-        <div>
-          <div class="hero-stat-value" id="stat-eleves">0</div>
-          <div class="hero-stat-label">Élèves</div>
-        </div>
-        <div>
-          <div class="hero-stat-value" id="stat-styles">0</div>
-          <div class="hero-stat-label">Styles de danse</div>
-        </div>
-        <div>
-          <div class="hero-stat-value" id="stat-profs">0</div>
-          <div class="hero-stat-label">Professeurs</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="hero-scroll" data-target="#cours">
-      <div class="scroll-line"></div>
-      <span>Découvrir</span>
     </div>
   </section>
 
-  <!-- ==================== COURS ==================== -->
-  <section id="cours" style="background: var(--dark); padding: 7rem 0;">
-    <div class="section" style="padding-top: 0; padding-bottom: 0;">
-      <div class="section-header">
-        <span class="section-eyebrow reveal">Nos disciplines</span>
-        <h2 class="section-title reveal reveal-delay-1">Nos <em>cours</em></h2>
-        <p class="section-subtitle reveal reveal-delay-2">40 cours dans 3 lieux — Studio ADK, Au Rox et Bertrix. De l'éveil pour les tout-petits aux compagnies de haut niveau. Saison septembre 2026 – Gala mai 2027.</p>
-        <div class="divider"></div>
-      </div>
-
-      <div class="courses-filters reveal">
-        <button class="filter-btn active" data-filter="all">Tous</button>
-        <button class="filter-btn" data-filter="classique">🩰 Classique</button>
-        <button class="filter-btn" data-filter="jazz">🎷 Jazz</button>
-        <button class="filter-btn" data-filter="hiphop">🎤 Hip-Hop</button>
-        <button class="filter-btn" data-filter="ragga">🌴 Ragga</button>
-        <button class="filter-btn" data-filter="contemporain">🌊 Contemporain</button>
-        <button class="filter-btn" data-filter="eveil">🌸 Éveil</button>
-        <button class="filter-btn" data-filter="compagnie">⭐ Compagnies</button>
-        <button class="filter-btn" data-filter="special">🏆 Spécial</button>
-      </div>
-
-      <div class="courses-grid" id="courses-grid"></div>
-    </div>
-  </section>
-
-  <!-- ==================== TARIFS ==================== -->
-  <section style="background: var(--black); padding: 5rem 0;">
-    <div class="section" style="padding-top: 0; padding-bottom: 0;">
-      <div class="section-header">
-        <span class="section-eyebrow reveal">Tarification</span>
-        <h2 class="section-title reveal reveal-delay-1">Nos <em>tarifs</em></h2>
-        <div class="divider"></div>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
-        <div class="card reveal" style="padding:1.75rem; text-align:center;">
-          <div style="font-size:2rem; margin-bottom:0.5rem;">🎓</div>
-          <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">1 cours / semaine</div>
-          <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:700;color:var(--white);">280€</div>
-          <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;">/ an · Cours de 45min – 1h</div>
-          <a href="#inscription" class="btn btn-outline btn-sm" data-target="#inscription">S'inscrire</a>
+  <!-- Section L'École -->
+  <section id="ecole" class="vitrine-section">
+    <h2 class="vitrine-title">Notre Histoire</h2>
+    <p class="vitrine-subtitle">Enfants, adolescents et adultes y découvrent le plaisir de danser dans une ambiance chaleureuse, dynamique et bienveillante.</p>
+    
+    <div class="grid-3">
+      <div class="card-vitrine" onclick="openModal('modal-valeurs')">
+        <div class="card-vitrine-content">
+          <h3 class="card-vitrine-title">Nos Valeurs</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Respect, Ecoute, Esprit d'équipe, Rigueur et Plaisir de danser ensemble.</p>
+          <span style="color: var(--gold); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">En savoir plus &rarr;</span>
         </div>
-        <div class="card reveal reveal-delay-1" style="padding:1.75rem; text-align:center; border-color:var(--border); background:rgba(201,168,76,0.04);">
-          <div style="font-size:2rem; margin-bottom:0.5rem;">⭐</div>
-          <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">2 cours / semaine</div>
-          <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:700;color:var(--gold);">480€</div>
-          <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;">/ an · Réduction famille 15%</div>
-          <a href="#inscription" class="btn btn-primary btn-sm" data-target="#inscription">S'inscrire</a>
+      </div>
+      <div class="card-vitrine" onclick="openModal('modal-compagnies')">
+        <div class="card-vitrine-content">
+          <h3 class="card-vitrine-title">Compagnies & Concours</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Pour les élèves présentant un très bon niveau de danse, l'école propose d'intégrer nos compagnies sur audition.</p>
+          <span style="color: var(--gold); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">En savoir plus &rarr;</span>
         </div>
-        <div class="card reveal reveal-delay-2" style="padding:1.75rem; text-align:center;">
-          <div style="font-size:2rem; margin-bottom:0.5rem;">💫</div>
-          <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Pass Illimité</div>
-          <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:700;color:var(--white);">650€</div>
-          <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;">/ an · Tous les cours</div>
-          <a href="#inscription" class="btn btn-outline btn-sm" data-target="#inscription">S'inscrire</a>
-        </div>
-        <div class="card reveal reveal-delay-3" style="padding:1.75rem; text-align:center;">
-          <div style="font-size:2rem; margin-bottom:0.5rem;">☀️</div>
-          <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Stage d'été</div>
-          <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:700;color:var(--white);">220€</div>
-          <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;">/ 2 semaines · Juillet / Août</div>
-          <a href="#inscription" class="btn btn-outline btn-sm" data-target="#inscription">S'inscrire</a>
+      </div>
+      <div class="card-vitrine" onclick="openModal('modal-formation')">
+        <div class="card-vitrine-content">
+          <h3 class="card-vitrine-title">Formation Pro</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">L'école s'engage également dans la formation des futurs professeurs de danse.</p>
+          <span style="color: var(--gold); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">En savoir plus &rarr;</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==================== PLANNING ==================== -->
-  <section id="planning" style="background: var(--black); padding: 7rem 0;">
-    <div class="section" style="padding-top: 0; padding-bottom: 0;">
-      <div class="section-header">
-        <span class="section-eyebrow reveal">Organisation</span>
-        <h2 class="section-title reveal reveal-delay-1"><em>Planning</em> hebdomadaire</h2>
-        <p class="section-subtitle reveal reveal-delay-2">Filtrez par style ou par lieu et trouvez le cours qui vous convient — Saison 2026-2027.</p>
-        <div class="divider"></div>
-      </div>
-
-      <!-- Filtres planning -->
-      <div class="planning-filters reveal">
-        <div class="planning-filter-row">
-          <span class="planning-filter-label">Style</span>
-          <div class="planning-filter-btns" id="planning-style-filters">
-            <button class="plan-filter-btn active" data-style="all">Tous</button>
-            <button class="plan-filter-btn" data-style="classique">🩰 Classique</button>
-            <button class="plan-filter-btn" data-style="jazz">🎷 Jazz</button>
-            <button class="plan-filter-btn" data-style="hiphop">🎤 Hip-Hop</button>
-            <button class="plan-filter-btn" data-style="ragga">🌴 Ragga</button>
-            <button class="plan-filter-btn" data-style="contemporain">🌊 Contemporain</button>
-            <button class="plan-filter-btn" data-style="eveil">🌸 Éveil</button>
-            <button class="plan-filter-btn" data-style="compagnie">⭐ Compagnie</button>
-            <button class="plan-filter-btn" data-style="special">🏆 Spécial</button>
-          </div>
-        </div>
-        <div class="planning-filter-row">
-          <span class="planning-filter-label">Lieu</span>
-          <div class="planning-filter-btns" id="planning-lieu-filters">
-            <button class="plan-filter-btn active" data-lieu="all">Tous</button>
-            <button class="plan-filter-btn" data-lieu="ADK">🏠 Studio ADK</button>
-            <button class="plan-filter-btn" data-lieu="Rox">🏟️ Au Rox</button>
-            <button class="plan-filter-btn" data-lieu="Bertrix">📍 Bertrix</button>
-            <button class="plan-filter-btn" data-lieu="Izel">🎭 C.C. Izel</button>
-            <button class="plan-filter-btn" data-lieu="Flore">🌿 Florenville</button>
-          </div>
+  <!-- Section Cours -->
+  <section id="cours" class="vitrine-section" style="background: var(--dark-2); border-radius: var(--radius);">
+    <h2 class="vitrine-title">Nos Disciplines</h2>
+    <p class="vitrine-subtitle">Notre école propose un large éventail de styles afin de répondre à toutes les envies et à toutes les sensibilités.</p>
+    
+    <div class="grid-3">
+      <!-- Carte Cours 1 -->
+      <div class="card-vitrine" onclick="openModal('modal-cours-jazz')">
+        <div class="card-vitrine-content">
+          <h3 class="card-vitrine-title">Jazz & Classique</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Pour la rigueur et l'élégance, l'énergie et la musicalité.</p>
         </div>
       </div>
-
-      <!-- Nav semaine (desktop + mobile) -->
-      <div class="planning-nav reveal">
-        <button class="planning-nav-btn" id="plan-prev" aria-label="Semaine précédente">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <div class="planning-week" id="planning-week">Cette semaine</div>
-        <button class="planning-nav-btn" id="plan-next" aria-label="Semaine suivante">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-      </div>
-
-      <!-- Vue DESKTOP (grille) -->
-      <div class="planning-desktop-view">
-        <div class="planning-grid" id="planning-grid"></div>
-      </div>
-
-      <!-- Vue MOBILE (liste par jour) -->
-      <div class="planning-mobile-view">
-        <div class="mobile-day-tabs" id="mobile-day-tabs">
-          <button class="mobile-day-tab active" data-day="0">Lun</button>
-          <button class="mobile-day-tab" data-day="1">Mar</button>
-          <button class="mobile-day-tab" data-day="2">Mer</button>
-          <button class="mobile-day-tab" data-day="3">Jeu</button>
-          <button class="mobile-day-tab" data-day="4">Ven</button>
-          <button class="mobile-day-tab" data-day="5">Sam</button>
+      <!-- Carte Cours 2 -->
+      <div class="card-vitrine" onclick="openModal('modal-cours-urbain')">
+        <div class="card-vitrine-content">
+          <h3 class="card-vitrine-title">Hip Hop & Break</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Pour la créativité, la technique et l'esprit urbain.</p>
         </div>
-        <div class="mobile-course-list" id="mobile-course-list"></div>
       </div>
-
-      <!-- Légende -->
-      <div class="planning-legend reveal">
-        <span class="legend-item"><span class="legend-dot" style="background:var(--rose)"></span>Classique</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Contemporain</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#7BB4DC"></span>Jazz</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#90CC90"></span>Hip-Hop</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#DC9EC8"></span>Éveil</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#40C4A4"></span>Ragga</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#B478DC"></span>Compagnie</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#DC8C50"></span>Spécial</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== INSCRIPTION ==================== -->
-  <section id="inscription" style="background: var(--dark); padding: 7rem 0;">
-    <div class="section" style="padding-top: 0; padding-bottom: 0;">
-      <div class="section-header">
-        <span class="section-eyebrow reveal">Rejoindre ADK</span>
-        <h2 class="section-title reveal reveal-delay-1">Inscription <em>en ligne</em></h2>
-        <p class="section-subtitle reveal reveal-delay-2">Remplissez ce formulaire et notre équipe vous contactera pour finaliser l'inscription.</p>
-        <div class="divider"></div>
-      </div>
-
-      <div class="inscription-layout">
-        <!-- Info -->
-        <div class="inscription-info reveal">
-          <h3>Bienvenue à l'École ADK 🩰</h3>
-          <p>Depuis 1998, l'École de Danse ADK accompagne des centaines d'élèves de tous âges dans leur passion pour la danse. Notre approche bienveillante et professionnelle permet à chaque enfant de s'épanouir à son rythme.</p>
-          <div class="inscription-steps">
-            <div class="step">
-              <div class="step-num">1</div>
-              <div class="step-text">
-                <h4>Remplissez le formulaire</h4>
-                <p>Indiquez les informations de votre enfant et le(s) cours souhaité(s).</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">2</div>
-              <div class="step-text">
-                <h4>Nous vous contactons</h4>
-                <p>Notre équipe vous rappelle dans les 48h pour confirmer la disponibilité.</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">3</div>
-              <div class="step-text">
-                <h4>Cours d'essai gratuit</h4>
-                <p>Avant toute inscription définitive, un cours d'essai gratuit vous est offert.</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">4</div>
-              <div class="step-text">
-                <h4>Bienvenue dans la famille ADK !</h4>
-                <p>Finalisation de l'inscription et paiement de la cotisation annuelle.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Form -->
-        <div class="reveal reveal-delay-2">
-          <form class="form-card" id="inscription-form">
-            <h3 class="form-title">Formulaire d'inscription</h3>
-
-            <div class="form-section-title" style="border-top:none;padding-top:0;">👧 Informations de l'élève</div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="child-firstname">Prénom *</label>
-                <input class="form-input" type="text" id="child-firstname" placeholder="Léa" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="child-lastname">Nom *</label>
-                <input class="form-input" type="text" id="child-lastname" placeholder="Dupont" required>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="child-birth">Date de naissance *</label>
-                <input class="form-input" type="date" id="child-birth" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="child-level">Niveau actuel</label>
-                <select class="form-select" id="child-level">
-                  <option value="">Sélectionner...</option>
-                  <option>Débutant (première fois)</option>
-                  <option>Quelques cours</option>
-                  <option>1-2 ans d'expérience</option>
-                  <option>3-5 ans d'expérience</option>
-                  <option>5+ ans d'expérience</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-section-title">👨‍👩‍👧 Informations du parent / tuteur</div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="parent-firstname">Prénom *</label>
-                <input class="form-input" type="text" id="parent-firstname" placeholder="Marie" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="parent-lastname">Nom *</label>
-                <input class="form-input" type="text" id="parent-lastname" placeholder="Dupont" required>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="parent-email-form">Email *</label>
-                <input class="form-input" type="email" id="parent-email-form" placeholder="marie@email.com" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="parent-phone">Téléphone *</label>
-                <input class="form-input" type="tel" id="parent-phone" placeholder="+32 4XX XX XX XX" required>
-              </div>
-            </div>
-
-            <div class="form-section-title">💃 Cours souhaité(s)</div>
-            <div class="form-group full">
-              <div class="custom-select-container">
-                <div class="custom-select-header" id="course-select-header">
-                  <div class="custom-select-tags" id="course-select-tags">
-                    <span class="placeholder">Sélectionnez vos cours...</span>
-                  </div>
-                  <svg class="dropdown-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M6 9l6 6 6-6"/></svg>
-                </div>
-                <div class="custom-select-dropdown" id="course-select-dropdown">
-                  <div class="custom-select-search">
-                    <input type="text" id="course-search-input" placeholder="Rechercher un cours... (ex: Hip-Hop, Janis)">
-                  </div>
-                  <div class="custom-select-list" id="course-options-list">
-                    <!-- Options dynamically inserted here -->
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="form-message">Remarques ou questions</label>
-              <textarea class="form-textarea" id="form-message" placeholder="Informations complémentaires, questions particulières..."></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="submit-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-              Envoyer ma demande d'inscription
-            </button>
-          </form>
-
-          <div id="form-success" class="form-card form-success">
-            <div class="form-success-icon">✅</div>
-            <h3>Demande envoyée !</h3>
-            <p>Merci pour votre inscription. L'équipe ADK vous contactera dans les 48 heures pour confirmer votre place et organiser votre cours d'essai gratuit.</p>
-            <br>
-            <a href="#cours" class="btn btn-outline btn-sm" data-target="#cours">Voir nos cours</a>
-          </div>
+      <!-- Carte Cours 3 -->
+      <div class="card-vitrine" onclick="openModal('modal-cours-kids')">
+        <div class="card-vitrine-content">
+          <h3 class="card-vitrine-title">Eveil & Kids</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Pour les enfants dès 3 ans. Approche ludique et pédagogique.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==================== ESPACE ADK — PORTAIL ==================== -->
-  <section id="parents" style="background: var(--black); padding: 7rem 0;">
-    <div class="section" style="padding-top: 0; padding-bottom: 0;">
-      <div class="section-header">
-        <span class="section-eyebrow reveal">Accès sécurisé</span>
-        <h2 class="section-title reveal reveal-delay-1">Mon <em>Espace ADK</em></h2>
-        <p class="section-subtitle reveal reveal-delay-2">Connectez-vous avec votre compte pour accéder à votre espace personnalisé selon votre profil.</p>
-        <div class="divider"></div>
-      </div>
-
-      <!-- PORTAIL DE CONNEXION -->
-      <div class="portal-wrapper" id="portal-login-wrapper">
-        <div class="portal-login-card reveal">
-          <div class="portal-logo">ADK</div>
-          <h3 class="portal-title">Connexion</h3>
-          <p class="portal-subtitle">Accédez à votre espace personnel</p>
-
-          <!-- Sélecteur de rôle (aide visuelle) -->
-          <div class="portal-roles">
-            <div class="portal-role-hint" data-role="admin" id="hint-admin">
-              <div class="role-icon">👑</div>
-              <div class="role-label">Admin</div>
-            </div>
-            <div class="portal-role-hint" data-role="prof" id="hint-prof">
-              <div class="role-icon">👩‍🏫</div>
-              <div class="role-label">Professeur</div>
-            </div>
-            <div class="portal-role-hint" data-role="parent" id="hint-parent">
-              <div class="role-icon">👨‍👩‍👧</div>
-              <div class="role-label">Parent</div>
-            </div>
-          </div>
-
-          <form id="portal-login-form">
-            <div class="form-group">
-              <label class="form-label" for="portal-email">Email</label>
-              <input class="form-input" type="email" id="portal-email" placeholder="votre@email.com" required autocomplete="email">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="portal-password">Mot de passe</label>
-              <input class="form-input" type="password" id="portal-password" placeholder="••••••••" required autocomplete="current-password">
-            </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="portal-submit-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
-              Se connecter
-            </button>
-          </form>
-
-          <div class="demo-creds" id="demo-creds"></div>
-        </div>
-
-        <!-- Info cards côté droit -->
-        <div class="portal-info-side reveal reveal-delay-1">
-          <div class="portal-info-card">
-            <div class="portal-info-icon icon-admin">👑</div>
-            <div>
-              <h4>Administrateur <span class="role-badge badge-admin">Admin</span></h4>
-              <p>Gestion globale : élèves, professeurs, inscriptions, cours, comptabilité et actualités de l'école.</p>
-            </div>
-          </div>
-          <div class="portal-info-card">
-            <div class="portal-info-icon icon-prof">👩‍🏫</div>
-            <div>
-              <h4>Professeur <span class="role-badge badge-prof">Prof</span></h4>
-              <p>Accès à vos cours, liste d'élèves, feuille d'appel et suivi des présences par séance.</p>
-            </div>
-          </div>
-          <div class="portal-info-card">
-            <div class="portal-info-icon icon-parent">👨‍👩‍👧</div>
-            <div>
-              <h4>Parent <span class="role-badge badge-parent">Parent</span></h4>
-              <p>Suivi des présences de vos enfants, planning personnalisé, paiements et messages de l'école.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== DASHBOARD ADMIN ===== -->
-      <div class="dashboard-panel" id="panel-admin">
-        <div class="dash-header">
-          <div class="dash-header-left">
-            <div class="dash-avatar" id="admin-avatar">👑</div>
-            <div>
-              <div class="dash-user-name" id="admin-name">Anne Dubois</div>
-              <div class="dash-user-role"><span class="role-badge badge-admin">👑 Administratrice</span></div>
-            </div>
-          </div>
-          <button class="btn btn-outline btn-sm" id="admin-logout">Déconnexion</button>
-        </div>
-
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-card-label">Élèves inscrits</div>
-            <div class="stat-card-value" id="admin-stat-eleves">8</div>
-            <div class="stat-card-sub">Saison 2025-2026</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-label">Inscriptions en attente</div>
-            <div class="stat-card-value" id="admin-stat-pending" style="color:#DC9EC8">3</div>
-            <div class="stat-card-sub">À traiter</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-label">Cours actifs</div>
-            <div class="stat-card-value">6</div>
-            <div class="stat-card-sub">5 disciplines</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-label">Cotisations reçues</div>
-            <div class="stat-card-value" style="color:#90CC90">3 040€</div>
-            <div class="stat-card-sub">2 en attente</div>
-          </div>
-        </div>
-
-        <div class="dash-tabs" id="admin-tabs">
-          <button class="dash-tab active" data-tab="inscriptions">📝 Inscriptions <span class="tab-badge" id="pending-badge">3</span></button>
-          <button class="dash-tab" data-tab="eleves">🩰 Élèves</button>
-          <button class="dash-tab" data-tab="profs">👩‍🏫 Professeurs</button>
-        </div>
-
-        <!-- Tab: Inscriptions -->
-        <div class="tab-content active" id="tab-inscriptions">
-          <div class="inscription-list" id="admin-inscription-list"></div>
-        </div>
-
-        <!-- Tab: Élèves -->
-        <div class="tab-content" id="tab-eleves">
-          <div class="data-table-wrapper">
-            <div class="data-table-header">
-              <span class="data-table-title">📋 Liste des élèves</span>
-            </div>
-            <table class="data-table" id="admin-eleves-table">
-              <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Cotisation</th></tr></thead>
-              <tbody id="admin-eleves-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Tab: Professeurs -->
-        <div class="tab-content" id="tab-profs">
-          <div class="data-table-wrapper">
-            <div class="data-table-header">
-              <span class="data-table-title">👩‍🏫 Équipe pédagogique</span>
-            </div>
-            <table class="data-table" id="admin-profs-table">
-              <thead><tr><th>Professeur</th><th>Titre</th><th>Cours enseignés</th><th>Élèves</th></tr></thead>
-              <tbody id="admin-profs-body"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== DASHBOARD PROF ===== -->
-      <div class="dashboard-panel" id="panel-prof">
-        <div class="dash-header">
-          <div class="dash-header-left">
-            <div class="dash-avatar" id="prof-avatar">👩‍🏫</div>
-            <div>
-              <div class="dash-user-name" id="prof-name">Sophie Martin</div>
-              <div class="dash-user-role"><span class="role-badge badge-prof">👩‍🏫 Professeure</span></div>
-            </div>
-          </div>
-          <button class="btn btn-outline btn-sm" id="prof-logout">Déconnexion</button>
-        </div>
-
-        <div class="dash-tabs" id="prof-tabs">
-          <button class="dash-tab active" data-tab="mon-planning">🗓️ Mon Planning</button>
-          <button class="dash-tab" data-tab="appel">📋 Feuille d'appel</button>
-          <button class="dash-tab" data-tab="mes-eleves">🩰 Mes élèves</button>
-        </div>
-
-        <!-- Tab: Mon Planning -->
-        <div class="tab-content active" id="tab-mon-planning">
-          <div class="prof-planning-controls">
-            <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-enseignes">Cours enseignés</button>
-            <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
-          </div>
-          <div class="planning-cards-list" id="prof-planning-list"></div>
-        </div>
-
-        <!-- Tab: Appel -->
-        <div class="tab-content" id="tab-appel">
-          <div class="appel-course-selector" id="appel-courses"></div>
-          <div class="appel-date-row">
-            <span class="appel-date-label">Date du cours :</span>
-            <input class="form-input" type="date" id="appel-date" style="width:auto;padding:0.5rem 0.75rem;">
-          </div>
-          <div class="appel-list" id="appel-list"></div>
-          <div class="appel-save-row">
-            <button class="btn btn-primary btn-sm" id="appel-save-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-              Sauvegarder l'appel
-            </button>
-          </div>
-        </div>
-
-        <!-- Tab: Mes élèves -->
-        <div class="tab-content" id="tab-mes-eleves">
-          <div class="data-table-wrapper">
-            <div class="data-table-header">
-              <span class="data-table-title" id="prof-eleves-title">Mes élèves</span>
-            </div>
-            <table class="data-table">
-              <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Présence</th></tr></thead>
-              <tbody id="prof-eleves-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-
-      </div>
-
-      <!-- ===== DASHBOARD PARENT ===== -->
-      <div class="dashboard-panel" id="panel-parent">
-        <div class="dash-header">
-          <div class="dash-header-left">
-            <div class="dash-avatar" id="parent-avatar">👩</div>
-            <div>
-              <div class="dash-user-name" id="parent-name">Marie Dupont</div>
-              <div class="dash-user-role"><span class="role-badge badge-parent">👨‍👩‍👧 Parent</span></div>
-            </div>
-          </div>
-          <button class="btn btn-outline btn-sm" id="parent-logout">Déconnexion</button>
-        </div>
-
-        <div class="child-tabs" id="child-tabs"></div>
-
-        <div class="parent-notification-banner" id="parent-next-course-banner" style="display: none;">
-          <div class="banner-icon">🔔</div>
-          <div class="banner-content" id="parent-next-course-content"></div>
-        </div>
-
-        <div class="parent-stats">
-          <div class="stat-card">
-            <div class="stat-card-label">Cours inscrits</div>
-            <div class="stat-card-value" id="parent-stat-cours">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-label">Présences</div>
-            <div class="stat-card-value" id="parent-stat-presence" style="color:#90CC90">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-label">Absences</div>
-            <div class="stat-card-value" id="parent-stat-absence" style="color:#DC6464">0</div>
-          </div>
-        </div>
-
-        <div class="parent-dashboard-grid">
-          <div class="parent-planning-section">
-            <div class="parent-section-header">🗓️ Planning de la semaine — <span id="parent-child-name-plan"></span></div>
-            <div class="planning-cards-list" id="parent-planning-list"></div>
-          </div>
-
-          <div class="parent-attendance-section">
-            <div class="parent-section-header">📋 Historique des présences</div>
-            <div class="parent-attendance-list" id="parent-attendance-list"></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ==================== ACTUALITES ==================== -->
-  <section id="actualites" style="background: var(--dark); padding: 7rem 0;">
-    <div class="section" style="padding-top: 0; padding-bottom: 0;">
-      <div class="section-header">
-        <span class="section-eyebrow reveal">Vie de l'école</span>
-        <h2 class="section-title reveal reveal-delay-1"><em>Actualités</em> & Événements</h2>
-        <div class="divider"></div>
-      </div>
-
-      <!-- Countdown -->
-      <div class="countdown-banner reveal">
-        <div class="countdown-event">🎭 Prochain événement</div>
-        <div class="countdown-title" id="event-name">Gala de Fin d'Année</div>
-        <div class="countdown-digits" id="countdown">
-          <div class="countdown-unit">
-            <span class="countdown-num" id="cd-days">00</span>
-            <span class="countdown-label">Jours</span>
-          </div>
-          <div class="countdown-unit">
-            <span class="countdown-num" id="cd-hours">00</span>
-            <span class="countdown-label">Heures</span>
-          </div>
-          <div class="countdown-unit">
-            <span class="countdown-num" id="cd-mins">00</span>
-            <span class="countdown-label">Minutes</span>
-          </div>
-          <div class="countdown-unit">
-            <span class="countdown-num" id="cd-secs">00</span>
-            <span class="countdown-label">Secondes</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="news-grid" id="news-grid"></div>
-    </div>
-  </section>
-
-  <!-- ==================== GALERIE ==================== -->
-  <section id="galerie" style="background: var(--black); padding: 7rem 0;">
-    <div class="section" style="padding-top: 0; padding-bottom: 0;">
-      <div class="section-header">
-        <span class="section-eyebrow reveal">Nos moments</span>
-        <h2 class="section-title reveal reveal-delay-1">Galerie <em>Photos</em></h2>
-        <p class="section-subtitle reveal reveal-delay-2">Spectacles, cours, répétitions... revivez les plus beaux moments de l'École ADK.</p>
-        <div class="divider"></div>
-      </div>
-      <div class="gallery-grid" id="gallery-grid"></div>
-    </div>
-  </section>
-
-  <!-- ==================== CONTACT ==================== -->
-  <section id="contact" style="background: var(--dark); padding: 7rem 0;">
-    <div class="section" style="padding-top: 0; padding-bottom: 0;">
-      <div class="section-header">
-        <span class="section-eyebrow reveal">Nous trouver</span>
-        <h2 class="section-title reveal reveal-delay-1">Contact & <em>Informations</em></h2>
-        <div class="divider"></div>
-      </div>
-
-      <div class="contact-layout">
-        <!-- Info -->
-        <div class="reveal">
-          <h3>École de Danse ADK</h3>
-          <p>N'hésitez pas à nous contacter pour toute question concernant nos cours, les inscriptions ou pour organiser une visite de l'école.</p>
-
-          <div class="contact-items">
-            <div class="contact-item">
-              <div class="contact-item-icon">📍</div>
-              <div class="contact-item-text">
-                <div class="contact-item-label">Adresse</div>
-                <div class="contact-item-value">Rue de la Danse 42, 1050 Ixelles<br>Belgique</div>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-item-icon">📞</div>
-              <div class="contact-item-text">
-                <div class="contact-item-label">Téléphone</div>
-                <div class="contact-item-value"><a href="tel:+3223456789" style="color:inherit">+32 2 345 67 89</a></div>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-item-icon">✉️</div>
-              <div class="contact-item-text">
-                <div class="contact-item-label">Email</div>
-                <div class="contact-item-value"><a href="mailto:contact@annedkdanse.be" style="color:inherit">contact@annedkdanse.be</a></div>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-item-icon">🕐</div>
-              <div class="contact-item-text">
-                <div class="contact-item-label">Accueil administratif</div>
-                <div class="contact-item-value">Lun–Ven 14h–19h · Sam 9h–13h</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="social-links">
-            <a href="https://facebook.com/annedkdanse" target="_blank" class="social-link" title="Facebook" aria-label="Facebook ADK">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-            </a>
-            <a href="https://instagram.com/annedkdanse" target="_blank" class="social-link" title="Instagram" aria-label="Instagram ADK">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-            </a>
-            <a href="mailto:contact@annedkdanse.be" class="social-link" title="Email" aria-label="Email ADK">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            </a>
-          </div>
-
-          <div class="contact-map">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2519.8!2d4.3638!3d50.8264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDQ5JzM1LjAiTiA0wrAyMSc1MC4wIkU!5e0!3m2!1sfr!2sbe!4v1234567890"
-              allowfullscreen loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              title="Localisation École de Danse ADK">
-            </iframe>
-          </div>
-        </div>
-
-        <!-- Contact Form -->
-        <div class="reveal reveal-delay-1">
-          <form class="form-card" id="contact-form">
-            <h3 class="form-title">Nous écrire ✉️</h3>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="contact-name">Nom *</label>
-                <input class="form-input" type="text" id="contact-name" placeholder="Votre nom" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="contact-email">Email *</label>
-                <input class="form-input" type="email" id="contact-email" placeholder="votre@email.com" required>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="contact-subject">Sujet</label>
-              <select class="form-select" id="contact-subject">
-                <option>Question sur les cours</option>
-                <option>Inscription</option>
-                <option>Tarifs</option>
-                <option>Stage</option>
-                <option>Autre</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="contact-message">Message *</label>
-              <textarea class="form-textarea" id="contact-message" placeholder="Votre message..." style="min-height:150px;" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="contact-submit">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-              Envoyer le message
-            </button>
-          </form>
+  <!-- Section Équipe -->
+  <section id="equipe" class="vitrine-section">
+    <h2 class="vitrine-title">L'Équipe ADK</h2>
+    <p class="vitrine-subtitle">L'encadrement est assuré par des professeurs qualifiés, engagés et passionnés.</p>
+    
+    <div class="grid-3">
+      <div class="card-vitrine" onclick="openModal('modal-prof')">
+        <div class="card-vitrine-content" style="text-align: center;">
+          <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--dark-3); margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; font-size: 2rem;">👤</div>
+          <h3 class="card-vitrine-title">L'Équipe Pédagogique</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Découvrez les professeurs qui font vivre l'ADK.</p>
+          <span style="color: var(--gold); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Voir l'équipe &rarr;</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==================== FOOTER ==================== -->
+  <!-- Section Contact -->
+  <section id="contact" class="vitrine-section" style="background: var(--dark-2); border-radius: var(--radius);">
+    <h2 class="vitrine-title">Nous Contacter</h2>
+    <p class="vitrine-subtitle">Une question ? N'hésitez pas à nous écrire.</p>
+    
+    <form class="contact-form" onsubmit="event.preventDefault(); alert('Message envoyé !');">
+      <input type="text" class="form-input" placeholder="Votre nom" required>
+      <input type="email" class="form-input" placeholder="Votre email" required>
+      <textarea class="form-input" rows="5" placeholder="Votre message" required></textarea>
+      <button type="submit" class="btn btn-primary" style="align-self: center;">Envoyer</button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 2rem; color: var(--text-light);">
+      <p>✉️ annedkdanse@hotmail.com</p>
+    </div>
+  </section>
+
   <footer>
-    <div class="footer-content">
-      <div>
-        <div class="footer-brand-name">ADK</div>
-        <div class="footer-brand-tagline">Une famille · Une passion · Une histoire · Une vie</div>
-        <p class="footer-brand-desc">Depuis 1998, l'École de Danse ADK accompagne avec passion chaque élève dans son aventure artistique. Classique, contemporain, jazz, hip-hop — la danse pour tous.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Navigation</h4>
-        <ul>
-          <li><a href="#cours" data-target="#cours">Nos cours</a></li>
-          <li><a href="#planning" data-target="#planning">Planning</a></li>
-          <li><a href="#inscription" data-target="#inscription">Inscription</a></li>
-          <li><a href="#parents" data-target="#parents">Espace Parents</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Cours</h4>
-        <ul>
-          <li><a href="#cours">🩰 Danse Classique</a></li>
-          <li><a href="#cours">🌊 Contemporain</a></li>
-          <li><a href="#cours">🎷 Jazz</a></li>
-          <li><a href="#cours">🎤 Hip-Hop</a></li>
-          <li><a href="#cours">🌸 Éveil</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <ul>
-          <li><a href="tel:+3223456789">📞 +32 2 345 67 89</a></li>
-          <li><a href="mailto:contact@annedkdanse.be">✉️ contact@annedkdanse.be</a></li>
-          <li><a href="http://annedkdanse.be">🌐 annedkdanse.be</a></li>
-          <li><a href="https://facebook.com/annedkdanse" target="_blank">📘 Facebook</a></li>
-          <li><a href="https://instagram.com/annedkdanse" target="_blank">📸 Instagram</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© <span id="footer-year">2026</span> École de Danse ADK · Tous droits réservés</p>
-      <p style="font-style:italic;color:var(--gold);font-size:0.75rem;">Fait avec ❤️ pour les danseurs de demain</p>
-    </div>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 École de Danse ADK. Tous droits réservés.</p>
   </footer>
 
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Agrandissement photo">
-    <button class="lightbox-close" id="lightbox-close" aria-label="Fermer">✕</button>
-    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal Valeurs -->
+  <div class="vitrine-modal" id="modal-valeurs">
+    <div class="vitrine-modal-content">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-valeurs')">×</button>
+      <h3 class="vitrine-title" style="margin-bottom: 1rem;">Nos Valeurs</h3>
+      <p style="color: var(--text-light); line-height: 1.8;">Au-delà de l'apprentissage de la danse, notre école défend des valeurs fortes : Respect, Ecoute, Esprit d'équipe, Rigueur et Plaisir de danser ensemble.</p>
+      <p style="color: var(--text-light); line-height: 1.8; margin-top: 1rem;">Tout au long de l'année, les élèves vivent des moments forts à travers les cours, les spectacles, les projets artistiques et la vie de l'école, faisant de la danse un véritable lien, une émotion partagée et une aventure humaine enrichissante.</p>
+    </div>
   </div>
 
-  <!-- ==================== MODALS (Gestion & Messages) ==================== -->
-  
-  <!-- Modale Gestion de Cours (Prof) -->
-  <div class="lightbox" id="modal-manage-course">
-    <div class="lightbox-content" style="max-width:500px; background:var(--dark); padding:2rem; border-radius:var(--radius); border:1px solid var(--border); text-align:left;">
-      <button class="lightbox-close" id="close-manage-course">×</button>
-      <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:1rem;" id="manage-course-title">Gérer le cours</h3>
+  <!-- Modal Compagnies -->
+  <div class="vitrine-modal" id="modal-compagnies">
+    <div class="vitrine-modal-content">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-compagnies')">×</button>
+      <h3 class="vitrine-title" style="margin-bottom: 1rem;">Compagnies & Concours</h3>
+      <p style="color: var(--text-light); line-height: 1.8;">Pour les élèves présentant un très bon niveau de danse, l'école propose également des Compagnies. Celles-ci sont composées d'élèves sélectionnés par les professeurs et la direction, sur base de leur niveau technique, de leur engagement et de leur potentiel artistique.</p>
+      <p style="color: var(--text-light); line-height: 1.8; margin-top: 1rem;">L'accès aux compagnies se fait suite à une audition, garantissant un cadre exigeant et stimulant. Les compagnies participent à des shows de grande qualité, à des projets artistiques ambitieux ainsi qu'à des concours nationaux et internationaux.</p>
+    </div>
+  </div>
+
+  <!-- Modal Cours Jazz -->
+  <div class="vitrine-modal" id="modal-cours-jazz">
+    <div class="vitrine-modal-content">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-cours-jazz')">×</button>
+      <h3 class="vitrine-title" style="margin-bottom: 1rem;">Classique & Jazz</h3>
+      <p style="color: var(--text-light); line-height: 1.8;">Nous enseignons la danse classique pour la rigueur et l'élégance, et le Modern Jazz pour l'énergie et la musicalité. Chaque discipline est enseignée dans le respect de son identité, avec passion et exigence.</p>
+    </div>
+  </div>
+
+  <!-- Modal Cours Urbain -->
+  <div class="vitrine-modal" id="modal-cours-urbain">
+    <div class="vitrine-modal-content">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-cours-urbain')">×</button>
+      <h3 class="vitrine-title" style="margin-bottom: 1rem;">Urbain & Hip Hop</h3>
+      <p style="color: var(--text-light); line-height: 1.8;">Pour la créativité, la technique et l'esprit urbain. L'affirmation de soi et la confiance. Nous proposons également des cours de Breakdance, offrant une diversité riche et accessible.</p>
+    </div>
+  </div>
+
+  <!-- Modal Cours Kids -->
+  <div class="vitrine-modal" id="modal-cours-kids">
+    <div class="vitrine-modal-content">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-cours-kids')">×</button>
+      <h3 class="vitrine-title" style="margin-bottom: 1rem;">Eveil & Initiation</h3>
+      <p style="color: var(--text-light); line-height: 1.8;">L'école accueille les enfants dès 3 ans à travers des cours d'Eveil, puis dès 4-5 ans avec des cours d'Initiation à la danse.</p>
+      <p style="color: var(--text-light); line-height: 1.8; margin-top: 1rem;">Ces cours constituent une approche ludique et pédagogique, préparant les enfants aux différentes disciplines qu'ils pourront choisir à partir de 6 ans. Les cours sont ensuite organisés par âges et niveaux afin d'assurer une progression cohérente.</p>
+    </div>
+  </div>
+
+  <!-- Modal Equipe (Professeurs) -->
+  <div class="vitrine-modal" id="modal-prof">
+    <div class="vitrine-modal-content" style="max-width: 800px;">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-prof')">×</button>
+      <h3 class="vitrine-title" style="margin-bottom: 1rem;">L'Équipe Pédagogique</h3>
+      <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 2rem;">Notre encadrement est assuré par des professionnels engagés et passionnés. La direction artistique, fondée par Anne, ainsi que l'ensemble de l'équipe veillent à transmettre le plaisir de danser et la rigueur technique.</p>
       
-      <form id="manage-course-form" style="display:flex; flex-direction:column; gap:1rem;">
-        <input type="hidden" id="manage-course-id">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+        <div style="background: var(--dark-3); padding: 1.5rem; border-radius: var(--radius-sm); border-top: 3px solid var(--gold);">
+          <h4 style="color: var(--white); margin-bottom: 0.5rem; font-family: var(--font-display);">Anne</h4>
+          <p style="color: var(--gold); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Fondatrice & Directrice</p>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Eveil & Initiation, Préparation aux Concours. Chorégraphe Compagnies Moove & Unity.</p>
+        </div>
         
-        <div>
-          <label class="form-label">Type de modification</label>
-          <select class="form-input" id="manage-course-type" required>
-            <option value="temporaire">Temporaire (prochaine séance)</option>
-            <option value="definitif">Définitif (reste de l'année)</option>
-          </select>
+        <div style="background: var(--dark-3); padding: 1.5rem; border-radius: var(--radius-sm);">
+          <h4 style="color: var(--white); margin-bottom: 0.5rem; font-family: var(--font-display);">Pôle Classique & Contemporain</h4>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Une équipe dédiée à l'enseignement du Ballet Classique, des Pointes, du Jazz et du Contemporain (Débutants à Avancés).</p>
         </div>
 
-        <div>
-          <label class="form-label">Statut</label>
-          <select class="form-input" id="manage-course-status" required>
-            <option value="maintenu">✅ Maintenu</option>
-            <option value="annule">❌ Annulé</option>
-          </select>
+        <div style="background: var(--dark-3); padding: 1.5rem; border-radius: var(--radius-sm);">
+          <h4 style="color: var(--white); margin-bottom: 0.5rem; font-family: var(--font-display);">Pôle Urbain</h4>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Spécialistes en Hip-Hop, Ragga, Girly, Commercial et Break Dance (House, Lock, Pop).</p>
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-          <div>
-            <label class="form-label">Heure (ex: 18h00)</label>
-            <input type="text" class="form-input" id="manage-course-hour" required>
-          </div>
-          <div>
-            <label class="form-label">Date/Jour</label>
-            <input type="text" class="form-input" id="manage-course-date" required>
-          </div>
+        <div style="background: var(--dark-3); padding: 1.5rem; border-radius: var(--radius-sm);">
+          <h4 style="color: var(--white); margin-bottom: 0.5rem; font-family: var(--font-display);">Pôle Santé & Technique</h4>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">L'école est accompagnée par une kinésithérapeute, et dispose d'une équipe pour les productions scéniques et audiovisuelles.</p>
         </div>
-
-        <div>
-          <label class="form-label">Lieu</label>
-          <select class="form-input" id="manage-course-lieu" required>
-            <option value="ADK">Studio ADK (Florenville)</option>
-            <option value="Rox">Le Rox (Rouvroy)</option>
-            <option value="Bertrix">Bertrix (Baudet d'Âne)</option>
-            <option value="Izel">Centre Culturel d'Izel</option>
-            <option value="Jamoigne">Complexe sportif de Jamoigne</option>
-            <option value="FloreSport">Complexe sportif de Florenville</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="form-label">Déléguer à un(e) remplaçant(e) (Optionnel)</label>
-          <select class="form-input" id="manage-course-sub">
-            <option value="">-- Aucun --</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="form-label">Message d'information pour les parents</label>
-          <textarea class="form-input" id="manage-course-msg" rows="3" placeholder="Ex: Prenez des baskets propres pour la salle..."></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Enregistrer les modifications</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modale Absence (Parent) -->
-  <div class="lightbox" id="modal-absence">
-    <div class="lightbox-content" style="max-width:400px; background:var(--dark); padding:2rem; border-radius:var(--radius); border:1px solid var(--border); text-align:left;">
-      <button class="lightbox-close" id="close-absence">×</button>
-      <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:1rem;">Présence / Absence</h3>
-      <form id="absence-form" style="display:flex; flex-direction:column; gap:1rem;">
-        <input type="hidden" id="absence-course-id">
-        <input type="hidden" id="absence-student-id">
-        <div>
-          <label class="form-label">Date de la séance</label>
-          <input type="date" class="form-input" id="absence-date" required>
-        </div>
-        <div>
-          <label class="form-label">Statut</label>
-          <select class="form-input" id="absence-status" required>
-            <option value="excuse">❌ Sera absent(e)</option>
-            <option value="present">✅ Sera présent(e)</option>
-          </select>
-        </div>
-        <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Confirmer</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modale Messagerie Cours -->
-  <div class="lightbox" id="modal-messages">
-    <div class="lightbox-content" style="max-width:600px; width:90%; height:80vh; background:var(--dark); border-radius:var(--radius); border:1px solid var(--border); display:flex; flex-direction:column; text-align:left;">
-      <div style="padding:1.5rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin:0;" id="chat-course-title">Messages du cours</h3>
-        <button class="lightbox-close" id="close-messages" style="position:relative; top:0; right:0;">×</button>
       </div>
-      
-      <div id="chat-history" style="flex:1; padding:1.5rem; overflow-y:auto; display:flex; flex-direction:column; gap:1rem; background:var(--dark-2);">
-        <!-- Messages will be injected here -->
-      </div>
-      
-      <form id="chat-form" style="padding:1.5rem; border-top:1px solid var(--border); background:var(--dark);">
-        <input type="hidden" id="chat-course-id">
-        <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-          <select id="chat-msg-type" class="form-input" style="width:auto; padding:0.5rem;" required>
-            <option value="public">🌍 Message Public (Tous les parents)</option>
-            <option value="private">🔒 Message Privé (Professeur uniquement)</option>
-          </select>
-        </div>
-        <div style="display:flex; gap:0.5rem;">
-          <input type="text" id="chat-input" class="form-input" placeholder="Écrire un message..." required style="flex:1;">
-          <button type="submit" class="btn btn-primary" style="padding:0.75rem 1.5rem;">Envoyer</button>
-        </div>
-      </form>
     </div>
   </div>
 
-  <script src="js/data.js?v=11"></script>
-  <script src="js/auth.js?v=11"></script>
-  <script src="js/app.js?v=11"></script>
+  <!-- Simple script for Modals & Smooth Scroll -->
+  <script>
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+    
+    // Close modal on outside click
+    window.onclick = function(event) {
+      if (event.target.classList.contains('vitrine-modal')) {
+        event.target.classList.remove('active');
+      }
+    }
+  </script>
+
 </body>
 </html>

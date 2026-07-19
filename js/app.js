@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // =============================================
 function initNavbar() {
   const navbar = document.querySelector('.navbar');
+  if (!navbar) return;
   const links = document.querySelectorAll('.nav-link[data-section]');
   window.addEventListener('scroll', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 50);
@@ -42,16 +43,22 @@ function initNavbar() {
   });
 }
 function initMobileMenu() {
-  document.querySelector('.nav-burger').addEventListener('click', () =>
-    document.querySelector('.mobile-menu').classList.toggle('open'));
+  const burger = document.querySelector('.nav-burger');
+  const menu = document.querySelector('.mobile-menu');
+  if (!burger || !menu) return;
+  burger.addEventListener('click', () => menu.classList.toggle('open'));
 }
-function closeMobileMenu() { document.querySelector('.mobile-menu').classList.remove('open'); }
+function closeMobileMenu() { 
+  const menu = document.querySelector('.mobile-menu');
+  if (menu) menu.classList.remove('open'); 
+}
 
 // =============================================
 // PARTICLES
 // =============================================
 function initParticles() {
   const c = document.querySelector('.hero-particles');
+  if (!c) return;
   for (let i = 0; i < 20; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
@@ -65,6 +72,7 @@ function initParticles() {
 // =============================================
 function initHero() {
   const bg = document.querySelector('.hero-bg');
+  if (!bg) return;
   window.addEventListener('scroll', () => { bg.style.transform = `translateY(${window.scrollY * 0.4}px)`; }, { passive: true });
   setTimeout(() => bg.classList.add('loaded'), 100);
   const { stats } = DATA.school;
@@ -91,6 +99,7 @@ function animateCounter(id, target) {
 function initCourses() {
   const grid = document.getElementById('courses-grid');
   const filters = document.querySelectorAll('.filter-btn');
+  if (!grid) return;
   DATA.courses.forEach(c => grid.appendChild(createCourseCard(c)));
   filters.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -130,9 +139,22 @@ function createCourseCard(course) {
 // =============================================
 const planningState = { offset: 0, styleFilter: 'all', lieuFilter: 'all', mobileDay: 0 };
 
+function initCountdown() {
+  const eventDate = new Date('2026-06-20T20:00:00').getTime();
+  const els = {
+    d: document.getElementById('cd-days'),
+    h: document.getElementById('cd-hours'),
+    m: document.getElementById('cd-mins'),
+    s: document.getElementById('cd-secs')
+  };
+  if (!els.d || !els.h || !els.m || !els.s) return;
+  // logic...
+}
+
 function initPlanning() {
   const grid     = document.getElementById('planning-grid');
   const weekLabel= document.getElementById('planning-week');
+  if (!grid || !weekLabel) return;
 
   // Navigation semaine
   document.getElementById('plan-prev').addEventListener('click', () => { planningState.offset--; refreshPlanning(grid, weekLabel); });
@@ -404,6 +426,9 @@ function initInscription() {
 // PORTAIL MULTI-RÔLES
 // =============================================
 function initPortal() {
+  const portalForm = document.getElementById('portal-login-form');
+  if (!portalForm) return;
+
   AUTH.init();
 
   // Role hints (aide visuelle démo)
@@ -432,7 +457,7 @@ function initPortal() {
   }
 
   // Formulaire de connexion
-  document.getElementById('portal-login-form').addEventListener('submit', e => {
+  portalForm.addEventListener('submit', e => {
     e.preventDefault();
     const email = document.getElementById('portal-email').value;
     const password = document.getElementById('portal-password').value;
@@ -847,7 +872,9 @@ function closeLightbox() { document.getElementById('lightbox').classList.remove(
 // CONTACT
 // =============================================
 function initContact() {
-  document.getElementById('contact-form').addEventListener('submit', e => {
+  const form = document.getElementById('contact-form');
+  if (!form) return;
+  form.addEventListener('submit', e => {
     e.preventDefault();
     showToast('✅ Message envoyé ! Nous vous répondrons sous 48h.', 'success');
     e.target.reset();
