@@ -249,28 +249,8 @@
     <h2 class="vitrine-title">Nos Disciplines</h2>
     <p class="vitrine-subtitle">Notre école propose un large éventail de styles afin de répondre à toutes les envies et à toutes les sensibilités.</p>
     
-    <div class="grid-3">
-      <!-- Carte Cours 1 -->
-      <div class="card-vitrine" onclick="openModal('modal-cours-jazz')">
-        <div class="card-vitrine-content">
-          <h3 class="card-vitrine-title">Jazz & Classique</h3>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Pour la rigueur et l'élégance, l'énergie et la musicalité.</p>
-        </div>
-      </div>
-      <!-- Carte Cours 2 -->
-      <div class="card-vitrine" onclick="openModal('modal-cours-urbain')">
-        <div class="card-vitrine-content">
-          <h3 class="card-vitrine-title">Hip Hop & Break</h3>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Pour la créativité, la technique et l'esprit urbain.</p>
-        </div>
-      </div>
-      <!-- Carte Cours 3 -->
-      <div class="card-vitrine" onclick="openModal('modal-cours-kids')">
-        <div class="card-vitrine-content">
-          <h3 class="card-vitrine-title">Eveil & Kids</h3>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Pour les enfants dès 3 ans. Approche ludique et pédagogique.</p>
-        </div>
-      </div>
+    <div class="grid-3" id="cours-grid">
+      <!-- Injected dynamically by JS -->
     </div>
   </section>
 
@@ -279,15 +259,8 @@
     <h2 class="vitrine-title">L'Équipe ADK</h2>
     <p class="vitrine-subtitle">L'encadrement est assuré par des professeurs qualifiés, engagés et passionnés.</p>
     
-    <div class="grid-3">
-      <div class="card-vitrine" onclick="openModal('modal-prof')">
-        <div class="card-vitrine-content" style="text-align: center;">
-          <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--dark-3); margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; font-size: 2rem;">👤</div>
-          <h3 class="card-vitrine-title">L'Équipe Pédagogique</h3>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Découvrez les professeurs qui font vivre l'ADK.</p>
-          <span style="color: var(--gold); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Voir l'équipe &rarr;</span>
-        </div>
-      </div>
+    <div class="grid-3" id="equipe-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+      <!-- Injected dynamically by JS -->
     </div>
   </section>
 
@@ -334,67 +307,21 @@
     </div>
   </div>
 
-  <!-- Modal Cours Jazz -->
-  <div class="vitrine-modal" id="modal-cours-jazz">
-    <div class="vitrine-modal-content">
-      <button class="vitrine-modal-close" onclick="closeModal('modal-cours-jazz')">×</button>
-      <h3 class="vitrine-title" style="margin-bottom: 1rem;">Classique & Jazz</h3>
-      <p style="color: var(--text-light); line-height: 1.8;">Nous enseignons la danse classique pour la rigueur et l'élégance, et le Modern Jazz pour l'énergie et la musicalité. Chaque discipline est enseignée dans le respect de son identité, avec passion et exigence.</p>
-    </div>
-  </div>
-
-  <!-- Modal Cours Urbain -->
-  <div class="vitrine-modal" id="modal-cours-urbain">
-    <div class="vitrine-modal-content">
-      <button class="vitrine-modal-close" onclick="closeModal('modal-cours-urbain')">×</button>
-      <h3 class="vitrine-title" style="margin-bottom: 1rem;">Urbain & Hip Hop</h3>
-      <p style="color: var(--text-light); line-height: 1.8;">Pour la créativité, la technique et l'esprit urbain. L'affirmation de soi et la confiance. Nous proposons également des cours de Breakdance, offrant une diversité riche et accessible.</p>
-    </div>
-  </div>
-
-  <!-- Modal Cours Kids -->
-  <div class="vitrine-modal" id="modal-cours-kids">
-    <div class="vitrine-modal-content">
-      <button class="vitrine-modal-close" onclick="closeModal('modal-cours-kids')">×</button>
-      <h3 class="vitrine-title" style="margin-bottom: 1rem;">Eveil & Initiation</h3>
-      <p style="color: var(--text-light); line-height: 1.8;">L'école accueille les enfants dès 3 ans à travers des cours d'Eveil, puis dès 4-5 ans avec des cours d'Initiation à la danse.</p>
-      <p style="color: var(--text-light); line-height: 1.8; margin-top: 1rem;">Ces cours constituent une approche ludique et pédagogique, préparant les enfants aux différentes disciplines qu'ils pourront choisir à partir de 6 ans. Les cours sont ensuite organisés par âges et niveaux afin d'assurer une progression cohérente.</p>
-    </div>
-  </div>
-
-  <!-- Modal Equipe (Professeurs) -->
-  <div class="vitrine-modal" id="modal-prof">
+  <!-- Modal Dynamique (Cours & Professeurs) -->
+  <div class="vitrine-modal" id="modal-dynamic">
     <div class="vitrine-modal-content" style="max-width: 800px;">
-      <button class="vitrine-modal-close" onclick="closeModal('modal-prof')">×</button>
-      <h3 class="vitrine-title" style="margin-bottom: 1rem;">L'Équipe Pédagogique</h3>
-      <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 2rem;">Notre encadrement est assuré par des professionnels engagés et passionnés. La direction artistique, fondée par Anne, ainsi que l'ensemble de l'équipe veillent à transmettre le plaisir de danser et la rigueur technique.</p>
-      
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-        <div style="background: var(--dark-3); padding: 1.5rem; border-radius: var(--radius-sm); border-top: 3px solid var(--gold);">
-          <h4 style="color: var(--white); margin-bottom: 0.5rem; font-family: var(--font-display);">Anne</h4>
-          <p style="color: var(--gold); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Fondatrice & Directrice</p>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Eveil & Initiation, Préparation aux Concours. Chorégraphe Compagnies Moove & Unity.</p>
-        </div>
-        
-        <div style="background: var(--dark-3); padding: 1.5rem; border-radius: var(--radius-sm);">
-          <h4 style="color: var(--white); margin-bottom: 0.5rem; font-family: var(--font-display);">Pôle Classique & Contemporain</h4>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Une équipe dédiée à l'enseignement du Ballet Classique, des Pointes, du Jazz et du Contemporain (Débutants à Avancés).</p>
-        </div>
-
-        <div style="background: var(--dark-3); padding: 1.5rem; border-radius: var(--radius-sm);">
-          <h4 style="color: var(--white); margin-bottom: 0.5rem; font-family: var(--font-display);">Pôle Urbain</h4>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Spécialistes en Hip-Hop, Ragga, Girly, Commercial et Break Dance (House, Lock, Pop).</p>
-        </div>
-
-        <div style="background: var(--dark-3); padding: 1.5rem; border-radius: var(--radius-sm);">
-          <h4 style="color: var(--white); margin-bottom: 0.5rem; font-family: var(--font-display);">Pôle Santé & Technique</h4>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">L'école est accompagnée par une kinésithérapeute, et dispose d'une équipe pour les productions scéniques et audiovisuelles.</p>
-        </div>
+      <button class="vitrine-modal-close" onclick="closeModal('modal-dynamic')">×</button>
+      <h3 class="vitrine-title" id="modal-dynamic-title" style="margin-bottom: 1.5rem; color: var(--gold);">Titre</h3>
+      <div id="modal-dynamic-content" style="color: var(--text-light); line-height: 1.8; white-space: pre-wrap;">
+        <!-- Content injected here -->
       </div>
     </div>
   </div>
 
-  <!-- Simple script for Modals & Smooth Scroll -->
+  <!-- Data Script -->
+  <script src="js/vitrine-data.js"></script>
+
+  <!-- Simple script for Modals & Data Injection -->
   <script>
     function openModal(id) {
       document.getElementById(id).classList.add('active');
@@ -403,6 +330,50 @@
       document.getElementById(id).classList.remove('active');
     }
     
+    function openDynamic(type, key) {
+      if(VITRINE_DATA && VITRINE_DATA[type] && VITRINE_DATA[type][key]) {
+        const data = VITRINE_DATA[type][key];
+        document.getElementById('modal-dynamic-title').innerText = data.title;
+        document.getElementById('modal-dynamic-content').innerText = data.content;
+        openModal('modal-dynamic');
+      }
+    }
+
+    // Initialize the grids
+    window.onload = function() {
+      // Init Cours
+      const coursGrid = document.getElementById('cours-grid');
+      if(VITRINE_DATA && VITRINE_DATA.cours && coursGrid) {
+        for(let key in VITRINE_DATA.cours) {
+          const c = VITRINE_DATA.cours[key];
+          coursGrid.innerHTML += `
+            <div class="card-vitrine" onclick="openDynamic('cours', '${key.replace(/'/g, "\\'")}')">
+              <div class="card-vitrine-content">
+                <h3 class="card-vitrine-title">${c.title}</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Cliquez pour en savoir plus</p>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Init Equipe
+      const equipeGrid = document.getElementById('equipe-grid');
+      if(VITRINE_DATA && VITRINE_DATA.professeurs && equipeGrid) {
+        for(let key in VITRINE_DATA.professeurs) {
+          const p = VITRINE_DATA.professeurs[key];
+          equipeGrid.innerHTML += `
+            <div class="card-vitrine" onclick="openDynamic('professeurs', '${key.replace(/'/g, "\\'")}')" style="text-align: center;">
+              <div class="card-vitrine-content">
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--dark-3); margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--gold);">💃</div>
+                <h3 class="card-vitrine-title" style="font-size: 1.1rem;">${p.title}</h3>
+              </div>
+            </div>
+          `;
+        }
+      }
+    };
+
     // Close modal on outside click
     window.onclick = function(event) {
       if (event.target.classList.contains('vitrine-modal')) {
