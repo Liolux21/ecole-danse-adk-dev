@@ -499,14 +499,14 @@ ul { list-style: none; }
   text-transform: uppercase;
   margin-bottom: 0.75rem;
 }
-.tag-classique   { background: rgba(212,160,160,0.15); color: var(--rose); border: 1px solid rgba(212,160,160,0.2); }
-.tag-contemporain{ background: rgba(201,168,76,0.12);  color: var(--gold); border: 1px solid var(--border); }
-.tag-jazz        { background: rgba(120,180,220,0.12); color: #7BB4DC;     border: 1px solid rgba(120,180,220,0.2); }
-.tag-hiphop      { background: rgba(160,210,160,0.12); color: #90CC90;     border: 1px solid rgba(160,210,160,0.2); }
-.tag-eveil       { background: rgba(220,160,200,0.12); color: #DC9EC8;     border: 1px solid rgba(220,160,200,0.2); }
-.tag-ragga       { background: rgba(64,196,164,0.12);  color: #40C4A4;     border: 1px solid rgba(64,196,164,0.25); }
-.tag-compagnie   { background: rgba(180,120,220,0.12); color: #B478DC;     border: 1px solid rgba(180,120,220,0.25); }
-.tag-special     { background: rgba(220,140,80,0.12);  color: #DC8C50;     border: 1px solid rgba(220,140,80,0.25); }
+.tag-classique   { background: var(--rose); color: #ffffff; border: 1px solid var(--rose); }
+.tag-contemporain{ background: #C9A84C; color: #ffffff; border: 1px solid #C9A84C; }
+.tag-jazz        { background: #7BB4DC; color: #ffffff; border: 1px solid #7BB4DC; }
+.tag-hiphop      { background: #82C282; color: #ffffff; border: 1px solid #82C282; }
+.tag-eveil       { background: #DC9EC8; color: #ffffff; border: 1px solid #DC9EC8; }
+.tag-ragga       { background: #40C4A4; color: #ffffff; border: 1px solid #40C4A4; }
+.tag-compagnie   { background: #B478DC; color: #ffffff; border: 1px solid #B478DC; }
+.tag-special     { background: #DC8C50; color: #ffffff; border: 1px solid #DC8C50; }
 .course-name {
   font-family: var(--font-display);
   font-size: 1.5rem;
