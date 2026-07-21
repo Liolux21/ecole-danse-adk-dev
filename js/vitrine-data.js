@@ -5,7 +5,6 @@ const VITRINE_DATA = {
       "category": "Direction & Fondatrice",
       "content": "Anne a créé l'école de danse en 1997. Diplômée du Conservatoire de Charleroi en danse classique et jazz, en passant par un perfectionnement au ballet d'Anvers et de Marseille, Anne passionnée par le contact humain et la pédagogie aura cette année près de 30 années d'expérience dans la région ! Elle gère au quotidien l'école ADK pour toutes les décisions et projets, les mises en scène, les assemblages de musiques, les différents shows et concours internationaux avec son équipe de confiance."
     },
-    "Florence": {
     "Corentin": {
       "title": "Corentin",
       "content": "Découvrez l'univers de Corentin."
