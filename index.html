@@ -204,12 +204,38 @@
   <section id="accueil" class="hero">
     <div class="hero-bg loaded"></div>
     <div class="hero-overlay"></div>
+    <div class="hero-particles" style="position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden;"></div>
     <div class="hero-content">
+      <div style="display: inline-block; padding: 0.4rem 1.2rem; background: rgba(0,0,0,0.05); border: 1px solid var(--gold); border-radius: 50px; color: var(--gold-dark); font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2rem;">
+        Saison 2026-2027 Ouverte
+      </div>
       <h1 class="hero-title"><span style="color: #222;">Une famille,</span> <span style="color: #9C5858;">une passion.</span></h1>
-      <p class="hero-subtitle">Bienvenue dans notre école de danse familiale, un lieu où se rencontrent passion, énergie et exigence artistique.</p>
-      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <p class="hero-subtitle" style="font-weight: 600; letter-spacing: 1px; font-size: 1.1rem; color: var(--white); text-shadow: none;">
+        Une famille &middot; Une passion &middot; Une histoire &middot; Une vie
+      </p>
+      
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 4rem;">
         <a href="#cours" class="btn btn-primary">Découvrir nos cours</a>
         <a href="portail.html" class="btn btn-outline">Accéder au portail membres</a>
+      </div>
+
+      <div class="hero-stats" style="display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap; padding-top: 2.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+        <div style="text-align: center;">
+          <div id="stat-ans" style="font-family: var(--font-display); font-size: 2.5rem; color: #9C5858; font-weight: 700; line-height: 1;">0+</div>
+          <div style="color: var(--white); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; font-weight: 600;">Ans d'expérience</div>
+        </div>
+        <div style="text-align: center;">
+          <div id="stat-eleves" style="font-family: var(--font-display); font-size: 2.5rem; color: #9C5858; font-weight: 700; line-height: 1;">0+</div>
+          <div style="color: var(--white); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; font-weight: 600;">Élèves</div>
+        </div>
+        <div style="text-align: center;">
+          <div id="stat-styles" style="font-family: var(--font-display); font-size: 2.5rem; color: #9C5858; font-weight: 700; line-height: 1;">0+</div>
+          <div style="color: var(--white); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; font-weight: 600;">Styles de danse</div>
+        </div>
+        <div style="text-align: center;">
+          <div id="stat-profs" style="font-family: var(--font-display); font-size: 2.5rem; color: #9C5858; font-weight: 700; line-height: 1;">0+</div>
+          <div style="color: var(--white); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; font-weight: 600;">Professeurs</div>
+        </div>
       </div>
     </div>
   </section>
@@ -339,8 +365,38 @@
       }
     }
 
-    // Initialize the grids
+    function animateCounter(id, target) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let cur = 0;
+      const step = target / 60;
+      const t = setInterval(() => {
+        cur = Math.min(cur + step, target);
+        el.textContent = Math.floor(cur) + '+';
+        if (cur >= target) clearInterval(t);
+      }, 25);
+    }
+
+    function initParticles() {
+      const c = document.querySelector('.hero-particles');
+      if (!c) return;
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.cssText = `left:${Math.random()*100}%;width:${Math.random()*4+2}px;height:${Math.random()*4+2}px;animation-duration:${Math.random()*12+10}s;animation-delay:${Math.random()*10}s`;
+        c.appendChild(p);
+      }
+    }
+
+    // Initialize the grids and animations
     window.onload = function() {
+      initParticles();
+      setTimeout(() => {
+        animateCounter('stat-ans', 28);
+        animateCounter('stat-eleves', 180);
+        animateCounter('stat-styles', 8);
+        animateCounter('stat-profs', 14);
+      }, 300);
       // Init Cours
       const coursGrid = document.getElementById('cours-grid');
       if(VITRINE_DATA && VITRINE_DATA.cours && coursGrid) {
