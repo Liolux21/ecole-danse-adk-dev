@@ -1,9 +1,11 @@
 const VITRINE_DATA = {
   "professeurs": {
-    "Florence": {
-      "title": "Florence",
-      "content": "Bienvenue à l'École de danse ADK, un lieu où la passion du mouvement et de la danse prend vie.\n\nSpécialisée dans l'enseignement de diverses disciplines, notre école est dédiée\n\nà vous faire découvrir et perfectionner votre talent.\n\nQue vous soyez débutant ou danseur confirmé, nous proposons un environnement\n\naccueillant et professionnel pour tous.\n\nRejoignez-nous et laissez la danse devenir votre expression ultime de créativité et de plaisir.\n\nL'objectif pédagogique de l'école\n\nest de permettre aux élèves d'atteindre leur meilleur niveau\n\ndans une structure amateur exigeante.\n\nDiplômée du Concervatoire de Charleroi en danse classique et jazz, en passant par un perfectionnement au ballet d'Anvers et de Marseille (FR), Anne passionnée par le contact humain et la pédagogie aura cette année 28 année d'éxpérience dans la région !\n\nLes professeurs travaillent en concertation et participent\n\nà des Workshops, formations professionnelles, stages afin d'être toujours formés à la pointe des nouveautés."
+    "Anne": {
+      "title": "Anne",
+      "category": "Direction & Fondatrice",
+      "content": "Anne a créé l'école de danse en 1997. Diplômée du Conservatoire de Charleroi en danse classique et jazz, en passant par un perfectionnement au ballet d'Anvers et de Marseille, Anne passionnée par le contact humain et la pédagogie aura cette année près de 30 années d'expérience dans la région ! Elle gère au quotidien l'école ADK pour toutes les décisions et projets, les mises en scène, les assemblages de musiques, les différents shows et concours internationaux avec son équipe de confiance."
     },
+    "Florence": {
     "Corentin": {
       "title": "Corentin",
       "content": "Découvrez l'univers de Corentin."
@@ -42,11 +44,13 @@ const VITRINE_DATA = {
     },
     "Zoé": {
       "title": "Zoé",
-      "content": "Découvrez l'univers de Zoé."
+      "category": "Gestion et organisation",
+      "content": "Zoé organise la gestion des réunions diverses et fait partie de la merveilleuse équipe passionnée, dévouée et pédagogue qui accompagne Anne au quotidien."
     },
     "Andrew": {
       "title": "Andrew",
-      "content": "Andrew veille à toutes la partie technique de l'école : powerpoint et vidéos pour les spectacles, réparations, installations et soutien logistique du Studio ADK"
+      "category": "Logistique et technique",
+      "content": "Andrew gère toute la logistique, la création vidéo et toute la technique. Il veille à toutes la partie technique de l'école : powerpoint et vidéos pour les spectacles, réparations, installations et soutien logistique du Studio ADK."
     },
     "Loreen": {
       "title": "Loreen",
@@ -62,11 +66,13 @@ const VITRINE_DATA = {
     },
     "Janis": {
       "title": "Janis",
-      "content": "Découvrez l'univers de Janis."
+      "category": "Chorégraphe et professeure de jazz",
+      "content": "Janis est la chorégraphe et professeure de jazz pour les shows et concours tant en Belgique qu'à l'étranger. Elle fait partie de la merveilleuse équipe passionnée, dévouée et pédagogue qui accompagne Anne au quotidien."
     },
     "Margaux": {
       "title": "Margaux",
-      "content": "Découvrez l'univers de Margaux."
+      "category": "Gestion et organisation",
+      "content": "Margaux organise la gestion des réunions diverses et fait partie de la merveilleuse équipe passionnée, dévouée et pédagogue qui accompagne Anne au quotidien."
     },
     "Jeanne": {
       "title": "Jeanne",
@@ -76,7 +82,8 @@ const VITRINE_DATA = {
       "title": "Maurine",
       "avatar": "https://annedkdanse.be/gallery/Mau%20mau.jpg?ts=1784038327",
       "modalImage": "https://annedkdanse.be/gallery_gen/0a716be772784745dccd4a8e75abef22_fit.png?ts=1784038327",
-      "content": "Découvrez l'univers de Maurine."
+      "category": "Coordinatrice et chorégraphe principale",
+      "content": "Maurine est coordinatrice et chorégraphe principale pour les shows et concours en Belgique ainsi qu'à l'étranger. Elle s'occupe de la formation des futurs professeurs et grâce à son master en éducation physique sa pédagogie n'est plus à faire valoir. Elle suit en parallèle des cours chez Art Tendance à Limal, école dont la renommée professionnelle est bien connue dans le milieu de la danse."
     },
   },
   "cours": {

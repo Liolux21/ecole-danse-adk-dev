@@ -190,6 +190,22 @@
     @media (max-width: 500px) {
       .mobile-break { display: block !important; }
     }
+    
+    /* Timeline */
+    .timeline { position: relative; max-width: 900px; margin: 3rem auto; padding: 2rem 0; }
+    .timeline::before { content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: rgba(156, 88, 88, 0.3); transform: translateX(-50%); }
+    .timeline-item { position: relative; width: 50%; padding: 1.5rem 3rem; box-sizing: border-box; }
+    .timeline-item:nth-child(odd) { left: 0; text-align: right; }
+    .timeline-item:nth-child(even) { left: 50%; }
+    .timeline-item::after { content: ''; position: absolute; top: 2rem; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 10px var(--gold); z-index: 1; }
+    .timeline-item:nth-child(odd)::after { right: -8px; }
+    .timeline-item:nth-child(even)::after { left: -8px; }
+    .timeline-content { background: var(--dark-2); padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    @media (max-width: 768px) {
+      .timeline::before { left: 20px; }
+      .timeline-item { width: 100%; padding: 1rem 1rem 1rem 3rem; left: 0 !important; text-align: left !important; }
+      .timeline-item::after { left: 12px !important; }
+    }
   </style>
 </head>
 <body>
@@ -297,6 +313,51 @@
     </div>
   </section>
 
+  <!-- Section Notre Histoire -->
+  <section id="histoire" class="vitrine-section">
+    <h2 class="vitrine-title">Notre Histoire</h2>
+    <p class="vitrine-subtitle">Une aventure humaine, familiale et artistique depuis près de 30 ans.</p>
+    
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h3 style="color: var(--gold); margin-bottom: 0.5rem; font-family: var(--font-display);">Le Parcours d'Anne</h3>
+          <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem;">Anne débute la danse classique à 4 ans et entre au conservatoire de Charleroi à 6 ans. Elle s'y forme intensément pendant plus de 10 ans (30h/semaine). Après son diplôme, elle parfait ses compétences au Ballet d'Anvers et de Marseille, et s'ouvre au Modern jazz, burlesque et latino. Elle intègre ensuite une tournée de la Rai Uno en Italie.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h3 style="color: var(--gold); margin-bottom: 0.5rem; font-family: var(--font-display);">1997 - La Création</h3>
+          <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem;">Après la naissance de ses jumeaux en 1995 et son installation en Gaume, Anne fonde "Les Ateliers de danse Anne DK" en association avec le CEC Jeanne François à Chiny/Florenville, avec 3 à 4 cours par semaine.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h3 style="color: var(--gold); margin-bottom: 0.5rem; font-family: var(--font-display);">2011 - Naissance d'ADK</h3>
+          <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem;">Face au succès, Anne crée l'ASBL "Bouge de là" et l'école devient officiellement l'ÉCOLE DE DANSE ADK. Plus de 40 cours sont alors donnés au Studio ADK (Izel), au Rox (Rouvroy) et au Centre sportif de Bertrix.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h3 style="color: var(--gold); margin-bottom: 0.5rem; font-family: var(--font-display);">La Relève</h3>
+          <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem;">Anne se retire progressivement de l'enseignement pour gérer l'ASBL. Elle forme sa fille Manon et d'autres jeunes professeures talentueuses pour assurer la relève. Des chorégraphes renommés viennent même de loin pour s'imprégner de l'énergie ADK !</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h3 style="color: var(--gold); margin-bottom: 0.5rem; font-family: var(--font-display);">2023 - Le Studio ADK</h3>
+          <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem;">En février 2023, l'école quitte Chiny pour ouvrir son propre espace à Izel (rue de Bouillon 18). Un superbe bâtiment stratégiquement situé offrant d'énormes possibilités pour les élèves et les professeurs.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h3 style="color: var(--gold); margin-bottom: 0.5rem; font-family: var(--font-display);">2024 - L'International</h3>
+          <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem;">ADK débute les concours internationaux avec brio, avec deux Tops 6 et une médaille d'argent, prouvant l'excellence de ses compagnies !</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Section Cours -->
   <section id="cours" class="vitrine-section" style="background: var(--dark-2); border-radius: var(--radius);">
     <h2 class="vitrine-title">Nos Disciplines</h2>
@@ -312,7 +373,7 @@
     <h2 class="vitrine-title">L'Équipe ADK</h2>
     <p class="vitrine-subtitle">L'encadrement est assuré par des professeurs qualifiés, engagés et passionnés.</p>
     
-    <div class="grid-3" id="equipe-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <div id="equipe-container">
       <!-- Injected dynamically by JS -->
     </div>
   </section>
@@ -433,23 +494,48 @@
       }
 
       // Init Equipe
-      const equipeGrid = document.getElementById('equipe-grid');
-      if(VITRINE_DATA && VITRINE_DATA.professeurs && equipeGrid) {
+      const equipeContainer = document.getElementById('equipe-container');
+      if(VITRINE_DATA && VITRINE_DATA.professeurs && equipeContainer) {
+        const groups = { "Nos Professeurs": [] };
         for(let key in VITRINE_DATA.professeurs) {
           const p = VITRINE_DATA.professeurs[key];
-          const avatarHtml = p.avatar 
-            ? `<img src="${p.avatar}" alt="${p.title}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 1rem auto; display: block; border: 2px solid var(--gold);">`
-            : `<div style="width: 80px; height: 80px; border-radius: 50%; background: var(--dark-3); margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--gold);">👤</div>`;
-          
-          equipeGrid.innerHTML += `
-            <div class="card-vitrine" onclick="openDynamic('professeurs', '${key.replace(/'/g, "\\'")}')" style="text-align: center;">
-              <div class="card-vitrine-content">
-                ${avatarHtml}
-                <h3 class="card-vitrine-title" style="font-size: 1.1rem;">${p.title}</h3>
-              </div>
-            </div>
-          `;
+          p.key = key;
+          const cat = p.category || "Nos Professeurs";
+          if (!groups[cat]) groups[cat] = [];
+          groups[cat].push(p);
         }
+        
+        const order = [
+          "Direction & Fondatrice",
+          "Coordinatrice et chorégraphe principale",
+          "Chorégraphe et professeure de jazz",
+          "Gestion et organisation",
+          "Logistique et technique",
+          "Nos Professeurs"
+        ];
+        
+        let html = "";
+        for (const cat of order) {
+          if (!groups[cat] || groups[cat].length === 0) continue;
+          html += `<div style="text-align: center;"><h3 style="color: var(--gold); margin: 3rem 0 2rem 0; font-family: var(--font-display); font-size: 1.5rem; display: inline-block; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">${cat}</h3></div>`;
+          html += `<div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">`;
+          for (const p of groups[cat]) {
+            const avatarHtml = p.avatar 
+              ? `<img src="${p.avatar}" alt="${p.title}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 1rem auto; display: block; border: 2px solid var(--gold);">`
+              : `<div style="width: 80px; height: 80px; border-radius: 50%; background: var(--dark-3); margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--gold);">👤</div>`;
+            
+            html += `
+              <div class="card-vitrine" onclick="openDynamic('professeurs', '${p.key.replace(/'/g, "\\'")}')" style="text-align: center;">
+                <div class="card-vitrine-content">
+                  ${avatarHtml}
+                  <h4 class="card-vitrine-title" style="font-size: 1.1rem;">${p.title}</h4>
+                </div>
+              </div>
+            `;
+          }
+          html += `</div>`;
+        }
+        equipeContainer.innerHTML = html;
       }
     };
 
