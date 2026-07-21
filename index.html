@@ -181,6 +181,12 @@
       border-top: 1px solid var(--border);
       margin-top: 4rem;
     }
+    
+    @media (min-width: 992px) {
+      .mobile-only-hero-buttons {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -218,7 +224,7 @@
         Une famille &middot; Une passion &middot; Une histoire &middot; Une vie
       </p>
       
-      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 4rem;">
+      <div class="mobile-only-hero-buttons" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 4rem;">
         <a href="#cours" class="btn btn-primary">Découvrir nos cours</a>
         <a href="#equipe" class="btn btn-primary">Découvrir notre équipe</a>
         <a href="#inscriptions" class="btn btn-primary">Inscriptions</a>
