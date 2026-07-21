@@ -656,6 +656,201 @@
           html += `<div style="text-align: center;"><h3 style="color: #9C5858; margin: 3rem 0 2rem 0; font-family: var(--font-display); font-size: 1.5rem; display: inline-block; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">${cat}</h3></div>`;
           html += `<div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">`;
           for (const p of groups[cat]) {
+          document.getElementById('modal-dynamic-title').innerText = `Pôle ${data.title}`;
+          
+          let subCoursesHtml = '';
+          if (typeof ALL_COURSES !== 'undefined') {
+            const styleCourses = ALL_COURSES.filter(course => course.style === key);
+            if (styleCourses.length > 0) {
+              subCoursesHtml = `<div style="margin-top: 3rem;">
+                <h4 style="color: var(--white); font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 1.5rem;">Liste des cours (${styleCourses.length})</h4>
+                <div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+              `;
+              styleCourses.forEach(course => {
+                const lieuBadge = course.lieu !== 'adk' ? `<span style="font-size:0.7rem;color:var(--gold);margin-left:0.5rem;">📍 ${course.lieu.toUpperCase()}</span>` : '';
+                subCoursesHtml += `
+                  <div class="course-card" style="box-shadow: none; border: 1px solid var(--border); height: 100%;">
+                    <div class="course-body" style="padding: 1.5rem;">
+                      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem;">
+                        <span class="course-tag tag-${course.style}">${course.levels}</span>
+                        ${lieuBadge}
+                        ${course.biweekly ? '<span style="font-size:0.65rem;color:var(--text-muted);border:1px solid var(--glass-border);padding:0.1rem 0.5rem;border-radius:50px;">1 sem/2</span>' : ''}
+                      </div>
+                      <h3 class="course-name" style="font-size: 1.1rem; margin-bottom: 0.5rem;">${course.name}</h3>
+                      <div class="course-meta" style="margin-top: 1rem;">
+                        <span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${course.schedule}</span>
+                        <span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${course.ages}</span>
+                        <span class="course-meta-item" style="color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${course.prof}</span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              });
+              subCoursesHtml += `</div></div>`;
+            }
+          }
+
+          document.getElementById('modal-dynamic-content').innerHTML = `
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+               <div style="flex: 1; min-width: 300px;">
+                  <p style="font-size: 1.1rem; line-height: 1.8;">${data.content}</p>
+               </div>
+               <div style="flex: 1; min-width: 300px;">
+                  <img src="${data.modalImage}" alt="${data.title}" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: var(--radius-sm);">
+               </div>
+            </div>
+            ${subCoursesHtml}
+          `;
+        } else {
+          document.getElementById('modal-dynamic-title').innerText = data.title;
+          
+          let contentHtml = '';
+          if (data.modalImage) {
+            contentHtml += `<img src="${data.modalImage}" alt="${data.title}" style="width: 100%; height: auto; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">`;
+          }
+          contentHtml += `<div>${data.content}</div>`;
+          
+          document.getElementById('modal-dynamic-content').innerHTML = contentHtml;
+        }
+        openModal('modal-dynamic');
+      }
+    }
+
+    function toggleTimeline(element) {
+      const body = element.querySelector('.timeline-body');
+      const icon = element.querySelector('.timeline-icon');
+      
+      // Close all other open timelines if we want accordion behavior, 
+      // but letting multiple open is fine too. Let's let them open independently.
+      
+      if (body.style.maxHeight && body.style.maxHeight !== '0px') {
+        body.style.maxHeight = '0px';
+        body.style.opacity = '0';
+        icon.style.transform = 'rotate(0deg)';
+        icon.innerHTML = '+';
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        body.style.opacity = '1';
+        icon.style.transform = 'rotate(180deg)';
+        icon.innerHTML = '&minus;';
+      }
+    }
+
+    function animateCounter(id, target) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let cur = 0;
+      const step = target / 60;
+      const t = setInterval(() => {
+        cur = Math.min(cur + step, target);
+        el.textContent = Math.floor(cur) + '+';
+        if (cur >= target) clearInterval(t);
+      }, 25);
+    }
+
+    function initParticles() {
+      const c = document.querySelector('.hero-particles');
+      if (!c) return;
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.cssText = `left:${Math.random()*100}%;width:${Math.random()*4+2}px;height:${Math.random()*4+2}px;animation-duration:${Math.random()*12+10}s;animation-delay:${Math.random()*10}s`;
+        c.appendChild(p);
+      }
+    }
+
+    // Initialize the grids and animations
+    window.onload = function() {
+      initParticles();
+      setTimeout(() => {
+        animateCounter('stat-ans', 28);
+        animateCounter('stat-eleves', 180);
+        animateCounter('stat-styles', 8);
+        animateCounter('stat-profs', 14);
+      }, 300);
+      // Init Cours
+      const coursGrid = document.getElementById('cours-grid');
+      if(VITRINE_DATA && VITRINE_DATA.cours && coursGrid) {
+        let coursHtml = "";
+        for(let key in VITRINE_DATA.cours) {
+          const c = VITRINE_DATA.cours[key];
+          const styleCourses = typeof ALL_COURSES !== 'undefined' ? ALL_COURSES.filter(course => course.style === key) : [];
+          const nbCours = styleCourses.length;
+          const profsList = [...new Set(styleCourses.map(course => course.prof).join(' · ').split(' · '))].filter(p => p.trim() !== '');
+          const nbProfs = profsList.length;
+          const lieux = [...new Set(styleCourses.map(course => {
+             if(course.lieu === 'adk') return 'ADK';
+             if(course.lieu === 'rox') return 'Rox';
+             if(course.lieu === 'bertrix') return 'Bertrix';
+             if(course.lieu === 'izel') return 'Izel';
+             if(course.lieu === 'flore') return 'Florenville';
+             return course.lieu;
+          }))].join(' & ');
+
+          const avatarHtml = c.avatar 
+            ? `<img src="${c.avatar}" alt="${c.title}" class="course-img" loading="lazy">` 
+            : `<div class="course-img-placeholder" style="background:var(--dark-3);display:flex;align-items:center;justify-content:center;">${c.title}</div>`;
+
+          coursHtml += `
+            <div class="course-card reveal" onclick="openDynamic('cours', '${key}')" style="cursor: pointer; display: block; height: 100%;">
+              ${avatarHtml}
+              <div class="course-body">
+                <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem;">
+                  <span class="course-tag tag-${key}">${c.title}</span>
+                </div>
+                <h3 class="course-name" style="color: #B68989; font-size: 1.3rem;">Pôle ${c.title}</h3>
+                <p class="course-desc" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1.5rem;">${c.content.replace(/\n/g, ' ')}</p>
+                <div class="course-meta">
+                  <span class="course-meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    ${nbCours > 0 ? nbCours + ' cours' : 'À venir'}
+                  </span>
+                  <span class="course-meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    ${nbProfs > 0 ? nbProfs + ' prof(s)' : 'En attente'}
+                  </span>
+                  <span class="course-meta-item" style="color:var(--gold)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    ${lieux || 'À définir'}
+                  </span>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                  <button class="btn btn-outline" style="width: 100%; padding: 0.5rem; font-size: 0.9rem;">Voir les cours</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        coursGrid.innerHTML = coursHtml;
+      }
+
+      // Init Equipe
+      const equipeContainer = document.getElementById('equipe-container');
+      if(VITRINE_DATA && VITRINE_DATA.professeurs && equipeContainer) {
+        const groups = { "Nos Professeurs": [] };
+        for(let key in VITRINE_DATA.professeurs) {
+          const p = VITRINE_DATA.professeurs[key];
+          p.key = key;
+          const cat = p.category || "Nos Professeurs";
+          if (!groups[cat]) groups[cat] = [];
+          groups[cat].push(p);
+        }
+        
+        const order = [
+          "Direction & Fondatrice",
+          "Coordinatrice et chorégraphe principale",
+          "Chorégraphe et professeure de jazz",
+          "Gestion et organisation",
+          "Logistique et technique",
+          "Nos Professeurs"
+        ];
+        
+        let html = "";
+        for (const cat of order) {
+          if (!groups[cat] || groups[cat].length === 0) continue;
+          html += `<div style="text-align: center;"><h3 style="color: #9C5858; margin: 3rem 0 2rem 0; font-family: var(--font-display); font-size: 1.5rem; display: inline-block; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">${cat}</h3></div>`;
+          html += `<div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">`;
+          for (const p of groups[cat]) {
             const avatarHtml = p.avatar 
               ? `<img src="${p.avatar}" alt="${p.title}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 1rem auto; display: block; border: 2px solid var(--gold);">`
               : `<div style="width: 80px; height: 80px; border-radius: 50%; background: var(--dark-3); margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--gold);">👤</div>`;
@@ -673,6 +868,10 @@
         }
         equipeContainer.innerHTML = html;
       }
+
+      if(typeof initReveal === 'function') {
+        setTimeout(initReveal, 100);
+      }
     };
 
     // Close modal on outside click
@@ -682,6 +881,5 @@
       }
     }
   </script>
-
 </body>
 </html>
