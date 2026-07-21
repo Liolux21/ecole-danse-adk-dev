@@ -463,7 +463,7 @@ ul { list-style: none; }
 .course-card {
   border-radius: var(--radius);
   overflow: hidden;
-  background: var(--dark-2);
+  background: #ffffff;
   border: 1px solid var(--glass-border);
   transition: var(--transition);
   cursor: pointer;
