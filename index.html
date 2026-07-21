@@ -187,6 +187,9 @@
         display: none !important;
       }
     }
+    @media (max-width: 500px) {
+      .mobile-break { display: block !important; }
+    }
   </style>
 </head>
 <body>
@@ -217,10 +220,10 @@
         <span style="display: inline-block; width: 8px; height: 8px; background-color: #9C5858; border-radius: 50%; box-shadow: 0 0 8px #9C5858; animation: pulse 2s ease infinite;"></span>
         Saison 2026-2027 Ouverte
       </div>
-      <h1 class="hero-title" style="font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1.1; margin-bottom: 1.5rem;">
-        <span style="color: #222;">Bienvenue chez</span> <span style="color: #9C5858;">ADK</span>
+      <h1 class="hero-title" style="font-size: clamp(2rem, 8vw, 4rem); line-height: 1.2; margin-bottom: 1.5rem; word-wrap: break-word; overflow-wrap: break-word;">
+        <span style="color: #222;">Bienvenue chez</span> <br class="mobile-break" style="display: none;"><span style="color: #9C5858;">ADK</span>
       </h1>
-      <p class="hero-subtitle" style="font-weight: 600; letter-spacing: 1px; font-size: 1.1rem; color: var(--white); text-shadow: none;">
+      <p class="hero-subtitle" style="font-weight: 600; letter-spacing: 1px; font-size: clamp(0.9rem, 3.5vw, 1.1rem); color: var(--white); text-shadow: none; line-height: 1.5; word-wrap: break-word;">
         Une famille &middot; Une passion &middot; Une histoire &middot; Une vie
       </p>
       
