@@ -437,8 +437,8 @@
   <div class="vitrine-modal" id="modal-dynamic">
     <div class="vitrine-modal-content" style="max-width: 800px;">
       <button class="vitrine-modal-close" onclick="closeModal('modal-dynamic')">×</button>
-      <h3 class="vitrine-title" id="modal-dynamic-title" style="margin-bottom: 1.5rem; color: #B68989;">Titre</h3>
-      <div id="modal-dynamic-content" style="color: var(--text-light); line-height: 1.8; white-space: pre-wrap;">
+      <h3 class="vitrine-title" id="modal-dynamic-title" style="margin-bottom: 0.5rem; color: #B68989;">Titre</h3>
+      <div id="modal-dynamic-content" style="color: var(--text-light); line-height: 1.6; white-space: pre-wrap;">
         <!-- Content injected here -->
       </div>
     </div>
@@ -467,22 +467,22 @@
           if (typeof ALL_COURSES !== 'undefined') {
             const styleCourses = ALL_COURSES.filter(course => course.style === key);
             if (styleCourses.length > 0) {
-              subCoursesHtml = `<div style="margin-top: 1.5rem;">
-                <h4 style="color: var(--white); font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 1rem;">Liste des cours (${styleCourses.length})</h4>
-                <div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+              subCoursesHtml = `<div style="margin-top: 1rem;">
+                <h4 style="color: var(--text-light); font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.5rem;">Liste des cours (${styleCourses.length})</h4>
+                <div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
               `;
               styleCourses.forEach(course => {
                 const lieuBadge = course.lieu !== 'adk' ? `<span style="font-size:0.7rem;color:var(--gold);margin-left:0.5rem;">📍 ${course.lieu.toUpperCase()}</span>` : '';
                 subCoursesHtml += `
-                  <div class="course-card" style="box-shadow: none; border: 1px solid var(--border); height: 100%; background: var(--dark); border-radius: var(--radius-sm);">
-                    <div class="course-body" style="padding: 1rem;">
-                      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.5rem;">
+                  <div class="course-card" style="box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: none; height: 100%; background: var(--dark-2); border-radius: var(--radius-sm);">
+                    <div class="course-body" style="padding: 0.75rem;">
+                      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.4rem;">
                         <span class="course-tag tag-${course.style}">${course.levels}</span>
                         ${lieuBadge}
                         ${course.biweekly ? '<span style="font-size:0.65rem;color:var(--text-muted);border:1px solid var(--glass-border);padding:0.1rem 0.5rem;border-radius:50px;">1 sem/2</span>' : ''}
                       </div>
-                      <h3 class="course-name" style="font-size: 1rem; margin-bottom: 0.25rem;">${course.name}</h3>
-                      <div class="course-meta" style="margin-top: 0.5rem;">
+                      <h3 class="course-name" style="font-size: 0.95rem; margin-bottom: 0.25rem;">${course.name}</h3>
+                      <div class="course-meta" style="margin-top: 0.25rem; font-size: 0.8rem;">
                         <span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${course.schedule}</span>
                         <span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${course.ages}</span>
                         <span class="course-meta-item" style="color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${course.prof}</span>
@@ -496,12 +496,12 @@
           }
 
           document.getElementById('modal-dynamic-content').innerHTML = `
-            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
                <div style="flex: 1; min-width: 300px;">
-                  <p style="font-size: 1rem; line-height: 1.6;">${data.content}</p>
+                  <p style="font-size: 0.95rem; line-height: 1.5; margin: 0;">${data.content}</p>
                </div>
                <div style="flex: 1; min-width: 300px;">
-                  <img src="${data.modalImage}" alt="${data.title}" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: var(--radius-sm);">
+                  <img src="${data.modalImage}" alt="${data.title}" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: var(--radius-sm);">
                </div>
             </div>
             ${subCoursesHtml}
