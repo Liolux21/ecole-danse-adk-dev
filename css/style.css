@@ -174,16 +174,16 @@ ul { list-style: none; }
    ============================================= */
 .vitrine-section {
   padding: 3.5rem 2rem;
-  background: var(--dark-2);
-}
-.vitrine-section > * {
   max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 1.5rem auto;
+  background: var(--dark-2);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
 }
 @media (max-width: 768px) {
   .vitrine-section {
     padding: 2rem 1rem;
+    margin: 1rem auto;
   }
 }
 .section {
