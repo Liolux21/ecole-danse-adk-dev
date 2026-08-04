@@ -1991,7 +1991,8 @@ footer {
 }
 .planning-filters .planning-filter-label,
 .planning-legend .legend-item {
-  color: var(--black) !important;
+  color: #9C5858 !important;
+  font-weight: 700;
 }
 .planning-filters .plan-filter-btn {
   background: #f0f0f0;
@@ -2007,7 +2008,8 @@ footer {
 .planning-desktop-view .planning-header-cell {
   background: #f9f9f9 !important;
   border-color: rgba(0,0,0,0.1) !important;
-  color: var(--black) !important;
+  color: #9C5858 !important;
+  font-weight: 700;
 }
 .planning-desktop-view .planning-time-cell,
 .planning-desktop-view .planning-slot {
@@ -2021,10 +2023,11 @@ footer {
 
 .planning-mobile-view .mobile-day-tab {
   background: #f0f0f0;
-  color: #333;
+  color: #9C5858;
   border-color: rgba(0,0,0,0.1);
+  font-weight: 700;
 }
-.planning-mobile-view .mobile-day-tab.active { background: var(--gold); color: #ffffff; border-color: var(--gold); }
+.planning-mobile-view .mobile-day-tab.active { background: var(--gold); color: #ffffff !important; border-color: var(--gold); }
 .planning-mobile-view .mobile-course-card {
   background: #ffffff;
   border: 1px solid rgba(0,0,0,0.1);

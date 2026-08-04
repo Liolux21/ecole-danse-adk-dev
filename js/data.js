@@ -105,7 +105,7 @@ const DATA = {
 
   // ---- PLANNING (créneaux pour la vue calendrier) ----
   schedule: {
-    days: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+    days: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
     slots: [
       // LUNDI — Studio ADK + Izel
       { day: 0, hour: "17h00", course: "Hip-Hop 4 (àpd 14 ans)",       style: "hiphop",      courseId: 6,  lieu: "ADK" },
