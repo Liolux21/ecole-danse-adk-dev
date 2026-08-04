@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <link rel="canonical" href="http://annedkdanse.be/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩰</text></svg>">
-  <link rel="stylesheet" href="css/style.css?v=13?v=12">
+  <link rel="stylesheet" href="css/style.css?v=25">
 </head>
 <body>
 
@@ -33,14 +33,9 @@
   </style>
 
   <!-- ==================== ESPACE ADK — PORTAIL ==================== -->
-  <section id="parents" style="background: var(--black); padding: 7rem 0;">
-    <div class="section" style="padding-top: 0; padding-bottom: 0;">
-      <div class="section-header">
-        <span class="section-eyebrow reveal">Accès sécurisé</span>
-        <h2 class="section-title reveal reveal-delay-1">Mon <em>Espace ADK</em></h2>
-        <p class="section-subtitle reveal reveal-delay-2">Connectez-vous avec votre compte pour accéder à votre espace personnalisé selon votre profil.</p>
-        <div class="divider"></div>
-      </div>
+  <section id="parents" class="vitrine-section" style="min-height: calc(100vh - 80px - 250px); display: flex; flex-direction: column;">
+      <h2 class="vitrine-title reveal" style="text-align: center;"><span style="color: #ffffff;">Mon</span> <span style="color: #9C5858;">Espace ADK</span></h2>
+      <p class="vitrine-subtitle reveal reveal-delay-1" style="margin-bottom: 3rem; text-align: center;">Connectez-vous avec votre compte pour accéder à votre espace personnalisé selon votre profil.</p>
 
       <!-- PORTAIL DE CONNEXION -->
       <div class="portal-wrapper" id="portal-login-wrapper">
@@ -291,79 +286,7 @@
         </div>
       </div>
 
-    </div>
   </section>
-
-            </div>
-            <div class="contact-item">
-              <div class="contact-item-icon">🕐</div>
-              <div class="contact-item-text">
-                <div class="contact-item-label">Accueil administratif</div>
-                <div class="contact-item-value">Lun–Ven 14h–19h · Sam 9h–13h</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="social-links">
-            <a href="https://facebook.com/annedkdanse" target="_blank" class="social-link" title="Facebook" aria-label="Facebook ADK">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-            </a>
-            <a href="https://instagram.com/annedkdanse" target="_blank" class="social-link" title="Instagram" aria-label="Instagram ADK">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-            </a>
-            <a href="mailto:contact@annedkdanse.be" class="social-link" title="Email" aria-label="Email ADK">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            </a>
-          </div>
-
-          <div class="contact-map">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2519.8!2d4.3638!3d50.8264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDQ5JzM1LjAiTiA0wrAyMSc1MC4wIkU!5e0!3m2!1sfr!2sbe!4v1234567890"
-              allowfullscreen loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              title="Localisation École de Danse ADK">
-            </iframe>
-          </div>
-        </div>
-
-        <!-- Contact Form -->
-        <div class="reveal reveal-delay-1">
-          <form class="form-card" id="contact-form">
-            <h3 class="form-title">Nous écrire ✉️</h3>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="contact-name">Nom *</label>
-                <input class="form-input" type="text" id="contact-name" placeholder="Votre nom" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="contact-email">Email *</label>
-                <input class="form-input" type="email" id="contact-email" placeholder="votre@email.com" required>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="contact-subject">Sujet</label>
-              <select class="form-select" id="contact-subject">
-                <option>Question sur les cours</option>
-                <option>Inscription</option>
-                <option>Tarifs</option>
-                <option>Stage</option>
-                <option>Autre</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="contact-message">Message *</label>
-              <textarea class="form-textarea" id="contact-message" placeholder="Votre message..." style="min-height:150px;" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="contact-submit">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-              Envoyer le message
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Footer supprimé pour le portail -->
 
   <!-- Lightbox -->

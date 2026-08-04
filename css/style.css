@@ -1313,8 +1313,8 @@ ul { list-style: none; }
 .portal-course-card {
   display: flex;
   gap: 1rem;
-  background: var(--dark-2);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: var(--radius-sm);
   padding: 1rem;
   transition: transform 0.2s, border-color 0.2s;
