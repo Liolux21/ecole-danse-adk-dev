@@ -254,7 +254,7 @@ function refreshPlanning(grid, weekLabel) {
       } else {
         slot.className = 'planning-slot';
       }
-      slot.style.height = '68px';
+      slot.style.height = '54px';
       grid.appendChild(slot);
     });
   });

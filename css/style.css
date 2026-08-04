@@ -683,7 +683,7 @@ ul { list-style: none; }
 }
 .planning-course-block {
   border-radius: var(--radius-sm);
-  padding: 0.45rem 0.55rem;
+  padding: 0.25rem 0.4rem;
   height: 100%;
   display: flex;
   flex-direction: column;
