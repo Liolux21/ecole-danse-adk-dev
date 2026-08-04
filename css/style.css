@@ -404,7 +404,7 @@ ul { list-style: none; }
 }
 .btn-primary {
   background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-  color: var(--white);
+  color: #ffffff;
   box-shadow: 0 4px 25px rgba(156,88,88,0.35);
 }
 .btn-primary:hover {
