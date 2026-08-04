@@ -1154,18 +1154,18 @@ function openMessagesModal(courseId, user) {
   
   const msgTypeSelect = document.getElementById('chat-msg-type');
   if (user.role === 'prof') {
-    const parents = DATA.getStudentsByCourse(courseId)
+    const eleves = DATA.getStudentsByCourse(courseId)
       .map(s => s.parentId ? DATA.getUserById(s.parentId) : null)
       .filter(Boolean);
-    const uniqueParents = [...new Map(parents.map(p => [p.id, p])).values()];
+    const uniqueParents = [...new Map(eleves.map(p => [p.id, p])).values()];
     
     msgTypeSelect.innerHTML = `
-      <option value="public">🌍 Message Public (Tous les parents)</option>
+      <option value="public">🌍 Message Public (Tous les eleves)</option>
       ${uniqueParents.map(p => `<option value="private-${p.id}">🔒 Privé à ${p.name}</option>`).join('')}
     `;
   } else {
     msgTypeSelect.innerHTML = `
-      <option value="public">🌍 Message Public (Tous les parents)</option>
+      <option value="public">🌍 Message Public (Tous les eleves)</option>
       <option value="private">🔒 Message Privé (Professeur uniquement)</option>
     `;
   }
