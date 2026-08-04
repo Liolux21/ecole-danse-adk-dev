@@ -816,6 +816,7 @@ function renderChildData(child) {
 // =============================================
 function initActualites() {
   const grid = document.getElementById('news-grid');
+  if (!grid) return;
   DATA.news.forEach(a => {
     const card = document.createElement('div');
     card.className = 'news-card reveal';
@@ -831,8 +832,10 @@ function initActualites() {
 // COUNTDOWN
 // =============================================
 function initCountdown() {
+  const eventNameEl = document.getElementById('event-name');
+  if (!eventNameEl) return;
   const event = DATA.nextEvent;
-  document.getElementById('event-name').textContent = event.name;
+  eventNameEl.textContent = event.name;
   function update() {
     const diff = event.date - new Date();
     if (diff < 0) { document.getElementById('countdown').innerHTML = '<p style="color:var(--gold)">🎉 Cet événement a eu lieu !</p>'; return; }
@@ -851,6 +854,7 @@ function initCountdown() {
 // =============================================
 function initGalerie() {
   const grid = document.getElementById('gallery-grid');
+  if (!grid) return;
   DATA.gallery.forEach(item => {
     const el = document.createElement('div');
     el.className = 'gallery-item reveal';
