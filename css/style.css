@@ -2034,4 +2034,5 @@ footer {
 .planning-mobile-view .mc-lieu { background: rgba(0,0,0,0.08); color: #555; }
 
 
-.planning-nav-btn { color: #ffffff !important; }
+.planning-nav-btn { background: #ffffff !important; color: #9C5858 !important; border-color: #ffffff !important; transition: 0.3s; }
+.planning-nav-btn:hover { background: #f5f5f5 !important; transform: scale(1.05); }
