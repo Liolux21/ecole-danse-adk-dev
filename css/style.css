@@ -1976,73 +1976,60 @@ footer {
   .dash-tab { font-size: 0.72rem; padding: 0.45rem 0.9rem; }
 }
 
+
 /* =============================================
-   PLANNING LIGHT THEME OVERRIDES
+   PLANNING WHITE CARDS OVERRIDES
    ============================================= */
-#planning {
+.planning-filters,
+.planning-desktop-view,
+.planning-mobile-view,
+.planning-legend {
   background: #ffffff !important;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.planning-filters .planning-filter-label,
+.planning-legend .legend-item {
   color: var(--black) !important;
 }
-#planning .section-title,
-#planning .section-eyebrow,
-#planning .planning-filter-label {
-  color: var(--black);
-}
-#planning .section-subtitle {
-  color: #555;
-}
-#planning .planning-filters {
-  background: #f9f9f9;
+.planning-filters .plan-filter-btn {
+  background: #f0f0f0;
   border-color: rgba(0,0,0,0.1);
-}
-#planning .plan-filter-btn {
-  background: #ffffff;
-  border-color: rgba(0,0,0,0.15);
   color: #333;
 }
-#planning .plan-filter-btn:hover {
-  background: #f0f0f0;
-}
-#planning .plan-filter-btn.active {
+.planning-filters .plan-filter-btn:hover { background: #e0e0e0; }
+.planning-filters .plan-filter-btn.active {
   background: var(--gold);
   color: #ffffff;
   border-color: var(--gold);
 }
-#planning .planning-header-cell {
-  background: #f9f9f9;
+.planning-desktop-view .planning-header-cell {
+  background: #f9f9f9 !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  color: var(--black) !important;
+}
+.planning-desktop-view .planning-time-cell,
+.planning-desktop-view .planning-slot {
   border-color: rgba(0,0,0,0.1) !important;
 }
-#planning .planning-time-cell,
-#planning .planning-slot {
-  border-color: rgba(0,0,0,0.1) !important;
-}
-#planning .planning-time-cell {
-  color: #555;
-}
-#planning .block-name {
-  color: #111;
-}
-#planning .block-time {
-  color: #555;
-}
-#planning .block-lieu {
-  background: rgba(0,0,0,0.08);
-  color: #555;
-}
-#planning .mobile-day-tab {
-  background: #ffffff;
+.planning-desktop-view .planning-time-cell { color: #555 !important; }
+.planning-desktop-view .block-name { color: #111 !important; }
+.planning-desktop-view .block-time { color: #555 !important; }
+.planning-desktop-view .block-lieu { background: rgba(0,0,0,0.08) !important; color: #555 !important; }
+.planning-desktop-view .planning-course-block.dimmed { opacity: 0.15 !important; }
+
+.planning-mobile-view .mobile-day-tab {
+  background: #f0f0f0;
   color: #333;
-  border-color: rgba(0,0,0,0.15);
-}
-#planning .mobile-day-tab.active {
-  background: var(--gold);
-  color: #ffffff;
-}
-#planning .mobile-course-card {
-  background: #ffffff;
   border-color: rgba(0,0,0,0.1);
 }
-#planning .mc-name { color: #111; }
-#planning .mc-time { color: #555; }
-#planning .mc-lieu { background: rgba(0,0,0,0.08); color: #555; }
+.planning-mobile-view .mobile-day-tab.active { background: var(--gold); color: #ffffff; border-color: var(--gold); }
+.planning-mobile-view .mobile-course-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+.planning-mobile-view .mc-name { color: #111; }
+.planning-mobile-view .mc-time { color: #555; }
+.planning-mobile-view .mc-lieu { background: rgba(0,0,0,0.08); color: #555; }
 
