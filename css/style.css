@@ -660,7 +660,7 @@ ul { list-style: none; }
 .planning-header-cell {
   background: var(--dark-2);
   border-radius: var(--radius-sm);
-  padding: 0.6rem 0.4rem;
+  padding: 0.25rem 0.4rem;
   text-align: center;
 }
 .planning-header-cell .day  { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
@@ -734,7 +734,7 @@ ul { list-style: none; }
 .mobile-day-tabs::-webkit-scrollbar { display: none; }
 .mobile-day-tab {
   flex-shrink: 0;
-  padding: 0.6rem 1.2rem;
+  padding: 0.35rem 1rem;
   border-radius: 50px;
   border: 1px solid var(--glass-border);
   background: var(--dark-2);
