@@ -1975,3 +1975,74 @@ footer {
   .dash-tabs { gap: 0.35rem; }
   .dash-tab { font-size: 0.72rem; padding: 0.45rem 0.9rem; }
 }
+
+/* =============================================
+   PLANNING LIGHT THEME OVERRIDES
+   ============================================= */
+#planning {
+  background: #ffffff !important;
+  color: var(--black) !important;
+}
+#planning .section-title,
+#planning .section-eyebrow,
+#planning .planning-filter-label {
+  color: var(--black);
+}
+#planning .section-subtitle {
+  color: #555;
+}
+#planning .planning-filters {
+  background: #f9f9f9;
+  border-color: rgba(0,0,0,0.1);
+}
+#planning .plan-filter-btn {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.15);
+  color: #333;
+}
+#planning .plan-filter-btn:hover {
+  background: #f0f0f0;
+}
+#planning .plan-filter-btn.active {
+  background: var(--gold);
+  color: #ffffff;
+  border-color: var(--gold);
+}
+#planning .planning-header-cell {
+  background: #f9f9f9;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+#planning .planning-time-cell,
+#planning .planning-slot {
+  border-color: rgba(0,0,0,0.1) !important;
+}
+#planning .planning-time-cell {
+  color: #555;
+}
+#planning .block-name {
+  color: #111;
+}
+#planning .block-time {
+  color: #555;
+}
+#planning .block-lieu {
+  background: rgba(0,0,0,0.08);
+  color: #555;
+}
+#planning .mobile-day-tab {
+  background: #ffffff;
+  color: #333;
+  border-color: rgba(0,0,0,0.15);
+}
+#planning .mobile-day-tab.active {
+  background: var(--gold);
+  color: #ffffff;
+}
+#planning .mobile-course-card {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.1);
+}
+#planning .mc-name { color: #111; }
+#planning .mc-time { color: #555; }
+#planning .mc-lieu { background: rgba(0,0,0,0.08); color: #555; }
+
