@@ -404,7 +404,7 @@ ul { list-style: none; }
 }
 .btn-primary {
   background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-  color: var(--black);
+  color: var(--white);
   box-shadow: 0 4px 25px rgba(156,88,88,0.35);
 }
 .btn-primary:hover {
@@ -922,11 +922,11 @@ ul { list-style: none; }
 }
 .form-input, .form-select, .form-textarea {
   width: 100%;
-  background: var(--dark-3);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.2);
   border-radius: var(--radius-sm);
   padding: 0.8rem 1rem;
-  color: var(--white);
+  color: var(--black);
   font-size: 0.9rem;
   transition: var(--transition);
   outline: none;
@@ -937,7 +937,7 @@ ul { list-style: none; }
 }
 .form-select { appearance: none; cursor: pointer; }
 .form-textarea { min-height: 100px; resize: vertical; }
-.form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.25); }
+.form-input::placeholder, .form-textarea::placeholder { color: rgba(0,0,0,0.4); }
 .custom-select-container { position: relative; width: 100%; }
 .custom-select-header { background: var(--dark-3); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 0.6rem 1rem; min-height: 48px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: var(--transition); }
 .custom-select-header:hover { border-color: var(--gold); }
