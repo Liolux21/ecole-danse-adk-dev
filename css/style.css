@@ -672,10 +672,10 @@ ul { list-style: none; }
   padding-right: 0.5rem;
   font-size: 0.68rem;
   color: var(--text-muted);
-  height: 68px;
+  height: 54px;
 }
 .planning-slot {
-  height: 68px;
+  height: 54px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--dark-3);
   background: var(--dark-2);
