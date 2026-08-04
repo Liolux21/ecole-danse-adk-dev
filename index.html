@@ -219,6 +219,7 @@
       <a href="#ecole" class="nav-link">Notre école</a>
       <a href="#histoire" class="nav-link">Notre histoire</a>
       <a href="#cours" class="nav-link">Nos cours</a>
+      <a href="#planning" class="nav-link">Planning</a>
       <a href="#equipe" class="nav-link">Notre équipe</a>
       <a href="#contact" class="nav-link">Nous contacter</a>
       <a href="portail.html" class="btn btn-outline" style="padding: 0.4rem 1rem;">Portail</a>
@@ -235,6 +236,7 @@
     <a class="nav-link" href="#ecole" onclick="document.getElementById('mobile-menu').classList.remove('open')">Notre école</a>
     <a class="nav-link" href="#histoire" onclick="document.getElementById('mobile-menu').classList.remove('open')">Notre histoire</a>
     <a class="nav-link" href="#cours" onclick="document.getElementById('mobile-menu').classList.remove('open')">Nos cours</a>
+    <a class="nav-link" href="#planning" onclick="document.getElementById('mobile-menu').classList.remove('open')">Planning</a>
     <a class="nav-link" href="#equipe" onclick="document.getElementById('mobile-menu').classList.remove('open')">Notre équipe</a>
     <a class="nav-link" href="#contact" onclick="document.getElementById('mobile-menu').classList.remove('open')">Nous contacter</a>
     <a class="btn btn-primary" href="portail.html">Portail membres</a>
@@ -401,8 +403,423 @@
       <!-- Injected dynamically by JS -->
     </div>
   </section>
+  <!-- ==================== PLANNING ==================== -->
+  <section id="planning" style="background: var(--black); padding: 7rem 0;">
+    <div class="section" style="padding-top: 0; padding-bottom: 0;">
+      <div class="section-header">
+        <span class="section-eyebrow reveal">Organisation</span>
+        <h2 class="section-title reveal reveal-delay-1"><em>Planning</em> hebdomadaire</h2>
+        <p class="section-subtitle reveal reveal-delay-2">Filtrez par style ou par lieu et trouvez le cours qui vous convient — Saison 2026-2027.</p>
+        <div class="divider"></div>
+      </div>
 
-  <!-- Section Équipe -->
+      <!-- Filtres planning -->
+      <div class="planning-filters reveal">
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Style</span>
+          <div class="planning-filter-btns" id="planning-style-filters">
+            <button class="plan-filter-btn active" data-style="all">Tous</button>
+            <button class="plan-filter-btn" data-style="classique">🩰 Classique</button>
+            <button class="plan-filter-btn" data-style="jazz">🎷 Jazz</button>
+            <button class="plan-filter-btn" data-style="hiphop">🎤 Hip-Hop</button>
+            <button class="plan-filter-btn" data-style="ragga">🌴 Ragga</button>
+            <button class="plan-filter-btn" data-style="contemporain">🌊 Contemporain</button>
+            <button class="plan-filter-btn" data-style="eveil">🌸 Éveil</button>
+            <button class="plan-filter-btn" data-style="compagnie">⭐ Compagnie</button>
+            <button class="plan-filter-btn" data-style="special">🏆 Spécial</button>
+          </div>
+        </div>
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Lieu</span>
+          <div class="planning-filter-btns" id="planning-lieu-filters">
+            <button class="plan-filter-btn active" data-lieu="all">Tous</button>
+            <button class="plan-filter-btn" data-lieu="ADK">🏠 Studio ADK</button>
+            <button class="plan-filter-btn" data-lieu="Rox">🏟️ Au Rox</button>
+            <button class="plan-filter-btn" data-lieu="Bertrix">📍 Bertrix</button>
+            <button class="plan-filter-btn" data-lieu="Izel">🎭 C.C. Izel</button>
+            <button class="plan-filter-btn" data-lieu="Flore">🌿 Florenville</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav semaine (desktop + mobile) -->
+      <div class="planning-nav reveal">
+        <button class="planning-nav-btn" id="plan-prev" aria-label="Semaine précédente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="planning-week" id="planning-week">Cette semaine</div>
+        <button class="planning-nav-btn" id="plan-next" aria-label="Semaine suivante">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- Vue DESKTOP (grille) -->
+      <div class="planning-desktop-view">
+        <div class="planning-grid" id="planning-grid"></div>
+      </div>
+
+      <!-- Vue MOBILE (liste par jour) -->
+      <div class="planning-mobile-view">
+        <div class="mobile-day-tabs" id="mobile-day-tabs">
+          <button class="mobile-day-tab active" data-day="0">Lun</button>
+          <button class="mobile-day-tab" data-day="1">Mar</button>
+          <button class="mobile-day-tab" data-day="2">Mer</button>
+          <button class="mobile-day-tab" data-day="3">Jeu</button>
+          <button class="mobile-day-tab" data-day="4">Ven</button>
+          <button class="mobile-day-tab" data-day="5">Sam</button>
+        </div>
+        <div class="mobile-course-list" id="mobile-course-list"></div>
+      </div>
+
+      <!-- Légende -->
+      <div class="planning-legend reveal">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--rose)"></span>Classique</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Contemporain</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7BB4DC"></span>Jazz</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#90CC90"></span>Hip-Hop</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC9EC8"></span>Éveil</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#40C4A4"></span>Ragga</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#B478DC"></span>Compagnie</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC8C50"></span>Spécial</span>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ==================== PLANNING ==================== -->
+  <section id="planning" style="background: var(--black); padding: 7rem 0;">
+    <div class="section" style="padding-top: 0; padding-bottom: 0;">
+      <div class="section-header">
+        <span class="section-eyebrow reveal">Organisation</span>
+        <h2 class="section-title reveal reveal-delay-1"><em>Planning</em> hebdomadaire</h2>
+        <p class="section-subtitle reveal reveal-delay-2">Filtrez par style ou par lieu et trouvez le cours qui vous convient — Saison 2026-2027.</p>
+        <div class="divider"></div>
+      </div>
+
+      <!-- Filtres planning -->
+      <div class="planning-filters reveal">
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Style</span>
+          <div class="planning-filter-btns" id="planning-style-filters">
+            <button class="plan-filter-btn active" data-style="all">Tous</button>
+            <button class="plan-filter-btn" data-style="classique">🩰 Classique</button>
+            <button class="plan-filter-btn" data-style="jazz">🎷 Jazz</button>
+            <button class="plan-filter-btn" data-style="hiphop">🎤 Hip-Hop</button>
+            <button class="plan-filter-btn" data-style="ragga">🌴 Ragga</button>
+            <button class="plan-filter-btn" data-style="contemporain">🌊 Contemporain</button>
+            <button class="plan-filter-btn" data-style="eveil">🌸 Éveil</button>
+            <button class="plan-filter-btn" data-style="compagnie">⭐ Compagnie</button>
+            <button class="plan-filter-btn" data-style="special">🏆 Spécial</button>
+          </div>
+        </div>
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Lieu</span>
+          <div class="planning-filter-btns" id="planning-lieu-filters">
+            <button class="plan-filter-btn active" data-lieu="all">Tous</button>
+            <button class="plan-filter-btn" data-lieu="ADK">🏠 Studio ADK</button>
+            <button class="plan-filter-btn" data-lieu="Rox">🏟️ Au Rox</button>
+            <button class="plan-filter-btn" data-lieu="Bertrix">📍 Bertrix</button>
+            <button class="plan-filter-btn" data-lieu="Izel">🎭 C.C. Izel</button>
+            <button class="plan-filter-btn" data-lieu="Flore">🌿 Florenville</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav semaine (desktop + mobile) -->
+      <div class="planning-nav reveal">
+        <button class="planning-nav-btn" id="plan-prev" aria-label="Semaine précédente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="planning-week" id="planning-week">Cette semaine</div>
+        <button class="planning-nav-btn" id="plan-next" aria-label="Semaine suivante">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- Vue DESKTOP (grille) -->
+      <div class="planning-desktop-view">
+        <div class="planning-grid" id="planning-grid"></div>
+      </div>
+
+      <!-- Vue MOBILE (liste par jour) -->
+      <div class="planning-mobile-view">
+        <div class="mobile-day-tabs" id="mobile-day-tabs">
+          <button class="mobile-day-tab active" data-day="0">Lun</button>
+          <button class="mobile-day-tab" data-day="1">Mar</button>
+          <button class="mobile-day-tab" data-day="2">Mer</button>
+          <button class="mobile-day-tab" data-day="3">Jeu</button>
+          <button class="mobile-day-tab" data-day="4">Ven</button>
+          <button class="mobile-day-tab" data-day="5">Sam</button>
+        </div>
+        <div class="mobile-course-list" id="mobile-course-list"></div>
+      </div>
+
+      <!-- Légende -->
+      <div class="planning-legend reveal">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--rose)"></span>Classique</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Contemporain</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7BB4DC"></span>Jazz</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#90CC90"></span>Hip-Hop</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC9EC8"></span>Éveil</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#40C4A4"></span>Ragga</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#B478DC"></span>Compagnie</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC8C50"></span>Spécial</span>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ==================== PLANNING ==================== -->
+  <section id="planning" style="background: var(--black); padding: 7rem 0;">
+    <div class="section" style="padding-top: 0; padding-bottom: 0;">
+      <div class="section-header">
+        <span class="section-eyebrow reveal">Organisation</span>
+        <h2 class="section-title reveal reveal-delay-1"><em>Planning</em> hebdomadaire</h2>
+        <p class="section-subtitle reveal reveal-delay-2">Filtrez par style ou par lieu et trouvez le cours qui vous convient — Saison 2026-2027.</p>
+        <div class="divider"></div>
+      </div>
+
+      <!-- Filtres planning -->
+      <div class="planning-filters reveal">
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Style</span>
+          <div class="planning-filter-btns" id="planning-style-filters">
+            <button class="plan-filter-btn active" data-style="all">Tous</button>
+            <button class="plan-filter-btn" data-style="classique">🩰 Classique</button>
+            <button class="plan-filter-btn" data-style="jazz">🎷 Jazz</button>
+            <button class="plan-filter-btn" data-style="hiphop">🎤 Hip-Hop</button>
+            <button class="plan-filter-btn" data-style="ragga">🌴 Ragga</button>
+            <button class="plan-filter-btn" data-style="contemporain">🌊 Contemporain</button>
+            <button class="plan-filter-btn" data-style="eveil">🌸 Éveil</button>
+            <button class="plan-filter-btn" data-style="compagnie">⭐ Compagnie</button>
+            <button class="plan-filter-btn" data-style="special">🏆 Spécial</button>
+          </div>
+        </div>
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Lieu</span>
+          <div class="planning-filter-btns" id="planning-lieu-filters">
+            <button class="plan-filter-btn active" data-lieu="all">Tous</button>
+            <button class="plan-filter-btn" data-lieu="ADK">🏠 Studio ADK</button>
+            <button class="plan-filter-btn" data-lieu="Rox">🏟️ Au Rox</button>
+            <button class="plan-filter-btn" data-lieu="Bertrix">📍 Bertrix</button>
+            <button class="plan-filter-btn" data-lieu="Izel">🎭 C.C. Izel</button>
+            <button class="plan-filter-btn" data-lieu="Flore">🌿 Florenville</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav semaine (desktop + mobile) -->
+      <div class="planning-nav reveal">
+        <button class="planning-nav-btn" id="plan-prev" aria-label="Semaine précédente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="planning-week" id="planning-week">Cette semaine</div>
+        <button class="planning-nav-btn" id="plan-next" aria-label="Semaine suivante">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- Vue DESKTOP (grille) -->
+      <div class="planning-desktop-view">
+        <div class="planning-grid" id="planning-grid"></div>
+      </div>
+
+      <!-- Vue MOBILE (liste par jour) -->
+      <div class="planning-mobile-view">
+        <div class="mobile-day-tabs" id="mobile-day-tabs">
+          <button class="mobile-day-tab active" data-day="0">Lun</button>
+          <button class="mobile-day-tab" data-day="1">Mar</button>
+          <button class="mobile-day-tab" data-day="2">Mer</button>
+          <button class="mobile-day-tab" data-day="3">Jeu</button>
+          <button class="mobile-day-tab" data-day="4">Ven</button>
+          <button class="mobile-day-tab" data-day="5">Sam</button>
+        </div>
+        <div class="mobile-course-list" id="mobile-course-list"></div>
+      </div>
+
+      <!-- Légende -->
+      <div class="planning-legend reveal">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--rose)"></span>Classique</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Contemporain</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7BB4DC"></span>Jazz</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#90CC90"></span>Hip-Hop</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC9EC8"></span>Éveil</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#40C4A4"></span>Ragga</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#B478DC"></span>Compagnie</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC8C50"></span>Spécial</span>
+      </div>
+    </div>
+  </section>
+
+ 
+  <!-- ==================== PLANNING ==================== -->
+  <section id="planning" style="background: var(--black); padding: 7rem 0;">
+    <div class="section" style="padding-top: 0; padding-bottom: 0;">
+      <div class="section-header">
+        <span class="section-eyebrow reveal">Organisation</span>
+        <h2 class="section-title reveal reveal-delay-1"><em>Planning</em> hebdomadaire</h2>
+        <p class="section-subtitle reveal reveal-delay-2">Filtrez par style ou par lieu et trouvez le cours qui vous convient — Saison 2026-2027.</p>
+        <div class="divider"></div>
+      </div>
+
+      <!-- Filtres planning -->
+      <div class="planning-filters reveal">
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Style</span>
+          <div class="planning-filter-btns" id="planning-style-filters">
+            <button class="plan-filter-btn active" data-style="all">Tous</button>
+            <button class="plan-filter-btn" data-style="classique">🩰 Classique</button>
+            <button class="plan-filter-btn" data-style="jazz">🎷 Jazz</button>
+            <button class="plan-filter-btn" data-style="hiphop">🎤 Hip-Hop</button>
+            <button class="plan-filter-btn" data-style="ragga">🌴 Ragga</button>
+            <button class="plan-filter-btn" data-style="contemporain">🌊 Contemporain</button>
+            <button class="plan-filter-btn" data-style="eveil">🌸 Éveil</button>
+            <button class="plan-filter-btn" data-style="compagnie">⭐ Compagnie</button>
+            <button class="plan-filter-btn" data-style="special">🏆 Spécial</button>
+          </div>
+        </div>
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Lieu</span>
+          <div class="planning-filter-btns" id="planning-lieu-filters">
+            <button class="plan-filter-btn active" data-lieu="all">Tous</button>
+            <button class="plan-filter-btn" data-lieu="ADK">🏠 Studio ADK</button>
+            <button class="plan-filter-btn" data-lieu="Rox">🏟️ Au Rox</button>
+            <button class="plan-filter-btn" data-lieu="Bertrix">📍 Bertrix</button>
+            <button class="plan-filter-btn" data-lieu="Izel">🎭 C.C. Izel</button>
+            <button class="plan-filter-btn" data-lieu="Flore">🌿 Florenville</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav semaine (desktop + mobile) -->
+      <div class="planning-nav reveal">
+        <button class="planning-nav-btn" id="plan-prev" aria-label="Semaine précédente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="planning-week" id="planning-week">Cette semaine</div>
+        <button class="planning-nav-btn" id="plan-next" aria-label="Semaine suivante">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- Vue DESKTOP (grille) -->
+      <div class="planning-desktop-view">
+        <div class="planning-grid" id="planning-grid"></div>
+      </div>
+
+      <!-- Vue MOBILE (liste par jour) -->
+      <div class="planning-mobile-view">
+        <div class="mobile-day-tabs" id="mobile-day-tabs">
+          <button class="mobile-day-tab active" data-day="0">Lun</button>
+          <button class="mobile-day-tab" data-day="1">Mar</button>
+          <button class="mobile-day-tab" data-day="2">Mer</button>
+          <button class="mobile-day-tab" data-day="3">Jeu</button>
+          <button class="mobile-day-tab" data-day="4">Ven</button>
+          <button class="mobile-day-tab" data-day="5">Sam</button>
+        </div>
+        <div class="mobile-course-list" id="mobile-course-list"></div>
+      </div>
+
+      <!-- Légende -->
+      <div class="planning-legend reveal">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--rose)"></span>Classique</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Contemporain</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7BB4DC"></span>Jazz</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#90CC90"></span>Hip-Hop</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC9EC8"></span>Éveil</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#40C4A4"></span>Ragga</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#B478DC"></span>Compagnie</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC8C50"></span>Spécial</span>
+      </div>
+    </div>
+  </section>
+
+ 
+  <!-- ==================== PLANNING ==================== -->
+  <section id="planning" style="background: var(--black); padding: 7rem 0;">
+    <div class="section" style="padding-top: 0; padding-bottom: 0;">
+      <div class="section-header">
+        <span class="section-eyebrow reveal">Organisation</span>
+        <h2 class="section-title reveal reveal-delay-1"><em>Planning</em> hebdomadaire</h2>
+        <p class="section-subtitle reveal reveal-delay-2">Filtrez par style ou par lieu et trouvez le cours qui vous convient — Saison 2026-2027.</p>
+        <div class="divider"></div>
+      </div>
+
+      <!-- Filtres planning -->
+      <div class="planning-filters reveal">
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Style</span>
+          <div class="planning-filter-btns" id="planning-style-filters">
+            <button class="plan-filter-btn active" data-style="all">Tous</button>
+            <button class="plan-filter-btn" data-style="classique">🩰 Classique</button>
+            <button class="plan-filter-btn" data-style="jazz">🎷 Jazz</button>
+            <button class="plan-filter-btn" data-style="hiphop">🎤 Hip-Hop</button>
+            <button class="plan-filter-btn" data-style="ragga">🌴 Ragga</button>
+            <button class="plan-filter-btn" data-style="contemporain">🌊 Contemporain</button>
+            <button class="plan-filter-btn" data-style="eveil">🌸 Éveil</button>
+            <button class="plan-filter-btn" data-style="compagnie">⭐ Compagnie</button>
+            <button class="plan-filter-btn" data-style="special">🏆 Spécial</button>
+          </div>
+        </div>
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Lieu</span>
+          <div class="planning-filter-btns" id="planning-lieu-filters">
+            <button class="plan-filter-btn active" data-lieu="all">Tous</button>
+            <button class="plan-filter-btn" data-lieu="ADK">🏠 Studio ADK</button>
+            <button class="plan-filter-btn" data-lieu="Rox">🏟️ Au Rox</button>
+            <button class="plan-filter-btn" data-lieu="Bertrix">📍 Bertrix</button>
+            <button class="plan-filter-btn" data-lieu="Izel">🎭 C.C. Izel</button>
+            <button class="plan-filter-btn" data-lieu="Flore">🌿 Florenville</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav semaine (desktop + mobile) -->
+      <div class="planning-nav reveal">
+        <button class="planning-nav-btn" id="plan-prev" aria-label="Semaine précédente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="planning-week" id="planning-week">Cette semaine</div>
+        <button class="planning-nav-btn" id="plan-next" aria-label="Semaine suivante">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- Vue DESKTOP (grille) -->
+      <div class="planning-desktop-view">
+        <div class="planning-grid" id="planning-grid"></div>
+      </div>
+
+      <!-- Vue MOBILE (liste par jour) -->
+      <div class="planning-mobile-view">
+        <div class="mobile-day-tabs" id="mobile-day-tabs">
+          <button class="mobile-day-tab active" data-day="0">Lun</button>
+          <button class="mobile-day-tab" data-day="1">Mar</button>
+          <button class="mobile-day-tab" data-day="2">Mer</button>
+          <button class="mobile-day-tab" data-day="3">Jeu</button>
+          <button class="mobile-day-tab" data-day="4">Ven</button>
+          <button class="mobile-day-tab" data-day="5">Sam</button>
+        </div>
+        <div class="mobile-course-list" id="mobile-course-list"></div>
+      </div>
+
+      <!-- Légende -->
+      <div class="planning-legend reveal">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--rose)"></span>Classique</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Contemporain</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7BB4DC"></span>Jazz</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#90CC90"></span>Hip-Hop</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC9EC8"></span>Éveil</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#40C4A4"></span>Ragga</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#B478DC"></span>Compagnie</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC8C50"></span>Spécial</span>
+      </div>
+    </div>
+  </section>
+
+<!-- Section Équipe -->
   <section id="equipe" class="vitrine-section">
     <h2 class="vitrine-title"><span style="color: #ffffff;">Notre</span> <span style="color: #9C5858;">équipe</span></h2>
     <p class="vitrine-subtitle">L'encadrement est assuré par des professeurs qualifiés, engagés et passionnés.</p>
