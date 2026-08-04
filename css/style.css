@@ -1558,8 +1558,8 @@ footer {
   align-items: start;
 }
 .portal-login-card {
-  background: var(--dark-2);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: var(--radius);
   padding: 2.5rem;
 }
@@ -1588,8 +1588,8 @@ footer {
 .portal-role-hint {
   padding: 0.6rem 0.5rem;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--glass-border);
-  background: var(--dark-3);
+  border: 1px solid rgba(0,0,0,0.15);
+  background: #ffffff;
   text-align: center;
   cursor: pointer;
   transition: var(--transition);
@@ -1619,8 +1619,8 @@ footer {
   gap: 1rem;
 }
 .portal-info-card {
-  background: var(--dark-2);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: var(--radius);
   padding: 1.25rem 1.5rem;
   display: flex;
