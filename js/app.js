@@ -884,7 +884,10 @@ function initContact() {
 // =============================================
 // FOOTER
 // =============================================
-function initFooter() { document.getElementById('footer-year').textContent = new Date().getFullYear(); }
+function initFooter() {
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+}
 
 // =============================================
 // SCROLL REVEAL
