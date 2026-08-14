@@ -22,7 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
   initGalerie();
   initContact();
   initFooter();
-  initReveal();
+  setTimeout(() => document.querySelector('.loader-wrapper')?.classList.add('hidden'), 500);
+
+  // Modal helpers
+  window.openModal = function(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  };
+  window.closeModal = function(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  };
+
   initCountdown();
   initMobileMenu();
 });
