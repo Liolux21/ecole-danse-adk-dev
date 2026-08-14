@@ -926,7 +926,8 @@ ul { list-style: none; }
   border: 1px solid rgba(0,0,0,0.2);
   border-radius: var(--radius-sm);
   padding: 0.8rem 1rem;
-  color: #333333;
+  color: #9C5858;
+  font-weight: 500;
   font-size: 0.9rem;
   transition: var(--transition);
   outline: none;
