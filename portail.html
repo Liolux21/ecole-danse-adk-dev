@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <link rel="canonical" href="http://annedkdanse.be/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩰</text></svg>">
-  <link rel="stylesheet" href="css/style.css?v=45">
+  <link rel="stylesheet" href="css/style.css?v=46">
 </head>
 <body>
 
@@ -142,8 +142,9 @@
 
         <div class="dash-tabs" id="admin-tabs">
           <button class="dash-tab active" data-tab="inscriptions">📝 Inscriptions <span class="tab-badge" id="pending-badge">3</span></button>
-          <button class="dash-tab" data-tab="eleves">🩰 Élèves</button>
+          <button class="dash-tab" data-tab="eleves">👥 Élèves</button>
           <button class="dash-tab" data-tab="profs">👩‍🏫 Professeurs</button>
+          <button class="dash-tab" data-tab="admin-gala">🎭 Gala</button>
         </div>
 
         <!-- Tab: Inscriptions -->
@@ -176,6 +177,28 @@
             </table>
           </div>
         </div>
+        
+        <!-- Tab: Gala Admin -->
+        <div class="tab-content" id="tab-admin-gala">
+          <div class="dash-tabs sub-dash-tabs" id="sub-admin-gala-tabs">
+            <button class="dash-tab active" data-tab="admin-gala-repets">📅 Répétitions</button>
+            <button class="dash-tab" data-tab="admin-gala-tenues">👗 Tenues</button>
+            <button class="dash-tab" data-tab="admin-gala-infos">📝 Infos tableaux</button>
+            <button class="dash-tab" data-tab="admin-gala-notes">📌 Notes réunions</button>
+          </div>
+          <div class="tab-content active" id="tab-admin-gala-repets">
+            <div class="empty-state"><p>Aucune répétition planifiée.</p></div>
+          </div>
+          <div class="tab-content" id="tab-admin-gala-tenues">
+            <div class="empty-state"><p>Aucune information de tenue.</p></div>
+          </div>
+          <div class="tab-content" id="tab-admin-gala-infos">
+            <div class="empty-state"><p>Aucune info tableau.</p></div>
+          </div>
+          <div class="tab-content" id="tab-admin-gala-notes">
+            <div class="empty-state"><p>Aucune note de réunion.</p></div>
+          </div>
+        </div>
       </div>
 
       <!-- ===== DASHBOARD PROF ===== -->
@@ -194,7 +217,8 @@
         <div class="dash-tabs" id="prof-tabs">
           <button class="dash-tab active" data-tab="mon-planning">🗓️ Mon Planning</button>
           <button class="dash-tab" data-tab="appel">📋 Feuille d'appel</button>
-          <button class="dash-tab" data-tab="mes-eleves">🩰 Mes élèves</button>
+          <button class="dash-tab" data-tab="mes-eleves">👥 Mes élèves</button>
+          <button class="dash-tab" data-tab="prof-gala">🎭 Gala</button>
         </div>
 
         <!-- Tab: Mon Planning -->
@@ -236,6 +260,19 @@
           </div>
         </div>
 
+        <!-- Tab: Prof Gala -->
+        <div class="tab-content" id="tab-prof-gala">
+          <div class="dash-tabs sub-dash-tabs" id="sub-prof-gala-tabs">
+            <button class="dash-tab active" data-tab="prof-gala-repets">📅 Répétitions</button>
+            <button class="dash-tab" data-tab="prof-gala-tenues">👗 Tenues</button>
+          </div>
+          <div class="tab-content active" id="tab-prof-gala-repets">
+            <div class="empty-state"><p>Aucune répétition planifiée.</p></div>
+          </div>
+          <div class="tab-content" id="tab-prof-gala-tenues">
+            <div class="empty-state"><p>Aucune information de tenue.</p></div>
+          </div>
+        </div>
 
       </div>
 
@@ -252,48 +289,71 @@
           <button class="btn btn-outline btn-sm" id="parent-logout">Déconnexion</button>
         </div>
 
-        <div class="child-tabs" id="child-tabs"></div>
-
-        <div class="parent-notification-banner" id="parent-next-course-banner" style="display: none;">
-          <div class="banner-icon">🔔</div>
-          <div class="banner-content" id="parent-next-course-content"></div>
+        <div class="dash-tabs" id="parent-tabs">
+          <button class="dash-tab active" data-tab="parent-planning">🗓️ Mon Planning</button>
+          <button class="dash-tab" data-tab="parent-gala">🎭 Gala</button>
         </div>
 
-        <div class="parent-stats">
-          <div class="stat-card">
-            <div class="stat-card-label">Cours inscrits</div>
-            <div class="stat-card-value" id="parent-stat-cours">0</div>
+        <!-- Tab: Parent Planning -->
+        <div class="tab-content active" id="tab-parent-planning">
+          <div class="child-tabs" id="child-tabs"></div>
+
+          <div class="parent-notification-banner" id="parent-next-course-banner" style="display: none;">
+            <div class="banner-icon">🔔</div>
+            <div class="banner-content" id="parent-next-course-content"></div>
           </div>
-          <div class="stat-card">
-            <div class="stat-card-label">Présences</div>
-            <div class="stat-card-value" id="parent-stat-presence" style="color:#90CC90">0</div>
+
+          <div class="parent-stats">
+            <div class="stat-card">
+              <div class="stat-card-label">Cours inscrits</div>
+              <div class="stat-card-value" id="parent-stat-cours">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Présences</div>
+              <div class="stat-card-value" id="parent-stat-presence" style="color:#90CC90">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Absences</div>
+              <div class="stat-card-value" id="parent-stat-absence" style="color:#DC6464">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Cotisation</div>
+              <div class="stat-card-value" id="parent-stat-cotisation" style="margin-top: 0.5rem;">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Mutuelle</div>
+              <div class="stat-card-value" id="parent-stat-mutuelle" style="margin-top: 0.5rem;">-</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-card-label">Absences</div>
-            <div class="stat-card-value" id="parent-stat-absence" style="color:#DC6464">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-label">Cotisation</div>
-            <div class="stat-card-value" id="parent-stat-cotisation" style="margin-top: 0.5rem;">-</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-label">Mutuelle</div>
-            <div class="stat-card-value" id="parent-stat-mutuelle" style="margin-top: 0.5rem;">-</div>
+
+          <div class="parent-dashboard-grid">
+            <div class="parent-planning-section">
+              <div class="parent-section-header">🗓️ Planning de la semaine — <span id="parent-child-name-plan"></span></div>
+              <div id="parent-planning-calendar"></div>
+              <div class="planning-cards-list" id="parent-planning-list"></div>
+            </div>
+
+            <div class="parent-attendance-section">
+              <div class="parent-section-header">📋 Historique des présences</div>
+              <div class="parent-attendance-list" id="parent-attendance-list"></div>
+            </div>
           </div>
         </div>
 
-        <div class="parent-dashboard-grid">
-          <div class="parent-planning-section">
-            <div class="parent-section-header">🗓️ Planning de la semaine — <span id="parent-child-name-plan"></span></div>
-            <div id="parent-planning-calendar"></div>
-            <div class="planning-cards-list" id="parent-planning-list"></div>
+        <!-- Tab: Gala Parent -->
+        <div class="tab-content" id="tab-parent-gala">
+          <div class="dash-tabs sub-dash-tabs" id="sub-parent-gala-tabs">
+            <button class="dash-tab active" data-tab="parent-gala-repets">📅 Répétitions</button>
+            <button class="dash-tab" data-tab="parent-gala-tenues">👗 Tenues</button>
           </div>
-
-          <div class="parent-attendance-section">
-            <div class="parent-section-header">📋 Historique des présences</div>
-            <div class="parent-attendance-list" id="parent-attendance-list"></div>
+          <div class="tab-content active" id="tab-parent-gala-repets">
+            <div class="empty-state"><p>Aucune répétition planifiée.</p></div>
+          </div>
+          <div class="tab-content" id="tab-parent-gala-tenues">
+            <div class="empty-state"><p>Aucune information de tenue.</p></div>
           </div>
         </div>
+
       </div>
 
   </section>
@@ -426,6 +486,6 @@
 
   <script src="js/data.js?v=4"></script>
   <script src="js/auth.js?v=13"></script>
-  <script src="js/app.js?v=9"></script>
+  <script src="js/app.js?v=10"></script>
 </body>
 </html>

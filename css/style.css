@@ -1789,6 +1789,21 @@ footer {
 }
 .dash-tab:hover { color: #ffffff; border-color: rgba(0,0,0,0.15); background: #9C5858; }
 .dash-tab.active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #ffffff; border-color: transparent; font-weight: 700; }
+
+.sub-dash-tabs {
+  margin-bottom: 1rem;
+  gap: 0.4rem;
+}
+.sub-dash-tabs .dash-tab {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.75rem;
+  border-radius: 30px;
+  background: rgba(156, 88, 88, 0.05);
+}
+.sub-dash-tabs .dash-tab.active {
+  background: #9C5858;
+  color: #fff;
+}
 .dash-header .btn-outline { color: #9C5858; border: 1px solid rgba(156, 88, 88, 0.4); }
 .dash-header .btn-outline:hover { background: #9C5858; color: #ffffff; }
 .dash-tab .tab-badge {
