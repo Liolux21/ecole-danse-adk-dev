@@ -1056,8 +1056,11 @@ function renderWeeklyCalendar(courseIds, containerId) {
   
   courseIds.forEach(id => {
     const c = DATA.getCourseWithOverride(id);
-    if (!c || c.day === undefined) return;
-    calendarData[c.day].push(c);
+    if (!c) return;
+    const slots = DATA.schedule.slots.filter(s => s.courseId === id);
+    slots.forEach(slot => {
+      calendarData[slot.day].push({ ...c, hour: slot.hour });
+    });
   });
   
   // sort by hour
