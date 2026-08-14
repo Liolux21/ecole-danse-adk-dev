@@ -665,10 +665,10 @@ function renderProfDashboard(user) {
   document.getElementById('prof-avatar').textContent = user.avatar;
 
   const courseIds = user.courseIds || [];
+  let selectedCourseId = courseIds[0] || null;
   const courseSelector = document.getElementById('appel-courses-select');
   if (courseSelector) {
     courseSelector.innerHTML = '';
-    let selectedCourseId = courseIds[0] || null;
 
     courseIds.forEach((cid) => {
       const c = DATA.getCourseById(cid);
