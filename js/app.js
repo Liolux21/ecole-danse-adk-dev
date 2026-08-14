@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initActualites();
   initGalerie();
   initContact();
-  initFooter();
+  initReveal();
+    initFooter();
   setTimeout(() => document.querySelector('.loader-wrapper')?.classList.add('hidden'), 500);
 
   // Modal helpers
