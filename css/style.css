@@ -1299,6 +1299,7 @@ ul { list-style: none; }
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 .prof-planning-controls .btn {
   background: #ffffff;
