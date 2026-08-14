@@ -887,7 +887,7 @@ function renderParentDashboard(user) {
     banner.style.display = 'flex';
     let html = '';
     nextCoursesData.forEach(data => {
-      html += `Le prochain cours de <strong style="color: #9C5858;">${data.child.firstname}</strong> est <strong style="color: #9C5858;">${data.course.name}</strong>, ce ${data.dayStr} à ${data.hourStr}.<br>`;
+      html += `Le prochain cours de <strong style="color: #9C5858;">${data.child.firstname}</strong> est <strong style="color: #9C5858;">${data.course.name}</strong>, ce ${data.dayStr.toLowerCase()} ${data.dateStrObj} à ${data.hourStr}.<br>`;
     });
     bannerContent.innerHTML = html;
   } else if (banner) {
@@ -1319,11 +1319,17 @@ function calculateNextCourses(children) {
         diffDays += 7; 
       }
       
+      const targetDate = new Date(now);
+      targetDate.setDate(now.getDate() + diffDays);
+      const dd = String(targetDate.getDate()).padStart(2, '0');
+      const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
+      const dateStrObj = `${dd}/${mm}`;
+      
       const diffMins = diffDays * 24 * 60 + (targetHour - currentHour);
       
       if (diffMins < minDiff) {
         minDiff = diffMins;
-        nextCourse = { child, course: c, diffMins, dayStr, hourStr };
+        nextCourse = { child, course: c, diffMins, dayStr, hourStr, dateStrObj };
       }
     });
 
