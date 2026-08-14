@@ -1364,11 +1364,11 @@ ul { list-style: none; }
   align-items: center;
   gap: 0.3rem;
 }
-.portal-course-card .btn-outline {
+.portal-course-card .btn-outline, .inscription-card .btn-outline {
   color: #9C5858;
   border: 1px solid rgba(156, 88, 88, 0.4);
 }
-.portal-course-card .btn-outline:hover {
+.portal-course-card .btn-outline:hover, .inscription-card .btn-outline:hover {
   background: rgba(156, 88, 88, 0.15);
   color: #9C5858;
   border-color: #9C5858;
@@ -1738,8 +1738,8 @@ footer {
   padding: 0 0.4rem;
 }
 #pending-badge {
-  background: #DC6464;
-  color: #ffffff;
+  background: #ffffff;
+  color: #DC6464;
 }
 .dash-tab .tab-badge {
   font-size: 0.65rem;
@@ -1861,25 +1861,25 @@ footer {
   border-radius: 50px;
   font-size: 0.78rem;
   font-weight: 600;
-  color: #ffffff;
-  background: #27ae60;
+  color: #27ae60;
+  background: rgba(144,204,144,0.15);
   transition: var(--transition);
-  border: none;
+  border: 1px solid #90CC90;
   cursor: pointer;
 }
-.btn-approve:hover { background: #2ecc71; transform: translateY(-1px); }
+.btn-approve:hover { background: rgba(144,204,144,0.25); transform: translateY(-1px); }
 .btn-reject {
   padding: 0.45rem 1rem;
   border-radius: 50px;
   font-size: 0.78rem;
   font-weight: 600;
-  color: #ffffff;
-  background: #e74c3c;
+  color: #c0392b;
+  background: rgba(220,100,100,0.15);
   transition: var(--transition);
-  border: none;
+  border: 1px solid #DC6464;
   cursor: pointer;
 }
-.btn-reject:hover { background: #ff6b6b; transform: translateY(-1px); }
+.btn-reject:hover { background: rgba(220,100,100,0.25); transform: translateY(-1px); }
 .inscription-approved { opacity: 0.5; pointer-events: none; }
 .status-pill {
   padding: 0.2rem 0.7rem;
@@ -1889,9 +1889,9 @@ footer {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-.pill-pending  { background: #C9A84C; color: #ffffff; }
-.pill-approved { background: #27ae60; color: #ffffff; }
-.pill-rejected { background: #e74c3c; color: #ffffff; }
+.pill-pending  { background: rgba(201,168,76,0.15); color: #b58900; border: 1px solid #C9A84C; }
+.pill-approved { background: rgba(144,204,144,0.15); color: #27ae60; border: 1px solid #90CC90; }
+.pill-rejected { background: rgba(220,100,100,0.15); color: #c0392b; border: 1px solid #DC6464; }
 
 /* ---- Appel / Présences prof ---- */
 .appel-course-selector {
