@@ -941,8 +941,14 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
                 : '';
 
     let scheduleText = c.schedule.split('·')[0].trim();
-    if (c.date && c.hour) scheduleText = `${c.date} à ${c.hour}`;
-    else if (c.hour) scheduleText = `${scheduleText.split(' ')[0]} à ${c.hour}`;
+    let displayDate = c.date;
+    if (displayDate && displayDate.includes('-')) {
+      const parts = displayDate.split('-');
+      displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    let displayHour = c.hour ? c.hour.replace(':', 'h') : '';
+    if (c.date && c.hour) scheduleText = `${displayDate} à ${displayHour}`;
+    else if (c.hour) scheduleText = `${scheduleText.split(' ')[0]} à ${displayHour}`;
 
     const profName = c.substituteId ? DATA.getUserById(c.substituteId)?.name || c.prof : c.prof;
     const isSubstitute = !!c.substituteId;
@@ -1106,8 +1112,19 @@ function openManageCourseModal(courseId) {
   document.getElementById('manage-course-title').textContent = `Gérer: ${course.name}`;
   document.getElementById('manage-course-type').value = course.type || 'temporaire';
   document.getElementById('manage-course-status').value = course.status || 'maintenu';
-  document.getElementById('manage-course-hour').value = course.hour || course.schedule.split(' ')[0].split(' ')[1];
-  document.getElementById('manage-course-date').value = course.date || '';
+  let initHour = course.hour || (course.schedule ? course.schedule.split(' ')[1] : '');
+  if (initHour && initHour.includes('h')) {
+    initHour = initHour.replace('h', ':');
+    if (initHour.length === 4) initHour = '0' + initHour;
+  }
+  document.getElementById('manage-course-hour').value = initHour;
+  
+  let initDate = course.date || '';
+  if (initDate && initDate.includes('/')) {
+    const parts = initDate.split('/');
+    if (parts.length === 3) initDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+  document.getElementById('manage-course-date').value = initDate;
   document.getElementById('manage-course-lieu').value = course.lieu;
   document.getElementById('manage-course-msg').value = course.message || '';
   

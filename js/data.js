@@ -9,7 +9,7 @@ const DATA = {
     shortName: "ADK",
     tagline: "Une famille · Une passion · Une histoire · Une vie",
     founded: 1998,
-    address: "Studio ADK — Florenville, Belgique",
+    address: "Studio ADK - Pin, Belgique",
     phone: "+32 2 345 67 89",
     email: "contact@annedkdanse.be",
     website: "www.annedkdanse.be",
@@ -24,7 +24,7 @@ const DATA = {
   locations: [
     { id: 'adk',     name: 'Studio ADK',                     short: 'ADK',        color: '#C9A84C' },
     { id: 'rox',     name: 'Au Rox',                          short: 'Rox',        color: '#7BB4DC' },
-    { id: 'bertrix', name: 'Bertrix',                         short: 'Bertrix',    color: '#90CC90' },
+    { id: 'bertrix', name: 'Complexe sportif de Bertrix',     short: 'Bertrix',    color: '#90CC90' },
     { id: 'izel',    name: 'Centre Culturel Izel',            short: 'C.C. Izel',  color: '#DC9EC8' },
     { id: 'flore',   name: 'Complexe Sportif Florenville',    short: 'C.S. Flore', color: '#B478DC' },
   ],
