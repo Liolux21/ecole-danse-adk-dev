@@ -625,9 +625,7 @@ function renderProfDashboard(user) {
   courseSelector.innerHTML = '';
   let selectedCourseId = courseIds[0] || null;
 
-  // Date par défaut = aujourd'hui
   const dateInput = document.getElementById('appel-date');
-  dateInput.value = new Date().toISOString().split('T')[0];
 
   // Boutons de cours
   courseIds.forEach((cid, i) => {
@@ -646,12 +644,16 @@ function renderProfDashboard(user) {
       document.querySelectorAll('.appel-course-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       selectedCourseId = cid;
+      populateAppelDates(cid);
       renderAppelList(cid);
     };
     courseSelector.appendChild(btn);
   });
 
-  if (selectedCourseId) renderAppelList(selectedCourseId);
+  if (selectedCourseId) {
+    populateAppelDates(selectedCourseId);
+    renderAppelList(selectedCourseId);
+  }
   renderProfEleves(user);
   
   // Onglet: Mon Planning
@@ -671,9 +673,9 @@ function renderProfDashboard(user) {
   // Init default view
   btnEnseignes.click();
 
-  // Bouton sauvegarder
   document.getElementById('appel-save-btn').onclick = () => {
-    const date = dateInput.value.split('-').reverse().join('/');
+    const dInput = document.getElementById('appel-date');
+    const date = dInput.value.split('-').reverse().join('/');
     document.querySelectorAll('.appel-item').forEach(item => {
       const sid = parseInt(item.dataset.studentId);
       const selected = item.querySelector('.appel-btn.selected');
@@ -684,6 +686,62 @@ function renderProfDashboard(user) {
     });
     showToast('✅ Appel sauvegardé !', 'success');
   };
+  
+  document.getElementById('appel-date')?.addEventListener('change', () => {
+    document.querySelectorAll('.appel-item .appel-btn').forEach(b => b.classList.remove('selected'));
+  });
+}
+
+function populateAppelDates(courseId) {
+  const select = document.getElementById('appel-date');
+  if (!select) return;
+  select.innerHTML = '';
+  
+  const slot = DATA.schedule.slots.find(s => s.courseId === courseId);
+  const courseDay = slot ? slot.day : 0; // 0 = Lundi, 1 = Mardi, etc.
+  const targetJsDay = (courseDay + 1) % 7; // Lundi = 1, Dimanche = 0
+  
+  const today = new Date();
+  
+  let d = new Date(today);
+  while (d.getDay() !== targetJsDay) {
+    d.setDate(d.getDate() + 1);
+  }
+  
+  const dates = [];
+  dates.push(new Date(d)); // Prochaine occurrence ou aujourd'hui
+  
+  for (let i = 1; i <= 8; i++) { // 8 dernières semaines
+    const pastDate = new Date(d);
+    pastDate.setDate(d.getDate() - (i * 7));
+    dates.push(pastDate);
+  }
+  
+  dates.sort((a, b) => b - a);
+  
+  const todayStr = today.toISOString().split('T')[0];
+  let selectedIndex = 0;
+  
+  dates.forEach((dateObj, idx) => {
+    const dateStr = dateObj.toISOString().split('T')[0];
+    let displayStr = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+    displayStr = displayStr.charAt(0).toUpperCase() + displayStr.slice(1);
+    
+    if (slot && slot.hour) {
+      displayStr += ` à ${slot.hour.replace(':', 'h')}`;
+    }
+    
+    const option = document.createElement('option');
+    option.value = dateStr;
+    option.textContent = displayStr;
+    select.appendChild(option);
+    
+    if (dateStr <= todayStr && selectedIndex === 0) {
+      selectedIndex = idx;
+    }
+  });
+  
+  select.selectedIndex = selectedIndex;
 }
 
 function renderAppelList(courseId) {
