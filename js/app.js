@@ -597,11 +597,49 @@ function renderAdminEleves() {
   const tbody = document.getElementById('admin-eleves-body');
   tbody.innerHTML = DATA.students.map(s => {
     const courses = s.courseIds.map(id => DATA.getCourseById(id)?.name || '').filter(Boolean).join(', ');
-    const cls = s.cotisation === 'payée' ? 'cotisation-payee' : 'cotisation-attente';
-    const label = s.cotisation === 'payée' ? '✓ Payée' : '⏳ En attente';
-    return `<tr><td><strong>${s.firstname} ${s.lastname}</strong></td><td>${s.age} ans</td><td style="color:var(--text-muted);font-size:0.82rem">${courses}</td><td><span class="cotisation-badge ${cls}">${label}</span></td></tr>`;
+    
+    // Cotisation
+    const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee';
+    const cotClass = isPayee ? 'select-payee' : 'select-attente';
+    const cotSelect = `
+      <select class="status-select ${cotClass}" onchange="updateCotisation(${s.id}, this.value)">
+        <option value="attente" ${!isPayee ? 'selected' : ''}>⏳ En attente</option>
+        <option value="payée" ${isPayee ? 'selected' : ''}>✓ Payée</option>
+      </select>
+    `;
+    
+    // Mutuelle
+    const mutStatus = s.mutuelle || 'attente';
+    const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'cours' ? 'select-encours' : 'select-attente');
+    const mutSelect = `
+      <select class="status-select ${mutClass}" onchange="updateMutuelle(${s.id}, this.value)">
+        <option value="attente" ${mutStatus === 'attente' ? 'selected' : ''}>⏳ En attente</option>
+        <option value="cours" ${mutStatus === 'cours' ? 'selected' : ''}>🔄 En cours</option>
+        <option value="remis" ${mutStatus === 'remis' ? 'selected' : ''}>✓ Remis</option>
+      </select>
+    `;
+    
+    return `<tr>
+      <td><strong>${s.firstname} ${s.lastname}</strong></td>
+      <td>${s.age} ans</td>
+      <td style="color:var(--text-muted);font-size:0.82rem">${courses}</td>
+      <td>${cotSelect}</td>
+      <td>${mutSelect}</td>
+    </tr>`;
   }).join('');
 }
+
+window.updateCotisation = function(studentId, value) {
+  const student = DATA.students.find(st => st.id === studentId);
+  if (student) student.cotisation = value;
+  renderAdminEleves();
+};
+
+window.updateMutuelle = function(studentId, value) {
+  const student = DATA.students.find(st => st.id === studentId);
+  if (student) student.mutuelle = value;
+  renderAdminEleves();
+};
 
 function renderAdminProfs() {
   const tbody = document.getElementById('admin-profs-body');

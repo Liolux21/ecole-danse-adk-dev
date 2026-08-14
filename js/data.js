@@ -153,14 +153,14 @@ const DATA = {
 
   // ---- ÉLÈVES (démo) ----
   students: [
-    { id: 1, firstname: 'Léa',   lastname: 'Dupont',   age: 9,  courseIds: [1, 10],   parentId: 19, cotisation: 'payée',      montant: 480 },
-    { id: 2, firstname: 'Emma',  lastname: 'Petit',    age: 7,  courseIds: [3],      parentId: 20, cotisation: 'payée',      montant: 280 },
-    { id: 3, firstname: 'Tom',   lastname: 'Petit',    age: 12, courseIds: [5],      parentId: 20, cotisation: 'en attente', montant: 280 },
-    { id: 4, firstname: 'Chloé', lastname: 'Bernard',  age: 14, courseIds: [11, 15], parentId: null, cotisation: 'payée',   montant: 480 },
-    { id: 5, firstname: 'Inès',  lastname: 'Martin',   age: 10, courseIds: [10, 9],  parentId: null, cotisation: 'payée',   montant: 480 },
-    { id: 6, firstname: 'Zoé',   lastname: 'Lambert',  age: 5,  courseIds: [2],      parentId: null, cotisation: 'payée',   montant: 280 },
-    { id: 7, firstname: 'Milo',  lastname: 'Rousseau', age: 12, courseIds: [5, 17],  parentId: null, cotisation: 'en attente', montant: 480 },
-    { id: 8, firstname: 'Alice', lastname: 'Moreau',   age: 7,  courseIds: [3, 1],   parentId: null, cotisation: 'payée',   montant: 480 },
+    { id: 1, firstname: 'Léa',   lastname: 'Dupont',   age: 9,  courseIds: [1, 10],   parentId: 19, cotisation: 'payée', mutuelle: 'attente', montant: 480 },
+    { id: 2, firstname: 'Emma',  lastname: 'Petit',    age: 7,  courseIds: [3],      parentId: 20, cotisation: 'payée', mutuelle: 'attente', montant: 280 },
+    { id: 3, firstname: 'Tom',   lastname: 'Petit',    age: 12, courseIds: [5],      parentId: 20, cotisation: 'en attente', mutuelle: 'attente', montant: 280 },
+    { id: 4, firstname: 'Chloé', lastname: 'Bernard',  age: 14, courseIds: [11, 15], parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 480 },
+    { id: 5, firstname: 'Inès',  lastname: 'Martin',   age: 10, courseIds: [10, 9],  parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 480 },
+    { id: 6, firstname: 'Zoé',   lastname: 'Lambert',  age: 5,  courseIds: [2],      parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 280 },
+    { id: 7, firstname: 'Milo',  lastname: 'Rousseau', age: 12, courseIds: [5, 17],  parentId: null, cotisation: 'en attente', mutuelle: 'attente', montant: 480 },
+    { id: 8, firstname: 'Alice', lastname: 'Moreau',   age: 7,  courseIds: [3, 1],   parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 480 },
   ],
 
   // ---- PRÉSENCES (démo) ----
