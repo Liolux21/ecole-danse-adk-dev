@@ -32,7 +32,7 @@ const DATA = {
   // ---- UTILISATEURS ----
   users: [
     // Admin
-    { id: 1,  email: 'admin@adk.be',       password: 'admin2026',  role: 'admin',  name: 'Anne Dubois',   avatar: '👑', title: 'Directrice' },
+    { id: 1,  email: 'admin@adk.be',       password: 'admin2026',  role: 'admin',  name: 'Anne De Keyser',   avatar: '👑', title: 'Directrice' },
     // Profs (compte générique + comptes nominatifs)
     { id: 2,  email: 'prof@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  phone: '0471/12.34.56', courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
     { id: 3,  email: 'janis@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  phone: '0471/12.34.56', courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
