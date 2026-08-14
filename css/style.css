@@ -1364,6 +1364,15 @@ ul { list-style: none; }
   align-items: center;
   gap: 0.3rem;
 }
+.portal-course-card .btn-outline {
+  color: #9C5858;
+  border: 1px solid rgba(156, 88, 88, 0.4);
+}
+.portal-course-card .btn-outline:hover {
+  background: rgba(156, 88, 88, 0.15);
+  color: #9C5858;
+  border-color: #9C5858;
+}
 
 /* =============================================
    CONTACT SECTION
