@@ -1907,7 +1907,7 @@ footer {
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
-.appel-date-label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #ffffff; }
+.appel-date-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9C5858; }
 .appel-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .appel-item {
   display: flex;
