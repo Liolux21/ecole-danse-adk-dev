@@ -1632,8 +1632,15 @@ window.submitAddStudent = async function() {
       } else {
         tempPassword = Math.random().toString(36).slice(-8);
         try {
-          const auth = getAuth();
-          await createUserWithEmailAndPassword(auth, email, tempPassword);
+          // Utilisation de l'API REST pour éviter la déconnexion automatique
+          const apiKey = "AIzaSyBPOPRg9AxDqojhkskOIRO-4AHxvLICP7Q"; // Key from firebase-config.js
+          const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password: tempPassword, returnSecureToken: false })
+          });
+          const data = await response.json();
+          if (data.error) throw new Error(data.error.message);
         } catch(e) {
           console.warn("L'utilisateur existe peut-être déjà dans Auth, mais pas dans Firestore.", e);
         }
