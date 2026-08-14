@@ -1667,8 +1667,8 @@ footer {
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem 1.75rem;
-  background: var(--dark-2);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: var(--radius);
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
@@ -1685,7 +1685,7 @@ footer {
   font-size: 1.3rem;
   flex-shrink: 0;
 }
-.dash-user-name { font-weight: 600; font-size: 0.95rem; color: var(--white); }
+.dash-user-name { font-weight: 600; font-size: 0.95rem; color: #9C5858; }
 .dash-user-role { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem; }
 .dash-tabs {
   display: flex;
@@ -1696,19 +1696,21 @@ footer {
 .dash-tab {
   padding: 0.55rem 1.2rem;
   border-radius: 50px;
-  border: 1px solid var(--glass-border);
-  color: var(--text-muted);
+  border: 1px solid rgba(0,0,0,0.15);
+  color: #9C5858;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.08em;
-  background: var(--dark-2);
+  background: #ffffff;
   transition: var(--transition);
   display: flex;
   align-items: center;
   gap: 0.4rem;
 }
-.dash-tab:hover { color: var(--white); border-color: rgba(255,255,255,0.15); }
-.dash-tab.active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--black); border-color: transparent; font-weight: 700; }
+.dash-tab:hover { color: #ffffff; border-color: rgba(0,0,0,0.15); background: #9C5858; }
+.dash-tab.active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #ffffff; border-color: transparent; font-weight: 700; }
+.dash-header .btn-outline { color: #9C5858; border: 1px solid rgba(156, 88, 88, 0.4); }
+.dash-header .btn-outline:hover { background: #9C5858; color: #ffffff; }
 .dash-tab .tab-badge {
   background: rgba(0,0,0,0.25);
   color: inherit;
