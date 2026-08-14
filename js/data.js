@@ -305,7 +305,13 @@ export const DATA = {
       const studentsSnap = await getDocs(collection(db, "students"));
       this.students = [];
       studentsSnap.forEach(doc => {
-        this.students.push({ id: doc.id, ...doc.data() });
+        let sData = doc.data();
+        if (sData.courses && !sData.courseIds) {
+          sData.courseIds = sData.courses;
+          delete sData.courses;
+        }
+        sData.courseIds = sData.courseIds || [];
+        this.students.push({ id: doc.id, ...sData });
       });
 
       // 3. Fetch Courses

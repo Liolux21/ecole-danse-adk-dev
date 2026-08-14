@@ -1585,7 +1585,7 @@ window.submitAddStudent = async function() {
       lastname: nom,
       age: parseInt(age, 10),
       contactEmail: email,
-      courses: selectedCourses,
+      courseIds: selectedCourses,
       absences: [],
       avatar: `https://i.pravatar.cc/150?u=${newStudentId}`
     };
