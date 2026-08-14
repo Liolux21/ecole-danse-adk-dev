@@ -887,8 +887,10 @@ function renderParentDashboard(user) {
   if (nextCoursesData.length > 0 && banner && bannerContent) {
     banner.style.display = 'flex';
     let html = '';
-    nextCoursesData.forEach(data => {
-      html += `Le prochain cours de <strong style="color: #9C5858;">${data.child.firstname}</strong> est <strong style="color: #9C5858;">${data.course.name}</strong>, ce ${data.dayStr.toLowerCase()} ${data.dateStrObj} à ${data.hourStr}.<br>`;
+    nextCoursesData.forEach((data, idx) => {
+      const isLast = idx === nextCoursesData.length - 1;
+      const margin = isLast ? '0' : '0.5rem';
+      html += `<div style="margin-bottom: ${margin};">Le prochain cours de <strong style="color: #9C5858;">${data.child.firstname}</strong> est <strong style="color: #9C5858;">${data.course.name}</strong>, ce ${data.dayStr.toLowerCase()} ${data.dateStrObj} à ${data.hourStr}.</div>`;
     });
     bannerContent.innerHTML = html;
   } else if (banner) {
