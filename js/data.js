@@ -292,3 +292,5 @@ const DATA = {
 };
 
 DATA.loadState();
+w i n d o w . D A T A   =   D A T A ;  
+ 

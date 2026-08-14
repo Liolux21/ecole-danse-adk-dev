@@ -142,9 +142,11 @@
 
         <div class="dash-tabs" id="admin-tabs">
           <button class="dash-tab active" data-tab="inscriptions">📝 Inscriptions <span class="tab-badge" id="pending-badge">3</span></button>
-          <button class="dash-tab" data-tab="eleves">👥 Élèves</button>
-          <button class="dash-tab" data-tab="profs">👩‍🏫 Professeurs</button>
-          <button class="dash-tab" data-tab="admin-gala">🎭 Gala</button>
+          <button class="dash-tab" data-tab="eleves">👦 Élèves</button>
+          <button class="dash-tab" data-tab="profs">🧑‍🏫 Professeurs</button>
+          <button class="dash-tab" data-tab="admin-cours">📅 Cours</button>
+          <button class="dash-tab" data-tab="admin-settings">⚙️ Paramètres</button>
+          <button class="dash-tab" data-tab="admin-gala">🩰 Gala</button>
         </div>
 
         <!-- Tab: Inscriptions -->
@@ -182,6 +184,73 @@
           </div>
         </div>
         
+        <!-- Tab: Cours -->
+        <div class="tab-content" id="tab-admin-cours">
+          <div class="dash-header">
+            <h3>Gestion des Cours</h3>
+            <button class="btn btn-primary" onclick="openAddCourseModal()">+ Ajouter un cours</button>
+          </div>
+          <div class="data-table-container">
+            <table class="data-table" id="admin-courses-table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Professeur</th>
+                  <th>Jour/Heure</th>
+                  <th>Âge</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-courses-tbody">
+                <!-- Dynamique -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab: Paramètres -->
+        <div class="tab-content" id="tab-admin-settings">
+          <div class="dash-header">
+            <h3>Paramètres de la Saison & Congés</h3>
+          </div>
+          <div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 2rem;">
+            <h4 style="color: #9C5858; margin-bottom: 1rem;">Saison actuelle</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Date de début</label>
+                <input type="date" id="settings-season-start" class="form-control" value="2026-09-14">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Date de fin</label>
+                <input type="date" id="settings-season-end" class="form-control" value="2027-06-20">
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveSeasonSettings()" style="margin-top: 1rem;">Enregistrer la saison</button>
+          </div>
+
+          <div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h4 style="color: #9C5858; margin-bottom: 1rem;">Congés scolaires (Suspension des cours)</h4>
+            <div id="settings-holidays-list" style="margin-bottom: 1rem;">
+              <!-- Dynamique -->
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: flex-end;">
+              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label class="form-label">Nom (ex: Toussaint)</label>
+                <input type="text" id="new-holiday-name" class="form-control">
+              </div>
+              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label class="form-label">Début</label>
+                <input type="date" id="new-holiday-start" class="form-control">
+              </div>
+              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label class="form-label">Fin</label>
+                <input type="date" id="new-holiday-end" class="form-control">
+              </div>
+              <button class="btn btn-outline" onclick="addHoliday()">+ Ajouter</button>
+            </div>
+          </div>
+        </div>
+
         <!-- Tab: Gala Admin -->
         <div class="tab-content" id="tab-admin-gala">
           <select class="form-input gala-mobile-select" data-target="sub-admin-gala-tabs" style="display:none; margin-bottom:1rem; width:50%; cursor:pointer;">
@@ -518,8 +587,83 @@
     </div>
   </div>
 
-  <script src="js/data.js?v=2"></script>
-  <script src="js/auth.js?v=13"></script>
-  <script src="js/app.js?v=23"></script>
+  <!-- Modal: Ajouter un élève -->
+  <div class="vitrine-modal-overlay" id="modal-add-student">
+    <div class="vitrine-modal-content">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-add-student')">×</button>
+      <div class="vitrine-modal-header">
+        <h2 class="vitrine-modal-title">Ajouter un élève</h2>
+      </div>
+      <div class="vitrine-modal-body">
+        <form id="form-add-student" onsubmit="event.preventDefault(); submitAddStudent();">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Prénom</label>
+              <input type="text" id="add-student-firstname" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nom</label>
+              <input type="text" id="add-student-lastname" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Âge</label>
+            <input type="number" id="add-student-age" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cours (sélection multiple)</label>
+            <select id="add-student-courses" class="form-control" multiple style="height: 120px;">
+              <!-- Dynamique -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email de contact (Parent)</label>
+            <input type="email" id="add-student-email" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%">Créer l'élève</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Gérer un cours -->
+  <div class="vitrine-modal-overlay" id="modal-manage-course">
+    <div class="vitrine-modal-content">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-manage-course')">×</button>
+      <div class="vitrine-modal-header">
+        <h2 class="vitrine-modal-title" id="manage-course-title">Nouveau cours</h2>
+      </div>
+      <div class="vitrine-modal-body">
+        <form id="form-manage-course" onsubmit="event.preventDefault(); submitManageCourse();">
+          <input type="hidden" id="manage-course-id">
+          <div class="form-group">
+            <label class="form-label">Nom du cours</label>
+            <input type="text" id="manage-course-name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Professeur</label>
+            <select id="manage-course-prof" class="form-control" required>
+              <!-- Dynamique -->
+            </select>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Jour/Heure (ex: Lundi 17h30)</label>
+              <input type="text" id="manage-course-schedule" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tranche d'âge</label>
+              <input type="text" id="manage-course-age" class="form-control" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%">Sauvegarder</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/data.js?v=2"></script>
+  <script type="module" src="js/auth.js?v=13"></script>
+  <script type="module" src="js/app.js?v=23"></script>
 </body>
 </html>

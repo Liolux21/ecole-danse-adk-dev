@@ -43,3 +43,5 @@ const AUTH = {
   getRole()          { return this.currentUser?.role || null; },
   getName()          { return this.currentUser?.name || ''; },
 };
+
+window.AUTH = AUTH;
