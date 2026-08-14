@@ -516,9 +516,9 @@ function showPortalDashboard(user) {
 function initTabs(tabsContainerId, contentIds) {
   const container = document.getElementById(tabsContainerId);
   if (!container) return;
-  container.querySelectorAll('.dash-tab').forEach((tab, i) => {
+  container.querySelectorAll('.dash-tab, .btn-tab').forEach((tab, i) => {
     tab.addEventListener('click', () => {
-      container.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+      container.querySelectorAll('.dash-tab, .btn-tab').forEach(t => t.classList.remove('active'));
       contentIds.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
       tab.classList.add('active');
       const target = document.getElementById(contentIds[i]);
