@@ -881,6 +881,7 @@ function renderParentDashboard(user) {
 
   // Notification Prochains cours
   const nextCoursesData = calculateNextCourses(children);
+  nextCoursesData.sort((a, b) => a.diffMins - b.diffMins);
   const banner = document.getElementById('parent-next-course-banner');
   const bannerContent = document.getElementById('parent-next-course-content');
   if (nextCoursesData.length > 0 && banner && bannerContent) {
