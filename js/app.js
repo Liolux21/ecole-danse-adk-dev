@@ -1622,7 +1622,23 @@ window.submitAddStudent = async function() {
     showToast('✅ Élève ajouté avec succès', 'success');
 
     if (tempPassword) {
-      alert(`⚠️ Nouveau compte créé pour ${email}.\nMot de passe temporaire: ${tempPassword}\n\n(En production, un email automatique sera envoyé.)`);
+      // 5. Envoyer l'email via EmailJS
+      try {
+        await emailjs.send(
+          "VOTRE_SERVICE_ID", // Remplace par ton Service ID
+          "VOTRE_TEMPLATE_ID", // Remplace par ton Template ID
+          {
+            to_email: email,
+            to_name: `${prenom} ${nom}`,
+            temp_password: tempPassword,
+            login_link: "https://liolux21.github.io/ecole-danse-adk-dev/portail.html"
+          }
+        );
+        showToast('✉️ Email envoyé au parent avec succès !', 'success');
+      } catch (emailError) {
+        console.error("Erreur EmailJS:", emailError);
+        alert(`⚠️ Le compte a été créé mais l'email n'a pas pu être envoyé.\nMot de passe temporaire: ${tempPassword}\n\n(N'oublie pas de configurer EmailJS !)`);
+      }
     }
 
   } catch(err) {
@@ -1633,7 +1649,75 @@ window.submitAddStudent = async function() {
     btn.disabled = false;
   }
 };
-window.openAddCourseModal = function() { document.getElementById('modal-manage-course').classList.add('open'); };
-window.submitManageCourse = function() { alert('Cours sauvegardé...'); closeModal('modal-manage-course'); };
+window.openAddCourseModal = function(courseId = null) {
+  const profSelect = document.getElementById('manage-course-prof');
+  if (profSelect) {
+    const profs = DATA.users.filter(u => u.role === 'prof');
+    profSelect.innerHTML = profs.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+  }
+  
+  if (courseId) {
+    const course = DATA.getCourseById(courseId);
+    document.getElementById('manage-course-id').value = course.id;
+    document.getElementById('manage-course-name').value = course.name;
+    if (profSelect) profSelect.value = course.prof;
+    document.getElementById('manage-course-schedule').value = course.schedule || '';
+    document.getElementById('manage-course-age').value = course.ages || '';
+    document.getElementById('manage-course-title').textContent = "Modifier le cours";
+  } else {
+    document.getElementById('form-manage-course').reset();
+    document.getElementById('manage-course-id').value = '';
+    document.getElementById('manage-course-title').textContent = "Nouveau cours";
+  }
+  
+  document.getElementById('modal-manage-course').classList.add('active');
+};
+
+window.submitManageCourse = async function() {
+  const btn = document.querySelector('#form-manage-course button[type="submit"]');
+  const originalText = btn.textContent;
+  btn.textContent = "Sauvegarde...";
+  btn.disabled = true;
+
+  try {
+    let id = document.getElementById('manage-course-id').value;
+    const isNew = !id;
+    if (isNew) id = "crs_" + Date.now();
+    
+    const courseData = {
+      id: id,
+      name: document.getElementById('manage-course-name').value,
+      prof: document.getElementById('manage-course-prof').value,
+      schedule: document.getElementById('manage-course-schedule').value,
+      ages: document.getElementById('manage-course-age').value,
+      category: "Nouveau",
+      style: "classique", // par défaut
+      lieu: "ADK" // par défaut
+    };
+    
+    if (isNew) {
+      // Pour un nouveau cours, on peut rajouter desc, levels...
+      courseData.desc = "Nouveau cours ajouté.";
+      courseData.levels = "Tous niveaux";
+      courseData.studentsCount = 0;
+    }
+
+    await setDoc(doc(db, "courses", id), courseData, { merge: true });
+    
+    await DATA.syncFromFirebase();
+    if (AUTH.hasRole('admin')) {
+      showPortalDashboard(AUTH.currentUser);
+    }
+    
+    closeModal('modal-manage-course');
+    showToast('✅ Cours sauvegardé avec succès', 'success');
+  } catch(err) {
+    console.error(err);
+    showToast('❌ Erreur lors de la sauvegarde du cours', 'error');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+};
 window.saveSeasonSettings = function() { alert('Saison enregistrée !'); };
 window.addHoliday = function() { alert('Congé ajouté !'); };

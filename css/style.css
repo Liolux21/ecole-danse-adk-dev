@@ -2181,3 +2181,50 @@ footer {
 
 .planning-desktop-view .planning-header-cell .day { color: #9C5858 !important; }
 .planning-desktop-view .planning-header-cell .date { color: #333 !important; }
+
+
+/* Modals for Vitrine */
+.vitrine-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(234, 213, 213, 0.95);
+  backdrop-filter: blur(10px);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.vitrine-modal.active, .vitrine-modal.open {
+  display: flex;
+}
+.vitrine-modal-content {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  max-width: 1000px;
+  width: 100%;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.vitrine-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--dark-2);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+.vitrine-modal-close:hover {
+  background: var(--gold);
+}
