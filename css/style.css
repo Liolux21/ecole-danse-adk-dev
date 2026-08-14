@@ -1890,15 +1890,15 @@ footer {
 .appel-course-btn {
   padding: 0.5rem 1.1rem;
   border-radius: 50px;
-  border: 1px solid var(--glass-border);
-  background: var(--dark-2);
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 500;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: #ffffff;
+  color: #9C5858;
+  font-weight: 600;
+  font-size: 0.85rem;
   transition: var(--transition);
 }
-.appel-course-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
-.appel-course-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--black); border-color: transparent; font-weight: 700; }
+.appel-course-btn:hover { color: #ffffff; border-color: rgba(0,0,0,0.15); background: #9C5858; }
+.appel-course-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #ffffff; border-color: transparent; font-weight: 700; }
 .appel-date-row {
   display: flex;
   align-items: center;
