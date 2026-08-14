@@ -1,41 +1,61 @@
-// =============================================
-// ÉCOLE DE DANSE ADK — Authentification
-// =============================================
+import { auth, db, signInWithEmailAndPassword, signOut, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 
 const AUTH = {
-
   currentUser: null,
 
-  // Initialise depuis localStorage
   init() {
+    return new Promise((resolve) => {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          try {
+            // Dans notre modèle de migration, on a utilisé l'email comme ID de document pour plus de facilité
+            // ou on peut faire une query pour trouver l'utilisateur par email.
+            // Vu qu'on a mis l'email comme ID dans migrate.html :
+            const docRef = doc(db, "users", user.email);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              this.currentUser = { ...docSnap.data(), uid: user.uid };
+            } else {
+              console.warn("Utilisateur authentifié mais pas trouvé dans Firestore.");
+              this.currentUser = { email: user.email, role: 'eleve' }; // Fallback
+            }
+          } catch(e) {
+            console.error("Erreur de récupération profil Firestore", e);
+            this.currentUser = null;
+          }
+        } else {
+          this.currentUser = null;
+        }
+        resolve(this.currentUser !== null);
+      });
+    });
+  },
+
+  async login(email, password) {
     try {
-      const saved = localStorage.getItem('adk_user');
-      if (saved) {
-        this.currentUser = JSON.parse(saved);
-        return true;
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      const docRef = doc(db, "users", user.email);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        this.currentUser = { ...docSnap.data(), uid: user.uid };
+        return this.currentUser;
       }
-    } catch(e) { this.logout(); }
-    return false;
-  },
-
-  // Connexion
-  login(email, password) {
-    const user = DATA.users.find(u =>
-      u.email.toLowerCase() === email.toLowerCase().trim() &&
-      u.password === password
-    );
-    if (user) {
-      this.currentUser = { ...user };
-      localStorage.setItem('adk_user', JSON.stringify(this.currentUser));
-      return user;
+      return null;
+    } catch (e) {
+      console.error("Login error:", e);
+      return null;
     }
-    return null;
   },
 
-  // Déconnexion
-  logout() {
-    this.currentUser = null;
-    localStorage.removeItem('adk_user');
+  async logout() {
+    try {
+      await signOut(auth);
+      this.currentUser = null;
+    } catch(e) {
+      console.error("Logout error", e);
+    }
   },
 
   isAuthenticated() { return this.currentUser !== null; },

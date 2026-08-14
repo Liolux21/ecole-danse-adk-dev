@@ -258,5 +258,4 @@ const VITRINE_DATA = {
     }
   }
 };
-w i n d o w . V I T R I N E _ D A T A   =   V I T R I N E _ D A T A ;  
- 
+window.VITRINE_DATA = VITRINE_DATA;

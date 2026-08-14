@@ -1,6 +1,14 @@
+import { db, collection, addDoc, doc, setDoc, getDoc } from './firebase-config.js';
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
 // =============================================
 // ÉCOLE DE DANSE ADK — App v2 (3 rôles)
 // =============================================
+
+function getMonthName(m) {
+  const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  return months[m - 1] || '';
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
@@ -138,18 +146,6 @@ function createCourseCard(course) {
 // PLANNING avec filtres + vue mobile
 // =============================================
 const planningState = { offset: 0, styleFilter: 'all', lieuFilter: 'all', mobileDay: 0 };
-
-function initCountdown() {
-  const eventDate = new Date('2026-06-20T20:00:00').getTime();
-  const els = {
-    d: document.getElementById('cd-days'),
-    h: document.getElementById('cd-hours'),
-    m: document.getElementById('cd-mins'),
-    s: document.getElementById('cd-secs')
-  };
-  if (!els.d || !els.h || !els.m || !els.s) return;
-  // logic...
-}
 
 function initPlanning() {
   const grid     = document.getElementById('planning-grid');
@@ -425,11 +421,15 @@ function initInscription() {
 // =============================================
 // PORTAIL MULTI-RÔLES
 // =============================================
-function initPortal() {
+async function initPortal() {
   const portalForm = document.getElementById('portal-login-form');
   if (!portalForm) return;
 
-  AUTH.init();
+  // 1. Sync from Firebase Firestore
+  await DATA.syncFromFirebase();
+
+  // 2. Initialize Auth
+  await AUTH.init();
 
   // Role hints (aide visuelle démo)
   const demoCreds = {
@@ -457,23 +457,22 @@ function initPortal() {
   }
 
   // Formulaire de connexion
-  portalForm.addEventListener('submit', e => {
+  portalForm.addEventListener('submit', async e => {
     e.preventDefault();
     const email = document.getElementById('portal-email').value;
     const password = document.getElementById('portal-password').value;
     const btn = document.getElementById('portal-submit-btn');
     btn.textContent = 'Connexion...';
     btn.disabled = true;
-    setTimeout(() => {
-      const user = AUTH.login(email, password);
-      if (user) {
-        showPortalDashboard(user);
-      } else {
-        showToast('❌ Email ou mot de passe incorrect', 'error');
-        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg> Se connecter`;
-        btn.disabled = false;
-      }
-    }, 600);
+    
+    const user = await AUTH.login(email, password);
+    if (user) {
+      showPortalDashboard(user);
+    } else {
+      showToast('❌ Email ou mot de passe incorrect', 'error');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg> Se connecter`;
+      btn.disabled = false;
+    }
   });
 
   // Déconnexions
@@ -1546,8 +1545,94 @@ window.calculateNextCourses = calculateNextCourses;
 window.openManageCourseModal = openManageCourseModal;
 window.openMessagesModal = openMessagesModal;
 window.renderChatHistory = renderChatHistory;
-window.openAddStudentModal = function() { document.getElementById('modal-add-student').classList.add('open'); };
-window.submitAddStudent = function() { alert('Enregistrement en cours...'); closeModal('modal-add-student'); };
+window.openAddStudentModal = function() {
+  const select = document.getElementById('add-student-courses');
+  if (select) {
+    select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name || c.title} (${c.category || c.level || ''})</option>`).join('');
+  }
+  document.getElementById('modal-add-student').classList.add('open');
+};
+
+window.submitAddStudent = async function() {
+  const btn = document.querySelector('#form-add-student button[type="submit"]');
+  const originalText = btn.textContent;
+  btn.textContent = "Création...";
+  btn.disabled = true;
+
+  try {
+    const prenom = document.getElementById('add-student-firstname').value;
+    const nom = document.getElementById('add-student-lastname').value;
+    const age = document.getElementById('add-student-age').value;
+    const email = document.getElementById('add-student-email').value;
+    const select = document.getElementById('add-student-courses');
+    const selectedCourses = Array.from(select.selectedOptions).map(opt => opt.value);
+
+    // 1. Ajouter l'élève
+    const newStudentId = "stu_" + Date.now();
+    const newStudent = {
+      firstname: prenom,
+      lastname: nom,
+      age: parseInt(age, 10),
+      contactEmail: email,
+      courses: selectedCourses,
+      absences: [],
+      avatar: `https://i.pravatar.cc/150?u=${newStudentId}`
+    };
+    await setDoc(doc(db, "students", newStudentId), newStudent);
+
+    // 2. Créer l'utilisateur s'il n'existe pas
+    const userRef = doc(db, "users", email);
+    const userSnap = await getDoc(userRef);
+    let tempPassword = null;
+
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      const children = userData.childrenIds || [];
+      if (!children.includes(newStudentId)) {
+        await setDoc(userRef, { childrenIds: [...children, newStudentId] }, { merge: true });
+      }
+    } else {
+      // Nouvel utilisateur
+      tempPassword = Math.random().toString(36).slice(-8); // Mot de passe temporaire
+      try {
+        const auth = getAuth();
+        await createUserWithEmailAndPassword(auth, email, tempPassword);
+      } catch(e) {
+        console.warn("L'utilisateur existe peut-être déjà dans Auth, mais pas dans Firestore.", e);
+      }
+      
+      await setDoc(userRef, {
+        email: email,
+        name: `${prenom} ${nom} (Parent)`,
+        role: "parent",
+        childrenIds: [newStudentId]
+      });
+    }
+
+    // 3. Re-synchroniser les données locales
+    await DATA.syncFromFirebase();
+
+    // 4. Mettre à jour l'interface
+    if (AUTH.hasRole('admin')) {
+      showPortalDashboard(AUTH.currentUser); // Rafraichir le dashboard admin
+    }
+
+    closeModal('modal-add-student');
+    document.getElementById('form-add-student').reset();
+    showToast('✅ Élève ajouté avec succès', 'success');
+
+    if (tempPassword) {
+      alert(`⚠️ Nouveau compte créé pour ${email}.\nMot de passe temporaire: ${tempPassword}\n\n(En production, un email automatique sera envoyé.)`);
+    }
+
+  } catch(err) {
+    console.error(err);
+    showToast('❌ Erreur lors de l\'ajout', 'error');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+};
 window.openAddCourseModal = function() { document.getElementById('modal-manage-course').classList.add('open'); };
 window.submitManageCourse = function() { alert('Cours sauvegardé...'); closeModal('modal-manage-course'); };
 window.saveSeasonSettings = function() { alert('Saison enregistrée !'); };

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Migration Firebase</title>
+</head>
+<body>
+  <h1>Migration Data vers Firebase</h1>
+  <button id="start-btn">Démarrer la migration</button>
+  <div id="log" style="white-space: pre-wrap; font-family: monospace; margin-top: 1rem;"></div>
+
+  <script type="module" src="js/data.js"></script>
+  <script type="module">
+    import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, setDoc, doc } from './js/firebase-config.js';
+
+    const logDiv = document.getElementById('log');
+    function log(msg) {
+      logDiv.textContent += msg + '\n';
+      console.log(msg);
+    }
+
+    document.getElementById('start-btn').addEventListener('click', async () => {
+      log("Démarrage de la migration avec Auth admin...");
+      
+      const users = window.DATA.users;
+      const students = window.DATA.students;
+      const courses = window.DATA.courses;
+
+      log(`Trouvé: ${users.length} users, ${students.length} students, ${courses.length} courses.`);
+
+      // 1. Authentification en tant qu'admin
+      try {
+        log("Connexion avec admin@adk.be...");
+        await signInWithEmailAndPassword(auth, "admin@adk.be", "password123");
+        log("Connecté en tant qu'admin !");
+      } catch(e) {
+        log("Erreur de connexion admin (il n'existe peut-être pas ou le mdp est faux): " + e.message);
+        try {
+           log("Création de admin@adk.be...");
+           await createUserWithEmailAndPassword(auth, "admin@adk.be", "password123");
+        } catch(err) { log("Echec total auth: " + err.message); return; }
+      }
+
+      // 2. Migrer les utilisateurs (Firestore seulement car Auth a déjà été fait en partie)
+      for (const u of users) {
+        try {
+          const email = u.email;
+          log(`Sauvegarde Firestore pour user: ${email}...`);
+          await setDoc(doc(db, "users", email), {
+            email: email,
+            role: u.role,
+            name: u.name,
+            childrenIds: u.childrenIds || []
+          });
+          log(`   -> Succès pour ${email}`);
+        } catch(err) {
+          log(`Erreur sur user ${u.email}: ${err.message}`);
+        }
+      }
+
+      // 3. Migrer les élèves
+      log("Migration des élèves...");
+      for (const [id, student] of Object.entries(students)) {
+        try {
+          await setDoc(doc(db, "students", id), student);
+          log(`   -> Succès élève ${id}`);
+        } catch(err) {
+          log(`Erreur élève ${id}: ${err.message}`);
+        }
+      }
+
+      // 4. Migrer les cours
+      log("Migration des cours...");
+      for (const [id, course] of Object.entries(courses)) {
+        try {
+          await setDoc(doc(db, "courses", id), course);
+          log(`   -> Succès cours ${id}`);
+        } catch(err) {
+          log(`Erreur cours ${id}: ${err.message}`);
+        }
+      }
+
+      log("MIGRATION TERMINÉE ! 🎉");
+    });
+  </script>
+</body>
+</html>

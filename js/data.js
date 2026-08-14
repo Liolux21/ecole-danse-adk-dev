@@ -1,8 +1,9 @@
 // =============================================
 // ÉCOLE DE DANSE ADK — Data v3 (Saison 2026-2027)
 // =============================================
+import { db, collection, getDocs } from './firebase-config.js';
 
-const DATA = {
+export const DATA = {
 
   school: {
     name: "École de Danse ADK",
@@ -288,9 +289,44 @@ const DATA = {
         if (parsed.courseOverrides) this.courseOverrides = parsed.courseOverrides;
       } catch(e) {}
     }
+  },
+
+  // ---- FIREBASE SYNC ----
+  async syncFromFirebase() {
+    try {
+      // 1. Fetch Users
+      const usersSnap = await getDocs(collection(db, "users"));
+      this.users = [];
+      usersSnap.forEach(doc => {
+        this.users.push({ id: doc.id, ...doc.data() });
+      });
+
+      // 2. Fetch Students
+      const studentsSnap = await getDocs(collection(db, "students"));
+      this.students = [];
+      studentsSnap.forEach(doc => {
+        this.students.push({ id: doc.id, ...doc.data() });
+      });
+
+      // 3. Fetch Courses
+      const coursesSnap = await getDocs(collection(db, "courses"));
+      this.courses = [];
+      coursesSnap.forEach(doc => {
+        this.courses.push({ id: doc.id, ...doc.data() });
+      });
+
+      console.log("Données Firebase synchronisées avec succès !", { 
+        users: this.users.length, 
+        students: this.students.length, 
+        courses: this.courses.length 
+      });
+      return true;
+    } catch(err) {
+      console.error("Erreur de synchronisation Firebase:", err);
+      return false;
+    }
   }
 };
 
 DATA.loadState();
-w i n d o w . D A T A   =   D A T A ;  
- 
+window.DATA = DATA;
