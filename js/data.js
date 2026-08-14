@@ -52,7 +52,7 @@ const DATA = {
     { id: 17, email: 'alain@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Alain',         avatar: '🕺',  title: 'Professeur',   courseIds: [26] },
     { id: 18, email: 'florence@adk.be',    password: 'prof2026',   role: 'prof',   name: 'Florence',      avatar: '👩‍🏫', title: 'Professeure',  courseIds: [27] },
     // Parents
-    { id: 19, email: 'parent@adk.be',  password: 'parent2026', role: 'parent', name: 'Marie Dupont', avatar: '👩', childrenIds: [1] },
+    { id: 19, email: 'parent@adk.be',  password: 'parent2026', role: 'parent', name: 'Marie Dupont', avatar: '👩', childrenIds: [1, 9] },
     { id: 20, email: 'parent2@adk.be', password: 'parent2026', role: 'parent', name: 'Jean Petit',   avatar: '👨', childrenIds: [2, 3] },
   ],
 
@@ -161,6 +161,7 @@ const DATA = {
     { id: 6, firstname: 'Zoé',   lastname: 'Lambert',  age: 5,  courseIds: [2],      parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 280 },
     { id: 7, firstname: 'Milo',  lastname: 'Rousseau', age: 12, courseIds: [5, 17],  parentId: null, cotisation: 'en attente', mutuelle: 'attente', montant: 480 },
     { id: 8, firstname: 'Alice', lastname: 'Moreau',   age: 7,  courseIds: [3, 1],   parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 480 },
+    { id: 9, firstname: 'Lucas', lastname: 'Dupont',   age: 11, courseIds: [4, 6],   parentId: 19, cotisation: 'payée', mutuelle: 'remis', montant: 300 },
   ],
 
   // ---- PRÉSENCES (démo) ----
