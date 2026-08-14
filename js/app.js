@@ -500,6 +500,18 @@ function initPortal() {
   initTabs('sub-admin-gala-tabs', ['tab-admin-gala-repets', 'tab-admin-gala-tenues', 'tab-admin-gala-infos', 'tab-admin-gala-notes']);
   initTabs('sub-prof-gala-tabs', ['tab-prof-gala-repets', 'tab-prof-gala-tenues', 'tab-prof-gala-infos', 'tab-prof-gala-notes']);
   initTabs('sub-parent-gala-tabs', ['tab-parent-gala-repets', 'tab-parent-gala-tenues']);
+
+  // Mobile Gala select logic
+  document.querySelectorAll('.gala-mobile-select').forEach(select => {
+    select.addEventListener('change', (e) => {
+      const targetId = e.target.getAttribute('data-target');
+      const container = document.getElementById(targetId);
+      if (container) {
+        const btn = container.querySelector(`[data-tab="${e.target.value}"]`);
+        if (btn) btn.click();
+      }
+    });
+  });
 }
 
 function showPortalDashboard(user) {

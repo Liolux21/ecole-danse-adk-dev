@@ -2103,6 +2103,33 @@ footer {
   .dash-tab { font-size: 0.72rem; padding: 0.45rem 0.9rem; }
 }
 
+@media (max-width: 768px) {
+  #tab-mes-eleves .data-table thead { display: none; }
+  #tab-mes-eleves .data-table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+  }
+  #tab-mes-eleves .data-table tbody td {
+    display: block;
+    border: none;
+    padding: 0.3rem 0.5rem;
+  }
+  #tab-mes-eleves .data-table tbody td:nth-child(1) { width: 100%; font-size: 1rem; padding-bottom: 0; font-weight: bold;}
+  #tab-mes-eleves .data-table tbody td:nth-child(2) { width: 30%; color: var(--text-muted); }
+  #tab-mes-eleves .data-table tbody td:nth-child(3) { width: 40%; color: var(--text-muted); }
+  #tab-mes-eleves .data-table tbody td:nth-child(4) { width: 30%; text-align: right; }
+  #tab-mes-eleves .data-table tbody td:nth-child(5) { width: 50%; display: flex; align-items: center; justify-content: flex-start; margin-top: 0.5rem; }
+  #tab-mes-eleves .data-table tbody td:nth-child(5)::before { content: "Cotisation : "; font-size: 0.75rem; margin-right: 0.3rem; color: var(--text-muted); font-weight: 600; }
+  #tab-mes-eleves .data-table tbody td:nth-child(6) { width: 50%; display: flex; align-items: center; justify-content: flex-end; margin-top: 0.5rem; }
+  #tab-mes-eleves .data-table tbody td:nth-child(6)::before { content: "Mutuelle : "; font-size: 0.75rem; margin-right: 0.3rem; color: var(--text-muted); font-weight: 600; }
+
+  /* Gala Mobile Tabs */
+  .gala-desktop-tabs { display: none !important; }
+  .gala-mobile-select { display: block !important; }
+}
+
 
 /* =============================================
    PLANNING WHITE CARDS OVERRIDES
