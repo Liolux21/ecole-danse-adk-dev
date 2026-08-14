@@ -185,7 +185,7 @@
             </div>
             <div style="overflow-x: auto;">
               <table class="data-table" id="admin-eleves-table">
-                <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Cotisation</th><th>Mutuelle</th></tr></thead>
+                <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Cotisation</th><th>Mutuelle</th><th>Actions</th></tr></thead>
                 <tbody id="admin-eleves-body"></tbody>
               </table>
             </div>
@@ -619,6 +619,7 @@
       </div>
       <div class="vitrine-modal-body">
         <form id="form-add-student" onsubmit="event.preventDefault(); submitAddStudent();">
+          <input type="hidden" id="add-student-id">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label class="form-label">Prénom</label>

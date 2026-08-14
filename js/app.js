@@ -653,6 +653,7 @@ function renderAdminEleves() {
       <td style="color:var(--text-muted);font-size:0.82rem">${courses}</td>
       <td>${cotSelect}</td>
       <td>${mutSelect}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id}')">Modifier</button></td>
     </tr>`;
   }).join('');
 }
@@ -1556,21 +1557,45 @@ window.calculateNextCourses = calculateNextCourses;
 window.openManageCourseModal = openManageCourseModal;
 window.openMessagesModal = openMessagesModal;
 window.renderChatHistory = renderChatHistory;
-window.openAddStudentModal = function() {
+window.openAddStudentModal = function(studentId = null) {
   const select = document.getElementById('add-student-courses');
   if (select) {
     select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name || c.title} (${c.category || c.level || ''})</option>`).join('');
   }
-  document.getElementById('modal-add-student').classList.add('open');
+  
+  if (studentId) {
+    const student = DATA.getStudentById(studentId);
+    document.getElementById('add-student-firstname').value = student.firstname;
+    document.getElementById('add-student-lastname').value = student.lastname;
+    document.getElementById('add-student-age').value = student.age;
+    document.getElementById('add-student-email').value = student.contactEmail || '';
+    
+    Array.from(select.options).forEach(opt => {
+      opt.selected = (student.courseIds || []).includes(opt.value);
+    });
+    
+    document.getElementById('add-student-id').value = student.id;
+    document.querySelector('#modal-add-student .vitrine-modal-title').textContent = "Modifier l'élève";
+    document.querySelector('#form-add-student button[type="submit"]').textContent = "Sauvegarder";
+  } else {
+    document.getElementById('form-add-student').reset();
+    document.getElementById('add-student-id').value = '';
+    document.querySelector('#modal-add-student .vitrine-modal-title').textContent = "Ajouter un élève";
+    document.querySelector('#form-add-student button[type="submit"]').textContent = "Créer l'élève";
+  }
+  
+  document.getElementById('modal-add-student').classList.add('active');
 };
 
 window.submitAddStudent = async function() {
   const btn = document.querySelector('#form-add-student button[type="submit"]');
   const originalText = btn.textContent;
-  btn.textContent = "Création...";
+  btn.textContent = "Sauvegarde...";
   btn.disabled = true;
 
   try {
+    const studentId = document.getElementById('add-student-id').value;
+    const isNew = !studentId;
     const prenom = document.getElementById('add-student-firstname').value;
     const nom = document.getElementById('add-student-lastname').value;
     const age = document.getElementById('add-student-age').value;
@@ -1578,66 +1603,65 @@ window.submitAddStudent = async function() {
     const select = document.getElementById('add-student-courses');
     const selectedCourses = Array.from(select.selectedOptions).map(opt => opt.value);
 
-    // 1. Ajouter l'élève
-    const newStudentId = "stu_" + Date.now();
-    const newStudent = {
+    const targetId = isNew ? "stu_" + Date.now() : studentId;
+    const studentData = {
       firstname: prenom,
       lastname: nom,
       age: parseInt(age, 10),
       contactEmail: email,
-      courseIds: selectedCourses,
-      absences: [],
-      avatar: `https://i.pravatar.cc/150?u=${newStudentId}`
+      courseIds: selectedCourses
     };
-    await setDoc(doc(db, "students", newStudentId), newStudent);
+    if (isNew) {
+      studentData.absences = [];
+      studentData.avatar = `https://i.pravatar.cc/150?u=${targetId}`;
+    }
+    
+    await setDoc(doc(db, "students", targetId), studentData, { merge: true });
 
-    // 2. Créer l'utilisateur s'il n'existe pas
-    const userRef = doc(db, "users", email);
-    const userSnap = await getDoc(userRef);
     let tempPassword = null;
+    if (isNew) {
+      const userRef = doc(db, "users", email);
+      const userSnap = await getDoc(userRef);
 
-    if (userSnap.exists()) {
-      const userData = userSnap.data();
-      const children = userData.childrenIds || [];
-      if (!children.includes(newStudentId)) {
-        await setDoc(userRef, { childrenIds: [...children, newStudentId] }, { merge: true });
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const children = userData.childrenIds || [];
+        if (!children.includes(targetId)) {
+          await setDoc(userRef, { childrenIds: [...children, targetId] }, { merge: true });
+        }
+      } else {
+        tempPassword = Math.random().toString(36).slice(-8);
+        try {
+          const auth = getAuth();
+          await createUserWithEmailAndPassword(auth, email, tempPassword);
+        } catch(e) {
+          console.warn("L'utilisateur existe peut-être déjà dans Auth, mais pas dans Firestore.", e);
+        }
+        
+        await setDoc(userRef, {
+          id: email,
+          email: email,
+          name: `${prenom} ${nom} (Parent)`,
+          role: "parent",
+          childrenIds: [targetId]
+        });
       }
-    } else {
-      // Nouvel utilisateur
-      tempPassword = Math.random().toString(36).slice(-8); // Mot de passe temporaire
-      try {
-        const auth = getAuth();
-        await createUserWithEmailAndPassword(auth, email, tempPassword);
-      } catch(e) {
-        console.warn("L'utilisateur existe peut-être déjà dans Auth, mais pas dans Firestore.", e);
-      }
-      
-      await setDoc(userRef, {
-        email: email,
-        name: `${prenom} ${nom} (Parent)`,
-        role: "parent",
-        childrenIds: [newStudentId]
-      });
     }
 
-    // 3. Re-synchroniser les données locales
     await DATA.syncFromFirebase();
-
-    // 4. Mettre à jour l'interface
     if (AUTH.hasRole('admin')) {
-      showPortalDashboard(AUTH.currentUser); // Rafraichir le dashboard admin
+      showPortalDashboard(AUTH.currentUser);
     }
 
     closeModal('modal-add-student');
     document.getElementById('form-add-student').reset();
-    showToast('✅ Élève ajouté avec succès', 'success');
+    showToast(isNew ? '✅ Élève ajouté avec succès' : '✅ Élève modifié avec succès', 'success');
 
-    if (tempPassword) {
-      // 5. Envoyer l'email via EmailJS
+    if (isNew && tempPassword) {
       try {
         await emailjs.send(
-          "VOTRE_SERVICE_ID", // Remplace par ton Service ID
-          "VOTRE_TEMPLATE_ID", // Remplace par ton Template ID
+          "VOTRE_SERVICE_ID",
+          "VOTRE_TEMPLATE_ID",
           {
             to_email: email,
             to_name: `${prenom} ${nom}`,
@@ -1648,13 +1672,16 @@ window.submitAddStudent = async function() {
         showToast('✉️ Email envoyé au parent avec succès !', 'success');
       } catch (emailError) {
         console.error("Erreur EmailJS:", emailError);
-        alert(`⚠️ Le compte a été créé mais l'email n'a pas pu être envoyé.\nMot de passe temporaire: ${tempPassword}\n\n(N'oublie pas de configurer EmailJS !)`);
+        alert(`⚠️ Le compte a été créé mais l'email n'a pas pu être envoyé.
+Mot de passe temporaire: ${tempPassword}
+
+(N'oublie pas de configurer EmailJS !)`);
       }
     }
 
   } catch(err) {
     console.error(err);
-    showToast('❌ Erreur lors de l\'ajout', 'error');
+    showToast('❌ Erreur lors de la sauvegarde', 'error');
   } finally {
     btn.textContent = originalText;
     btn.disabled = false;
