@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <link rel="canonical" href="http://annedkdanse.be/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩰</text></svg>">
-  <link rel="stylesheet" href="css/style.css?v=43">
+  <link rel="stylesheet" href="css/style.css?v=44">
 </head>
 <body>
 
@@ -229,7 +229,7 @@
               <span class="data-table-title" id="prof-eleves-title">Mes élèves</span>
             </div>
             <table class="data-table">
-              <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Présence</th></tr></thead>
+              <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Présence</th><th>Cotisation</th><th>Mutuelle</th></tr></thead>
               <tbody id="prof-eleves-body"></tbody>
             </table>
           </div>
@@ -270,6 +270,14 @@
           <div class="stat-card">
             <div class="stat-card-label">Absences</div>
             <div class="stat-card-value" id="parent-stat-absence" style="color:#DC6464">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Cotisation</div>
+            <div class="stat-card-value" id="parent-stat-cotisation" style="margin-top: 0.5rem;">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Mutuelle</div>
+            <div class="stat-card-value" id="parent-stat-mutuelle" style="margin-top: 0.5rem;">-</div>
           </div>
         </div>
 
@@ -416,6 +424,6 @@
 
   <script src="js/data.js?v=4"></script>
   <script src="js/auth.js?v=13"></script>
-  <script src="js/app.js?v=6"></script>
+  <script src="js/app.js?v=7"></script>
 </body>
 </html>

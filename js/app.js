@@ -824,7 +824,25 @@ function renderProfEleves(user) {
     const rate = att.length ? Math.round(pres / att.length * 100) : 100;
     const courses = s.courseIds.filter(id => courseIds.includes(id)).map(id => DATA.getCourseById(id)?.name).filter(Boolean).join(', ');
     const color = rate >= 80 ? '#90CC90' : rate >= 60 ? 'var(--gold)' : '#DC6464';
-    return `<tr><td><strong>${s.firstname} ${s.lastname}</strong></td><td>${s.age} ans</td><td style="font-size:0.82rem;color:var(--text-muted)">${courses}</td><td style="color:${color};font-weight:700">${rate}%</td></tr>`;
+    
+    // Cotisation display
+    const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee';
+    const cotClass = isPayee ? 'pill-approved' : 'pill-pending';
+    const cotLabel = isPayee ? '✓ Payée' : '⏳ En attente';
+    
+    // Mutuelle display
+    const mutStatus = s.mutuelle || 'attente';
+    const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'cours' ? 'pill-pending' : 'pill-rejected');
+    const mutLabel = mutStatus === 'remis' ? '✓ Remis' : (mutStatus === 'cours' ? '🔄 En cours' : '⏳ En attente');
+    
+    return `<tr>
+      <td><strong>${s.firstname} ${s.lastname}</strong></td>
+      <td>${s.age} ans</td>
+      <td style="font-size:0.82rem;color:var(--text-muted)">${courses}</td>
+      <td style="color:${color};font-weight:700">${rate}%</td>
+      <td><span class="status-pill ${cotClass}">${cotLabel}</span></td>
+      <td><span class="status-pill ${mutClass}">${mutLabel}</span></td>
+    </tr>`;
   }).join('');
 }
 
@@ -885,6 +903,18 @@ function renderChildData(child) {
   document.getElementById('parent-stat-cours').textContent = child.courseIds.length;
   document.getElementById('parent-stat-presence').textContent = presents;
   document.getElementById('parent-stat-absence').textContent = absents;
+  
+  // Cotisation
+  const isPayee = child.cotisation === 'payée' || child.cotisation === 'payee';
+  const cotClass = isPayee ? 'pill-approved' : 'pill-pending';
+  const cotLabel = isPayee ? '✓ Payée' : '⏳ En attente';
+  document.getElementById('parent-stat-cotisation').innerHTML = `<span class="status-pill ${cotClass}">${cotLabel}</span>`;
+  
+  // Mutuelle
+  const mutStatus = child.mutuelle || 'attente';
+  const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'cours' ? 'pill-pending' : 'pill-rejected');
+  const mutLabel = mutStatus === 'remis' ? '✓ Remis' : (mutStatus === 'cours' ? '🔄 En cours' : '⏳ En attente');
+  document.getElementById('parent-stat-mutuelle').innerHTML = `<span class="status-pill ${mutClass}">${mutLabel}</span>`;
 
   const list = document.getElementById('parent-attendance-list');
   if (att.length === 0) {
