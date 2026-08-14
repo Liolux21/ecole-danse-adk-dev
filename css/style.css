@@ -1258,7 +1258,7 @@ ul { list-style: none; }
   align-items: center;
   gap: 1rem;
   background: #ffffff;
-  border: 1px solid rgba(156, 88, 88, 0.4);
+  border: 1px solid rgba(156, 88, 88, 0.7);
   border-radius: var(--radius-sm);
   padding: 1rem 1.5rem;
   margin-bottom: 2rem;

@@ -892,7 +892,7 @@ function renderParentDashboard(user) {
 
   children.forEach((child, i) => {
     const tab = document.createElement('button');
-    tab.className = `btn btn-outline btn-sm btn-tab child-tab${i === 0 ? ' active' : ''}`;
+    tab.className = `dash-tab child-tab${i === 0 ? ' active' : ''}`;
     tab.textContent = `👧👦 ${child.firstname}`;
     tab.addEventListener('click', () => {
       document.querySelectorAll('.child-tab').forEach(t => t.classList.remove('active'));
@@ -909,7 +909,7 @@ function renderChildData(child) {
   const childNameEl = document.getElementById('parent-child-name');
   if (childNameEl) childNameEl.textContent = child.firstname;
   const namePlanEl = document.getElementById('parent-child-name-plan');
-  if (namePlanEl) namePlanEl.textContent = child.firstname;
+  if (namePlanEl) namePlanEl.textContent = child.firstname + ' (' + (child.courseIds ? child.courseIds.length : 0) + ' cours)';
   
   const att = DATA.getAttendanceByStudent(child.id);
   const presents = att.filter(a => a.status === 'present').length;
@@ -918,7 +918,6 @@ function renderChildData(child) {
   renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.', AUTH.currentUser, child.id);
   renderWeeklyCalendar(child.courseIds || [], 'parent-planning-calendar');
 
-  document.getElementById('parent-stat-cours').textContent = child.courseIds.length;
   document.getElementById('parent-stat-presence').textContent = presents;
   document.getElementById('parent-stat-absence').textContent = absents;
   
