@@ -885,15 +885,15 @@ function renderParentDashboard(user) {
   const bannerContent = document.getElementById('parent-next-course-content');
   if (nextCourseData && banner && bannerContent) {
     banner.style.display = 'flex';
-    bannerContent.innerHTML = `Le prochain cours de <strong>${nextCourseData.child.firstname}</strong> est <strong>${nextCourseData.course.name}</strong>, ce ${nextCourseData.dayStr} à ${nextCourseData.hourStr}.`;
+    bannerContent.innerHTML = `Le prochain cours de <strong style="color: #9C5858;">${nextCourseData.child.firstname}</strong> est <strong style="color: #9C5858;">${nextCourseData.course.name}</strong>, ce ${nextCourseData.dayStr} à ${nextCourseData.hourStr}.`;
   } else if (banner) {
     banner.style.display = 'none';
   }
 
   children.forEach((child, i) => {
     const tab = document.createElement('button');
-    tab.className = `child-tab${i === 0 ? ' active' : ''}`;
-    tab.textContent = `🩰 ${child.firstname}`;
+    tab.className = `btn btn-outline btn-sm btn-tab child-tab${i === 0 ? ' active' : ''}`;
+    tab.textContent = `👧👦 ${child.firstname}`;
     tab.addEventListener('click', () => {
       document.querySelectorAll('.child-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
@@ -1189,9 +1189,46 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
   });
 }
 
+function populateAbsenceDates(courseId) {
+  const select = document.getElementById('absence-date');
+  if (!select) return;
+  select.innerHTML = '';
+  
+  const slot = DATA.schedule.slots.find(s => s.courseId === courseId);
+  const courseDay = slot ? slot.day : 0;
+  const targetJsDay = (courseDay + 1) % 7;
+  
+  const today = new Date();
+  let d = new Date(today);
+  while (d.getDay() !== targetJsDay) {
+    d.setDate(d.getDate() + 1);
+  }
+  
+  const dates = [];
+  for (let i = 0; i < 4; i++) {
+    const futureDate = new Date(d);
+    futureDate.setDate(d.getDate() + (i * 7));
+    dates.push(futureDate);
+  }
+  
+  dates.forEach((dateObj) => {
+    const yyyy = dateObj.getFullYear();
+    const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const dd = String(dateObj.getDate()).padStart(2, '0');
+    const iso = `${yyyy}-${mm}-${dd}`;
+    const display = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    
+    const opt = document.createElement('option');
+    opt.value = iso;
+    opt.textContent = display.charAt(0).toUpperCase() + display.slice(1);
+    select.appendChild(opt);
+  });
+}
+
 function openAbsenceModal(courseId, studentId) {
   document.getElementById('absence-course-id').value = courseId;
   document.getElementById('absence-student-id').value = studentId;
+  populateAbsenceDates(courseId);
   document.getElementById('modal-absence').classList.add('open');
 }
 

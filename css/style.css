@@ -916,7 +916,6 @@ ul { list-style: none; }
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 0.5rem;
 }
@@ -2054,7 +2053,10 @@ footer {
   transition: var(--transition);
 }
 .child-tab.active { background: linear-gradient(135deg, var(--rose), #b07070); color: var(--white); border-color: transparent; font-weight: 700; }
-.parent-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.parent-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+.parent-stats .stat-card { padding: 0.75rem 1rem; }
+.parent-stats .stat-card-label { font-size: 0.65rem; margin-bottom: 0.2rem; }
+.parent-stats .stat-card-value { font-size: 1.5rem; }
 .parent-attendance-section { background: #ffffff; border: 1px solid rgba(0,0,0,0.1); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
 .parent-attendance-header { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9C5858; }
 .parent-attendance-list { padding: 0.5rem; }
@@ -2095,12 +2097,13 @@ footer {
   .portal-roles { grid-template-columns: repeat(3, 1fr); }
   .data-table { font-size: 0.8rem; }
   .data-table th, .data-table td { padding: 0.6rem 0.75rem; }
-  .parent-stats { grid-template-columns: 1fr; }
+  .parent-stats { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 480px) {
   .stats-row { grid-template-columns: 1fr; }
   .dash-tabs { gap: 0.35rem; }
   .dash-tab { font-size: 0.72rem; padding: 0.45rem 0.9rem; }
+  .parent-stats { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {

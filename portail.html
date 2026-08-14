@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <link rel="canonical" href="http://annedkdanse.be/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩰</text></svg>">
-  <link rel="stylesheet" href="css/style.css?v=52">
+  <link rel="stylesheet" href="css/style.css?v=53">
 </head>
 <body>
 
@@ -357,7 +357,7 @@
 
           <div class="parent-dashboard-grid">
             <div class="parent-planning-section">
-              <div class="parent-section-header">🗓️ Planning de la semaine — <span id="parent-child-name-plan"></span></div>
+              <div class="parent-section-header" style="color: #9C5858;">📅 Planning de la semaine — <span id="parent-child-name-plan"></span></div>
               <div id="parent-planning-calendar"></div>
               <div class="planning-cards-list" id="parent-planning-list"></div>
             </div>
@@ -474,15 +474,19 @@
         <input type="hidden" id="absence-course-id">
         <input type="hidden" id="absence-student-id">
         <div>
-          <label class="form-label">Date de la séance</label>
-          <input type="date" class="form-input" id="absence-date" required>
+          <label class="form-label">Date du cours</label>
+          <select class="form-input" id="absence-date" required></select>
         </div>
         <div>
           <label class="form-label">Statut</label>
           <select class="form-input" id="absence-status" required>
-            <option value="excuse">❌ Sera absent(e)</option>
+            <option value="excuse">⏳ Sera absent(e)</option>
             <option value="present">✅ Sera présent(e)</option>
           </select>
+        </div>
+        <div>
+          <label class="form-label">Message :</label>
+          <textarea class="form-input" id="absence-message" rows="3" placeholder="Facultatif"></textarea>
         </div>
         <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Confirmer</button>
       </form>
@@ -519,6 +523,6 @@
 
   <script src="js/data.js?v=4"></script>
   <script src="js/auth.js?v=13"></script>
-  <script src="js/app.js?v=17"></script>
+  <script src="js/app.js?v=18"></script>
 </body>
 </html>
