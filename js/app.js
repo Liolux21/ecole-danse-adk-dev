@@ -879,13 +879,17 @@ function renderParentDashboard(user) {
     return;
   }
 
-  // Notification Prochain cours
-  const nextCourseData = calculateNextCourse(children);
+  // Notification Prochains cours
+  const nextCoursesData = calculateNextCourses(children);
   const banner = document.getElementById('parent-next-course-banner');
   const bannerContent = document.getElementById('parent-next-course-content');
-  if (nextCourseData && banner && bannerContent) {
+  if (nextCoursesData.length > 0 && banner && bannerContent) {
     banner.style.display = 'flex';
-    bannerContent.innerHTML = `Le prochain cours de <strong style="color: #9C5858;">${nextCourseData.child.firstname}</strong> est <strong style="color: #9C5858;">${nextCourseData.course.name}</strong>, ce ${nextCourseData.dayStr} à ${nextCourseData.hourStr}.`;
+    let html = '';
+    nextCoursesData.forEach(data => {
+      html += `Le prochain cours de <strong style="color: #9C5858;">${data.child.firstname}</strong> est <strong style="color: #9C5858;">${data.course.name}</strong>, ce ${data.dayStr} à ${data.hourStr}.<br>`;
+    });
+    bannerContent.innerHTML = html;
   } else if (banner) {
     banner.style.display = 'none';
   }
@@ -1283,23 +1287,25 @@ document.getElementById('absence-form')?.addEventListener('submit', (e) => {
   }
 });
 
-function calculateNextCourse(children) {
+function calculateNextCourses(children) {
   const daysMap = { 'Lundi': 1, 'Mardi': 2, 'Mercredi': 3, 'Jeudi': 4, 'Vendredi': 5, 'Samedi': 6, 'Dimanche': 0 };
   const now = new Date();
   const currentDay = now.getDay();
   const currentHour = now.getHours() * 60 + now.getMinutes();
 
-  let nextCourse = null;
-  let minDiff = Infinity;
+  const nextCourses = [];
 
   children.forEach(child => {
+    let nextCourse = null;
+    let minDiff = Infinity;
+
     (child.courseIds || []).forEach(cid => {
       const c = DATA.getCourseWithOverride(cid);
-      if (!c || c.status === 'annule') return; // Ignore annulés
+      if (!c || c.status === 'annule') return;
       
       let dayStr = c.schedule.split(' ')[0];
       let hourStr = c.schedule.split(' ')[1];
-      if (c.date && c.date.includes(' ')) dayStr = c.date.split(' ')[0]; // Very naive extraction si 'Lundi 25/09'
+      if (c.date && c.date.includes(' ')) dayStr = c.date.split(' ')[0];
       if (c.hour) hourStr = c.hour;
 
       if (!daysMap.hasOwnProperty(dayStr)) return;
@@ -1320,9 +1326,13 @@ function calculateNextCourse(children) {
         nextCourse = { child, course: c, diffMins, dayStr, hourStr };
       }
     });
+
+    if (nextCourse) {
+      nextCourses.push(nextCourse);
+    }
   });
 
-  return nextCourse;
+  return nextCourses;
 }
 
 // =============================================
