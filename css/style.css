@@ -1250,19 +1250,15 @@ ul { list-style: none; }
   transition: var(--transition);
 }
 .lightbox-close:hover { background: var(--gold); color: var(--black); }
-.child-tab.active {
-  background: var(--gold);
-  color: var(--black);
-  border-color: var(--gold);
-}
+
 
 /* Nouvelles sections Portails (Planning & Notification) */
 .parent-notification-banner {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: rgba(201,168,76,0.15);
-  border: 1px solid rgba(201,168,76,0.3);
+  background: #ffffff;
+  border: 1px solid rgba(156, 88, 88, 0.4);
   border-radius: var(--radius-sm);
   padding: 1rem 1.5rem;
   margin-bottom: 2rem;
@@ -1271,7 +1267,7 @@ ul { list-style: none; }
   font-size: 1.5rem;
 }
 .banner-content {
-  color: var(--white);
+  color: #4A3E3E;
   font-size: 0.95rem;
   line-height: 1.4;
 }
@@ -2042,19 +2038,8 @@ footer {
 
 /* ---- Espace Parent ---- */
 .child-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.child-tab {
-  padding: 0.5rem 1.2rem;
-  border-radius: 50px;
-  border: 1px solid var(--glass-border);
-  background: var(--dark-2);
-  color: var(--text-muted);
-  font-size: 0.82rem;
-  font-weight: 500;
-  transition: var(--transition);
-}
-.child-tab.active { background: linear-gradient(135deg, var(--rose), #b07070); color: var(--white); border-color: transparent; font-weight: 700; }
-.parent-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
-.parent-stats .stat-card { padding: 0.75rem 1rem; }
+.parent-stats { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.parent-stats .stat-card { flex: 1 1 120px; padding: 0.75rem 1rem; }
 .parent-stats .stat-card-label { font-size: 0.65rem; margin-bottom: 0.2rem; }
 .parent-stats .stat-card-value { font-size: 1.5rem; }
 .parent-attendance-section { background: #ffffff; border: 1px solid rgba(0,0,0,0.1); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
@@ -2090,20 +2075,17 @@ footer {
 @media (max-width: 1024px) {
   .stats-row { grid-template-columns: repeat(2, 1fr); }
   .portal-wrapper { grid-template-columns: 1fr; }
-  .parent-stats { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 768px) {
   .stats-row { grid-template-columns: 1fr 1fr; }
   .portal-roles { grid-template-columns: repeat(3, 1fr); }
   .data-table { font-size: 0.8rem; }
   .data-table th, .data-table td { padding: 0.6rem 0.75rem; }
-  .parent-stats { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 480px) {
   .stats-row { grid-template-columns: 1fr; }
   .dash-tabs { gap: 0.35rem; }
   .dash-tab { font-size: 0.72rem; padding: 0.45rem 0.9rem; }
-  .parent-stats { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
