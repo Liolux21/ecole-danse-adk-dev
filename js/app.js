@@ -665,35 +665,32 @@ function renderProfDashboard(user) {
   document.getElementById('prof-avatar').textContent = user.avatar;
 
   const courseIds = user.courseIds || [];
-  const courseSelector = document.getElementById('appel-courses');
-  courseSelector.innerHTML = '';
-  let selectedCourseId = courseIds[0] || null;
+  const courseSelector = document.getElementById('appel-courses-select');
+  if (courseSelector) {
+    courseSelector.innerHTML = '';
+    let selectedCourseId = courseIds[0] || null;
 
-  const dateInput = document.getElementById('appel-date');
+    courseIds.forEach((cid) => {
+      const c = DATA.getCourseById(cid);
+      if (!c) return;
+      
+      const today = new Date().toLocaleDateString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric'});
+      const absences = DATA.attendance.filter(a => a.courseId === cid && a.date === today && (a.status === 'absent' || a.status === 'excuse'));
+      const notif = absences.length > 0 ? ` (${absences.length} absent(s))` : '';
+      
+      const option = document.createElement('option');
+      option.value = cid;
+      option.textContent = `${c.emoji} ${c.name}${notif}`;
+      if (cid === selectedCourseId) option.selected = true;
+      courseSelector.appendChild(option);
+    });
 
-  // Boutons de cours
-  courseIds.forEach((cid, i) => {
-    const c = DATA.getCourseById(cid);
-    if (!c) return;
-    const btn = document.createElement('button');
-    btn.className = `appel-course-btn${cid === selectedCourseId ? ' active' : ''}`;
-    
-    // Check for absences in this course for today
-    const today = new Date().toLocaleDateString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric'}); // format DD/MM/YYYY
-    const absences = DATA.attendance.filter(a => a.courseId === cid && a.date === today && (a.status === 'absent' || a.status === 'excuse'));
-    const notifBadge = absences.length > 0 ? `<span style="background:var(--gold); color:black; padding:0.1rem 0.4rem; border-radius:50px; font-size:0.6rem; margin-left:0.5rem; font-weight:bold;">${absences.length} absent(s)</span>` : '';
-    
-    btn.innerHTML = `${c.emoji} ${c.name} ${notifBadge}`;
-    btn.onclick = () => {
-      document.querySelectorAll('.appel-course-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedCourseId = cid;
-      populateAppelDates(cid);
-      renderAppelList(cid);
+    courseSelector.onchange = (e) => {
+      selectedCourseId = parseInt(e.target.value);
+      populateAppelDates(selectedCourseId);
+      renderAppelList(selectedCourseId);
     };
-    courseSelector.appendChild(btn);
-  });
-
+  }
   if (selectedCourseId) {
     populateAppelDates(selectedCourseId);
     renderAppelList(selectedCourseId);
