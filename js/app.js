@@ -932,7 +932,7 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
   
   container.innerHTML = courses.map(c => {
     const isCancelled = c.status === 'annule';
-    const isModified = c.status !== 'annule' && (c.date || c.hour || c.lieu !== c.originalLieu);
+    const isModified = c.status !== 'annule' && (c.date || c.hour || (c.originalLieu && c.lieu !== c.originalLieu));
     
     // Si c'est annulé, on barre.
     const titleStyle = isCancelled ? 'text-decoration: line-through; color: var(--text-muted);' : '';
