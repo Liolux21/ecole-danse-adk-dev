@@ -1317,6 +1317,66 @@ ul { list-style: none; }
   font-weight: 700;
 }
 
+.compact-calendar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+}
+.cal-day {
+  flex: 1;
+  min-width: 90px;
+  background: rgba(0,0,0,0.02);
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.cal-day.has-courses {
+  background: #ffffff;
+  border-color: rgba(156, 88, 88, 0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.cal-day-header {
+  background: rgba(156, 88, 88, 0.05);
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.3rem 0;
+  color: #9C5858;
+  border-bottom: 1px solid rgba(156, 88, 88, 0.1);
+}
+.cal-day-body {
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+}
+.cal-course-item {
+  background: rgba(156, 88, 88, 0.1);
+  padding: 0.3rem;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  line-height: 1.2;
+  color: #4A3E3E;
+  display: flex;
+  flex-direction: column;
+}
+.cal-time {
+  font-weight: 700;
+  color: #9C5858;
+  margin-bottom: 0.1rem;
+}
+.cal-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .planning-cards-list {
   display: flex;
   flex-direction: column;

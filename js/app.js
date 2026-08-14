@@ -702,11 +702,13 @@ function renderProfDashboard(user) {
     btnEnseignes.classList.add('active');
     btnSuivis.classList.remove('active');
     renderPlanningCards(user.courseIds || [], 'prof-planning-list', 'Aucun cours.', user);
+    renderWeeklyCalendar(user.courseIds || [], 'prof-planning-calendar');
   };
   btnSuivis.onclick = () => {
     btnSuivis.classList.add('active');
     btnEnseignes.classList.remove('active');
     renderPlanningCards(user.takenCourseIds || [], 'prof-planning-list', 'Vous ne suivez aucun cours.', user);
+    renderWeeklyCalendar(user.takenCourseIds || [], 'prof-planning-calendar');
   };
   // Init default view
   btnEnseignes.click();
@@ -899,6 +901,7 @@ function renderChildData(child) {
   const absents  = att.filter(a => a.status === 'absent').length;
 
   renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.', AUTH.currentUser, child.id);
+  renderWeeklyCalendar(child.courseIds || [], 'parent-planning-calendar');
 
   document.getElementById('parent-stat-cours').textContent = child.courseIds.length;
   document.getElementById('parent-stat-presence').textContent = presents;
@@ -1044,6 +1047,47 @@ function showToast(msg, type = 'success') {
 
 // =============================================
 // HELPER PLANNINGS (Prof & Parents)
+// =============================================
+function renderWeeklyCalendar(courseIds, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
+  const calendarData = [[], [], [], [], [], [], []];
+  
+  courseIds.forEach(id => {
+    const c = DATA.getCourseWithOverride(id);
+    if (!c || c.day === undefined) return;
+    calendarData[c.day].push(c);
+  });
+  
+  // sort by hour
+  calendarData.forEach(dayCourses => {
+    dayCourses.sort((a,b) => (a.hour || '').localeCompare(b.hour || ''));
+  });
+
+  if (courseIds.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const html = `<div class="compact-calendar">
+    ${days.map((dayName, idx) => {
+      const coursesHtml = calendarData[idx].map(c => `
+        <div class="cal-course-item" title="${c.name} - ${c.hour}">
+          <span class="cal-time">${(c.hour || '').replace('h',':')}</span>
+          <span class="cal-name">${c.name}</span>
+        </div>
+      `).join('');
+      return `<div class="cal-day ${calendarData[idx].length > 0 ? 'has-courses' : ''}">
+        <div class="cal-day-header">${dayName}</div>
+        <div class="cal-day-body">${coursesHtml}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+  
+  container.innerHTML = html;
+}
+
 // =============================================
 function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', user = null, studentId = null) {
   const container = document.getElementById(containerId);
