@@ -1,4 +1,4 @@
-import { db, collection, addDoc, doc, setDoc, getDoc } from './firebase-config.js';
+﻿import { db, collection, addDoc, doc, setDoc, getDoc } from './firebase-config.js';
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 // =============================================
@@ -2035,3 +2035,125 @@ function renderUserAnnonces(role) {
     }).join('');
   }
 }
+
+// =============================================
+// MODAL PROFIL (PARAMÈTRES UTILISATEUR)
+// =============================================
+
+window.openProfileModal = function() {
+  const user = AUTH.currentUser;
+  if (!user) return;
+  
+  document.getElementById('profile-email').value = user.email || '';
+  document.getElementById('profile-telephone').value = user.telephone || '';
+  document.getElementById('profile-new-password').value = '';
+  document.getElementById('profile-current-password').value = '';
+  document.getElementById('profile-error').style.display = 'none';
+
+  const preview = document.getElementById('profile-avatar-preview');
+  if (user.avatarUrl) {
+    preview.style.backgroundImage = 'url(' + user.avatarUrl + ')';
+    preview.style.backgroundSize = 'cover';
+    preview.style.backgroundPosition = 'center';
+    preview.innerText = '';
+    document.getElementById('profile-avatar-base64').value = user.avatarUrl;
+  } else {
+    preview.style.backgroundImage = 'none';
+    preview.innerText = (user.prenom ? user.prenom[0] : (user.email ? user.email[0].toUpperCase() : 'U'));
+    document.getElementById('profile-avatar-base64').value = '';
+  }
+
+  document.getElementById('modal-profile').classList.add('active');
+};
+
+window.handleAvatarSelection = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_SIZE = 150;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_SIZE) {
+          height *= MAX_SIZE / width;
+          width = MAX_SIZE;
+        }
+      } else {
+        if (height > MAX_SIZE) {
+          width *= MAX_SIZE / height;
+          height = MAX_SIZE;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const base64 = canvas.toDataURL('image/jpeg', 0.8);
+      
+      const preview = document.getElementById('profile-avatar-preview');
+      preview.style.backgroundImage = 'url(' + base64 + ')';
+      preview.style.backgroundSize = 'cover';
+      preview.style.backgroundPosition = 'center';
+      preview.innerText = '';
+      document.getElementById('profile-avatar-base64').value = base64;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const formProfile = document.getElementById('form-profile');
+  if (formProfile) {
+    formProfile.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('profile-email').value.trim();
+      const phone = document.getElementById('profile-telephone').value.trim();
+      const newPw = document.getElementById('profile-new-password').value;
+      const currentPw = document.getElementById('profile-current-password').value;
+      const avatarBase64 = document.getElementById('profile-avatar-base64').value;
+      const errBox = document.getElementById('profile-error');
+      const btn = document.getElementById('btn-save-profile');
+
+      errBox.style.display = 'none';
+      btn.innerText = 'Enregistrement...';
+      btn.disabled = true;
+
+      try {
+        await AUTH.updateUserProfile(currentPw, email, newPw, phone, avatarBase64);
+        
+        // Mettre à jour l'UI (Dashboard Header)
+        const user = AUTH.currentUser;
+        ['admin', 'prof', 'parent'].forEach(role => {
+          const avatarEl = document.getElementById(role + '-avatar');
+          if (avatarEl) {
+            if (user.avatarUrl) {
+              avatarEl.style.backgroundImage = 'url(' + user.avatarUrl + ')';
+              avatarEl.style.backgroundSize = 'cover';
+              avatarEl.style.backgroundPosition = 'center';
+              avatarEl.innerText = '';
+            }
+          }
+        });
+
+        alert("Profil mis à jour avec succès !");
+        document.getElementById('modal-profile').classList.remove('active');
+      } catch (err) {
+        errBox.innerText = err.message || "Erreur lors de la mise à jour.";
+        errBox.style.display = 'block';
+      } finally {
+        btn.innerText = 'Enregistrer';
+        btn.disabled = false;
+      }
+    });
+  }
+});
+

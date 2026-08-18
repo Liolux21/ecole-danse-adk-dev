@@ -101,7 +101,10 @@
               <div class="dash-user-role"><span class="role-badge badge-admin">👑 Administratrice</span></div>
             </div>
           </div>
-          <button class="btn btn-outline btn-sm" id="admin-logout">Déconnexion</button>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+              <button class="btn btn-outline btn-sm" id="admin-logout">Déconnexion</button>
+            </div>
         </div>
 
         <div class="stats-row">
@@ -318,7 +321,10 @@
               <div class="dash-user-role"><span class="role-badge badge-prof">👩‍🏫 Professeure</span></div>
             </div>
           </div>
-          <button class="btn btn-outline btn-sm" id="prof-logout">Déconnexion</button>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+              <button class="btn btn-outline btn-sm" id="prof-logout">Déconnexion</button>
+            </div>
         </div>
 <div class="dash-tabs" id="prof-tabs">
           <button class="dash-tab active" data-tab="mon-planning">🗓️ Mon Planning</button>
@@ -420,7 +426,10 @@
               <div class="dash-user-role"><span class="role-badge badge-parent">🩰 Élève</span></div>
             </div>
           </div>
-          <button class="btn btn-outline btn-sm" id="parent-logout">Déconnexion</button>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+              <button class="btn btn-outline btn-sm" id="parent-logout">Déconnexion</button>
+            </div>
         </div>
 <div class="dash-tabs" id="parent-tabs">
           <button class="dash-tab active" data-tab="parent-planning">🗓️ Mon Planning</button>
@@ -711,6 +720,48 @@
     </div>
   </div>
 
+
+  <!-- Modal Profil Utilisateur -->
+  <div class="vitrine-modal" id="modal-profile">
+    <div class="vitrine-modal-content" style="max-width: 450px;">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title">Paramètres du Profil</h4>
+        <button class="vitrine-modal-close" onclick="document.getElementById('modal-profile').classList.remove('active')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <form id="form-profile">
+          <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div class="dash-avatar" id="profile-avatar-preview" style="width: 80px; height: 80px; font-size: 2.5rem; margin: 0 auto; cursor: pointer; border: 2px dashed var(--gold);" onclick="document.getElementById('profile-avatar-input').click()" title="Modifier la photo"></div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Cliquez sur l'image pour modifier</p>
+            <input type="file" id="profile-avatar-input" accept="image/*" style="display: none;" onchange="handleAvatarSelection(event)">
+            <input type="hidden" id="profile-avatar-base64">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="profile-email">Adresse Email</label>
+            <input type="email" id="profile-email" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="profile-telephone">Numéro de téléphone</label>
+            <input type="tel" id="profile-telephone" class="form-input">
+          </div>
+          <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+          <div class="form-group">
+            <label class="form-label" for="profile-new-password">Nouveau mot de passe (laisser vide pour ne pas modifier)</label>
+            <input type="password" id="profile-new-password" class="form-input" minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="profile-current-password" style="color: var(--gold);">Mot de passe actuel (requis pour valider les modifications)</label>
+            <input type="password" id="profile-current-password" class="form-input" required>
+          </div>
+          <div id="profile-error" style="color: #DC6464; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
+          <div style="text-align: right; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary" id="btn-save-profile">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Mot de passe oublié -->
   <div class="vitrine-modal" id="modal-reset-password">

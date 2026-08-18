@@ -1,4 +1,4 @@
-import { auth, db, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, doc, getDoc } from './firebase-config.js';
+import { auth, db, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, doc, getDoc, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setDoc, updateDoc, deleteDoc } from './firebase-config.js';
 
 const AUTH = {
   currentUser: null,
@@ -57,6 +57,52 @@ const AUTH = {
     } catch(e) {
       console.error("Reset password error:", e);
       return false;
+    }
+  },
+
+  async updateUserProfile(currentPassword, newEmail, newPassword, newTelephone, newAvatarBase64) {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Non authentifié");
+
+      // Si email ou password change, on doit réauthentifier
+      if (newEmail !== user.email || newPassword) {
+        if (!currentPassword) throw new Error("Le mot de passe actuel est requis pour changer l'email ou le mot de passe.");
+        const credential = EmailAuthProvider.credential(user.email, currentPassword);
+        await reauthenticateWithCredential(user, credential);
+      }
+
+      // 1. Mettre à jour Firebase Auth
+      if (newPassword) {
+        await updatePassword(user, newPassword);
+      }
+      if (newEmail !== user.email) {
+        await updateEmail(user, newEmail);
+      }
+
+      // 2. Mettre à jour Firestore
+      const userRef = doc(db, "users", this.currentUser.email);
+      const updates = {};
+      if (newEmail !== this.currentUser.email) updates.email = newEmail;
+      if (newTelephone !== undefined) updates.telephone = newTelephone;
+      if (newAvatarBase64 !== undefined) updates.avatarUrl = newAvatarBase64;
+      
+      // Si l'email a changé, il faut théoriquement déplacer le document puisque l'ID = email
+      if (newEmail !== this.currentUser.email) {
+         // Create new doc, delete old one
+         const newRef = doc(db, "users", newEmail);
+         await setDoc(newRef, { ...this.currentUser, ...updates, email: newEmail });
+         await deleteDoc(userRef);
+      } else {
+         await updateDoc(userRef, updates);
+      }
+
+      // 3. Mettre à jour l'état local
+      this.currentUser = { ...this.currentUser, ...updates };
+      return true;
+    } catch(e) {
+      console.error("Update profile error:", e);
+      throw e;
     }
   },
 
