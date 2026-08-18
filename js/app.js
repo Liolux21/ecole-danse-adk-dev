@@ -1885,11 +1885,14 @@ window.markAnnonceAsRead = async function(annonceId) {
     
     try {
       const firebase = await import('./firebase-config.js');
-      await firebase.updateDoc(firebase.doc(firebase.db, "users", String(user.id)), {
+      // L'ID du document utilisateur dans Firestore est son email
+      const docId = user.email || String(user.id);
+      await firebase.updateDoc(firebase.doc(firebase.db, "users", docId), {
         readAnnouncements: user.readAnnouncements
       });
     } catch (e) {
       console.error("Erreur markAnnonceAsRead:", e);
+      alert("Erreur de sauvegarde : " + e.message + " (docId: " + (user.email || String(user.id)) + ")");
     }
   }
 };
