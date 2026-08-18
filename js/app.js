@@ -2043,37 +2043,3 @@ function renderUserAnnonces(role) {
     }).join('');
   }
 }
-    });
-  } else if (role === 'prof') {
-    userCourseIds = (window.AUTH.currentUser.courseIds || []).map(String);
-  }
-
-  // Filter announcements
-  const visibleAnnouncements = (DATA.announcements || []).filter(ann => {
-    if (ann.target === 'all') return true;
-    if (ann.target === 'parents' && role === 'parent') return true;
-    if (ann.target === 'profs' && role === 'prof') return true;
-    if (ann.target.startsWith('course_')) {
-      const cid = ann.target.replace('course_', '');
-      if (userCourseIds.includes(String(cid))) return true;
-    }
-    return false;
-  });
-
-  if (visibleAnnouncements.length === 0) {
-    wrapper.style.display = 'none';
-    return;
-  }
-
-  wrapper.style.display = 'block';
-  container.innerHTML = visibleAnnouncements.map(ann => {
-    const date = new Date(ann.timestamp).toLocaleString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
-    return `
-      <div class="parent-notification-banner" style="display:flex; flex-direction:column; align-items:flex-start; gap:0.5rem; margin-bottom:0;">
-        <div style="font-size:0.8rem; color:var(--primary); font-weight:600;">Administration ADK &bull; Le ${date}</div>
-        <h4 style="margin:0; color:var(--primary); font-size:1.1rem;">${ann.title}</h4>
-        <div style="white-space:pre-wrap; color:var(--text-light); font-size:0.95rem; line-height:1.4;">${ann.content}</div>
-      </div>
-    `;
-  }).join('');
-}
