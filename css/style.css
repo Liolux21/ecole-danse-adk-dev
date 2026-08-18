@@ -2078,7 +2078,7 @@ footer {
   .data-table th, .data-table td { padding: 0.6rem 0.75rem; }
 }
 @media (max-width: 480px) {
-  .stats-row { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
   .dash-tabs { gap: 0.35rem; }
   .dash-tab { font-size: 0.72rem; padding: 0.45rem 0.9rem; }
 }
