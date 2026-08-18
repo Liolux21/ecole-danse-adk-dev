@@ -533,6 +533,13 @@ function showPortalDashboard(user) {
   if (user.role === 'admin')  renderAdminDashboard(user);
   if (user.role === 'prof')   renderProfDashboard(user);
   if (user.role === 'parent') renderParentDashboard(user);
+
+  // Demander la permission pour les notifications Push (non-bloquant)
+  setTimeout(() => {
+    if (window.AUTH && window.AUTH.requestPushNotificationPermission) {
+      window.AUTH.requestPushNotificationPermission();
+    }
+  }, 2000); // Délai de 2s pour ne pas bloquer le rendu visuel
 }
 
 // ---- TABS ----

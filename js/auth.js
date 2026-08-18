@@ -60,6 +60,34 @@ const AUTH = {
     }
   },
 
+  async requestPushNotificationPermission() {
+    if (!this.currentUser) return;
+    try {
+      const { messaging, getToken, updateDoc, doc, db } = await import('./firebase-config.js');
+      if (!messaging) return; // Non supporté
+
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        const token = await getToken(messaging, { 
+          vapidKey: 'BO9WQ1i37mx9MQmAcTWu6LAuq6vaC8z1DB-j8V-NpfMXjQhE-QzsxoTMf8iukJzNsZr3MUFFzF1IEX_xkRjXbWo' 
+        });
+        if (token) {
+          // Sauvegarder dans Firestore
+          const docId = this.currentUser.email || String(this.currentUser.id);
+          const fcmTokens = this.currentUser.fcmTokens || [];
+          if (!fcmTokens.includes(token)) {
+            fcmTokens.push(token);
+            await updateDoc(doc(db, "users", docId), { fcmTokens: fcmTokens });
+            this.currentUser.fcmTokens = fcmTokens;
+            console.log("Token FCM enregistré !");
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Erreur FCM permission:", e);
+    }
+  },
+
   async logout() {
     try {
       await signOut(auth);
