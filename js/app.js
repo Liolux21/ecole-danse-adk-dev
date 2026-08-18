@@ -1878,14 +1878,16 @@ window.markAnnonceAsRead = async function(annonceId) {
   }
   if (!user.readAnnouncements.includes(annonceId)) {
     user.readAnnouncements.push(annonceId);
+    
+    // UI update immediate (Optimistic UI)
+    if (user.role === 'prof') renderUserAnnonces('prof');
+    if (user.role === 'parent') renderUserAnnonces('parent');
+    
     try {
       const firebase = await import('./firebase-config.js');
-      await firebase.updateDoc(firebase.doc(firebase.db, "users", user.id), {
+      await firebase.updateDoc(firebase.doc(firebase.db, "users", String(user.id)), {
         readAnnouncements: user.readAnnouncements
       });
-      // Synchronisation optionnelle, mais le currentUser est mis à jour
-      if (user.role === 'prof') renderUserAnnonces('prof');
-      if (user.role === 'parent') renderUserAnnonces('parent');
     } catch (e) {
       console.error("Erreur markAnnonceAsRead:", e);
     }
