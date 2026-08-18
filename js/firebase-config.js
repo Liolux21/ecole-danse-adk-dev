@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, addDoc, deleteDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-messaging.js";
+import { getMessaging, getToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-messaging.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBPOPRg9AxDqojhkskOIRO-4AHxvLICP7Q",
@@ -17,16 +17,20 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Initialiser Cloud Messaging
-let messaging = null;
-try {
-  messaging = getMessaging(app);
-} catch (e) {
-  console.warn("Firebase Messaging n'est pas supporté par ce navigateur.", e);
-}
+const getMessagingInstance = async () => {
+  try {
+    const supported = await isSupported();
+    if (supported) {
+      return getMessaging(app);
+    }
+  } catch (err) {
+    console.warn("Erreur lors de la vérification de Firebase Messaging:", err);
+  }
+  return null;
+};
 
 export { 
-  app, auth, db, messaging,
+  app, auth, db, getMessagingInstance,
   signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, createUserWithEmailAndPassword,
   collection, doc, getDoc, getDocs, setDoc, updateDoc, addDoc, deleteDoc, query, where, onSnapshot,
   getToken, onMessage

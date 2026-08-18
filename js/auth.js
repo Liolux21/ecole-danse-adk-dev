@@ -63,8 +63,12 @@ const AUTH = {
   async requestPushNotificationPermission() {
     if (!this.currentUser) return;
     try {
-      const { messaging, getToken, updateDoc, doc, db } = await import('./firebase-config.js');
-      if (!messaging) return; // Non supporté
+      const { getMessagingInstance, getToken, updateDoc, doc, db } = await import('./firebase-config.js');
+      const messaging = await getMessagingInstance();
+      if (!messaging) {
+        console.warn("Push notifications not supported on this device.");
+        return; // Non supporté
+      }
 
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
