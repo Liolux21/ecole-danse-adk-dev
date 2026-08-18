@@ -1805,9 +1805,9 @@ window.deleteStudent = async function(id) {
       const newChildrenIds = parent.childrenIds.filter(cid => cid !== id);
       if (newChildrenIds.length === 0 && parent.role === 'parent') {
         // Supprime le profil Parent de Firestore s'il n'a plus d'enfant
-        await firebase.deleteDoc(firebase.doc(firebase.db, "users", parent.email));
+        await firebase.deleteDoc(firebase.doc(firebase.db, "users", parent.id));
       } else {
-        await firebase.updateDoc(firebase.doc(firebase.db, "users", parent.email), {
+        await firebase.updateDoc(firebase.doc(firebase.db, "users", parent.id), {
           childrenIds: newChildrenIds
         });
       }
