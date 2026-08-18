@@ -615,10 +615,10 @@
 
   <!-- Modal: Ajouter un élève -->
   <div class="vitrine-modal" id="modal-add-student">
-    <div class="vitrine-modal-content">
-      <button class="vitrine-modal-close" onclick="closeModal('modal-add-student')">×</button>
-      <div class="vitrine-modal-header">
+    <div class="vitrine-modal-content" style="max-width: 550px;">
+      <div class="vitrine-modal-header" style="padding-right: 2.5rem;">
         <h2 class="vitrine-modal-title">Ajouter un élève</h2>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-add-student')">&times;</button>
       </div>
       <div class="vitrine-modal-body">
         <form id="form-add-student" onsubmit="event.preventDefault(); submitAddStudent();">
@@ -626,28 +626,30 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label class="form-label">Prénom</label>
-              <input type="text" id="add-student-firstname" class="form-control" required>
+              <input type="text" id="add-student-firstname" class="form-input" required>
             </div>
             <div class="form-group">
               <label class="form-label">Nom</label>
-              <input type="text" id="add-student-lastname" class="form-control" required>
+              <input type="text" id="add-student-lastname" class="form-input" required>
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">Âge</label>
-            <input type="number" id="add-student-age" class="form-control" required>
+            <input type="number" id="add-student-age" class="form-input" required>
           </div>
           <div class="form-group">
-            <label class="form-label">Cours (sélection multiple)</label>
-            <select id="add-student-courses" class="form-control" multiple style="height: 120px;">
-              <!-- Dynamique -->
-            </select>
+            <label class="form-label">Cours</label>
+            <div id="add-student-courses" style="max-height: 150px; overflow-y: auto; padding: 1rem; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; background: #f9f9f9;">
+              <!-- Dynamique checkboxes -->
+            </div>
           </div>
           <div class="form-group">
             <label class="form-label">Email de contact (Parent)</label>
-            <input type="email" id="add-student-email" class="form-control" required>
+            <input type="email" id="add-student-email" class="form-input" required>
           </div>
-          <button type="submit" class="btn btn-primary" style="width:100%">Créer l'élève</button>
+          <div style="text-align: right; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">Enregistrer</button>
+          </div>
         </form>
       </div>
     </div>
@@ -716,6 +718,6 @@
 
   <script type="module" src="js/data.js?v=2"></script>
   <script type="module" src="js/auth.js?v=13"></script>
-  <script type="module" src="js/app.js?v=33"></script>
+  <script type="module" src="js/app.js?v=34"></script>
 </body>
 </html>
