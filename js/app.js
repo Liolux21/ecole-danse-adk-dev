@@ -554,6 +554,7 @@ function initTabs(tabsContainerId, contentIds) {
 // DASHBOARD ADMIN
 // =============================================
 function renderAdminDashboard(user) {
+  renderAdminAnnonces();
   document.getElementById('admin-name').textContent = user.name;
   document.getElementById('admin-avatar').textContent = user.avatar;
 
@@ -1915,7 +1916,7 @@ function renderAdminAnnonces() {
       <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:1.5rem; position:relative;">
         <button class="btn btn-outline btn-sm" style="position:absolute; top:1rem; right:1rem; color:#e74c3c; border-color:#e74c3c; padding:0.2rem 0.5rem;" onclick="deleteAnnonce('${ann.id}')">X</button>
         <div style="font-size:0.8rem; color:var(--gold); margin-bottom:0.5rem;">Cible: ${targetLabel} &bull; Le ${date}</div>
-        <h4 style="margin:0 0 0.5rem 0;">${ann.title}</h4>
+        <h4 style="margin:0 0 0.5rem 0; color:#9C5858;">${ann.title}</h4>
         <div style="white-space:pre-wrap; color:var(--text-muted); font-size:0.95rem;">${ann.content}</div>
       </div>
     `;
@@ -1967,7 +1968,7 @@ function renderUserAnnonces(role) {
     return `
       <div style="background:var(--dark-2); border-left:4px solid var(--gold); border-radius:4px; padding:1.5rem;">
         <div style="font-size:0.8rem; color:var(--gold); margin-bottom:0.5rem;">Administration ADK &bull; Le ${date}</div>
-        <h4 style="margin:0 0 0.5rem 0;">${ann.title}</h4>
+        <h4 style="margin:0 0 0.5rem 0; color:#9C5858;">${ann.title}</h4>
         <div style="white-space:pre-wrap; color:var(--text-muted); font-size:0.95rem;">${ann.content}</div>
       </div>
     `;
