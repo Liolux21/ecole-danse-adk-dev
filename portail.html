@@ -169,6 +169,7 @@
           <button class="dash-tab" data-tab="admin-cours">📅 Cours</button>
           <button class="dash-tab" data-tab="admin-settings">⚙️ Paramètres</button>
           <button class="dash-tab" data-tab="admin-gala">🩰 Gala</button>
+          <button class="dash-tab" data-tab="admin-annonces" style="border-color:var(--gold); color:var(--gold);">📢 Annonces</button>
         </div>
 
         <!-- Tab: Inscriptions -->
@@ -274,6 +275,18 @@
               </div>
               <button class="btn btn-outline" onclick="addHoliday()">+ Ajouter</button>
             </div>
+          </div>
+        </div>
+
+        
+        <!-- Tab: Annonces Admin -->
+        <div class="tab-content" id="tab-admin-annonces">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h3>Annonces Globales</h3>
+            <button class="btn btn-primary btn-sm" onclick="openAddAnnonceModal()">+ Nouvelle annonce</button>
+          </div>
+          <div id="admin-annonces-list" style="display:flex; flex-direction:column; gap:1rem;">
+            <!-- Rempli en JS -->
           </div>
         </div>
 
@@ -753,6 +766,6 @@
 
   <script type="module" src="js/data.js?v=4"></script>
   <script type="module" src="js/auth.js?v=13"></script>
-  <script type="module" src="js/app.js?v=37"></script>
+  <script type="module" src="js/app.js?v=38"></script>
 </body>
 </html>
