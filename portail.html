@@ -355,15 +355,7 @@
           </div>
           <button class="btn btn-outline btn-sm" id="prof-logout">Déconnexion</button>
         </div>
-
-        
-        <!-- ANNONCES PROF -->
-        <div id="prof-announcements-container" style="display:none; margin-bottom: 2rem;">
-          <h3 style="color:#9C5858; margin-bottom: 1rem;">📢 Annonces</h3>
-          <div id="prof-announcements-list" style="display:flex; flex-direction:column; gap:1rem;"></div>
-        </div>
-
-        <div class="dash-tabs" id="prof-tabs">
+<div class="dash-tabs" id="prof-tabs">
           <button class="dash-tab active" data-tab="mon-planning">🗓️ Mon Planning</button>
           <button class="dash-tab" data-tab="appel">📋 Feuille d'appel</button>
           <button class="dash-tab" data-tab="mes-eleves">👥 Mes élèves</button>
@@ -456,22 +448,19 @@
           </div>
           <button class="btn btn-outline btn-sm" id="parent-logout">Déconnexion</button>
         </div>
-
-        
-        <!-- ANNONCES PARENT -->
-        <div id="parent-announcements-container" style="display:none; margin-bottom: 2rem;">
-          <h3 style="color:#9C5858; margin-bottom: 1rem;">📢 Annonces</h3>
-          <div id="parent-announcements-list" style="display:flex; flex-direction:column; gap:1rem;"></div>
-        </div>
-
-        <div class="dash-tabs" id="parent-tabs">
+<div class="dash-tabs" id="parent-tabs">
           <button class="dash-tab active" data-tab="parent-planning">🗓️ Mon Planning</button>
           <button class="dash-tab" data-tab="parent-gala">🎭 Gala</button>
         </div>
 
         <!-- Tab: Parent Planning -->
         <div class="tab-content active" id="tab-parent-planning">
-          <div class="child-tabs" id="child-tabs"></div>
+          
+            <!-- ANNONCES PARENT -->
+            <div id="parent-announcements-container" style="display:none; margin-bottom: 2rem;">
+              <div id="parent-announcements-list" style="display:flex; flex-direction:column; gap:1rem;"></div>
+            </div>
+            <div class="child-tabs" id="child-tabs"></div>
 
           <div class="parent-notification-banner" id="parent-next-course-banner" style="display: none;">
             <div class="banner-icon">🔔</div>
@@ -770,6 +759,6 @@
 
   <script type="module" src="js/data.js?v=4"></script>
   <script type="module" src="js/auth.js?v=13"></script>
-  <script type="module" src="js/app.js?v=49"></script>
+  <script type="module" src="js/app.js?v=50"></script>
 </body>
 </html>
