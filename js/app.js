@@ -1795,10 +1795,27 @@ window.deleteStudent = async function(id) {
   if (!confirm('Êtes-vous sûr de vouloir supprimer cet élève ? (Action irréversible)')) return;
   try {
     const firebase = await import('./firebase-config.js');
+    
+    // 1. Delete student
     await firebase.deleteDoc(firebase.doc(firebase.db, "students", id));
+    
+    // 2. Clean up parent users
+    const parentUsers = DATA.users.filter(u => u.childrenIds && u.childrenIds.includes(id));
+    for (const parent of parentUsers) {
+      const newChildrenIds = parent.childrenIds.filter(cid => cid !== id);
+      if (newChildrenIds.length === 0 && parent.role === 'parent') {
+        // Supprime le profil Parent de Firestore s'il n'a plus d'enfant
+        await firebase.deleteDoc(firebase.doc(firebase.db, "users", parent.email));
+      } else {
+        await firebase.updateDoc(firebase.doc(firebase.db, "users", parent.email), {
+          childrenIds: newChildrenIds
+        });
+      }
+    }
+
     await DATA.syncFromFirebase();
     renderAdminEleves();
-    showToast('Élève supprimé', 'success');
+    showToast('Élève supprimé avec succès', 'success');
   } catch(e) {
     console.error(e);
     showToast('Erreur lors de la suppression', 'error');
