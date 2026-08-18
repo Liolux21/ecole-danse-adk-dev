@@ -238,7 +238,7 @@ export const DATA = {
 
   // ---- ADVANCED COURSE MANAGEMENT ----
   courseOverrides: {}, // { date, hour, lieu, status: 'maintenu'|'annule', substituteId, message, type: 'temporaire'|'definitif' }
-  messages: [],      // { courseId, senderId, senderName, senderRole, type: 'public'|'private', content, timestamp }
+  messages: [], announcements: [],      // { courseId, senderId, senderName, senderRole, type: 'public'|'private', content, timestamp }
 
   getCourseWithOverride(id) {
     const base = this.getCourseById(id);
@@ -320,6 +320,20 @@ export const DATA = {
       coursesSnap.forEach(doc => {
         this.courses.push({ id: doc.id, ...doc.data() });
       });
+
+      
+      // 4. Fetch Announcements
+      try {
+        const annSnap = await getDocs(collection(db, "announcements"));
+        this.announcements = [];
+        annSnap.forEach(doc => {
+          this.announcements.push({ id: doc.id, ...doc.data() });
+        });
+        // Sort by timestamp desc
+        this.announcements.sort((a, b) => b.timestamp - a.timestamp);
+      } catch (err) {
+        console.error("Error fetching announcements", err);
+      }
 
       console.log("Données Firebase synchronisées avec succès !", { 
         users: this.users.length, 
