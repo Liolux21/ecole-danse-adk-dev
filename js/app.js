@@ -1688,8 +1688,8 @@ window.submitAddStudent = async function() {
     if (isNew && tempPassword) {
       try {
         await emailjs.send(
-          "VOTRE_SERVICE_ID",
-          "VOTRE_TEMPLATE_ID",
+          "service_jooqt2m",
+          "template_1mp1jad",
           {
             to_email: email,
             to_name: `${prenom} ${nom}`,
