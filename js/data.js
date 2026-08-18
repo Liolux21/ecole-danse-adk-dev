@@ -219,10 +219,10 @@ export const DATA = {
   nextEvent: { name: "Gala de Fin d'Année 2027", date: new Date("2027-05-29T19:00:00") },
 
   // ---- HELPERS ----
-  getCourseById(id)             { return this.courses.find(c => c.id === id); },
-  getStudentById(id)            { return this.students.find(s => s.id === id); },
-  getUserById(id)               { return this.users.find(u => u.id === id); },
-  getStudentsByCourse(cid)      { return this.students.filter(s => s.courseIds.includes(cid)); },
+  getCourseById(id)             { return this.courses.find(c => String(c.id) === String(id)); },
+  getStudentById(id)            { return this.students.find(s => String(s.id) === String(id)); },
+  getUserById(id)               { return this.users.find(u => String(u.id) === String(id)); },
+  getStudentsByCourse(cid)      { return this.students.filter(s => (s.courseIds||[]).map(String).includes(String(cid))); },
   getAttendanceByStudent(sid)   { return this.attendance.filter(a => a.studentId === sid); },
   getPendingInscriptions()      { return this.inscriptions.filter(i => i.status === 'pending'); },
   getChildrenByParent(pid)      { return this.students.filter(s => s.parentId === pid); },
