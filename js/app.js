@@ -1582,10 +1582,15 @@ window.submitResetPassword = async function() {
 };
 
 window.openAddStudentModal = function(studentId = null) {
-  const select = document.getElementById('add-student-courses');
-  if (select) {
-    select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name || c.title} (${c.category || c.level || ''})</option>`).join('');
-  }
+  const container = document.getElementById('add-student-courses');
+    if (container) {
+      container.innerHTML = DATA.courses.map(c => `
+        <label style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; font-size:0.9rem; cursor:pointer;">
+          <input type="checkbox" class="course-checkbox" value="${c.id}">
+          ${c.name || c.title} <span style="color:gray; font-size:0.8rem;">(${c.category || c.level || ''})</span>
+        </label>
+      `).join('');
+    }
   
   if (studentId) {
     const student = DATA.getStudentById(studentId);
@@ -1594,9 +1599,12 @@ window.openAddStudentModal = function(studentId = null) {
     document.getElementById('add-student-age').value = student.age;
     document.getElementById('add-student-email').value = student.contactEmail || '';
     
-    Array.from(select.options).forEach(opt => {
-      opt.selected = (student.courseIds || []).includes(opt.value);
-    });
+    if (container) {
+        const checkboxes = container.querySelectorAll('.course-checkbox');
+        checkboxes.forEach(chk => {
+          chk.checked = (student.courseIds || []).includes(chk.value);
+        });
+      }
     
     document.getElementById('add-student-id').value = student.id;
     document.querySelector('#modal-add-student .vitrine-modal-title').textContent = "Modifier l'élève";
@@ -1624,8 +1632,8 @@ window.submitAddStudent = async function() {
     const nom = document.getElementById('add-student-lastname').value;
     const age = document.getElementById('add-student-age').value;
     const email = document.getElementById('add-student-email').value;
-    const select = document.getElementById('add-student-courses');
-    const selectedCourses = Array.from(select.selectedOptions).map(opt => opt.value);
+    const checkboxes = document.querySelectorAll('#add-student-courses .course-checkbox:checked');
+      const selectedCourses = Array.from(checkboxes).map(chk => chk.value);
 
     const targetId = isNew ? "stu_" + Date.now() : studentId;
     const studentData = {
