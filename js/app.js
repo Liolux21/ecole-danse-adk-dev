@@ -689,6 +689,7 @@ function renderAdminProfs() {
 // DASHBOARD PROF
 // =============================================
 function renderProfDashboard(user) {
+  renderUserAnnonces(\'prof\');
   document.getElementById('prof-name').textContent = user.name;
   document.getElementById('prof-avatar').textContent = user.avatar;
 
@@ -883,6 +884,7 @@ function renderProfEleves(user) {
 // DASHBOARD PARENT
 // =============================================
 function renderParentDashboard(user) {
+  renderUserAnnonces(\'parent\');
   document.getElementById('parent-name').textContent = user.name;
   document.getElementById('parent-avatar').textContent = user.avatar;
 
