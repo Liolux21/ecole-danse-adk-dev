@@ -1912,7 +1912,7 @@ function renderAdminAnnonces() {
     }
 
     return `
-      <div style="background:var(--dark-2); border:1px solid var(--border); border-radius:8px; padding:1.5rem; position:relative;">
+      <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:1.5rem; position:relative;">
         <button class="btn btn-outline btn-sm" style="position:absolute; top:1rem; right:1rem; color:#e74c3c; border-color:#e74c3c; padding:0.2rem 0.5rem;" onclick="deleteAnnonce('${ann.id}')">X</button>
         <div style="font-size:0.8rem; color:var(--gold); margin-bottom:0.5rem;">Cible: ${targetLabel} &bull; Le ${date}</div>
         <h4 style="margin:0 0 0.5rem 0;">${ann.title}</h4>
