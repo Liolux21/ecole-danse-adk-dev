@@ -2228,3 +2228,6 @@ footer {
 .vitrine-modal-close:hover {
   background: var(--gold);
 }
+
+.vitrine-modal-header { padding-right: 3rem; margin-bottom: 1rem; }
+.vitrine-modal-title { margin: 0; font-size: 1.25rem; }
