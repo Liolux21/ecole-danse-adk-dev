@@ -503,7 +503,7 @@ async function initPortal() {
   });
 
   // Tabs admin
-  initTabs('admin-tabs', ['tab-inscriptions', 'tab-eleves', 'tab-profs', 'tab-admin-gala']);
+  initTabs('admin-tabs', ['tab-inscriptions', 'tab-eleves', 'tab-profs', 'tab-admin-cours', 'tab-admin-settings', 'tab-admin-gala', 'tab-admin-annonces']);
   initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves', 'tab-prof-gala']);
   initTabs('parent-tabs', ['tab-parent-planning', 'tab-parent-gala']);
   
