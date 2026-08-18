@@ -654,7 +654,10 @@ function renderAdminEleves() {
       <td style="color:var(--text-muted);font-size:0.82rem">${courses}</td>
       <td>${cotSelect}</td>
       <td>${mutSelect}</td>
-      <td><button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id}')">Modifier</button></td>
+      <td style="display:flex;gap:0.5rem;align-items:center;height:100%;">
+        <button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id}')">Modifier</button>
+        <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="deleteStudent('${s.id}')">X</button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -1787,3 +1790,17 @@ window.submitManageCourse = async function() {
 };
 window.saveSeasonSettings = function() { alert('Saison enregistrée !'); };
 window.addHoliday = function() { alert('Congé ajouté !'); };
+
+window.deleteStudent = async function(id) {
+  if (!confirm('Êtes-vous sûr de vouloir supprimer cet élève ? (Action irréversible)')) return;
+  try {
+    const firebase = await import('./firebase-config.js');
+    await firebase.deleteDoc(firebase.doc(firebase.db, "students", id));
+    await DATA.syncFromFirebase();
+    renderAdminEleves();
+    showToast('Élève supprimé', 'success');
+  } catch(e) {
+    console.error(e);
+    showToast('Erreur lors de la suppression', 'error');
+  }
+};
