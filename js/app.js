@@ -1558,6 +1558,26 @@ window.calculateNextCourses = calculateNextCourses;
 window.openManageCourseModal = openManageCourseModal;
 window.openMessagesModal = openMessagesModal;
 window.renderChatHistory = renderChatHistory;
+window.submitResetPassword = async function() {
+  const email = document.getElementById('reset-password-email').value;
+  const btn = document.querySelector('#form-reset-password button[type="submit"]');
+  const originalText = btn.textContent;
+  btn.textContent = 'Envoi...';
+  btn.disabled = true;
+
+  const success = await AUTH.resetPassword(email);
+  if (success) {
+    showToast('✉️ Email de réinitialisation envoyé ! Vérifiez vos spams.', 'success');
+    closeModal('modal-reset-password');
+    document.getElementById('form-reset-password').reset();
+  } else {
+    showToast('❌ Erreur : Cette adresse n\'existe peut-être pas.', 'error');
+  }
+
+  btn.textContent = originalText;
+  btn.disabled = false;
+};
+
 window.openAddStudentModal = function(studentId = null) {
   const select = document.getElementById('add-student-courses');
   if (select) {

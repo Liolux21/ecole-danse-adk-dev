@@ -1,4 +1,4 @@
-import { auth, db, signInWithEmailAndPassword, signOut, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
+import { auth, db, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, doc, getDoc } from './firebase-config.js';
 
 const AUTH = {
   currentUser: null,
@@ -46,6 +46,17 @@ const AUTH = {
     } catch (e) {
       console.error("Login error:", e);
       return null;
+    }
+  },
+
+
+  async resetPassword(email) {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return true;
+    } catch(e) {
+      console.error("Reset password error:", e);
+      return false;
     }
   },
 
