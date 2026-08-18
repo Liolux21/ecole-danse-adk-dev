@@ -1644,18 +1644,11 @@ footer {
   width: 100%;
 }
 .portal-login-card.hidden { display: none; }
-.portal-logo {
-  font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--gold);
-  margin-bottom: 0.25rem;
-}
 .portal-title {
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: var(--white);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--gold);
   margin-bottom: 0.4rem;
 }
 .portal-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
