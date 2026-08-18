@@ -71,22 +71,6 @@
           <h3 class="portal-title">Connexion</h3>
           <p class="portal-subtitle">Accédez à votre espace personnel</p>
 
-          <!-- Sélecteur de rôle (aide visuelle) -->
-          <div class="portal-roles">
-            <div class="portal-role-hint" data-role="admin" id="hint-admin">
-              <div class="role-icon">👑</div>
-              <div class="role-label">Admin</div>
-            </div>
-            <div class="portal-role-hint" data-role="prof" id="hint-prof">
-              <div class="role-icon">👩‍🏫</div>
-              <div class="role-label">Professeur</div>
-            </div>
-            <div class="portal-role-hint" data-role="parent" id="hint-parent">
-              <div class="role-icon">👨‍👩‍👧</div>
-              <div class="role-label">Élève</div>
-            </div>
-          </div>
-
           <form id="portal-login-form">
             <div class="form-group">
               <label class="form-label" for="portal-email">Email</label>
@@ -105,32 +89,7 @@
             </button>
           </form>
 
-          <div class="demo-creds" id="demo-creds"></div>
-        </div>
-
-        <!-- Info cards côté droit -->
-        <div class="portal-info-side reveal reveal-delay-1">
-          <div class="portal-info-card">
-            <div class="portal-info-icon icon-admin">👑</div>
-            <div>
-              <h4>Administrateur <span class="role-badge badge-admin">Admin</span></h4>
-              <p>Gestion globale : élèves, professeurs, inscriptions, cours, comptabilité et actualités de l'école.</p>
-            </div>
-          </div>
-          <div class="portal-info-card">
-            <div class="portal-info-icon icon-prof">👩‍🏫</div>
-            <div>
-              <h4>Professeur <span class="role-badge badge-prof">Prof</span></h4>
-              <p>Accès à vos cours, liste d'élèves, feuille d'appel et suivi des présences par séance.</p>
-            </div>
-          </div>
-          <div class="portal-info-card">
-            <div class="portal-info-icon icon-parent">👨‍👩‍👧</div>
-            <div>
-              <h4>Élève <span class="role-badge badge-parent">Élève</span></h4>
-              <p>Suivi de vos présences, planning personnalisé, paiements et messages de l'école.</p>
-            </div>
-          </div>
+          <div class="demo-creds" id="demo-creds" style="display: none;"></div>
         </div>
       </div>
 

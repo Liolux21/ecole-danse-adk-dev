@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>École de Danse ADK | Accueil</title>
+  <meta name="description" content="Bienvenue dans notre école de danse familiale, un lieu où se rencontrent passion, énergie et exigence artistique.">
+  <meta property="og:title" content="École de Danse ADK">
+  <meta property="og:description" content="Une famille - Une passion - Une histoire - Une vie">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩰</text></svg>">
+  <link rel="stylesheet" href="css/style.css?v=55">
+  <style>
+    /* Vitrine Specific Styles */
+    .vitrine-title {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--white);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .vitrine-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 3rem auto;
+      font-size: 1.1rem;
+    }
+    
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 1rem 4rem 1rem;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/images/hero_dancer.png');
+      background-size: cover;
+      background-position: center top;
+      transform: scale(1.05);
+      transition: transform 8s ease-out;
+      z-index: 1;
+      filter: brightness(0.5);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        rgba(234, 213, 213, 0.98) 0%,
+        rgba(234, 213, 213, 0.85) 50%,
+        rgba(234, 213, 213, 0.4) 100%
+      );
+      z-index: 2;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      color: var(--white);
+    }
+    .text-gold {
+      color: var(--gold);
+    }
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-light);
+      margin-bottom: 2.5rem;
+    }
+    
+    /* Grids */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .card-vitrine {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .card-vitrine:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-card);
+      border-color: var(--gold);
+    }
+    .prof-card-interactive:hover img {
+      transform: scale(1.08) !important;
+    }
+    .card-vitrine-img {
+      height: 200px;
+      width: 100%;
+      object-fit: cover;
+    }
+    .card-vitrine-content {
+      padding: 1.5rem;
+    }
+    .card-vitrine-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: #B68989;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Modals for Vitrine */
+    .vitrine-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(234, 213, 213, 0.95);
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .vitrine-modal.active {
+      display: flex;
+    }
+    .vitrine-modal-content {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      max-width: 1000px;
+      width: 100%;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .vitrine-modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--dark-2);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      color: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .vitrine-modal-close:hover {
+      background: var(--gold);
+    }
+    
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: var(--dark-2);
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+    }
+    
+    @media (min-width: 992px) {
+      .mobile-only-hero-buttons {
+        display: none !important;
+      }
+    }
+    @media (max-width: 500px) {
+      .mobile-break { display: block !important; }
+    }
+    
+    /* Timeline */
+    .timeline { position: relative; max-width: 1100px; margin: 3rem auto; padding: 2rem 0; }
+    .timeline::before { content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: rgba(156, 88, 88, 0.3); transform: translateX(-50%); }
+    .timeline-item { position: relative; width: 50%; padding: 1.5rem 3rem; box-sizing: border-box; }
+    .timeline-item:nth-child(odd) { left: 0; text-align: right; }
+    .timeline-item:nth-child(even) { left: 50%; }
+    .timeline-item::after { content: ''; position: absolute; top: 2rem; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 10px var(--gold); z-index: 1; }
+    .timeline-item:nth-child(odd)::after { right: -8px; }
+    .timeline-item:nth-child(even)::after { left: -8px; }
+    .timeline-content { background: #ffffff; padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-align: justify; }
+    @media (max-width: 768px) {
+      .timeline::before { left: 20px; }
+      .timeline-item { width: 100%; padding: 1rem 1rem 1rem 3rem; left: 0 !important; text-align: left !important; }
+      .timeline-item::after { left: 12px !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar scrolled">
+    <div class="nav-logo">
+      <span class="nav-logo-main">ADK</span>
+      <span class="nav-logo-sub">École de Danse</span>
+    </div>
+    <div class="nav-links">
+      <a href="#accueil" class="nav-link">Accueil</a>
+      <a href="#ecole" class="nav-link">Notre école</a>
+      <a href="#histoire" class="nav-link">Notre histoire</a>
+      <a href="#cours" class="nav-link">Nos cours</a>
+      <a href="#planning" class="nav-link">Planning</a>
+      <a href="#equipe" class="nav-link">Notre équipe</a>
+      <a href="#contact" class="nav-link">Nous contacter</a>
+      <a href="portail.html" class="btn btn-outline" style="padding: 0.4rem 1rem;">Portail</a>
+    </div>
+    <button class="nav-burger" aria-label="Menu" id="burger">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <button onclick="document.getElementById('mobile-menu').classList.remove('open')" style="position: absolute; top: 1.5rem; right: 2rem; background: none; border: none; font-size: 2.8rem; color: #9C5858; cursor: pointer;">×</button>
+    <a class="nav-link" href="#accueil" onclick="document.getElementById('mobile-menu').classList.remove('open')">Accueil</a>
+    <a class="nav-link" href="#ecole" onclick="document.getElementById('mobile-menu').classList.remove('open')">Notre école</a>
+    <a class="nav-link" href="#histoire" onclick="document.getElementById('mobile-menu').classList.remove('open')">Notre histoire</a>
+    <a class="nav-link" href="#cours" onclick="document.getElementById('mobile-menu').classList.remove('open')">Nos cours</a>
+    <a class="nav-link" href="#planning" onclick="document.getElementById('mobile-menu').classList.remove('open')">Planning</a>
+    <a class="nav-link" href="#equipe" onclick="document.getElementById('mobile-menu').classList.remove('open')">Notre équipe</a>
+    <a class="nav-link" href="#contact" onclick="document.getElementById('mobile-menu').classList.remove('open')">Nous contacter</a>
+    <a class="btn btn-primary" href="portail.html">Portail membres</a>
+  </div>
+
+  <!-- Hero Section -->
+  <section id="accueil" class="hero">
+    <div class="hero-bg loaded"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-particles" style="position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden;"></div>
+    <div class="hero-content">
+      <div style="display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.4rem 1.2rem; background: rgba(156, 88, 88, 0.1); border: 2px solid #9C5858; border-radius: 50px; color: #9C5858; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2rem;">
+        <span style="display: inline-block; width: 8px; height: 8px; background-color: #9C5858; border-radius: 50%; box-shadow: 0 0 8px #9C5858; animation: pulse 2s ease infinite;"></span>
+        Saison 2026-2027 Ouverte
+      </div>
+      <h1 class="hero-title" style="font-size: clamp(2rem, 8vw, 4rem); line-height: 1.2; margin-bottom: 1.5rem; word-wrap: break-word; overflow-wrap: break-word;">
+        <span style="color: #ffffff;">Bienvenue chez</span> <br class="mobile-break" style="display: none;"><span style="color: #9C5858;">ADK</span>
+      </h1>
+      <p class="hero-subtitle" style="font-weight: 600; letter-spacing: 1px; font-size: clamp(0.9rem, 3.5vw, 1.1rem); color: #9C5858; text-shadow: none; line-height: 1.5; word-wrap: break-word; margin-bottom: 2rem;">
+        Une famille &middot; Une passion &middot; Une histoire &middot; Une vie
+      </p>
+
+      <div class="hero-stats" style="display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap; padding-top: 2.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+        <div style="text-align: center;">
+          <div id="stat-ans" style="font-family: var(--font-display); font-size: 2.5rem; color: #9C5858; font-weight: 700; line-height: 1;">0+</div>
+          <div style="color: var(--white); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; font-weight: 600;">Ans d'expérience</div>
+        </div>
+        <div style="text-align: center;">
+          <div id="stat-styles" style="font-family: var(--font-display); font-size: 2.5rem; color: #9C5858; font-weight: 700; line-height: 1;">0+</div>
+          <div style="color: var(--white); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; font-weight: 600;">Styles de danse</div>
+        </div>
+        <div style="text-align: center;">
+          <div id="stat-profs" style="font-family: var(--font-display); font-size: 2.5rem; color: #9C5858; font-weight: 700; line-height: 1;">0+</div>
+          <div style="color: var(--white); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; font-weight: 600;">Professeurs</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section L'École -->
+  <section id="ecole" class="vitrine-section">
+    <h2 class="vitrine-title"><span style="color: #ffffff;">Notre</span> <span style="color: #9C5858;">école</span></h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 4rem; align-items: center;">
+      <div style="flex: 1 1 400px; text-align: justify;">
+        <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 1.5rem;">
+          Bienvenue dans notre école de danse familiale, un lieu où se rencontrent passion, énergie et exigence artistique. Enfants, adolescents et adultes y découvrent le plaisir de danser dans une ambiance chaleureuse, dynamique et bienveillante, tout en évoluant dans un cadre structuré et professionnel.
+        </p>
+        <p style="color: var(--text-light); line-height: 1.8;">
+          Dès l'âge de 3 ans, chaque élève est accompagné avec attention, encouragé à évoluer à son rythme, à développer sa technique, sa créativité et sa confiance en soi. L’encadrement est assuré par des professeurs qualifiés, soucieux de transmettre autant le plaisir de danser que les fondamentaux artistiques.
+        </p>
+      </div>
+      <div style="flex: 1 1 400px;">
+        <img src="https://annedkdanse.be/gallery_gen/b6843b2cea6d95b1ec18150a69c89600_1950x1096_fit.jpg?ts=1784550197" alt="ADK Danse" style="width: 100%; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      </div>
+    </div>
+    
+    <div class="grid-3" style="margin-top: 4rem; align-items: stretch;">
+      <div class="card-vitrine" style="cursor: default; transform: none; box-shadow: none; border: 1px solid var(--border); height: 100%;">
+        <div class="card-vitrine-content" style="text-align: justify;">
+          <h3 class="card-vitrine-title" style="color: #B68989; margin-bottom: 1rem; text-align: left;">Nos Valeurs</h3>
+          <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.8rem;">Au-delà de l’apprentissage de la danse, notre école défend des valeurs fortes : <strong style="color: var(--white);">Respect, Ecoute, Esprit d’équipe, Rigueur et Plaisir</strong> de danser ensemble.</p>
+          <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6;">Tout au long de l’année, les élèves vivent des moments forts à travers les cours, les spectacles, les projets artistiques et la vie de l’école, faisant de la danse un véritable lien, une émotion partagée et une aventure humaine enrichissante.</p>
+        </div>
+      </div>
+      <div class="card-vitrine" style="cursor: default; transform: none; box-shadow: none; border: 1px solid var(--border); height: 100%;">
+        <div class="card-vitrine-content" style="text-align: justify;">
+          <h3 class="card-vitrine-title" style="color: #B68989; margin-bottom: 1rem; text-align: left;">Compagnies & Concours</h3>
+          <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.8rem;">Pour les élèves présentant un très bon niveau de danse, l’école propose également des compagnies sur audition, garantissant un cadre exigeant et stimulant.</p>
+          <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.8rem;">Elles participent à des shows de grande qualité, à des projets ambitieux et à des concours nationaux et internationaux.</p>
+          <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6;">En 2025, elles ont notamment obtenu une médaille d’argent en France pour une proposition urbaine, et se sont distinguées lors d’autres compétitions.</p>
+        </div>
+      </div>
+      <div class="card-vitrine" style="cursor: default; transform: none; box-shadow: none; border: 1px solid var(--border); height: 100%;">
+        <div class="card-vitrine-content" style="text-align: justify;">
+          <h3 class="card-vitrine-title" style="color: #B68989; margin-bottom: 1rem; text-align: left;">Formation Pro</h3>
+          <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.8rem;">L’école s’engage dans la formation des futurs professeurs de danse via un programme spécifique, organisé sur deux ans, pour accompagner les élèves souhaitant se professionnaliser.</p>
+          <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6;">Cette formation complète aborde la pédagogie, la technique, la transmission, la gestion de groupe et les bases du métier d’enseignant, dans une approche sérieuse et encadrée.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Notre Histoire -->
+  <section id="histoire" class="vitrine-section">
+    <h2 class="vitrine-title"><span style="color: #ffffff;">Notre</span> <span style="color: #9C5858;">histoire</span></h2>
+    <p class="vitrine-subtitle">Une aventure humaine, familiale et artistique depuis près de 30 ans.</p>
+    
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-content" onclick="toggleTimeline(this)" style="cursor: pointer;">
+          <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #B68989; margin-bottom: 0; font-family: var(--font-display);">Le Parcours d'Anne</h3>
+            <span class="timeline-icon" style="color: var(--gold); font-size: 1.5rem; transition: transform 0.3s; font-weight: 300;">+</span>
+          </div>
+          <div class="timeline-body" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; opacity: 0;">
+            <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">Anne débute la danse classique à 4 ans et entre au conservatoire de Charleroi à 6 ans. Elle s'y forme intensément pendant plus de 10 ans (30h/semaine). Après son diplôme, elle parfait ses compétences au Ballet d'Anvers et de Marseille, et s'ouvre au Modern jazz, burlesque et latino. Elle intègre ensuite une tournée de la Rai Uno en Italie.</p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content" onclick="toggleTimeline(this)" style="cursor: pointer;">
+          <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #B68989; margin-bottom: 0; font-family: var(--font-display);">1997 - La Création</h3>
+            <span class="timeline-icon" style="color: var(--gold); font-size: 1.5rem; transition: transform 0.3s; font-weight: 300;">+</span>
+          </div>
+          <div class="timeline-body" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; opacity: 0;">
+            <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">Après la naissance de ses jumeaux en 1995 et son installation en Gaume, Anne fonde "Les Ateliers de danse Anne DK" en association avec le CEC Jeanne François à Chiny/Florenville, avec 3 à 4 cours par semaine.</p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content" onclick="toggleTimeline(this)" style="cursor: pointer;">
+          <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #B68989; margin-bottom: 0; font-family: var(--font-display);">2011 - Naissance d'ADK</h3>
+            <span class="timeline-icon" style="color: var(--gold); font-size: 1.5rem; transition: transform 0.3s; font-weight: 300;">+</span>
+          </div>
+          <div class="timeline-body" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; opacity: 0;">
+            <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">Face au succès, Anne crée l'ASBL "Bouge de là" et l'école devient officiellement l'ÉCOLE DE DANSE ADK. Plus de 40 cours sont alors donnés au Studio ADK (Izel), au Rox (Rouvroy) et au Centre sportif de Bertrix.</p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content" onclick="toggleTimeline(this)" style="cursor: pointer;">
+          <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #B68989; margin-bottom: 0; font-family: var(--font-display);">La Relève</h3>
+            <span class="timeline-icon" style="color: var(--gold); font-size: 1.5rem; transition: transform 0.3s; font-weight: 300;">+</span>
+          </div>
+          <div class="timeline-body" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; opacity: 0;">
+            <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">Anne se retire progressivement de l'enseignement pour gérer l'ASBL. Elle forme sa fille Manon et d'autres jeunes professeures talentueuses pour assurer la relève. Des chorégraphes renommés viennent même de loin pour s'imprégner de l'énergie ADK !</p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content" onclick="toggleTimeline(this)" style="cursor: pointer;">
+          <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #B68989; margin-bottom: 0; font-family: var(--font-display);">2023 - Le Studio ADK</h3>
+            <span class="timeline-icon" style="color: var(--gold); font-size: 1.5rem; transition: transform 0.3s; font-weight: 300;">+</span>
+          </div>
+          <div class="timeline-body" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; opacity: 0;">
+            <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">En février 2023, l'école quitte Chiny pour ouvrir son propre espace à Izel (rue de Bouillon 18). Un superbe bâtiment stratégiquement situé offrant d'énormes possibilités pour les élèves et les professeurs.</p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content" onclick="toggleTimeline(this)" style="cursor: pointer;">
+          <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #B68989; margin-bottom: 0; font-family: var(--font-display);">2024 - L'International</h3>
+            <span class="timeline-icon" style="color: var(--gold); font-size: 1.5rem; transition: transform 0.3s; font-weight: 300;">+</span>
+          </div>
+          <div class="timeline-body" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; opacity: 0;">
+            <p style="color: var(--text-light); line-height: 1.6; font-size: 0.95rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">ADK débute les concours internationaux avec brio, avec deux Tops 6 et une médaille d'argent, prouvant l'excellence de ses compagnies !</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Cours -->
+  <section id="cours" class="vitrine-section" style="background: var(--dark-2); border-radius: var(--radius); box-shadow: var(--shadow-card);">
+    <h2 class="vitrine-title"><span style="color: #ffffff;">Nos</span> <span style="color: #9C5858;">cours</span></h2>
+    <p class="vitrine-subtitle"><strong>40 cours dans 3 lieux — Studio ADK, Au Rox et Bertrix.</strong><br>De l'éveil pour les tout-petits aux compagnies de haut niveau, notre école propose un large éventail de styles afin de répondre à toutes les envies et à toutes les sensibilités.</p>
+    
+    <div class="grid-3" id="cours-grid">
+      <!-- Injected dynamically by JS -->
+    </div>
+  </section>
+  <!-- ==================== PLANNING ==================== -->
+  <section id="planning" class="vitrine-section">
+      <h2 class="vitrine-title reveal" style="text-align: center;"><span style="color: #ffffff;">Planning</span> <span style="color: #9C5858;">hebdomadaire</span></h2>
+      <p class="vitrine-subtitle reveal reveal-delay-1" style="margin-bottom: 3rem; text-align: center;">Filtrez par style ou par lieu et trouvez le cours qui vous convient — Saison 2026-2027.</p>
+
+      <!-- Filtres planning -->
+      <div class="planning-filters reveal">
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Style</span>
+          <div class="planning-filter-btns" id="planning-style-filters">
+            <button class="plan-filter-btn active" data-style="all">Tous</button>
+            <button class="plan-filter-btn" data-style="classique">🩰 Classique</button>
+            <button class="plan-filter-btn" data-style="jazz">🎷 Jazz</button>
+            <button class="plan-filter-btn" data-style="hiphop">🎤 Hip-Hop</button>
+            <button class="plan-filter-btn" data-style="ragga">🌴 Ragga</button>
+            <button class="plan-filter-btn" data-style="contemporain">🌊 Contemporain</button>
+            <button class="plan-filter-btn" data-style="eveil">🌸 Éveil</button>
+            <button class="plan-filter-btn" data-style="compagnie">⭐ Compagnie</button>
+            <button class="plan-filter-btn" data-style="special">🏆 Spécial</button>
+          </div>
+        </div>
+        <div class="planning-filter-row">
+          <span class="planning-filter-label">Lieu</span>
+          <div class="planning-filter-btns" id="planning-lieu-filters">
+            <button class="plan-filter-btn active" data-lieu="all">Tous</button>
+            <button class="plan-filter-btn" data-lieu="ADK">🏠 Studio ADK</button>
+            <button class="plan-filter-btn" data-lieu="Rox">🏟️ Au Rox</button>
+            <button class="plan-filter-btn" data-lieu="Bertrix">📍 Bertrix</button>
+            <button class="plan-filter-btn" data-lieu="Izel">🎭 C.C. Izel</button>
+            <button class="plan-filter-btn" data-lieu="Flore">🌿 Florenville</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav semaine (desktop + mobile) -->
+      <div class="planning-nav reveal">
+        <button class="planning-nav-btn" id="plan-prev" aria-label="Semaine précédente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="planning-week" id="planning-week">Cette semaine</div>
+        <button class="planning-nav-btn" id="plan-next" aria-label="Semaine suivante">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- Vue DESKTOP (grille) -->
+      <div class="planning-desktop-view">
+        <div class="planning-grid" id="planning-grid"></div>
+      </div>
+
+      <!-- Vue MOBILE (liste par jour) -->
+      <div class="planning-mobile-view">
+        <div class="mobile-day-tabs" id="mobile-day-tabs">
+          <button class="mobile-day-tab active" data-day="0">Lun</button>
+          <button class="mobile-day-tab" data-day="1">Mar</button>
+          <button class="mobile-day-tab" data-day="2">Mer</button>
+          <button class="mobile-day-tab" data-day="3">Jeu</button>
+          <button class="mobile-day-tab" data-day="4">Ven</button>
+          <button class="mobile-day-tab" data-day="5">Sam</button>
+          <button class="mobile-day-tab" data-day="6">Dim</button>
+        </div>
+        <div class="mobile-course-list" id="mobile-course-list"></div>
+      </div>
+
+      <!-- Légende -->
+      <div class="planning-legend reveal">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--rose)"></span>Classique</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Contemporain</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7BB4DC"></span>Jazz</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#90CC90"></span>Hip-Hop</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC9EC8"></span>Éveil</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#40C4A4"></span>Ragga</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#B478DC"></span>Compagnie</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#DC8C50"></span>Spécial</span>
+      </div>
+  </section>
+
+
+  
+
+
+
+  
+
+
+
+  
+
+ 
+  
+
+ 
+  
+
+<!-- Section Équipe -->
+  <section id="equipe" class="vitrine-section">
+    <h2 class="vitrine-title"><span style="color: #ffffff;">Notre</span> <span style="color: #9C5858;">équipe</span></h2>
+    <p class="vitrine-subtitle">L'encadrement est assuré par des professeurs qualifiés, engagés et passionnés.</p>
+    
+    <div id="equipe-container">
+      <!-- Injected dynamically by JS -->
+    </div>
+  </section>
+
+  <!-- Section Contact -->
+  <section id="contact" class="vitrine-section">
+    <h2 class="vitrine-title"><span style="color: #ffffff;">Nous</span> <span style="color: #9C5858;">contacter</span></h2>
+    <p class="vitrine-subtitle">Une question ? N'hésitez pas à nous écrire.</p>
+    
+    <form class="contact-form" onsubmit="event.preventDefault(); alert('Message envoyé !');">
+      <input type="text" class="form-input" placeholder="Votre nom" required>
+      <input type="email" class="form-input" placeholder="Votre email" required>
+      <textarea class="form-input" rows="5" placeholder="Votre message" required></textarea>
+      <button type="submit" class="btn btn-primary" style="align-self: center;">Envoyer</button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 2rem; color: var(--text-light);">
+      <p>✉️ annedkdanse@hotmail.com</p>
+    </div>
+  </section>
+
+  <footer>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 École de Danse ADK. Tous droits réservés.</p>
+  </footer>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal Dynamique (Cours & Professeurs) -->
+  <div class="vitrine-modal" id="modal-dynamic">
+    <div class="vitrine-modal-content" style="max-width: 1150px; width: 94%;">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-dynamic')">×</button>
+      <h3 class="vitrine-title" id="modal-dynamic-title" style="margin: 0 0 0.4rem 0; font-size: 1.6rem; text-align: left; color: #9C5858;">Titre</h3>
+      <div id="modal-dynamic-content" style="color: var(--text-light); line-height: 1.5; white-space: pre-wrap;">
+        <!-- Content injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Script -->
+  <script src="js/vitrine-data.js?v=17"></script>
+
+  <!-- Simple script for Modals & Data Injection -->
+  <script>
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+      if (window.modalCarouselInterval) clearInterval(window.modalCarouselInterval);
+    }
+    
+    function openDynamic(type, key) {
+      if(VITRINE_DATA && VITRINE_DATA[type] && VITRINE_DATA[type][key]) {
+        const data = VITRINE_DATA[type][key];
+        
+        if (type === 'cours') {
+          const titleEl = document.getElementById('modal-dynamic-title');
+          if (titleEl) {
+            titleEl.innerText = `Pôle ${data.title}`;
+            titleEl.style.display = '';
+          }
+          
+          const stylePhotos = {
+            'hiphop': ['assets/images/hiphop_dancer.png', 'assets/images/breakdance_freeze.png', 'assets/images/ragga_dancer.png'],
+            'classique': ['assets/images/dance_ballet.png', 'assets/images/compagnie_stage.png', 'assets/images/hero_dancer.png'],
+            'jazz': ['assets/images/dance_jazz.png', 'assets/images/dance_contemporary.png', 'assets/images/compagnie_stage.png'],
+            'contemporain': ['assets/images/dance_contemporary.png', 'assets/images/compagnie_stage.png', 'assets/images/hero_dancer.png'],
+            'ragga': ['assets/images/ragga_dancer.png', 'assets/images/hiphop_dancer.png', 'assets/images/breakdance_freeze.png'],
+            'eveil': ['assets/images/eveil_kids.png', 'assets/images/dance_ballet.png', 'assets/images/hero_dancer.png'],
+            'compagnies': ['assets/images/compagnie_stage.png', 'assets/images/dance_contemporary.png', 'assets/images/dance_ballet.png'],
+            'bienetre': ['assets/images/hero_dancer.png', 'assets/images/dance_contemporary.png', 'assets/images/dance_ballet.png']
+          };
+          const photos = stylePhotos[key] || [data.modalImage || 'assets/images/hero_dancer.png', 'assets/images/compagnie_stage.png', 'assets/images/dance_contemporary.png'];
+
+          let carouselHtml = `
+            <div class="modal-carousel-container" style="position: relative; width: 100%; height: 250px; border-radius: var(--radius); overflow: hidden; margin-bottom: 1rem; box-shadow: 0 6px 20px rgba(0,0,0,0.15); border: 2px solid var(--gold);">
+              <div id="modal-carousel-track" style="display: flex; height: 100%; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);">
+          `;
+          photos.forEach((src, idx) => {
+            carouselHtml += `
+                <div class="modal-carousel-slide" style="min-width: 100%; height: 100%; position: relative;">
+                  <img src="${src}" alt="Photo ${idx+1}" style="width: 100%; height: 100%; object-fit: cover;">
+                  <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.45), transparent);"></div>
+                </div>
+            `;
+          });
+          carouselHtml += `
+              </div>
+              <button onclick="moveModalCarousel(-1)" style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.9); color: #9C5858; width: 38px; height: 38px; border-radius: 50%; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.25); transition: 0.2s; z-index: 5;">&#10094;</button>
+              <button onclick="moveModalCarousel(1)" style="position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.9); color: #9C5858; width: 38px; height: 38px; border-radius: 50%; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.25); transition: 0.2s; z-index: 5;">&#10095;</button>
+              <div id="modal-carousel-dots" style="position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 10;">
+          `;
+          photos.forEach((_, idx) => {
+            carouselHtml += `<span class="modal-dot ${idx === 0 ? 'active' : ''}" onclick="goModalCarousel(${idx})" style="width: 9px; height: 9px; border-radius: 50%; background: #ffffff; cursor: pointer; transition: 0.3s; opacity: ${idx === 0 ? '1' : '0.4'}; box-shadow: 0 0 5px rgba(0,0,0,0.6);"></span>`;
+          });
+          carouselHtml += `
+              </div>
+            </div>
+          `;
+
+          let subCoursesHtml = '';
+          if (typeof ALL_COURSES !== 'undefined') {
+            const styleCourses = ALL_COURSES.filter(course => course.style === key);
+            if (styleCourses.length > 0) {
+              subCoursesHtml = `<div style="margin-top: 0.8rem; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 0.8rem;">
+                <h4 style="color: #9C5858; font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 0.6rem 0;">Liste des cours (${styleCourses.length})</h4>
+                <div class="modal-courses-grid">
+              `;
+              styleCourses.forEach(course => {
+                let lieuName = course.lieu;
+                if (course.lieu === 'adk') lieuName = 'Studio ADK';
+                else if (course.lieu === 'rox') lieuName = 'Au Rox';
+                else if (course.lieu === 'bertrix') lieuName = 'Bertrix';
+                else if (course.lieu === 'izel') lieuName = 'Izel';
+                else if (course.lieu === 'flore') lieuName = 'Florenville';
+                else lieuName = course.lieu ? course.lieu.toUpperCase() : 'Studio ADK';
+
+                const lieuBadge = `<span style="font-size:0.75rem;color:#ffffff;background:rgba(0,0,0,0.25);padding:0.1rem 0.5rem;border-radius:50px;font-weight:600;display:inline-flex;align-items:center;gap:3px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${lieuName}</span>`;
+
+                let profAvatarHtml = '';
+                const profName = course.prof ? course.prof.split(' · ')[0].trim() : '';
+                if (profName && typeof VITRINE_DATA !== 'undefined' && VITRINE_DATA.professeurs && VITRINE_DATA.professeurs[profName] && VITRINE_DATA.professeurs[profName].avatar) {
+                  profAvatarHtml = `<img src="${VITRINE_DATA.professeurs[profName].avatar}" alt="${profName}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;display:inline-block;vertical-align:middle;margin-right:4px;border:1px solid #ffffff;">`;
+                } else {
+                  profAvatarHtml = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:4px;vertical-align:middle;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+                }
+
+                subCoursesHtml += `
+                  <div class="course-card" style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2); height: 100%; background: #C68B8B; border-radius: var(--radius-sm); overflow: hidden; display: flex; flex-direction: column;">
+                    <div style="height: 85px; width: 100%; overflow: hidden; position: relative; background: #222;">
+                      <img src="${course.image || 'assets/images/hero_dancer.png'}" alt="${course.name}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
+                      <div style="position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); padding: 2px 7px; border-radius: 50px; font-size: 0.65rem; color: #fff; font-weight: 600;">${course.levels}</div>
+                    </div>
+                    <div class="course-body" style="padding: 0.65rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; background: #C68B8B;">
+                      <div>
+                        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.35rem;">
+                          ${lieuBadge}
+                          ${course.biweekly ? '<span style="font-size:0.65rem;color:#ffffff;background:rgba(0,0,0,0.25);padding:0.1rem 0.5rem;border-radius:50px;font-weight:600;">1 sem/2</span>' : ''}
+                        </div>
+                        <h3 class="course-name" style="font-size: 0.95rem; margin: 0.2rem 0 0.4rem 0; color: #ffffff; font-family: var(--font-display); font-weight: 700; line-height: 1.25; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">${course.name}</h3>
+                      </div>
+                      <div class="course-meta" style="margin-top: 0.4rem; font-size: 0.78rem; display: flex; flex-direction: column; gap: 0.28rem; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.4rem;">
+                        <span class="course-meta-item" style="color: #ffffff; font-weight: 600; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:5px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>${course.schedule}</span></span>
+                        <span class="course-meta-item" style="color: #ffffff; font-weight: 600; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:5px;flex-shrink:0;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>${course.ages}</span></span>
+                        <span class="course-meta-item" style="color: #ffffff; font-weight: 600; display: flex; align-items: center;">${profAvatarHtml}<span>${course.prof}</span></span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              });
+              subCoursesHtml += `</div></div>`;
+            }
+          }
+
+          document.getElementById('modal-dynamic-content').innerHTML = `
+            ${carouselHtml}
+            <div style="margin-bottom: 0.5rem;">
+               <p style="font-size: 0.95rem; line-height: 1.5; margin: 0; color: var(--text-light); text-align: justify;">${data.content}</p>
+            </div>
+            ${subCoursesHtml}
+          `;
+
+          let modalSlide = 0;
+          const modalTotalSlides = photos.length;
+          window.moveModalCarousel = function(dir) {
+            modalSlide = (modalSlide + dir + modalTotalSlides) % modalTotalSlides;
+            updateModalCarousel();
+            resetModalCarouselTimer();
+          };
+          window.goModalCarousel = function(idx) {
+            modalSlide = idx;
+            updateModalCarousel();
+            resetModalCarouselTimer();
+          };
+          function updateModalCarousel() {
+            const track = document.getElementById('modal-carousel-track');
+            if (track) {
+              track.style.transform = `translateX(-${modalSlide * 100}%)`;
+              const dots = document.querySelectorAll('#modal-carousel-dots .modal-dot');
+              dots.forEach((dot, idx) => {
+                dot.style.opacity = idx === modalSlide ? '1' : '0.4';
+              });
+            }
+          }
+          function resetModalCarouselTimer() {
+            if (window.modalCarouselInterval) clearInterval(window.modalCarouselInterval);
+            window.modalCarouselInterval = setInterval(() => {
+              if (document.getElementById('modal-dynamic').classList.contains('active')) {
+                window.moveModalCarousel(1);
+              } else {
+                if (window.modalCarouselInterval) clearInterval(window.modalCarouselInterval);
+              }
+            }, 4000);
+          }
+          modalSlide = 0;
+          resetModalCarouselTimer();
+        } else {
+          const isOnlyImage = data.onlyImage || data.title.includes("Daisy");
+          const titleEl = document.getElementById('modal-dynamic-title');
+          if (titleEl) {
+            titleEl.innerText = data.title;
+            titleEl.style.display = isOnlyImage ? 'none' : '';
+          }
+          
+          let contentHtml = '';
+          if (data.flyerStyle) {
+            const fs = data.flyerStyle;
+            const parsHtml = fs.paragraphs.map(p => `<p style="margin: 0 0 1rem 0; color: #ffffff; line-height: 1.75; font-size: 0.98rem; text-align: justify;">${p}</p>`).join('');
+            contentHtml += `
+              <div class="prof-flyer-container" style="display: flex; flex-wrap: wrap; gap: 0; background: #DC8765; border-radius: var(--radius); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-bottom: 1.8rem; border: 1px solid rgba(255,255,255,0.2);">
+                <div class="prof-flyer-left" style="flex: 1 1 300px; min-width: 260px; position: relative; background: #2A1810; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; min-height: 320px;">
+                  <img src="${data.modalImage}" alt="${data.title}" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; min-height: 320px; max-height: 600px;">
+                  ${fs.badgeText ? `<div style="position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: rgba(92, 44, 30, 0.92); color: #ffffff; padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.25);">${fs.badgeText}</div>` : ''}
+                </div>
+                <div class="prof-flyer-right" style="flex: 1 1 360px; min-width: 260px; padding: clamp(1.5rem, 4vw, 2.8rem); display: flex; flex-direction: column; justify-content: center;">
+                  <div style="border-left: 4px solid #ffffff; padding-left: 1rem; margin-bottom: 1.8rem;">
+                    ${fs.headerSubtitle ? `<div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px; color: #FFE5D0; font-weight: 600; margin-bottom: 0.2rem;">${fs.headerSubtitle}</div>` : ''}
+                    ${fs.headerTitle ? `<div style="font-size: clamp(1.4rem, 3vw, 1.85rem); font-family: var(--font-display); font-weight: 700; color: #ffffff; line-height: 1.2;">${fs.headerTitle}</div>` : ''}
+                  </div>
+                  <div style="font-family: var(--font-body);">
+                    ${parsHtml}
+                  </div>
+                </div>
+              </div>
+            `;
+          } else {
+            if (data.modalImage) {
+              contentHtml += `<div style="text-align: center; margin-bottom: ${isOnlyImage ? '0' : '1.8rem'};"><img src="${data.modalImage}" alt="${data.title}" style="max-width: 100%; max-height: 80vh; width: auto; height: auto; border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(0,0,0,0.15); border: 2px solid var(--gold); display: inline-block;"></div>`;
+            }
+            if (!isOnlyImage) {
+              contentHtml += `<div style="font-size: 1.05rem; line-height: 1.8; color: var(--text-light); text-align: justify; padding: 0 0.5rem;">${data.content || ''}</div>`;
+            }
+          }
+            
+            if (typeof ALL_COURSES !== 'undefined') {
+              const profName = data.title.split(' ')[0].trim();
+              const teacherCourses = ALL_COURSES.filter(c => c.prof && (c.prof.includes(profName) || (profName === 'Margaux' && c.prof.includes('Margaux'))));
+              if (teacherCourses.length > 0) {
+                contentHtml += `
+                  <div style="margin-top: 2.2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                    <h4 style="color: #9C5858; font-family: var(--font-display); font-size: 1.25rem; margin: 0 0 1.2rem 0; text-align: center;">Cours dispensés par ${profName} (${teacherCourses.length})</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+                `;
+                for (const c of teacherCourses) {
+                  const badgeColor = typeof DATA !== 'undefined' && DATA.locations ? (DATA.locations.find(l => l.id === c.lieu)?.color || '#C9A84C') : '#C9A84C';
+                  const lieuName = typeof DATA !== 'undefined' && DATA.locations ? (DATA.locations.find(l => l.id === c.lieu)?.short || 'ADK') : 'ADK';
+                  contentHtml += `
+                    <div style="background: #FFFBFB; border: 1px solid rgba(156,88,88,0.2); border-radius: 10px; padding: 1rem; text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
+                      <div>
+                        <div style="font-size: 1.2rem; margin-bottom: 0.3rem;">${c.emoji || '💃'}</div>
+                        <h5 style="color: #4A2E2E; font-size: 0.95rem; margin: 0 0 0.4rem 0; font-weight: 700;">${c.name}</h5>
+                        <p style="color: #7A5E5E; font-size: 0.8rem; margin: 0 0 0.6rem 0; line-height: 1.3;">${c.schedule}</p>
+                      </div>
+                      <div>
+                        <span style="font-size: 0.72rem; color: #ffffff; background: ${badgeColor}; padding: 0.15rem 0.5rem; border-radius: 50px; font-weight: 600;">${lieuName}</span>
+                      </div>
+                    </div>
+                  `;
+                }
+                contentHtml += `</div></div>`;
+              }
+            }
+          
+          document.getElementById('modal-dynamic-content').innerHTML = contentHtml;
+        }
+        openModal('modal-dynamic');
+      }
+    }
+
+    function toggleTimeline(element) {
+      const body = element.querySelector('.timeline-body');
+      const icon = element.querySelector('.timeline-icon');
+      
+      
+      if (body.style.maxHeight && body.style.maxHeight !== '0px') {
+        body.style.maxHeight = '0px';
+        body.style.opacity = '0';
+        icon.style.transform = 'rotate(0deg)';
+        icon.innerHTML = '+';
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        body.style.opacity = '1';
+        icon.style.transform = 'rotate(180deg)';
+        icon.innerHTML = '&minus;';
+      }
+    }
+
+    function animateCounter(id, target) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let cur = 0;
+      const step = target / 60;
+      const t = setInterval(() => {
+        cur = Math.min(cur + step, target);
+        el.textContent = Math.floor(cur) + '+';
+        if (cur >= target) clearInterval(t);
+      }, 25);
+    }
+
+    function initParticles() {
+      const c = document.querySelector('.hero-particles');
+      if (!c) return;
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.cssText = `left:${Math.random()*100}%;width:${Math.random()*4+2}px;height:${Math.random()*4+2}px;animation-duration:${Math.random()*12+10}s;animation-delay:${Math.random()*10}s`;
+        c.appendChild(p);
+      }
+    }
+
+    // Initialize the grids and animations
+    window.onload = function() {
+      initParticles();
+      setTimeout(() => {
+        animateCounter('stat-ans', 28);
+        animateCounter('stat-styles', 8);
+        animateCounter('stat-profs', 14);
+      }, 300);
+      // Init Cours
+      const coursGrid = document.getElementById('cours-grid');
+      if(VITRINE_DATA && VITRINE_DATA.cours && coursGrid) {
+        let coursHtml = "";
+        for(let key in VITRINE_DATA.cours) {
+          const c = VITRINE_DATA.cours[key];
+          const styleCourses = typeof ALL_COURSES !== 'undefined' ? ALL_COURSES.filter(course => course.style === key) : [];
+          const nbCours = styleCourses.length;
+          const profsList = [...new Set(styleCourses.map(course => course.prof).join(' · ').split(' · '))].filter(p => p.trim() !== '');
+          const nbProfs = profsList.length;
+          const lieuxBadgesHtml = [...new Set(styleCourses.map(course => {
+             if(course.lieu === 'adk') return 'Studio ADK';
+             if(course.lieu === 'rox') return 'Au Rox';
+             if(course.lieu === 'bertrix') return 'Bertrix';
+             if(course.lieu === 'izel') return 'Izel';
+             if(course.lieu === 'flore') return 'Florenville';
+             return course.lieu ? course.lieu.toUpperCase() : 'Studio ADK';
+          }))].map(loc => `<span style="font-size:0.75rem;color:#ffffff;background:#9C5858;padding:0.15rem 0.6rem;border-radius:50px;font-weight:600;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 4px rgba(0,0,0,0.12);"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${loc}</span>`).join(' ');
+
+          const avatarHtml = c.avatar 
+            ? `<img src="${c.avatar}" alt="${c.title}" class="course-img" loading="lazy">` 
+            : `<div class="course-img-placeholder" style="background:var(--dark-3);display:flex;align-items:center;justify-content:center;">${c.title}</div>`;
+
+          coursHtml += `
+            <div class="course-card" onclick="openDynamic('cours', '${key}')" style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; display: block; height: 100%; transition: transform 0.35s; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+              ${avatarHtml}
+              <div class="course-body" style="background: #ffffff;">
+                <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem;">
+                  <span class="course-tag tag-${key}">${c.title}</span>
+                </div>
+                <h3 class="course-name" style="color: #7A3535; font-size: 1.35rem; font-weight: 700; margin-bottom: 0.5rem;">Pôle ${c.title}</h3>
+                <p class="course-desc" style="color: #4A2E2E; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1.5rem; line-height: 1.6;">${c.content.replace(/\n/g, ' ')}</p>
+                <div class="course-meta" style="display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.5rem;">
+                  <div style="display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap;">
+                    <span class="course-meta-item" style="color: #6A4E4E; font-weight: 600;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                      ${nbCours > 0 ? nbCours + ' cours' : 'À venir'}
+                    </span>
+                    <span class="course-meta-item" style="color: #6A4E4E; font-weight: 600;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                      ${nbProfs > 0 ? nbProfs + ' prof(s)' : 'En attente'}
+                    </span>
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;">
+                    ${lieuxBadgesHtml || '<span style="font-size:0.75rem;color:#ffffff;background:#9C5858;padding:0.15rem 0.6rem;border-radius:50px;font-weight:600;">Studio ADK</span>'}
+                  </div>
+                </div>
+                <div style="margin-top: 1.5rem; display: flex; justify-content: center;">
+                  <button class="btn btn-outline" style="padding: 0.5rem 1.8rem; font-size: 0.9rem; border-radius: 50px;">Voir les cours</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        coursGrid.innerHTML = coursHtml;
+      }
+
+      // Init Equipe
+      const equipeContainer = document.getElementById('equipe-container');
+      if(VITRINE_DATA && VITRINE_DATA.professeurs && equipeContainer) {
+        const groups = { "Nos Professeurs": [] };
+        for(let key in VITRINE_DATA.professeurs) {
+          const p = VITRINE_DATA.professeurs[key];
+          p.key = key;
+          const cat = p.category || "Nos Professeurs";
+          if (!groups[cat]) groups[cat] = [];
+          groups[cat].push(p);
+        }
+        
+        const order = [
+          "Fondatrice & Directrice",
+          "Coordinatrice et chorégraphe principale",
+          "Chorégraphe et professeure de jazz",
+          "Gestion et organisation",
+          "Nos Professeurs",
+          "Logistique et technique",
+          "Kinésithérapeute accompagnatrice des compagnies et professeurs",
+          "Responsable décoration scénique, créatrice artistique des décors"
+        ];
+        
+        let html = "";
+        for (const cat of order) {
+          if (!groups[cat] || groups[cat].length === 0) continue;
+          html += `<div style="text-align: center;"><h3 style="color: #9C5858; margin: 3rem 0 2rem 0; font-family: var(--font-display); font-size: 1.5rem; display: inline-block; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">${cat}</h3></div>`;
+          
+          if (cat === "Gestion et organisation") {
+            const zoe = groups[cat].find(p => p.title.includes("Zoé")) || groups[cat][0];
+            const margaux = groups[cat].find(p => p.title.includes("Margaux")) || groups[cat][1] || zoe;
+            const zoePhoto = zoe.avatar || "https://annedkdanse.be/gallery_gen/838a00fcf2733d092f124231f9975d09_500x500_fit.jpg?ts=1784984524";
+            const margauxPhoto = margaux.avatar || "https://annedkdanse.be/gallery_gen/193ebf16dd3b5edab7a5bbc33a8dca3c_fit.png?ts=1784985733";
+            const textContent = "Zoé et Margaux organisent la gestion des réunions diverses et font partie de la merveilleuse équipe passionnée, dévouée et pédagogue qui accompagne Anne au quotidien.";
+            html += `
+              <div class="card-vitrine" style="cursor: default; padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 3vw, 2rem); background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 950px; margin: 0 auto 1.5rem auto; text-align: left;">
+                <div style="display: flex; flex-wrap: wrap; gap: clamp(1.2rem, 3vw, 2.5rem); align-items: center; justify-content: center;">
+                  <div style="flex: 0 0 auto; display: flex; gap: clamp(0.5rem, 2vw, 1.8rem); justify-content: center; align-items: flex-start; flex-wrap: wrap;">
+                    <div style="text-align: center; flex: 0 1 auto;">
+                      <div style="width: clamp(125px, 36vw, 170px); height: clamp(125px, 36vw, 170px); border-radius: 50%; overflow: hidden; border: 3px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin: 0 auto;">
+                        <img src="${zoePhoto}" alt="Zoé" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+                      </div>
+                      <h4 style="color: #9C5858; font-family: var(--font-display); font-size: clamp(1.1rem, 3vw, 1.4rem); margin-top: 0.8rem; margin-bottom: 0; font-weight: 700;">Zoé</h4>
+                    </div>
+                    <div style="text-align: center; flex: 0 1 auto;">
+                      <div style="width: clamp(125px, 36vw, 170px); height: clamp(125px, 36vw, 170px); border-radius: 50%; overflow: hidden; border: 3px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin: 0 auto;">
+                        <img src="${margauxPhoto}" alt="Margaux" style="width: 100%; height: 100%; object-fit: cover; object-position: center 20%; transform: scale(1.35); transform-origin: center 20%;">
+                      </div>
+                      <h4 style="color: #9C5858; font-family: var(--font-display); font-size: clamp(1.1rem, 3vw, 1.4rem); margin-top: 0.8rem; margin-bottom: 0; font-weight: 700;">Margaux</h4>
+                    </div>
+                  </div>
+                  <div style="flex: 1 1 280px; min-width: 260px;">
+                    <p style="color: #4A2E2E; line-height: 1.8; font-size: 0.95rem; text-align: justify; margin: 0;">
+                      ${textContent}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            `;
+            continue;
+          }
+
+          if (cat !== "Nos Professeurs") {
+            for (const p of groups[cat]) {
+              const photoUrl = p.avatar || "assets/images/compagnie_stage.png";
+              const isMaurine = p.title.includes("Maurine");
+              const circleSize = isMaurine ? "190px" : "160px";
+              const imgStyles = isMaurine 
+                ? "width: 100%; height: 100%; object-fit: cover; object-position: center 20%; transform: scale(1.35); transform-origin: center 20%;"
+                : "width: 100%; height: 100%; object-fit: cover; object-position: center;";
+
+              html += `
+                <div class="card-vitrine" style="cursor: default; padding: 2.5rem 2rem; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 950px; margin: 0 auto 1.5rem auto; text-align: left;">
+                  <div style="display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: center; justify-content: center;">
+                    <div style="flex: 0 0 auto; text-align: center;">
+                      <div style="width: ${circleSize}; height: ${circleSize}; border-radius: 50%; overflow: hidden; border: 3px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin: 0 auto;">
+                        <img src="${photoUrl}" alt="${p.title}" style="${imgStyles}">
+                      </div>
+                      <h4 style="color: #9C5858; font-family: var(--font-display); font-size: 1.5rem; margin-top: 1rem; margin-bottom: 0; font-weight: 700;">${p.title}</h4>
+                    </div>
+                    <div style="flex: 1 1 320px;">
+                      <p style="color: #4A2E2E; line-height: 1.8; font-size: 0.95rem; text-align: justify; margin: 0;">
+                        ${p.content}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+            continue;
+          }
+
+          const profKeys = [
+            "Daisy", "Maurine", "Janis", "Margaux_1", "Zoé", "Maeva", "Charlotte", 
+            "Margaux_2", "Clémentine", "Loreen", "Jeanne", "Pauline", "Florence", 
+            "Alain", "Adam", "Corentin"
+          ];
+          
+          html += `<div class="grid-profs" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2.2rem; margin-top: 1.5rem; margin-bottom: 2.5rem;">`;
+          for (const key of profKeys) {
+            const p = VITRINE_DATA.professeurs[key];
+            if (!p) continue;
+            
+            const photoUrl = p.avatar || "assets/images/hero_dancer.png";
+            const stylesBadge = p.styles ? `<div style="font-size: 0.88rem; color: #5C3D3D; font-weight: 600; line-height: 1.4; padding: 0.4rem 0.8rem; background: rgba(201, 168, 76, 0.15); border-radius: 50px; display: inline-block; margin: 0.5rem 0 1rem 0; border: 1px solid rgba(201, 168, 76, 0.35);">${p.styles}</div>` : '';
+            
+            html += `
+              <div class="card-vitrine prof-card-interactive" onclick="openDynamic('professeurs', '${key}')" style="text-align: center; padding: 2rem 1.2rem; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.06); cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; align-items: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                <div style="width: 100%;">
+                  <div style="width: 145px; height: 145px; border-radius: 50%; overflow: hidden; border: 3px solid var(--gold); box-shadow: 0 6px 16px rgba(0,0,0,0.12); margin: 0 auto 1.2rem auto;">
+                    <img src="${photoUrl}" alt="${p.title}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.4s ease;">
+                  </div>
+                  <h4 class="card-vitrine-title" style="font-size: 1.35rem; font-family: var(--font-display); font-weight: 700; color: #9C5858; margin: 0 0 0.4rem 0; text-transform: none;">${p.title}</h4>
+                  ${stylesBadge}
+                </div>
+                <div style="font-size: 0.82rem; color: #9C5858; font-weight: 600; margin-top: 0.5rem; display: flex; align-items: center; gap: 4px; opacity: 0.9;">
+                  <span>✨ Découvrir son univers</span>
+                </div>
+              </div>
+            `;
+          }
+          html += `</div>`;
+        }
+        equipeContainer.innerHTML = html;
+      }
+    };
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+      if (event.target.classList.contains('vitrine-modal')) {
+        event.target.classList.remove('active');
+      }
+    }
+  </script>
+
+<script type="module" src="js/data.js?v=4"></script><script type="module" src="js/app.js?v=19"></script></body>
+</html>

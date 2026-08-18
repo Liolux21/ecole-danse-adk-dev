@@ -1630,16 +1630,18 @@ footer {
 
 /* ---- Portail de connexion ---- */
 .portal-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 .portal-login-card {
   background: #ffffff;
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: var(--radius);
   padding: 2.5rem;
+  max-width: 450px;
+  width: 100%;
 }
 .portal-login-card.hidden { display: none; }
 .portal-logo {

@@ -443,26 +443,6 @@ async function initPortal() {
   // 2. Initialize Auth
   await AUTH.init();
 
-  // Role hints (aide visuelle démo)
-  const demoCreds = {
-    admin:  '👑 Admin : <strong>admin@adk.be</strong> / <strong>admin2026</strong>',
-    prof:   '👩‍🏫 Prof : <strong>prof@adk.be</strong> / <strong>prof2026</strong>',
-    parent: '👨‍👩‍👧 Parent : <strong>parent@adk.be</strong> / <strong>parent2026</strong>',
-  };
-  document.querySelectorAll('.portal-role-hint').forEach(hint => {
-    hint.addEventListener('click', () => {
-      document.querySelectorAll('.portal-role-hint').forEach(h => h.classList.remove('active'));
-      hint.classList.add('active');
-      const role = hint.dataset.role;
-      const creds = document.getElementById('demo-creds');
-      creds.innerHTML = `💡 Démo — ${demoCreds[role]}`;
-      creds.classList.add('visible');
-      // Pré-remplir email
-      document.getElementById('portal-email').value = `${role}@adk.be`;
-      document.getElementById('portal-password').value = `${role}2026`;
-    });
-  });
-
   // Si déjà connecté, afficher le bon dashboard
   if (AUTH.isAuthenticated()) {
     showPortalDashboard(AUTH.currentUser);
