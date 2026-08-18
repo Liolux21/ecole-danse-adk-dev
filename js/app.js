@@ -1833,26 +1833,6 @@ window.deleteStudent = async function(id) {
 
 // ==================== ANNONCES (BROADCAST) ====================
 
-window.openAddAnnonceModal = function() {
-  document.getElementById('form-add-annonce').reset();
-  const targetSelect = document.getElementById('annonce-target');
-  
-  // Keep the first 3 options (All, Parents, Profs) and remove others if they exist
-  while (targetSelect.options.length > 3) {
-    targetSelect.remove(3);
-  }
-  
-  // Add courses dynamically
-  DATA.courses.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = "course_" + c.id;
-    opt.textContent = `Cours: ${c.name || c.title} (${c.category || c.level || ''})`;
-    targetSelect.appendChild(opt);
-  });
-  
-  document.getElementById('modal-add-annonce').classList.add('active');
-};
-
 window.submitAddAnnonce = async function() {
   const btn = document.querySelector('#form-add-annonce button[type="submit"]');
   const originalText = btn.textContent;
@@ -1875,7 +1855,7 @@ window.submitAddAnnonce = async function() {
 
     await DATA.syncFromFirebase();
     renderAdminAnnonces();
-    closeModal('modal-add-annonce');
+    document.getElementById('form-add-annonce').reset();
     showToast('Annonce publiée', 'success');
   } catch (err) {
     console.error(err);
@@ -1901,6 +1881,17 @@ window.deleteAnnonce = async function(id) {
 };
 
 function renderAdminAnnonces() {
+  // Populate form options if not already done
+  const targetSelect = document.getElementById('annonce-target');
+  if (targetSelect && targetSelect.options.length <= 3) {
+    DATA.courses.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = "course_" + c.id;
+      opt.textContent = `Cours: ${c.name || c.title} (${c.category || c.level || ''})`;
+      targetSelect.appendChild(opt);
+    });
+  }
+
   const container = document.getElementById('admin-annonces-list');
   if (!container) return;
   

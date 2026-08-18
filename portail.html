@@ -283,7 +283,32 @@
         <div class="tab-content" id="tab-admin-annonces">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
             <h3>Annonces Globales</h3>
-            <button class="btn btn-primary btn-sm" onclick="openAddAnnonceModal()">+ Nouvelle annonce</button>
+                      <div style="background:var(--dark-2); padding:1.5rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:2rem;">
+            <h4 style="margin-top:0; margin-bottom:1rem; color:var(--gold);">Rédiger une nouvelle annonce</h4>
+            <form id="form-add-annonce" onsubmit="event.preventDefault(); submitAddAnnonce();">
+              <div class="form-group">
+                <label class="form-label">Destinataires</label>
+                <select id="annonce-target" class="form-input" required>
+                  <option value="all">Tous (Parents et Profs)</option>
+                  <option value="parents">Tous les Parents</option>
+                  <option value="profs">Tous les Professeurs</option>
+                  <!-- Les cours seront insérés ici dynamiquement -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Titre de l'annonce</label>
+                <input type="text" id="annonce-title" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea id="annonce-content" class="form-input" rows="4" required></textarea>
+              </div>
+              <div style="text-align: right; margin-top: 1rem;">
+                <button type="submit" class="btn btn-primary">Publier l'annonce</button>
+              </div>
+            </form>
+          </div>
+
           </div>
           <div id="admin-annonces-list" style="display:flex; flex-direction:column; gap:1rem;">
             <!-- Rempli en JS -->
@@ -627,40 +652,6 @@
   </div>
 
   
-  <!-- Modal: Ajouter une Annonce -->
-  <div class="vitrine-modal" id="modal-add-annonce">
-    <div class="vitrine-modal-content" style="max-width: 600px;">
-      <div class="vitrine-modal-header" style="padding-right: 2.5rem;">
-        <h2 class="vitrine-modal-title">Nouvelle Annonce</h2>
-        <button class="vitrine-modal-close" onclick="closeModal('modal-add-annonce')">&times;</button>
-      </div>
-      <div class="vitrine-modal-body">
-        <form id="form-add-annonce" onsubmit="event.preventDefault(); submitAddAnnonce();">
-          <div class="form-group">
-            <label class="form-label">Destinataires</label>
-            <select id="annonce-target" class="form-input" required>
-              <option value="all">Tous (Parents et Profs)</option>
-              <option value="parents">Tous les Parents</option>
-              <option value="profs">Tous les Professeurs</option>
-              <!-- Les cours seront insérés ici dynamiquement -->
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Titre de l'annonce</label>
-            <input type="text" id="annonce-title" class="form-input" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Message</label>
-            <textarea id="annonce-content" class="form-input" rows="5" required></textarea>
-          </div>
-          <div style="text-align: right; margin-top: 1.5rem;">
-            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">Publier l'annonce</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
   <!-- Modal: Ajouter un élève -->
   <div class="vitrine-modal" id="modal-add-student">
     <div class="vitrine-modal-content" style="max-width: 550px;">
@@ -766,6 +757,6 @@
 
   <script type="module" src="js/data.js?v=4"></script>
   <script type="module" src="js/auth.js?v=13"></script>
-  <script type="module" src="js/app.js?v=39"></script>
+  <script type="module" src="js/app.js?v=40"></script>
 </body>
 </html>
