@@ -1,11 +1,16 @@
-const functions = require("firebase-functions");
+const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { setGlobalOptions } = require("firebase-functions/v2");
 const admin = require("firebase-admin");
 admin.initializeApp();
 
-exports.onAnnouncementCreated = functions.firestore
-  .document("announcements/{annonceId}")
-  .onCreate(async (snap, context) => {
-    const annonce = snap.data();
+// Configuration globale pour utiliser l'Europe (évite les erreurs de régions croisées)
+setGlobalOptions({ region: "europe-west1" });
+
+exports.onAnnouncementCreated = onDocumentCreated("announcements/{annonceId}", async (event) => {
+  const snap = event.data;
+  if (!snap) return;
+  
+  const annonce = snap.data();
     console.log("Nouvelle annonce détectée :", annonce.title);
 
     const db = admin.firestore();
@@ -91,7 +96,7 @@ exports.onAnnouncementCreated = functions.firestore
           body: annonce.content
         },
         data: {
-          annonceId: context.params.annonceId
+          annonceId: event.params.annonceId
         },
         tokens: tokens
       };
