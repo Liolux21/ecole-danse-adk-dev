@@ -437,11 +437,11 @@ async function initPortal() {
   const portalForm = document.getElementById('portal-login-form');
   if (!portalForm) return;
 
-  // 1. Sync from Firebase Firestore
-  await DATA.syncFromFirebase();
-
-  // 2. Initialize Auth
+  // 1. Initialize Auth
   await AUTH.init();
+
+  // 2. Sync from Firebase Firestore
+  await DATA.syncFromFirebase();
 
   // Si déjà connecté, afficher le bon dashboard
   if (AUTH.isAuthenticated()) {
@@ -459,6 +459,7 @@ async function initPortal() {
     
     const user = await AUTH.login(email, password);
     if (user) {
+      await DATA.syncFromFirebase();
       showPortalDashboard(user);
     } else {
       showToast('❌ Email ou mot de passe incorrect', 'error');
