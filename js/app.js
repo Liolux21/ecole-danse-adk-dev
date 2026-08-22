@@ -529,7 +529,7 @@ async function initPortal() {
   document.querySelectorAll('.gala-mobile-select').forEach(select => {
     select.addEventListener('change', (e) => {
       const targetId = e.target.getAttribute('data-target');
-      const container = document.getElementById(targetId);
+      const tbody = document.getElementById(targetId);
       if (container) {
         const btn = container.querySelector(`[data-tab="${e.target.value}"]`);
         if (btn) btn.click();
@@ -571,7 +571,7 @@ function showPortalDashboard(user) {
 
 // ---- TABS ----
 function initTabs(tabsContainerId, contentIds) {
-  const container = document.getElementById(tabsContainerId);
+  const tbody = document.getElementById(tabsContainerId);
   if (!container) return;
   container.querySelectorAll('.dash-tab, .btn-tab').forEach((tab, i) => {
     tab.addEventListener('click', () => {
@@ -784,7 +784,7 @@ function renderAdminEleves() {
     const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee';
     const cotClass = isPayee ? 'select-payee' : 'select-attente';
     const cotSelect = `
-      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding: 0.4rem; font-size: 0.9rem; padding-right: 2rem;">
+      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem;">
         <option value="attente" ${!isPayee ? 'selected' : ''}>⏳ En attente</option>
         <option value="payée" ${isPayee ? 'selected' : ''}>✅ Payée</option>
       </select>
@@ -792,7 +792,7 @@ function renderAdminEleves() {
     const mutStatus = s.mutuelle || 'attente';
     const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'cours' ? 'select-encours' : 'select-attente');
     const mutSelect = `
-      <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding: 0.4rem; font-size: 0.9rem; padding-right: 2rem;">
+      <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem;">
         <option value="attente" ${mutStatus === 'attente' ? 'selected' : ''}>⏳ En attente</option>
         <option value="cours" ${mutStatus === 'cours' ? 'selected' : ''}>🔄 En cours</option>
         <option value="remis" ${mutStatus === 'remis' ? 'selected' : ''}>✅ Remis</option>
@@ -800,22 +800,22 @@ function renderAdminEleves() {
     `;
     
     return `
-      <div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+      <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h4 style="margin: 0; color: #9C5858; font-size: 1.2rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.95rem; font-weight: normal;">(${s.age} ans)</span></h4>
+          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">(${s.age} ans)</span></h4>
         </div>
-        <div style="font-size: 0.95rem; color: var(--text-muted);"><strong>📚 Cours suivis :</strong> ${courses || '-'}</div>
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: rgba(0,0,0,0.02); padding: 0.8rem; border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.05);">
+        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📚 Cours suivis :</strong> ${courses || '-'}</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: rgba(0,0,0,0.02); padding: 0.8rem; border-radius: var(--radius);">
           <div style="display: flex; flex-direction: column; gap: 0.3rem;">
-            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Cotisation</span>
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Cotisation</span>
             ${cotSelect}
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.3rem;">
-            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Mutuelle</span>
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Mutuelle</span>
             ${mutSelect}
           </div>
         </div>
-        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;">
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.2rem;">
           <button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id}')">✏️ Modifier</button>
           <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteStudent('${s.id}')">🗑️ Supprimer</button>
         </div>
@@ -847,15 +847,15 @@ function renderAdminProfs() {
       DATA.getStudentsByCourse(c.id).forEach(s => allStudentIds.add(s.id));
     });
     const nbEleves = allStudentIds.size;
-    
+
     return `
-      <div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+      <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h4 style="margin: 0; color: #9C5858; font-size: 1.2rem; font-weight: bold;">${p.avatar || '👤'} ${p.name}</h4>
+          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${p.avatar || '👤'} ${p.name}</h4>
         </div>
-        <div style="font-size: 0.95rem; color: var(--text-muted);"><strong>💃 Cours enseignés :</strong> ${coursesNames || '-'}</div>
-        <div style="font-size: 0.95rem; color: var(--text-muted);"><strong>👥 Total élèves :</strong> ${nbEleves}</div>
-        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;">
+        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>💃 Cours enseignés :</strong> ${coursesNames || '-'}</div>
+        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>👥 Total élèves :</strong> ${nbEleves}</div>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.2rem;">
           <button class="btn btn-outline btn-sm" onclick="openAddProfModal('${p.id}')">✏️ Modifier</button>
           <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteProf('${p.id}')">🗑️ Supprimer</button>
         </div>
@@ -906,38 +906,284 @@ window.saveProf = function() {
   renderAdminProfs();
 };
 
-window.deleteProf = function(id) {
-  if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
-    DATA.users = DATA.users.filter(u => u.id !== id);
-    renderAdminProfs();
+window.deleteProf = function(id) { if (confirm('Etes-vous sur de vouloir supprimer ce professeur ?')) { DATA.users = DATA.users.filter(u => u.id !== id); renderAdminProfs(); } }; window.renderAdminCourses = function() {
+  const tbody = document.getElementById('admin-courses-tbody');
+  if (!tbody) return;
+  
+  if (DATA.courses.length === 0) {
+    tbody.innerHTML = '<div class="empty-state">Aucun cours défini.</div>';
+    return;
   }
-};
 
-window.renderAdminCourses = function() {
-    const tbody = document.getElementById('admin-courses-tbody');
-    if (!tbody) return;
-    
-    if (DATA.courses.length === 0) {
-      tbody.innerHTML = '<div class="empty-state">Aucun cours défini.</div>';
-      return;
-    }
-
-    tbody.innerHTML = DATA.courses.map(c => {
-      return `
-      <div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+  tbody.innerHTML = DATA.courses.map(c => {
+    return `
+      <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h4 style="margin: 0; color: #9C5858; font-size: 1.2rem; font-weight: bold;">${c.emoji || '💃'} ${c.name}</h4>
+          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${c.emoji || '💃'} ${c.name}</h4>
         </div>
-        <div style="font-size: 0.95rem; color: var(--text-muted);"><strong>👤 Professeur :</strong> ${c.prof}</div>
-        <div style="font-size: 0.95rem; color: var(--text-muted);"><strong>📅 Horaire :</strong> ${c.day} à ${c.time}</div>
-        <div style="font-size: 0.95rem; color: var(--text-muted);"><strong>🎂 Âge :</strong> ${c.age}</div>
-        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;">
+        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>👤 Professeur :</strong> ${c.prof}</div>
+        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📅 Horaire :</strong> ${c.day} à ${c.time}</div>
+        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>🎂 Âge :</strong> ${c.age}</div>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.2rem;">
           <button class="btn btn-outline btn-sm" onclick="openAddCourseModal('${c.id}')">✏️ Modifier</button>
           <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteCourse('${c.id}')">🗑️ Supprimer</button>
         </div>
       </div>
-      `;
-    }).join('');
+    `;
+  }).join('');
+};
+
+window.deleteCourse = async function(id) {
+  if (confirm("Êtes-vous sûr de vouloir supprimer ce cours ?")) {
+    const firebase = await import('./firebase-config.js');
+    await firebase.deleteDoc(firebase.doc(firebase.db, "courses", id));
+    await DATA.syncFromFirebase();
+    renderAdminCourses();
+  }
+};
+
+
+// =============================================
+// GALA ADMIN
+// =============================================
+if (!DATA.galaRepets) DATA.galaRepets = [];
+if (!DATA.galaTenues) DATA.galaTenues = [];
+if (!DATA.galaInfos) DATA.galaInfos = [];
+if (!DATA.galaNotes) DATA.galaNotes = [];
+
+window.renderGalaTables = function() {
+  // Répétitions
+  const repBody = document.getElementById('admin-gala-rep-body');
+  if (repBody) {
+    if (DATA.galaRepets.length === 0) {
+      repBody.innerHTML = '<tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr>';
+    } else {
+      repBody.innerHTML = DATA.galaRepets.map(r => {
+        const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
+        return `<tr>
+          <td>${r.date} à ${r.time}</td>
+          <td>${courseName}</td>
+          <td>${r.lieu}</td>
+          <td>${r.tenue ? 'Oui' : 'Non'}</td>
+          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaRep('${r.id}')">X</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // Tenues
+  const tenueBody = document.getElementById('admin-gala-tenue-body');
+  if (tenueBody) {
+    if (DATA.galaTenues.length === 0) {
+      tenueBody.innerHTML = '<tr class="empty-state"><td colspan="3">Aucune information de tenue.</td></tr>';
+    } else {
+      tenueBody.innerHTML = DATA.galaTenues.map(t => {
+        const courseName = DATA.getCourseById(t.course)?.name || t.course;
+        return `<tr>
+          <td>${courseName}</td>
+          <td>${t.desc}</td>
+          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaTenue('${t.id}')">X</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // Infos
+  const infoBody = document.getElementById('admin-gala-info-body');
+  if (infoBody) {
+    if (DATA.galaInfos.length === 0) {
+      infoBody.innerHTML = '<tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr>';
+    } else {
+      infoBody.innerHTML = DATA.galaInfos.map(i => {
+        const courseName = DATA.getCourseById(i.course)?.name || i.course;
+        return `<tr>
+          <td>${i.time}</td>
+          <td>${courseName}</td>
+          <td>${i.theme}</td>
+          <td>${i.music || '-'}</td>
+          <td>${i.tenue || '-'}</td>
+          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaInfo('${i.id}')">X</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // Notes
+  const noteBody = document.getElementById('admin-gala-note-body');
+  if (noteBody) {
+    if (DATA.galaNotes.length === 0) {
+      noteBody.innerHTML = '<tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr>';
+    } else {
+      noteBody.innerHTML = DATA.galaNotes.map(n => {
+        return `<tr>
+          <td>${n.date}</td>
+          <td>${n.presents.join(', ')}</td>
+          <td style="display:flex;gap:0.5rem;">
+            <button class="btn btn-outline btn-sm" onclick="editGalaNote('${n.id}')">Voir/Modifier</button>
+            <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaNote('${n.id}')">X</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+  }
+};
+
+window.initGalaRepModal = function() {
+  const select = document.getElementById('gala-rep-course');
+  select.innerHTML = '<option value="all">Tous les élèves</option>' + DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+};
+window.saveGalaRep = function() {
+  DATA.galaRepets.push({
+    id: 'rep_' + Date.now(),
+    date: document.getElementById('gala-rep-date').value,
+    time: document.getElementById('gala-rep-time').value,
+    course: document.getElementById('gala-rep-course').value,
+    lieu: document.getElementById('gala-rep-lieu').value,
+    tenue: document.getElementById('gala-rep-tenue').checked,
+    msg: document.getElementById('gala-rep-msg').value
+  });
+  closeModal('modal-gala-rep');
+  renderGalaTables();
+};
+window.deleteGalaRep = function(id) {
+  DATA.galaRepets = DATA.galaRepets.filter(r => r.id !== id);
+  renderGalaTables();
+};
+
+window.initGalaTenueModal = function() {
+  const select = document.getElementById('gala-tenue-course');
+  select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+};
+window.saveGalaTenue = function() {
+  DATA.galaTenues.push({
+    id: 'tenue_' + Date.now(),
+    course: document.getElementById('gala-tenue-course').value,
+    desc: document.getElementById('gala-tenue-desc').value
+  });
+  closeModal('modal-gala-tenue');
+  renderGalaTables();
+};
+window.deleteGalaTenue = function(id) {
+  DATA.galaTenues = DATA.galaTenues.filter(r => r.id !== id);
+  renderGalaTables();
+};
+
+window.initGalaInfoModal = function() {
+  const select = document.getElementById('gala-info-course');
+  select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+};
+window.saveGalaInfo = function() {
+  DATA.galaInfos.push({
+    id: 'info_' + Date.now(),
+    time: document.getElementById('gala-info-time').value,
+    course: document.getElementById('gala-info-course').value,
+    theme: document.getElementById('gala-info-theme').value,
+    music: document.getElementById('gala-info-music').value,
+    tenue: document.getElementById('gala-info-tenue').value
+  });
+  closeModal('modal-gala-info');
+  renderGalaTables();
+};
+window.deleteGalaInfo = function(id) {
+  DATA.galaInfos = DATA.galaInfos.filter(r => r.id !== id);
+  renderGalaTables();
+};
+
+window.initGalaNoteModal = function() {
+  document.getElementById('gala-note-id').value = '';
+  document.getElementById('gala-note-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('gala-note-pv').value = '';
+  const div = document.getElementById('gala-note-presence');
+  const profs = DATA.users.filter(u => u.role === 'prof');
+  div.innerHTML = profs.map(p => `<div style="display:flex;gap:0.5rem;"><input type="checkbox" id="pres_${p.id}" value="${p.name}"><label for="pres_${p.id}">${p.name}</label></div>`).join('');
+};
+window.editGalaNote = function(id) {
+  const note = DATA.galaNotes.find(n => n.id === id);
+  if (!note) return;
+  document.getElementById('gala-note-id').value = note.id;
+  document.getElementById('gala-note-date').value = note.date;
+  document.getElementById('gala-note-pv').value = note.pv;
+  const div = document.getElementById('gala-note-presence');
+  const profs = DATA.users.filter(u => u.role === 'prof');
+  div.innerHTML = profs.map(p => `<div style="display:flex;gap:0.5rem;"><input type="checkbox" id="pres_${p.id}" value="${p.name}" ${note.presents.includes(p.name) ? 'checked' : ''}><label for="pres_${p.id}">${p.name}</label></div>`).join('');
+  openModal('modal-gala-note');
+};
+window.saveGalaNote = function() {
+  const id = document.getElementById('gala-note-id').value;
+  const date = document.getElementById('gala-note-date').value;
+  const pv = document.getElementById('gala-note-pv').value;
+  const presents = [];
+  document.querySelectorAll('#gala-note-presence input:checked').forEach(el => presents.push(el.value));
+
+  if (id) {
+    const note = DATA.galaNotes.find(n => n.id === id);
+    if (note) { note.date = date; note.pv = pv; note.presents = presents; }
+  } else {
+    DATA.galaNotes.push({
+      id: 'note_' + Date.now(),
+      date: date,
+      pv: pv,
+      presents: presents
+    });
+  }
+  closeModal('modal-gala-note');
+  renderGalaTables();
+};
+window.deleteGalaNote = function(id) {
+  DATA.galaNotes = DATA.galaNotes.filter(r => r.id !== id);
+  renderGalaTables();
+};
+
+// =============================================
+// DASHBOARD PROF
+// =============================================
+function renderProfDashboard(user) {
+  renderUserAnnonces('prof');
+  document.getElementById('prof-name').textContent = user.name;
+  document.getElementById('prof-avatar').textContent = user.avatar;
+
+  const courseIds = user.courseIds || [];
+  let selectedCourseId = courseIds[0] || null;
+  const courseSelector = document.getElementById('appel-courses-select');
+  if (courseSelector) {
+    courseSelector.innerHTML = '';
+
+    courseIds.forEach((cid) => {
+      const c = DATA.getCourseById(cid);
+      if (!c) return;
+      
+      const today = new Date().toLocaleDateString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric'});
+      const absences = DATA.attendance.filter(a => a.courseId === cid && a.date === today && (a.status === 'absent' || a.status === 'excuse'));
+      const notif = absences.length > 0 ? ` (${absences.length} absent(s))` : '';
+      
+      const option = document.createElement('option');
+      option.value = cid;
+      option.textContent = `${c.emoji} ${c.name}${notif}`;
+      if (cid === selectedCourseId) option.selected = true;
+      courseSelector.appendChild(option);
+    });
+
+    courseSelector.onchange = (e) => {
+      selectedCourseId = parseInt(e.target.value);
+      populateAppelDates(selectedCourseId);
+      renderAppelList(selectedCourseId);
+    };
+  }
+  if (selectedCourseId) {
+    populateAppelDates(selectedCourseId);
+    renderAppelList(selectedCourseId);
+  }
+  renderProfEleves(user);
+  
+  // Onglet: Mon Planning
+  const btnEnseignes = document.getElementById('prof-planning-toggle-enseignes');
+  const btnSuivis = document.getElementById('prof-planning-toggle-suivis');
+  
+  btnEnseignes.onclick = () => {
+    btnEnseignes.classList.add('active');
+    btnSuivis.classList.remove('active');
+    renderPlanningCards(user.courseIds || [], 'prof-planning-list', 'Aucun cours.', user);
+    renderWeeklyCalendar(user.courseIds || [], 'prof-planning-calendar');
   };
   btnSuivis.onclick = () => {
     btnSuivis.classList.add('active');
@@ -1291,7 +1537,7 @@ function showToast(msg, type = 'success') {
 // HELPER PLANNINGS (Prof & Parents)
 // =============================================
 function renderWeeklyCalendar(courseIds, containerId) {
-  const container = document.getElementById(containerId);
+  const tbody = document.getElementById(containerId);
   if (!container) return;
   const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
   const calendarData = [[], [], [], [], [], [], []];
@@ -1311,7 +1557,7 @@ function renderWeeklyCalendar(courseIds, containerId) {
   });
 
   if (courseIds.length === 0) {
-    container.innerHTML = '';
+    tbody.innerHTML = '';
     return;
   }
 
@@ -1330,22 +1576,22 @@ function renderWeeklyCalendar(courseIds, containerId) {
     }).join('')}
   </div>`;
   
-  container.innerHTML = html;
+  tbody.innerHTML = html;
 }
 
 // =============================================
 function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', user = null, studentId = null) {
-  const container = document.getElementById(containerId);
+  const tbody = document.getElementById(containerId);
   if (!container) return;
   
   if (!courseIds || courseIds.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🗓️</div><p>${emptyMsg}</p></div>`;
+    tbody.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🗓️</div><p>${emptyMsg}</p></div>`;
     return;
   }
 
   const courses = courseIds.map(id => DATA.getCourseWithOverride(id)).filter(Boolean);
   
-  container.innerHTML = courses.map(c => {
+  tbody.innerHTML = courses.map(c => {
     const isCancelled = c.status === 'annule';
     const isModified = c.status !== 'annule' && (c.date || c.hour || (c.originalLieu && c.lieu !== c.originalLieu));
     
@@ -1788,9 +2034,9 @@ window.submitResetPassword = async function() {
 };
 
 window.openAddStudentModal = function(studentId = null) {
-  const container = document.getElementById('add-student-courses');
+  const tbody = document.getElementById('add-student-courses');
     if (container) {
-      container.innerHTML = DATA.courses.map(c => `
+      tbody.innerHTML = DATA.courses.map(c => `
         <label style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; font-size:0.9rem; cursor:pointer;">
           <input type="checkbox" class="course-checkbox" value="${c.id}">
           ${c.name || c.title} <span style="color:gray; font-size:0.8rem;">(${c.category || c.level || ''})</span>
@@ -2126,15 +2372,15 @@ function renderAdminAnnonces() {
     });
   }
 
-  const container = document.getElementById('admin-annonces-list');
+  const tbody = document.getElementById('admin-annonces-list');
   if (!container) return;
   
   if (!DATA.announcements || DATA.announcements.length === 0) {
-    container.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted); border:1px dashed var(--border); border-radius:8px;">Aucune annonce publiée.</div>`;
+    tbody.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted); border:1px dashed var(--border); border-radius:8px;">Aucune annonce publiée.</div>`;
     return;
   }
 
-  container.innerHTML = DATA.announcements.map(ann => {
+  tbody.innerHTML = DATA.announcements.map(ann => {
     const date = new Date(ann.timestamp).toLocaleString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
     let targetLabel = "Tous";
     if (ann.target === 'parents') targetLabel = "Tous les Parents";
@@ -2163,7 +2409,7 @@ function renderUserAnnonces(role) {
   const fullContainerId = role === 'parent' ? 'parent-notifications-full-list' : 'prof-notifications-full-list';
   const badgeId = role === 'parent' ? 'parent-notif-badge' : 'prof-notif-badge';
   
-  const container = document.getElementById(containerId);
+  const tbody = document.getElementById(containerId);
   const wrapper = document.getElementById(wrapperId);
   const fullContainer = document.getElementById(fullContainerId);
   const badge = document.getElementById(badgeId);
@@ -2217,7 +2463,7 @@ function renderUserAnnonces(role) {
     wrapper.style.display = 'none';
   } else {
     wrapper.style.display = 'block';
-    container.innerHTML = unreadAnnouncements.map(ann => {
+    tbody.innerHTML = unreadAnnouncements.map(ann => {
       const date = new Date(ann.timestamp).toLocaleString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
       return `
         <div class="parent-notification-banner" style="display:flex; flex-direction:column; align-items:flex-start; gap:0.5rem; margin-bottom:0; position:relative;">
@@ -2232,9 +2478,9 @@ function renderUserAnnonces(role) {
 
   // 2. FULL NOTIFICATIONS TAB (All)
   if (visibleAnnouncements.length === 0) {
-    fullContainer.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-muted);">Aucune notification.</div>';
+    fulltbody.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-muted);">Aucune notification.</div>';
   } else {
-    fullContainer.innerHTML = visibleAnnouncements.map(ann => {
+    fulltbody.innerHTML = visibleAnnouncements.map(ann => {
       const date = new Date(ann.timestamp).toLocaleString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
       const isRead = readAnnouncements.includes(ann.id);
       const styleOpacity = isRead ? 'opacity:0.6;' : 'opacity:1;';
