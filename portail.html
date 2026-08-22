@@ -19,7 +19,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ADK App">
-  <link rel="stylesheet" href="css/style.css?v=55">
+  <link rel="stylesheet" href="css/style.css?v=57">
   <script>
     window.addEventListener('error', function(e) {
       alert("JS Error: " + e.message + " at " + e.filename + ":" + e.lineno);
@@ -159,16 +159,7 @@
               </select>
             </div>
             <div style="overflow-x: auto;">
-              <table class="data-table" id="admin-eleves-table">
-                <thead>
-                  <tr>
-                    <th>Élève</th>
-                    <th>Âge</th>
-                    <th>Cours</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-eleves-body"></tbody>
-              </table>
+              <div id="admin-eleves-body" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;"></div>
             </div>
           </div>
         </div>
@@ -184,10 +175,7 @@
               <span class="data-table-title">👩‍🏫 Équipe pédagogique</span>
             </div>
             <div style="overflow-x: auto;">
-              <table class="data-table" id="admin-profs-table">
-                <thead><tr><th>Professeur</th><th>Cours enseignés</th><th>Élèves</th><th>Actions</th></tr></thead>
-                <tbody id="admin-profs-body"></tbody>
-              </table>
+              <div id="admin-profs-body" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;"></div>
             </div>
           </div>
         </div>
@@ -199,20 +187,7 @@
             <button class="btn btn-primary" onclick="openAddCourseModal()">+ Ajouter un cours</button>
           </div>
           <div class="data-table-container">
-            <table class="data-table" id="admin-courses-table">
-              <thead>
-                <tr>
-                  <th>Nom</th>
-                  <th>Professeur</th>
-                  <th>Jour/Heure</th>
-                  <th>Âge</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="admin-courses-tbody">
-                <!-- Dynamique -->
-              </tbody>
-            </table>
+            <div id="admin-courses-tbody" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;"></div>
           </div>
         </div>
 
@@ -1071,8 +1046,8 @@
     </div>
   </div>
 
-  <script type="module" src="js/data.js?v=25"></script>
-  <script type="module" src="js/auth.js?v=22"></script>
-  <script type="module" src="js/app.js?v=75"></script>
+  <script type="module" src="js/data.js?v=26"></script>
+  <script type="module" src="js/auth.js?v=23"></script>
+  <script type="module" src="js/app.js?v=76"></script>
 </body>
 </html>
