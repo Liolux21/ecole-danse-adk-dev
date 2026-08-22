@@ -529,7 +529,7 @@ async function initPortal() {
   document.querySelectorAll('.gala-mobile-select').forEach(select => {
     select.addEventListener('change', (e) => {
       const targetId = e.target.getAttribute('data-target');
-      const tbody = document.getElementById(targetId);
+      const container = document.getElementById(targetId);
       if (container) {
         const btn = container.querySelector(`[data-tab="${e.target.value}"]`);
         if (btn) btn.click();
@@ -571,7 +571,7 @@ function showPortalDashboard(user) {
 
 // ---- TABS ----
 function initTabs(tabsContainerId, contentIds) {
-  const tbody = document.getElementById(tabsContainerId);
+  const container = document.getElementById(tabsContainerId);
   if (!container) return;
   container.querySelectorAll('.dash-tab, .btn-tab').forEach((tab, i) => {
     tab.addEventListener('click', () => {
@@ -906,7 +906,14 @@ window.saveProf = function() {
   renderAdminProfs();
 };
 
-window.deleteProf = function(id) { if (confirm('Etes-vous sur de vouloir supprimer ce professeur ?')) { DATA.users = DATA.users.filter(u => u.id !== id); renderAdminProfs(); } }; window.renderAdminCourses = function() {
+window.deleteProf = function(id) {
+  if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
+    DATA.users = DATA.users.filter(u => u.id !== id);
+    renderAdminProfs();
+  }
+};
+
+window.renderAdminCourses = function() {
   const tbody = document.getElementById('admin-courses-tbody');
   if (!tbody) return;
   
@@ -1537,7 +1544,7 @@ function showToast(msg, type = 'success') {
 // HELPER PLANNINGS (Prof & Parents)
 // =============================================
 function renderWeeklyCalendar(courseIds, containerId) {
-  const tbody = document.getElementById(containerId);
+  const container = document.getElementById(containerId);
   if (!container) return;
   const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
   const calendarData = [[], [], [], [], [], [], []];
@@ -1557,7 +1564,7 @@ function renderWeeklyCalendar(courseIds, containerId) {
   });
 
   if (courseIds.length === 0) {
-    tbody.innerHTML = '';
+    container.innerHTML = '';
     return;
   }
 
@@ -1576,22 +1583,22 @@ function renderWeeklyCalendar(courseIds, containerId) {
     }).join('')}
   </div>`;
   
-  tbody.innerHTML = html;
+  container.innerHTML = html;
 }
 
 // =============================================
 function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', user = null, studentId = null) {
-  const tbody = document.getElementById(containerId);
+  const container = document.getElementById(containerId);
   if (!container) return;
   
   if (!courseIds || courseIds.length === 0) {
-    tbody.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🗓️</div><p>${emptyMsg}</p></div>`;
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🗓️</div><p>${emptyMsg}</p></div>`;
     return;
   }
 
   const courses = courseIds.map(id => DATA.getCourseWithOverride(id)).filter(Boolean);
   
-  tbody.innerHTML = courses.map(c => {
+  container.innerHTML = courses.map(c => {
     const isCancelled = c.status === 'annule';
     const isModified = c.status !== 'annule' && (c.date || c.hour || (c.originalLieu && c.lieu !== c.originalLieu));
     
@@ -2034,9 +2041,9 @@ window.submitResetPassword = async function() {
 };
 
 window.openAddStudentModal = function(studentId = null) {
-  const tbody = document.getElementById('add-student-courses');
+  const container = document.getElementById('add-student-courses');
     if (container) {
-      tbody.innerHTML = DATA.courses.map(c => `
+      container.innerHTML = DATA.courses.map(c => `
         <label style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; font-size:0.9rem; cursor:pointer;">
           <input type="checkbox" class="course-checkbox" value="${c.id}">
           ${c.name || c.title} <span style="color:gray; font-size:0.8rem;">(${c.category || c.level || ''})</span>
@@ -2372,15 +2379,15 @@ function renderAdminAnnonces() {
     });
   }
 
-  const tbody = document.getElementById('admin-annonces-list');
+  const container = document.getElementById('admin-annonces-list');
   if (!container) return;
   
   if (!DATA.announcements || DATA.announcements.length === 0) {
-    tbody.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted); border:1px dashed var(--border); border-radius:8px;">Aucune annonce publiée.</div>`;
+    container.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted); border:1px dashed var(--border); border-radius:8px;">Aucune annonce publiée.</div>`;
     return;
   }
 
-  tbody.innerHTML = DATA.announcements.map(ann => {
+  container.innerHTML = DATA.announcements.map(ann => {
     const date = new Date(ann.timestamp).toLocaleString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
     let targetLabel = "Tous";
     if (ann.target === 'parents') targetLabel = "Tous les Parents";
@@ -2409,7 +2416,7 @@ function renderUserAnnonces(role) {
   const fullContainerId = role === 'parent' ? 'parent-notifications-full-list' : 'prof-notifications-full-list';
   const badgeId = role === 'parent' ? 'parent-notif-badge' : 'prof-notif-badge';
   
-  const tbody = document.getElementById(containerId);
+  const container = document.getElementById(containerId);
   const wrapper = document.getElementById(wrapperId);
   const fullContainer = document.getElementById(fullContainerId);
   const badge = document.getElementById(badgeId);
@@ -2463,7 +2470,7 @@ function renderUserAnnonces(role) {
     wrapper.style.display = 'none';
   } else {
     wrapper.style.display = 'block';
-    tbody.innerHTML = unreadAnnouncements.map(ann => {
+    container.innerHTML = unreadAnnouncements.map(ann => {
       const date = new Date(ann.timestamp).toLocaleString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
       return `
         <div class="parent-notification-banner" style="display:flex; flex-direction:column; align-items:flex-start; gap:0.5rem; margin-bottom:0; position:relative;">
@@ -2478,9 +2485,9 @@ function renderUserAnnonces(role) {
 
   // 2. FULL NOTIFICATIONS TAB (All)
   if (visibleAnnouncements.length === 0) {
-    fulltbody.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-muted);">Aucune notification.</div>';
+    fullContainer.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-muted);">Aucune notification.</div>';
   } else {
-    fulltbody.innerHTML = visibleAnnouncements.map(ann => {
+    fullContainer.innerHTML = visibleAnnouncements.map(ann => {
       const date = new Date(ann.timestamp).toLocaleString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
       const isRead = readAnnouncements.includes(ann.id);
       const styleOpacity = isRead ? 'opacity:0.6;' : 'opacity:1;';
