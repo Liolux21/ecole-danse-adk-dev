@@ -658,20 +658,26 @@ async function adminApprove(id) {
 
   try {
     const { doc, getDoc, setDoc, db } = await import('./firebase-config.js');
-    const userRefCheck = doc(db, "users", ins.email);
+    const emailKey = ins.email.toLowerCase().trim();
+    const userRefCheck = doc(db, "users", emailKey);
     const userSnapCheck = await getDoc(userRefCheck);
     
     let isNewParent = false;
     const tempPassword = Math.random().toString(36).slice(-8);
 
     if (!userSnapCheck.exists()) {
-      const created = await AUTH.createParentAccount(ins.email, tempPassword, ins.parentName);
+      const created = await AUTH.createParentAccount(emailKey, tempPassword, ins.parentName);
       if (!created) {
-        alert("Erreur critique: impossible de créer le compte parent (peut-être l'adresse email existe-t-elle déjà dans l'authentification sans profil associé ?).");
-        if(btn) { btn.disabled = false; btn.textContent = '✓ Accepter'; }
-        return;
+        console.warn("Auth user already exists, creating missing Firestore document.");
+        await setDoc(userRefCheck, {
+           email: emailKey,
+           name: ins.parentName,
+           role: "parent",
+           childrenIds: []
+        });
+      } else {
+        isNewParent = true;
       }
-      isNewParent = true;
     }
 
     // Create the student in Firestore
@@ -690,9 +696,9 @@ async function adminApprove(id) {
       firstname: firstname || ins.childName,
       lastname: lastnameParts.join(' '),
       age: parseInt(ins.age, 10) || 0,
-      contactEmail: ins.email,
+      contactEmail: emailKey,
       courseIds: courseIds,
-      parentId: ins.email,
+      parentId: emailKey,
       cotisation: 'en attente',
       mutuelle: 'attente',
       absences: [],
@@ -702,7 +708,7 @@ async function adminApprove(id) {
     await setDoc(doc(db, "students", studentId), studentData);
     DATA.students.push({ id: studentId, ...studentData });
 
-    const userRef = doc(db, "users", ins.email);
+    const userRef = doc(db, "users", emailKey);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
       const userData = userSnap.data();
@@ -718,7 +724,7 @@ async function adminApprove(id) {
           "service_jooqt2m",
           "template_1mp1jad",
           {
-            to_email: ins.email,
+            to_email: emailKey,
             to_name: ins.parentName,
             temp_password: tempPassword,
             login_link: window.location.href.split('?')[0]
