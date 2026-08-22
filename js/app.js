@@ -624,6 +624,48 @@ async function adminApprove(id) {
   const created = await AUTH.createParentAccount(ins.email, tempPassword, ins.parentName);
   
   if (created) {
+    // Create the student in Firestore
+    const studentId = "stu_" + Date.now();
+    const [firstname, ...lastnameParts] = ins.childName.split(' ');
+    
+    // Resolve course IDs from course names
+    const courseIds = [];
+    if (ins.courses) {
+        for (const courseName of ins.courses) {
+            const courseObj = DATA.courses.find(c => c.name === courseName || courseName.includes(c.name));
+            if (courseObj) courseIds.push(courseObj.id);
+        }
+    }
+    
+    const studentData = {
+      firstname: firstname || ins.childName,
+      lastname: lastnameParts.join(' '),
+      age: parseInt(ins.age, 10),
+      contactEmail: ins.email,
+      courseIds: courseIds,
+      parentId: ins.email,
+      cotisation: 'en attente',
+      mutuelle: 'attente',
+      absences: [],
+      avatar: `https://i.pravatar.cc/150?u=${studentId}`
+    };
+    
+    // Add student to Firestore
+    
+    await setDoc(doc(db, "students", studentId), studentData);
+    
+    // Update parent's childrenIds array
+    const userRef = doc(db, "users", ins.email);
+    
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      const children = userData.childrenIds || [];
+      if (!children.includes(studentId)) {
+        await setDoc(userRef, { childrenIds: [...children, studentId] }, { merge: true });
+      }
+    }
+
     try {
       await emailjs.send(
         "service_jooqt2m",

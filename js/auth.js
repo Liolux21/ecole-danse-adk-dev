@@ -41,7 +41,7 @@ const AUTH = {
             const docRef = doc(db, "users", user.email);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-              this.currentUser = { ...docSnap.data(), uid: user.uid };
+              this.currentUser = { ...docSnap.data(), id: docSnap.id, uid: user.uid };
             } else {
               console.warn("Utilisateur authentifié mais pas trouvé dans Firestore.");
               this.currentUser = { email: user.email, role: 'eleve' }; // Fallback
@@ -66,7 +66,7 @@ const AUTH = {
       const docRef = doc(db, "users", user.email);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        this.currentUser = { ...docSnap.data(), uid: user.uid };
+        this.currentUser = { ...docSnap.data(), id: docSnap.id, uid: user.uid };
         return this.currentUser;
       }
       return null;
