@@ -87,6 +87,13 @@ service cloud.firestore {
     }
 
     // Règle de secours : tout ce qui n'est pas explicitement autorisé est refusé
+
+    // Collection INSCRIPTIONS
+    match /inscriptions/{inscId} {
+      allow create: if true; // Tout le monde peut envoyer une demande
+      allow read, update, delete: if isAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

@@ -421,12 +421,44 @@ function initInscription() {
 
   renderOptions();
   renderTags();
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const btn = form.querySelector('button[type="submit"]');
     btn.textContent = 'Envoi en cours...';
     btn.disabled = true;
-    setTimeout(() => { form.style.display = 'none'; success.style.display = 'block'; }, 1500);
+
+    try {
+      const { db, collection, doc, setDoc } = await import('./firebase-config.js');
+      const coursesNames = Array.from(selectedCourses).map(id => {
+        const c = DATA.getCourseById(id);
+        return c ? c.name : null;
+      }).filter(Boolean);
+
+      const insData = {
+        childName: document.getElementById('child-firstname').value + ' ' + document.getElementById('child-lastname').value,
+        age: (new Date().getFullYear()) - (new Date(document.getElementById('child-birth').value).getFullYear()),
+        level: document.getElementById('child-level').value,
+        parentName: document.getElementById('parent-firstname').value + ' ' + document.getElementById('parent-lastname').value,
+        email: document.getElementById('parent-email-form').value,
+        phone: document.getElementById('parent-phone').value,
+        message: document.getElementById('form-message').value,
+        courses: coursesNames,
+        status: 'pending',
+        date: new Date().toLocaleDateString('fr-FR'),
+        timestamp: Date.now()
+      };
+
+      const docRef = doc(collection(db, "inscriptions"));
+      await setDoc(docRef, insData);
+
+      form.style.display = 'none';
+      success.style.display = 'block';
+    } catch(err) {
+      console.error(err);
+      alert("Erreur lors de l'envoi de l'inscription.");
+      btn.textContent = 'Envoyer ma demande d\\'inscription';
+      btn.disabled = false;
+    }
   });
 }
 
@@ -615,7 +647,7 @@ async function adminApprove(id) {
   const btn = document.querySelector(`#actions-${id} .btn-approve`);
   if(btn) { btn.disabled = true; btn.textContent = 'Création...'; }
   
-  const ins = DATA.inscriptions.find(i => i.id === id);
+  const ins = DATA.inscriptions.find(i => String(i.id) === String(id));
   if (!ins) return;
 
   // Generate a random temporary password (8 chars)

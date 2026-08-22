@@ -232,8 +232,28 @@ export const DATA = {
     });
   },
   getCoursesByLieu(lieuId)      { return this.courses.filter(c => c.lieu === lieuId); },
-  approveInscription(id)        { const i = this.inscriptions.find(i => i.id === id); if (i) { i.status = 'approved'; this.saveState(); } },
-  rejectInscription(id)         { const i = this.inscriptions.find(i => i.id === id); if (i) { i.status = 'rejected'; this.saveState(); } },
+  async approveInscription(id)        { 
+    const i = this.inscriptions.find(i => String(i.id) === String(id)); 
+    if (i) { 
+      i.status = 'approved'; 
+      try {
+        const { doc, updateDoc } = await import('./firebase-config.js');
+        await updateDoc(doc(db, "inscriptions", String(id)), { status: 'approved' });
+      } catch(e) { console.error(e); }
+      this.saveState(); 
+    } 
+  },
+  async rejectInscription(id)         { 
+    const i = this.inscriptions.find(i => String(i.id) === String(id)); 
+    if (i) { 
+      i.status = 'rejected'; 
+      try {
+        const { doc, updateDoc } = await import('./firebase-config.js');
+        await updateDoc(doc(db, "inscriptions", String(id)), { status: 'rejected' });
+      } catch(e) { console.error(e); }
+      this.saveState(); 
+    } 
+  },
   markAttendance(studentId, courseId, date, status) {
     const existing = this.attendance.find(a => a.studentId === studentId && a.courseId === courseId && a.date === date);
     if (existing) existing.status = status;
@@ -324,13 +344,20 @@ export const DATA = {
         sData.courseIds = sData.courseIds || [];
         this.students.push({ id: doc.id, ...sData });
       });
-
       // 3. Fetch Courses
       const coursesSnap = await getDocs(collection(db, "courses"));
       this.courses = [];
       coursesSnap.forEach(doc => {
         this.courses.push({ id: doc.id, ...doc.data() });
       });
+
+      // 4. Fetch Inscriptions
+      const inscSnap = await getDocs(collection(db, "inscriptions"));
+      this.inscriptions = [];
+      inscSnap.forEach(doc => {
+        this.inscriptions.push({ id: doc.id, ...doc.data() });
+      });
+
 
       
       // 4. Fetch Announcements
