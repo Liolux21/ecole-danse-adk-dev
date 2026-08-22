@@ -654,6 +654,9 @@ async function adminApprove(id) {
     
     await setDoc(doc(db, "students", studentId), studentData);
     
+    // Add to local DATA.students so it's instantly available without refresh
+    DATA.students.push({ id: studentId, ...studentData });
+    
     // Update parent's childrenIds array
     const userRef = doc(db, "users", ins.email);
     
