@@ -1286,7 +1286,7 @@ function renderParentDashboard(user) {
   document.getElementById('parent-name').textContent = user.name;
   document.getElementById('parent-avatar').textContent = user.avatar;
 
-  const children = DATA.getChildrenByParent(user.id);
+  const children = DATA.getChildrenByParent(user);
   const childTabs = document.getElementById('child-tabs');
   childTabs.innerHTML = '';
 

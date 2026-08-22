@@ -225,7 +225,12 @@ export const DATA = {
   getStudentsByCourse(cid)      { return this.students.filter(s => (s.courseIds||[]).map(String).includes(String(cid))); },
   getAttendanceByStudent(sid)   { return this.attendance.filter(a => a.studentId === sid); },
   getPendingInscriptions()      { return this.inscriptions.filter(i => i.status === 'pending'); },
-  getChildrenByParent(pid)      { return this.students.filter(s => s.parentId === pid); },
+  getChildrenByParent(user)       { 
+    if (!user) return [];
+    return this.students.filter(s => {
+      return (s.parentId === user.id) || (s.parentId === user.email) || (user.childrenIds && user.childrenIds.includes(String(s.id)));
+    });
+  },
   getCoursesByLieu(lieuId)      { return this.courses.filter(c => c.lieu === lieuId); },
   approveInscription(id)        { const i = this.inscriptions.find(i => i.id === id); if (i) i.status = 'approved'; },
   rejectInscription(id)         { const i = this.inscriptions.find(i => i.id === id); if (i) i.status = 'rejected'; },
