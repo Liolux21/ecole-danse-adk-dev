@@ -142,12 +142,22 @@
             <button class="btn btn-primary" onclick="openAddStudentModal()">+ Ajouter un élève</button>
           </div>
           <div class="data-table-wrapper">
-            <div class="data-table-header">
+            <div class="data-table-header" style="justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
               <span class="data-table-title">👦 Liste des élèves</span>
+              <select id="admin-eleves-filter" class="form-input" style="width: auto; min-width: 250px;" onchange="renderAdminEleves()">
+                <option value="all">Tous les élèves</option>
+                <!-- Rempli dynamiquement en JS -->
+              </select>
             </div>
             <div style="overflow-x: auto;">
               <table class="data-table" id="admin-eleves-table">
-                <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Cotisation</th><th>Mutuelle</th><th>Actions</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Élève</th>
+                    <th>Âge</th>
+                    <th>Cours</th>
+                  </tr>
+                </thead>
                 <tbody id="admin-eleves-body"></tbody>
               </table>
             </div>
@@ -156,13 +166,17 @@
 
         <!-- Tab: Professeurs -->
         <div class="tab-content" id="tab-profs">
+          <div class="dash-header">
+            <h3>Gestion des Professeurs</h3>
+            <button class="btn btn-primary" onclick="openAddProfModal()">+ Ajouter un professeur</button>
+          </div>
           <div class="data-table-wrapper">
             <div class="data-table-header">
               <span class="data-table-title">👩‍🏫 Équipe pédagogique</span>
             </div>
             <div style="overflow-x: auto;">
               <table class="data-table" id="admin-profs-table">
-                <thead><tr><th>Professeur</th><th>Titre</th><th>Cours enseignés</th><th>Élèves</th></tr></thead>
+                <thead><tr><th>Professeur</th><th>Cours enseignés</th><th>Élèves</th><th>Actions</th></tr></thead>
                 <tbody id="admin-profs-body"></tbody>
               </table>
             </div>
@@ -198,19 +212,19 @@
           <div class="dash-header">
             <h3>Paramètres de la Saison & Congés</h3>
           </div>
-          <div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 2rem;">
+          <div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 1.5rem;">
             <h4 style="color: #9C5858; margin-bottom: 1rem;">Saison actuelle</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-              <div class="form-group">
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+              <div class="form-group" style="flex: 1; min-width: 200px;">
                 <label class="form-label">Date de début</label>
-                <input type="date" id="settings-season-start" class="form-control" value="2026-09-14">
+                <input type="date" id="settings-season-start" class="form-input" value="2026-09-14">
               </div>
-              <div class="form-group">
+              <div class="form-group" style="flex: 1; min-width: 200px;">
                 <label class="form-label">Date de fin</label>
-                <input type="date" id="settings-season-end" class="form-control" value="2027-06-20">
+                <input type="date" id="settings-season-end" class="form-input" value="2027-06-20">
               </div>
             </div>
-            <button class="btn btn-primary" onclick="saveSeasonSettings()" style="margin-top: 1rem;">Enregistrer la saison</button>
+            <button class="btn btn-primary" onclick="saveSeasonSettings()" style="margin-top: 0.5rem;">Enregistrer la saison</button>
           </div>
 
           <div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
@@ -218,20 +232,20 @@
             <div id="settings-holidays-list" style="margin-bottom: 1rem;">
               <!-- Dynamique -->
             </div>
-            <div style="display: flex; gap: 1rem; align-items: flex-end;">
-              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+              <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
                 <label class="form-label">Nom (ex: Toussaint)</label>
-                <input type="text" id="new-holiday-name" class="form-control">
+                <input type="text" id="new-holiday-name" class="form-input">
               </div>
-              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+              <div class="form-group" style="flex: 1; min-width: 120px; margin-bottom: 0;">
                 <label class="form-label">Début</label>
-                <input type="date" id="new-holiday-start" class="form-control">
+                <input type="date" id="new-holiday-start" class="form-input">
               </div>
-              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+              <div class="form-group" style="flex: 1; min-width: 120px; margin-bottom: 0;">
                 <label class="form-label">Fin</label>
-                <input type="date" id="new-holiday-end" class="form-control">
+                <input type="date" id="new-holiday-end" class="form-input">
               </div>
-              <button class="btn btn-outline" onclick="addHoliday()">+ Ajouter</button>
+              <button class="btn btn-outline" onclick="addHoliday()" style="margin-top: 1rem;">+ Ajouter</button>
             </div>
           </div>
         </div>
@@ -287,16 +301,48 @@
           <button class="btn btn-outline btn-sm btn-tab" data-tab="admin-gala-notes">📌 Notes réunions</button>
         </div>
           <div class="tab-content active" id="tab-admin-gala-repets">
-            <div class="empty-state"><p>Aucune répétition planifiée.</p></div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-rep'); initGalaRepModal();">+ Ajouter une répétition</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Date & Heure</th><th>Élèves concernés</th><th>Lieu</th><th>Tenues</th><th>Actions</th></tr></thead>
+                <tbody id="admin-gala-rep-body"><tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr></tbody>
+              </table>
+            </div>
           </div>
           <div class="tab-content" id="tab-admin-gala-tenues">
-            <div class="empty-state"><p>Aucune information de tenue.</p></div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-tenue'); initGalaTenueModal();">+ Ajouter une tenue</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Cours</th><th>Vêtements requis</th><th>Actions</th></tr></thead>
+                <tbody id="admin-gala-tenue-body"><tr class="empty-state"><td colspan="3">Aucune information de tenue.</td></tr></tbody>
+              </table>
+            </div>
           </div>
           <div class="tab-content" id="tab-admin-gala-infos">
-            <div class="empty-state"><p>Aucune info tableau.</p></div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-info'); initGalaInfoModal();">+ Ajouter une info tableau</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Horaire</th><th>Cours</th><th>Thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
+                <tbody id="admin-gala-info-body"><tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr></tbody>
+              </table>
+            </div>
           </div>
           <div class="tab-content" id="tab-admin-gala-notes">
-            <div class="empty-state"><p>Aucune note de réunion.</p></div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-note'); initGalaNoteModal();">+ Nouveau rapport</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Date</th><th>Présents</th><th>Actions</th></tr></thead>
+                <tbody id="admin-gala-note-body"><tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -777,8 +823,247 @@
     </div>
   </div>
 
-  <script type="module" src="js/data.js?v=4"></script>
-  <script type="module" src="js/auth.js?v=13"></script>
-  <script type="module" src="js/app.js?v=57"></script>
+  
+  <!-- Modal Ajouter Cours -->
+  <div class="vitrine-modal" id="modal-add-course">
+    <div class="vitrine-modal-content">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title" id="course-modal-title">Ajouter un cours</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-add-course')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <form id="form-add-course" onsubmit="event.preventDefault(); window.saveCourse();">
+          <input type="hidden" id="course-id">
+          <div class="form-group">
+            <label class="form-label">Nom du cours</label>
+            <input type="text" id="course-name" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Professeur</label>
+            <select id="course-prof" class="form-input" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Style</label>
+            <select id="course-style" class="form-input">
+              <option value="classique">Classique</option>
+              <option value="contemporain">Contemporain</option>
+              <option value="jazz">Jazz</option>
+              <option value="hiphop">Hip-Hop</option>
+              <option value="eveil">Éveil</option>
+              <option value="ragga">Ragga</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Âges</label>
+            <input type="text" id="course-ages" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Niveaux</label>
+            <input type="text" id="course-levels" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Jour</label>
+            <select id="course-day" class="form-input">
+              <option value="0">Lundi</option>
+              <option value="1">Mardi</option>
+              <option value="2">Mercredi</option>
+              <option value="3">Jeudi</option>
+              <option value="4">Vendredi</option>
+              <option value="5">Samedi</option>
+              <option value="6">Dimanche</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Heure (ex: 18h00 - 19h00)</label>
+            <input type="text" id="course-schedule" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lieu</label>
+            <select id="course-lieu" class="form-input">
+              <option value="adk">Studio ADK</option>
+              <option value="rox">Au Rox</option>
+              <option value="bertrix">Complexe sportif de Bertrix</option>
+              <option value="izel">Centre Culturel Izel</option>
+              <option value="flore">Complexe Sportif Florenville</option>
+              <option value="stleger">Complexe Sportif Saint-Léger</option>
+              <option value="etalle">Complexe Sportif Etalle</option>
+            </select>
+          </div>
+          <div style="text-align: right; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Ajouter Prof -->
+  <div class="vitrine-modal" id="modal-add-prof">
+    <div class="vitrine-modal-content">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title" id="prof-modal-title">Ajouter un professeur</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-add-prof')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <form id="form-add-prof" onsubmit="event.preventDefault(); window.saveProf();">
+          <input type="hidden" id="prof-id">
+          <div class="form-group">
+            <label class="form-label">Nom du professeur</label>
+            <input type="text" id="prof-name" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email (sert d'identifiant de connexion)</label>
+            <input type="email" id="prof-email" class="form-input" required>
+          </div>
+          <div style="text-align: right; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Modal Répétition Gala -->
+  <div class="vitrine-modal" id="modal-gala-rep">
+    <div class="vitrine-modal-content">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title">Ajouter une répétition</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-gala-rep')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <form onsubmit="event.preventDefault(); window.saveGalaRep();">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" id="gala-rep-date" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Heure</label>
+            <input type="time" id="gala-rep-time" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Élèves concernés</label>
+            <select id="gala-rep-course" class="form-input" required>
+              <option value="all">Tous les élèves</option>
+              <!-- Rempli dynamiquement -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lieu</label>
+            <input type="text" id="gala-rep-lieu" class="form-input" required>
+          </div>
+          <div class="form-group" style="display:flex; gap:0.5rem; align-items:center;">
+            <input type="checkbox" id="gala-rep-tenue" style="width:18px;height:18px;">
+            <label for="gala-rep-tenue" style="margin:0;font-weight:600;font-size:0.9rem;">Prendre les tenues du Gala</label>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea id="gala-rep-msg" class="form-input" rows="3"></textarea>
+          </div>
+          <div style="text-align: right; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tenue Gala -->
+  <div class="vitrine-modal" id="modal-gala-tenue">
+    <div class="vitrine-modal-content">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title">Ajouter une tenue</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-gala-tenue')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <form onsubmit="event.preventDefault(); window.saveGalaTenue();">
+          <div class="form-group">
+            <label class="form-label">Cours</label>
+            <select id="gala-tenue-course" class="form-input" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Vêtements requis</label>
+            <textarea id="gala-tenue-desc" class="form-input" rows="3" required></textarea>
+          </div>
+          <div style="text-align: right; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Infos Tableaux -->
+  <div class="vitrine-modal" id="modal-gala-info">
+    <div class="vitrine-modal-content">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title">Ajouter une info tableau</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-gala-info')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <form onsubmit="event.preventDefault(); window.saveGalaInfo();">
+          <div class="form-group">
+            <label class="form-label">Horaire</label>
+            <input type="time" id="gala-info-time" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cours</label>
+            <select id="gala-info-course" class="form-input" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Thème</label>
+            <input type="text" id="gala-info-theme" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Musique</label>
+            <input type="text" id="gala-info-music" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tenue</label>
+            <input type="text" id="gala-info-tenue" class="form-input">
+          </div>
+          <div style="text-align: right; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Notes de réunion -->
+  <div class="vitrine-modal" id="modal-gala-note">
+    <div class="vitrine-modal-content" style="max-width: 600px;">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title">Nouveau rapport de réunion</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-gala-note')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <form onsubmit="event.preventDefault(); window.saveGalaNote();">
+          <input type="hidden" id="gala-note-id">
+          <div class="form-group">
+            <label class="form-label">Date de réunion</label>
+            <input type="date" id="gala-note-date" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Présences (Cochez les profs présents)</label>
+            <div id="gala-note-presence" style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; background:#f9f9f9; padding:1rem; border-radius:var(--radius);">
+              <!-- Rempli dynamiquement -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes / PV</label>
+            <textarea id="gala-note-pv" class="form-input" rows="6" required></textarea>
+          </div>
+          <div style="text-align: right; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary">Sauvegarder le rapport</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/data.js?v=5"></script>
+  <script type="module" src="js/auth.js?v=14"></script>
+  <script type="module" src="js/app.js?v=58"></script>
 </body>
 </html>

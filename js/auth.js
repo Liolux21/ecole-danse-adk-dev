@@ -1,7 +1,34 @@
-import { auth, db, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, doc, getDoc, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setDoc, updateDoc, deleteDoc } from './firebase-config.js';
+import { auth, db, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, doc, getDoc, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setDoc, updateDoc, deleteDoc, firebaseConfig, createUserWithEmailAndPassword } from './firebase-config.js';
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 const AUTH = {
   currentUser: null,
+
+  async createParentAccount(email, password, name) {
+    try {
+      const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp" + Date.now());
+      const secondaryAuth = getAuth(secondaryApp);
+      
+      const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+      const user = userCredential.user;
+
+      // Ensure the parent is in Firestore
+      await setDoc(doc(db, "users", email), {
+        email: email,
+        name: name,
+        role: "parent",
+        childrenIds: []
+      });
+
+      await secondaryAuth.signOut();
+      await deleteApp(secondaryApp);
+      return true;
+    } catch (e) {
+      console.error("Error creating parent account:", e);
+      return false;
+    }
+  },
 
   init() {
     return new Promise((resolve) => {

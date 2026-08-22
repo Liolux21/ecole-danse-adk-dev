@@ -1,4 +1,4 @@
-﻿import { db, collection, addDoc, doc, setDoc, getDoc } from './firebase-config.js';
+import { db, collection, addDoc, doc, setDoc, getDoc } from './firebase-config.js';
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 // =============================================
@@ -510,6 +510,20 @@ function showPortalDashboard(user) {
   document.querySelectorAll('.dashboard-panel').forEach(p => p.classList.remove('active'));
   const panel = document.getElementById(`panel-${user.role}`);
   if (panel) panel.classList.add('active');
+
+  const avatarEl = document.getElementById(`${user.role}-avatar`);
+  if (avatarEl) {
+    if (user.avatarUrl) {
+      avatarEl.style.backgroundImage = `url(${user.avatarUrl})`;
+      avatarEl.style.backgroundSize = 'cover';
+      avatarEl.style.backgroundPosition = 'center';
+      avatarEl.textContent = '';
+    } else {
+      avatarEl.style.backgroundImage = 'none';
+      avatarEl.textContent = user.avatar || (user.name ? user.name[0] : 'U');
+    }
+  }
+
   if (user.role === 'admin')  renderAdminDashboard(user);
   if (user.role === 'prof')   renderProfDashboard(user);
   if (user.role === 'parent') renderParentDashboard(user);
@@ -543,7 +557,6 @@ function initTabs(tabsContainerId, contentIds) {
 function renderAdminDashboard(user) {
   renderAdminAnnonces();
   document.getElementById('admin-name').textContent = user.name;
-  document.getElementById('admin-avatar').textContent = user.avatar;
 
   // Stats
   const pending = DATA.getPendingInscriptions();
@@ -554,6 +567,8 @@ function renderAdminDashboard(user) {
   renderAdminInscriptions();
   renderAdminEleves();
   renderAdminProfs();
+  if (typeof renderAdminCourses === 'function') renderAdminCourses();
+  if (typeof renderGalaTables === 'function') renderGalaTables();
 }
 
 function renderAdminInscriptions() {
@@ -595,13 +610,46 @@ function renderAdminInscriptions() {
   });
 }
 
-function adminApprove(id) {
+async function adminApprove(id) {
+  const btn = document.querySelector(`#actions-${id} .btn-approve`);
+  if(btn) { btn.disabled = true; btn.textContent = 'Création...'; }
+  
+  const ins = DATA.inscriptions.find(i => i.id === id);
+  if (!ins) return;
+
+  // Generate a random temporary password (8 chars)
+  const tempPassword = Math.random().toString(36).slice(-8);
+
+  // Create parent account in Firebase Auth + Firestore
+  const created = await AUTH.createParentAccount(ins.email, tempPassword, ins.parentName);
+  
+  if (created) {
+    try {
+      await emailjs.send(
+        "service_jooqt2m",
+        "template_1mp1jad",
+        {
+          to_email: ins.email,
+          to_name: ins.parentName,
+          temp_password: tempPassword,
+          login_link: window.location.href.split('?')[0]
+        }
+      );
+      showToast('✅ Inscription acceptée et email envoyé !', 'success');
+    } catch (emailError) {
+      console.error("Erreur EmailJS:", emailError);
+      alert(`⚠️ Le compte parent a été créé mais l'email n'a pas pu être envoyé.\nMot de passe temporaire: ${tempPassword}`);
+    }
+  } else {
+    alert("Erreur lors de la création du compte. (Peut-être existe-t-il déjà ?)");
+  }
+
   DATA.approveInscription(id);
   renderAdminInscriptions();
   document.getElementById('admin-stat-pending').textContent = DATA.getPendingInscriptions().length;
   document.getElementById('pending-badge').textContent = DATA.getPendingInscriptions().length;
-  showToast('✅ Inscription acceptée !', 'success');
 }
+
 function adminReject(id) {
   DATA.rejectInscription(id);
   renderAdminInscriptions();
@@ -612,14 +660,34 @@ function adminReject(id) {
 
 function renderAdminEleves() {
   const tbody = document.getElementById('admin-eleves-body');
-  tbody.innerHTML = DATA.students.map(s => {
+  const filterSelect = document.getElementById('admin-eleves-filter');
+  
+  // Populate filter dropdown if empty (except the "all" option)
+  if (filterSelect && filterSelect.options.length <= 1) {
+    DATA.courses.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name;
+      filterSelect.appendChild(opt);
+    });
+  }
+
+  // Get selected filter
+  const filterValue = filterSelect ? filterSelect.value : 'all';
+  
+  // Filter students
+  const filteredStudents = filterValue === 'all' 
+    ? DATA.students 
+    : DATA.students.filter(s => s.courseIds && (s.courseIds.includes(filterValue) || s.courseIds.includes(Number(filterValue))));
+
+  tbody.innerHTML = filteredStudents.map(s => {
     const courses = s.courseIds.map(id => DATA.getCourseById(id)?.name || '').filter(Boolean).join(', ');
     
     // Cotisation
     const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee';
     const cotClass = isPayee ? 'select-payee' : 'select-attente';
     const cotSelect = `
-      <select class="status-select ${cotClass}" onchange="updateCotisation(${s.id}, this.value)">
+      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding: 0.2rem; font-size: 0.85rem;">
         <option value="attente" ${!isPayee ? 'selected' : ''}>⏳ En attente</option>
         <option value="payée" ${isPayee ? 'selected' : ''}>✓ Payée</option>
       </select>
@@ -629,24 +697,36 @@ function renderAdminEleves() {
     const mutStatus = s.mutuelle || 'attente';
     const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'cours' ? 'select-encours' : 'select-attente');
     const mutSelect = `
-      <select class="status-select ${mutClass}" onchange="updateMutuelle(${s.id}, this.value)">
+      <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding: 0.2rem; font-size: 0.85rem;">
         <option value="attente" ${mutStatus === 'attente' ? 'selected' : ''}>⏳ En attente</option>
         <option value="cours" ${mutStatus === 'cours' ? 'selected' : ''}>🔄 En cours</option>
         <option value="remis" ${mutStatus === 'remis' ? 'selected' : ''}>✓ Remis</option>
       </select>
     `;
     
-    return `<tr>
-      <td><strong>${s.firstname} ${s.lastname}</strong></td>
-      <td>${s.age} ans</td>
-      <td style="color:var(--text-muted);font-size:0.82rem">${courses}</td>
-      <td>${cotSelect}</td>
-      <td>${mutSelect}</td>
-      <td style="display:flex;gap:0.5rem;align-items:center;height:100%;">
-        <button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id}')">Modifier</button>
-        <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="deleteStudent('${s.id}')">X</button>
-      </td>
-    </tr>`;
+    return `
+      <tr>
+        <td><strong>${s.firstname} ${s.lastname}</strong></td>
+        <td>${s.age} ans</td>
+        <td style="color:var(--text-muted);font-size:0.82rem">${courses}</td>
+      </tr>
+      <tr style="border-bottom: 2px solid var(--border-color);">
+        <td colspan="3" style="padding-top: 0; padding-bottom: 1rem;">
+          <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; background: rgba(0,0,0,0.02); padding: 0.5rem; border-radius: var(--radius);">
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Cotisation:</span>
+              ${cotSelect}
+              <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-left: 1rem;">Mutuelle:</span>
+              ${mutSelect}
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id}')">Modifier</button>
+              <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="deleteStudent('${s.id}')">X</button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    `;
   }).join('');
 }
 
@@ -666,11 +746,300 @@ function renderAdminProfs() {
   const tbody = document.getElementById('admin-profs-body');
   const profs = DATA.users.filter(u => u.role === 'prof');
   tbody.innerHTML = profs.map(p => {
-    const courses = (p.courseIds || []).map(id => DATA.getCourseById(id)?.name || '').filter(Boolean).join(', ');
-    const nbEleves = new Set((p.courseIds || []).flatMap(cid => DATA.getStudentsByCourse(cid).map(s => s.id))).size;
-    return `<tr><td><strong>${p.avatar} ${p.name}</strong></td><td style="color:var(--text-muted)">${p.title}</td><td style="color:var(--text-muted);font-size:0.82rem">${courses}</td><td>${nbEleves}</td></tr>`;
+    // 1. Reprendre les données du planning (DATA.courses)
+    const taughtCourses = DATA.courses.filter(c => c.prof === p.name);
+    const coursesNames = taughtCourses.map(c => c.name).join(', ');
+    
+    // Calculate total distinct students across these courses
+    const allStudentIds = new Set();
+    taughtCourses.forEach(c => {
+      DATA.getStudentsByCourse(c.id).forEach(s => allStudentIds.add(s.id));
+    });
+    const nbEleves = allStudentIds.size;
+    
+    return `
+      <tr>
+        <td><strong>${p.avatar || '🧑‍🏫'} ${p.name}</strong></td>
+        <td style="color:var(--text-muted);font-size:0.82rem">${coursesNames || '-'}</td>
+        <td>${nbEleves}</td>
+        <td style="display:flex;gap:0.5rem;">
+          <button class="btn btn-outline btn-sm" onclick="openAddProfModal('${p.id}')">Modifier</button>
+          <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="deleteProf('${p.id}')">X</button>
+        </td>
+      </tr>
+    `;
   }).join('');
 }
+
+window.openAddProfModal = function(id = null) {
+  document.getElementById('form-add-prof').reset();
+  const titleEl = document.getElementById('prof-modal-title');
+  if (id) {
+    titleEl.textContent = "Modifier le professeur";
+    const p = DATA.users.find(u => u.id === id);
+    if (p) {
+      document.getElementById('prof-id').value = p.id;
+      document.getElementById('prof-name').value = p.name;
+      document.getElementById('prof-email').value = p.email;
+    }
+  } else {
+    titleEl.textContent = "Ajouter un professeur";
+    document.getElementById('prof-id').value = '';
+  }
+  openModal('modal-add-prof');
+};
+
+window.saveProf = function() {
+  const id = document.getElementById('prof-id').value;
+  const name = document.getElementById('prof-name').value;
+  const email = document.getElementById('prof-email').value;
+
+  if (id) {
+    const prof = DATA.users.find(u => u.id === id);
+    if (prof) {
+      prof.name = name;
+      prof.email = email;
+    }
+  } else {
+    DATA.users.push({
+      id: 'prof_' + Date.now(),
+      role: 'prof',
+      name: name,
+      email: email,
+      avatar: '🧑‍🏫'
+    });
+  }
+  closeModal('modal-add-prof');
+  renderAdminProfs();
+};
+
+window.deleteProf = function(id) {
+  if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
+    DATA.users = DATA.users.filter(u => u.id !== id);
+    renderAdminProfs();
+  }
+};
+
+window.renderAdminCourses = function() {
+  const tbody = document.getElementById('admin-courses-tbody');
+  if (!tbody) return;
+  
+  tbody.innerHTML = DATA.courses.map(c => {
+    return `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td>${c.prof || '-'}</td>
+        <td>${c.schedule || '-'}</td>
+        <td>${c.ages || '-'}</td>
+        <td style="display:flex;gap:0.5rem;">
+          <button class="btn btn-outline btn-sm" onclick="openAddCourseModal('${c.id}')">Modifier</button>
+          <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="deleteCourse('${c.id}')">X</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+};
+
+window.deleteCourse = async function(id) {
+  if (confirm("Êtes-vous sûr de vouloir supprimer ce cours ?")) {
+    const firebase = await import('./firebase-config.js');
+    await firebase.deleteDoc(firebase.doc(firebase.db, "courses", id));
+    await DATA.syncFromFirebase();
+    renderAdminCourses();
+  }
+};
+
+
+// =============================================
+// GALA ADMIN
+// =============================================
+if (!DATA.galaRepets) DATA.galaRepets = [];
+if (!DATA.galaTenues) DATA.galaTenues = [];
+if (!DATA.galaInfos) DATA.galaInfos = [];
+if (!DATA.galaNotes) DATA.galaNotes = [];
+
+window.renderGalaTables = function() {
+  // Répétitions
+  const repBody = document.getElementById('admin-gala-rep-body');
+  if (repBody) {
+    if (DATA.galaRepets.length === 0) {
+      repBody.innerHTML = '<tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr>';
+    } else {
+      repBody.innerHTML = DATA.galaRepets.map(r => {
+        const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
+        return `<tr>
+          <td>${r.date} à ${r.time}</td>
+          <td>${courseName}</td>
+          <td>${r.lieu}</td>
+          <td>${r.tenue ? 'Oui' : 'Non'}</td>
+          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaRep('${r.id}')">X</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // Tenues
+  const tenueBody = document.getElementById('admin-gala-tenue-body');
+  if (tenueBody) {
+    if (DATA.galaTenues.length === 0) {
+      tenueBody.innerHTML = '<tr class="empty-state"><td colspan="3">Aucune information de tenue.</td></tr>';
+    } else {
+      tenueBody.innerHTML = DATA.galaTenues.map(t => {
+        const courseName = DATA.getCourseById(t.course)?.name || t.course;
+        return `<tr>
+          <td>${courseName}</td>
+          <td>${t.desc}</td>
+          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaTenue('${t.id}')">X</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // Infos
+  const infoBody = document.getElementById('admin-gala-info-body');
+  if (infoBody) {
+    if (DATA.galaInfos.length === 0) {
+      infoBody.innerHTML = '<tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr>';
+    } else {
+      infoBody.innerHTML = DATA.galaInfos.map(i => {
+        const courseName = DATA.getCourseById(i.course)?.name || i.course;
+        return `<tr>
+          <td>${i.time}</td>
+          <td>${courseName}</td>
+          <td>${i.theme}</td>
+          <td>${i.music || '-'}</td>
+          <td>${i.tenue || '-'}</td>
+          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaInfo('${i.id}')">X</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // Notes
+  const noteBody = document.getElementById('admin-gala-note-body');
+  if (noteBody) {
+    if (DATA.galaNotes.length === 0) {
+      noteBody.innerHTML = '<tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr>';
+    } else {
+      noteBody.innerHTML = DATA.galaNotes.map(n => {
+        return `<tr>
+          <td>${n.date}</td>
+          <td>${n.presents.join(', ')}</td>
+          <td style="display:flex;gap:0.5rem;">
+            <button class="btn btn-outline btn-sm" onclick="editGalaNote('${n.id}')">Voir/Modifier</button>
+            <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaNote('${n.id}')">X</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+  }
+};
+
+window.initGalaRepModal = function() {
+  const select = document.getElementById('gala-rep-course');
+  select.innerHTML = '<option value="all">Tous les élèves</option>' + DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+};
+window.saveGalaRep = function() {
+  DATA.galaRepets.push({
+    id: 'rep_' + Date.now(),
+    date: document.getElementById('gala-rep-date').value,
+    time: document.getElementById('gala-rep-time').value,
+    course: document.getElementById('gala-rep-course').value,
+    lieu: document.getElementById('gala-rep-lieu').value,
+    tenue: document.getElementById('gala-rep-tenue').checked,
+    msg: document.getElementById('gala-rep-msg').value
+  });
+  closeModal('modal-gala-rep');
+  renderGalaTables();
+};
+window.deleteGalaRep = function(id) {
+  DATA.galaRepets = DATA.galaRepets.filter(r => r.id !== id);
+  renderGalaTables();
+};
+
+window.initGalaTenueModal = function() {
+  const select = document.getElementById('gala-tenue-course');
+  select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+};
+window.saveGalaTenue = function() {
+  DATA.galaTenues.push({
+    id: 'tenue_' + Date.now(),
+    course: document.getElementById('gala-tenue-course').value,
+    desc: document.getElementById('gala-tenue-desc').value
+  });
+  closeModal('modal-gala-tenue');
+  renderGalaTables();
+};
+window.deleteGalaTenue = function(id) {
+  DATA.galaTenues = DATA.galaTenues.filter(r => r.id !== id);
+  renderGalaTables();
+};
+
+window.initGalaInfoModal = function() {
+  const select = document.getElementById('gala-info-course');
+  select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+};
+window.saveGalaInfo = function() {
+  DATA.galaInfos.push({
+    id: 'info_' + Date.now(),
+    time: document.getElementById('gala-info-time').value,
+    course: document.getElementById('gala-info-course').value,
+    theme: document.getElementById('gala-info-theme').value,
+    music: document.getElementById('gala-info-music').value,
+    tenue: document.getElementById('gala-info-tenue').value
+  });
+  closeModal('modal-gala-info');
+  renderGalaTables();
+};
+window.deleteGalaInfo = function(id) {
+  DATA.galaInfos = DATA.galaInfos.filter(r => r.id !== id);
+  renderGalaTables();
+};
+
+window.initGalaNoteModal = function() {
+  document.getElementById('gala-note-id').value = '';
+  document.getElementById('gala-note-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('gala-note-pv').value = '';
+  const div = document.getElementById('gala-note-presence');
+  const profs = DATA.users.filter(u => u.role === 'prof');
+  div.innerHTML = profs.map(p => `<div style="display:flex;gap:0.5rem;"><input type="checkbox" id="pres_${p.id}" value="${p.name}"><label for="pres_${p.id}">${p.name}</label></div>`).join('');
+};
+window.editGalaNote = function(id) {
+  const note = DATA.galaNotes.find(n => n.id === id);
+  if (!note) return;
+  document.getElementById('gala-note-id').value = note.id;
+  document.getElementById('gala-note-date').value = note.date;
+  document.getElementById('gala-note-pv').value = note.pv;
+  const div = document.getElementById('gala-note-presence');
+  const profs = DATA.users.filter(u => u.role === 'prof');
+  div.innerHTML = profs.map(p => `<div style="display:flex;gap:0.5rem;"><input type="checkbox" id="pres_${p.id}" value="${p.name}" ${note.presents.includes(p.name) ? 'checked' : ''}><label for="pres_${p.id}">${p.name}</label></div>`).join('');
+  openModal('modal-gala-note');
+};
+window.saveGalaNote = function() {
+  const id = document.getElementById('gala-note-id').value;
+  const date = document.getElementById('gala-note-date').value;
+  const pv = document.getElementById('gala-note-pv').value;
+  const presents = [];
+  document.querySelectorAll('#gala-note-presence input:checked').forEach(el => presents.push(el.value));
+
+  if (id) {
+    const note = DATA.galaNotes.find(n => n.id === id);
+    if (note) { note.date = date; note.pv = pv; note.presents = presents; }
+  } else {
+    DATA.galaNotes.push({
+      id: 'note_' + Date.now(),
+      date: date,
+      pv: pv,
+      presents: presents
+    });
+  }
+  closeModal('modal-gala-note');
+  renderGalaTables();
+};
+window.deleteGalaNote = function(id) {
+  DATA.galaNotes = DATA.galaNotes.filter(r => r.id !== id);
+  renderGalaTables();
+};
 
 // =============================================
 // DASHBOARD PROF

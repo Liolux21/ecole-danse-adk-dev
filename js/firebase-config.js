@@ -3,7 +3,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendP
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, addDoc, deleteDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 import { getMessaging, getToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-messaging.js";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyBPOPRg9AxDqojhkskOIRO-4AHxvLICP7Q",
   authDomain: "adk-vitrine.firebaseapp.com",
   projectId: "adk-vitrine",
