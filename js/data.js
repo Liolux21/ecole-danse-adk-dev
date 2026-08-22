@@ -232,8 +232,8 @@ export const DATA = {
     });
   },
   getCoursesByLieu(lieuId)      { return this.courses.filter(c => c.lieu === lieuId); },
-  approveInscription(id)        { const i = this.inscriptions.find(i => i.id === id); if (i) i.status = 'approved'; },
-  rejectInscription(id)         { const i = this.inscriptions.find(i => i.id === id); if (i) i.status = 'rejected'; },
+  approveInscription(id)        { const i = this.inscriptions.find(i => i.id === id); if (i) { i.status = 'approved'; this.saveState(); } },
+  rejectInscription(id)         { const i = this.inscriptions.find(i => i.id === id); if (i) { i.status = 'rejected'; this.saveState(); } },
   markAttendance(studentId, courseId, date, status) {
     const existing = this.attendance.find(a => a.studentId === studentId && a.courseId === courseId && a.date === date);
     if (existing) existing.status = status;
@@ -275,12 +275,12 @@ export const DATA = {
     });
   },
 
-  // ---- PERSISTENCE ----
   saveState() {
     localStorage.setItem('adk_state', JSON.stringify({
       attendance: this.attendance,
       messages: this.messages,
-      courseOverrides: this.courseOverrides
+      courseOverrides: this.courseOverrides,
+      inscriptionStatuses: this.inscriptions.map(i => ({id: i.id, status: i.status}))
     }));
   },
 
@@ -292,6 +292,12 @@ export const DATA = {
         if (parsed.attendance) this.attendance = parsed.attendance;
         if (parsed.messages) this.messages = parsed.messages;
         if (parsed.courseOverrides) this.courseOverrides = parsed.courseOverrides;
+        if (parsed.inscriptionStatuses) {
+          parsed.inscriptionStatuses.forEach(s => {
+            const i = this.inscriptions.find(ins => ins.id === s.id);
+            if (i) i.status = s.status;
+          });
+        }
       } catch(e) {}
     }
   },
