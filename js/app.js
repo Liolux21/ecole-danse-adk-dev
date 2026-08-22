@@ -641,8 +641,8 @@ function renderAdminInscriptions() {
       </div>
       ${ins.message ? `<div class="inscription-message">"${ins.message}"</div>` : ''}
       <div class="inscription-actions" id="actions-${ins.id}">
-        <button class="btn-approve" onclick="adminApprove(${ins.id})" ${disabled}>✓ Accepter</button>
-        <button class="btn-reject"  onclick="adminReject(${ins.id})"  ${disabled}>✗ Refuser</button>
+        <button class="btn-approve" onclick="adminApprove('${ins.id}')" ${disabled}>✓ Accepter</button>
+        <button class="btn-reject"  onclick="adminReject('${ins.id}')"  ${disabled}>✗ Refuser</button>
         <a href="mailto:${ins.email}" class="btn btn-outline btn-sm">✉️ Contacter</a>
       </div>`;
     list.appendChild(card);
