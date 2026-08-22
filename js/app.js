@@ -11,18 +11,18 @@ function getMonthName(m) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initNavbar();
-  initParticles();
-  initHero();
-  initCourses();
-  initPlanning();
-  initInscription();
-  initPortal();       // Nouveau portail multi-rôles
-  initActualites();
-  initGalerie();
-  initContact();
-  initReveal();
-    initFooter();
+  try { initNavbar(); } catch(e) { console.error('Error in initNavbar:', e); }
+  try { initParticles(); } catch(e) { console.error('Error in initParticles:', e); }
+  try { initHero(); } catch(e) { console.error('Error in initHero:', e); }
+  try { initCourses(); } catch(e) { console.error('Error in initCourses:', e); }
+  try { initPlanning(); } catch(e) { console.error('Error in initPlanning:', e); }
+  try { initInscription(); } catch(e) { console.error('Error in initInscription:', e); }
+  try { initPortal(); } catch(e) { console.error('Error in initPortal:', e); }       // Nouveau portail multi-rôles
+  try { initActualites(); } catch(e) { console.error('Error in initActualites:', e); }
+  try { initGalerie(); } catch(e) { console.error('Error in initGalerie:', e); }
+  try { initContact(); } catch(e) { console.error('Error in initContact:', e); }
+  try { initReveal(); } catch(e) { console.error('Error in initReveal:', e); }
+    try { initFooter(); } catch(e) { console.error('Error in initFooter:', e); }
   setTimeout(() => document.querySelector('.loader-wrapper')?.classList.add('hidden'), 500);
 
   // Modal helpers
@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) el.classList.remove('active');
   };
 
-  initCountdown();
-  initMobileMenu();
+  try { initCountdown(); } catch(e) { console.error('Error in initCountdown:', e); }
+  try { initMobileMenu(); } catch(e) { console.error('Error in initMobileMenu:', e); }
 });
 
 // =============================================
