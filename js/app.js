@@ -606,12 +606,18 @@ function renderAdminDashboard(user) {
 
 function renderAdminInscriptions() {
   const list = document.getElementById('admin-inscription-list');
+  const filterSelect = document.getElementById('admin-inscriptions-filter');
+  const filter = filterSelect ? filterSelect.value : 'pending';
   list.innerHTML = '';
-  if (DATA.inscriptions.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Aucune inscription</p></div>';
+  
+  const filtered = DATA.inscriptions.filter(ins => filter === 'all' || ins.status === filter);
+  
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📄</div><p>Aucune inscription</p></div>';
     return;
   }
-  DATA.inscriptions.forEach(ins => {
+  
+  filtered.forEach(ins => {
     const card = document.createElement('div');
     card.className = 'inscription-card';
     card.id = `ins-card-${ins.id}`;
@@ -728,12 +734,14 @@ async function adminApprove(id) {
   document.getElementById('pending-badge').textContent = DATA.getPendingInscriptions().length;
 }
 
-function adminReject(id) {
-  DATA.rejectInscription(id);
+async function adminReject(id) {
+  const btn = document.querySelector(`#actions-${id} .btn-outline`);
+  if(btn) { btn.disabled = true; btn.textContent = 'Suppression...'; }
+  await DATA.rejectInscription(id);
   renderAdminInscriptions();
   document.getElementById('admin-stat-pending').textContent = DATA.getPendingInscriptions().length;
   document.getElementById('pending-badge').textContent = DATA.getPendingInscriptions().length;
-  showToast('❌ Inscription refusée', 'error');
+  showToast('❌ Inscription refusée et supprimée', 'error');
 }
 
 function renderAdminEleves() {
