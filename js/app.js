@@ -456,7 +456,7 @@ function initInscription() {
     } catch(err) {
       console.error(err);
       alert("Erreur lors de l'envoi de l'inscription.");
-      btn.textContent = 'Envoyer ma demande d\\'inscription';
+      btn.textContent = "Envoyer ma demande d'inscription";
       btn.disabled = false;
     }
   });
