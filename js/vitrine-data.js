@@ -180,8 +180,8 @@ const VITRINE_DATA = {
     "Jade": {
       "title": "Jade",
       "styles": "Ragga",
-      "avatar": "assets/images/ragga_dancer.png",
-      "modalImage": "assets/images/ragga_dancer.png",
+      "avatar": "assets/images/jade.png",
+      "modalImage": "assets/images/jade.png",
       "content": "Professeure de Ragga dancehall au Studio ADK. Jade transmet toute l'énergie et la chaleur des danses caribéennes dans une ambiance dynamique et conviviale."
     }
   },
