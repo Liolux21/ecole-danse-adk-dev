@@ -145,8 +145,8 @@ const VITRINE_DATA = {
     "Pauline": {
       "title": "Pauline",
       "styles": "Hip-Hop · Ragga",
-      "avatar": "assets/images/hiphop_dancer.png",
-      "modalImage": "assets/images/hiphop_dancer.png",
+      "avatar": "assets/images/pauline.png",
+      "modalImage": "assets/images/pauline.png",
       "content": "Professeure de Hip-Hop et de Ragga. Pauline guide les élèves, des grands débutants aux niveaux intermédiaires, dans la maîtrise des pas de base, du style urbain et du lâcher-prise. Un cours motivant où l'énergie du groupe porte chaque danseur vers de superbes réalisations chorégraphiques."
     },
     "Florence": {
