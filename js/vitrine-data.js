@@ -121,6 +121,13 @@ const VITRINE_DATA = {
       "modalImage": "https://annedkdanse.be/gallery_gen/570ff47d254ce984c70174311a6a76cf_504x484_fit.jpg?ts=1784984524",
       "content": "Professeure de Danse Classique, de Jazz et de Contemporain pour les enfants et préadolescents. Douce, rigoureuse et très pédagogue, Charlotte transmet les bases techniques indispensables, la grâce, le maintien corporel et l'amour de la danse en accompagnant chaque élève à son propre rythme."
     },
+    "Jade": {
+      "title": "Jade",
+      "styles": "Ragga",
+      "avatar": "assets/images/jade.png",
+      "modalImage": "assets/images/jade.png",
+      "content": "Professeure de Ragga dancehall au Studio ADK. Jade transmet toute l'énergie et la chaleur des danses caribéennes dans une ambiance dynamique et conviviale."
+    },
     "Clémentine": {
       "title": "Clémentine",
       "styles": "Jazz enfants",
@@ -176,13 +183,6 @@ const VITRINE_DATA = {
       "avatar": "https://annedkdanse.be/gallery_gen/45f52a4e5bc2be7181cc901a5d023472_500x542_fit.jpg?ts=1784984525",
       "modalImage": "https://annedkdanse.be/gallery_gen/45f52a4e5bc2be7181cc901a5d023472_500x542_fit.jpg?ts=1784984525",
       "content": "Danseur professionnel, chorégraphe et professeur de Danse Classique, Travail sur Pointes, Contemporain et Ateliers Chorégraphiques Girly/Contemporain. Exigeant et passionné par l'art du mouvement, Corentin accompagne les danseurs vers la précision académique et l'expression scénique la plus pointue."
-    },
-    "Jade": {
-      "title": "Jade",
-      "styles": "Ragga",
-      "avatar": "assets/images/jade.png",
-      "modalImage": "assets/images/jade.png",
-      "content": "Professeure de Ragga dancehall au Studio ADK. Jade transmet toute l'énergie et la chaleur des danses caribéennes dans une ambiance dynamique et conviviale."
     }
   },
   "cours": {
