@@ -145,8 +145,8 @@ const VITRINE_DATA = {
     "Pauline": {
       "title": "Pauline",
       "styles": "Hip-Hop · Ragga",
-      "avatar": "https://annedkdanse.be/gallery_gen/11e2ae7ce1b2ecfc0cc10fad5215686d_390x420_fit.jpg?ts=1784984525",
-      "modalImage": "https://annedkdanse.be/gallery_gen/11e2ae7ce1b2ecfc0cc10fad5215686d_390x420_fit.jpg?ts=1784984525",
+      "avatar": "assets/images/hiphop_dancer.png",
+      "modalImage": "assets/images/hiphop_dancer.png",
       "content": "Professeure de Hip-Hop et de Ragga. Pauline guide les élèves, des grands débutants aux niveaux intermédiaires, dans la maîtrise des pas de base, du style urbain et du lâcher-prise. Un cours motivant où l'énergie du groupe porte chaque danseur vers de superbes réalisations chorégraphiques."
     },
     "Florence": {
@@ -159,8 +159,8 @@ const VITRINE_DATA = {
     "Alain": {
       "title": "Alain",
       "styles": "Line Dance",
-      "avatar": "https://annedkdanse.be/gallery_gen/62ed1cee8ad84c5b9cf04c248eedbc5c_504x548_fit.jpg?ts=1784984525",
-      "modalImage": "https://annedkdanse.be/gallery_gen/62ed1cee8ad84c5b9cf04c248eedbc5c_504x548_fit.jpg?ts=1784984525",
+      "avatar": "assets/images/dance_jazz.png",
+      "modalImage": "assets/images/dance_jazz.png",
       "content": "Professeur de Line Dance au Centre Culturel d'Izel. Alain anime des cours chaleureux et accessibles à tous, où l'on apprend à danser en ligne et en synchronisation sur des styles musicaux variés (country, pop, rock, musiques du monde). Convivialité, rythme et bonne humeur garanties !"
     },
     "Adam": {
