@@ -159,8 +159,8 @@ const VITRINE_DATA = {
     "Alain": {
       "title": "Alain",
       "styles": "Line Dance",
-      "avatar": "assets/images/dance_jazz.png",
-      "modalImage": "assets/images/dance_jazz.png",
+      "avatar": "assets/images/alain.png",
+      "modalImage": "assets/images/alain.png",
       "content": "Professeur de Line Dance au Centre Culturel d'Izel. Alain anime des cours chaleureux et accessibles à tous, où l'on apprend à danser en ligne et en synchronisation sur des styles musicaux variés (country, pop, rock, musiques du monde). Convivialité, rythme et bonne humeur garanties !"
     },
     "Adam": {
