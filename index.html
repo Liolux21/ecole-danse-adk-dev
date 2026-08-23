@@ -684,7 +684,7 @@
   </div>
 
   <!-- Data Script -->
-  <script src="js/vitrine-data.js?v=44"></script>
+  <script src="js/vitrine-data.js?v=45"></script>
 
   <!-- Simple script for Modals & Data Injection -->
   <script>
@@ -750,7 +750,7 @@
           if (typeof ALL_COURSES !== 'undefined') {
             const styleCourses = ALL_COURSES.filter(course => course.style === key);
             if (styleCourses.length > 0) {
-              subCoursesHtml = `<div style="margin-top: 0.8rem; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 0.8rem;">
+              subCoursesHtml = `<div style="margin-top: 0.4rem; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 0.5rem;">
                 <h4 style="color: #9C5858; font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 0.6rem 0;">Liste des cours (${styleCourses.length})</h4>
                 <div class="modal-courses-grid">
               `;
@@ -801,12 +801,12 @@
           }
 
           document.getElementById('modal-dynamic-content').innerHTML = `
-            <div style="margin-bottom: 1.5rem;">
+            <div style="margin-bottom: 0.5rem;">
                <p style="font-size: 0.95rem; line-height: 1.5; margin: 0; color: var(--text-light); text-align: justify;">${data.content}</p>
             </div>
             ${subCoursesHtml}
-            <div style="margin-top: 2rem;">
-              <h4 style="color: #9C5858; font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 0.8rem 0;">Galerie</h4>
+            <div style="margin-top: 1rem;">
+              <h4 style="color: #9C5858; font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 0.4rem 0;">Galerie</h4>
               ${carouselHtml}
             </div>
 `;
@@ -1156,5 +1156,5 @@
     }
   </script>
 
-<script type="module" src="js/data.js?v=44"></script><script type="module" src="js/app.js?v=99"></script></body>
+<script type="module" src="js/data.js?v=45"></script><script type="module" src="js/app.js?v=100"></script></body>
 </html>
