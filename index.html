@@ -684,7 +684,7 @@
   </div>
 
   <!-- Data Script -->
-  <script src="js/vitrine-data.js?v=52"></script>
+  <script src="js/vitrine-data.js?v=53"></script>
 
   <!-- Simple script for Modals & Data Injection -->
   <script>
@@ -707,17 +707,18 @@
             titleEl.style.display = '';
           }
           
-          const stylePhotos = {
-            'hiphop': ['assets/images/hiphop_dancer.png', 'assets/images/breakdance_freeze.png', 'assets/images/ragga_dancer.png'],
-            'classique': ['assets/images/dance_ballet.png', 'assets/images/compagnie_stage.png', 'assets/images/hero_dancer.png'],
-            'jazz': ['assets/images/dance_jazz.png', 'assets/images/dance_contemporary.png', 'assets/images/compagnie_stage.png'],
-            'contemporain': ['assets/images/dance_contemporary.png', 'assets/images/compagnie_stage.png', 'assets/images/hero_dancer.png'],
-            'ragga': ['assets/images/ragga_dancer.png', 'assets/images/hiphop_dancer.png', 'assets/images/breakdance_freeze.png'],
-            'eveil': ['assets/images/eveil_kids.png', 'assets/images/dance_ballet.png', 'assets/images/hero_dancer.png'],
-            'compagnies': ['assets/images/compagnie_stage.png', 'assets/images/dance_contemporary.png', 'assets/images/dance_ballet.png'],
-            'bienetre': ['assets/images/hero_dancer.png', 'assets/images/dance_contemporary.png', 'assets/images/dance_ballet.png']
-          };
-          const photos = stylePhotos[key] || [data.modalImage || 'assets/images/hero_dancer.png', 'assets/images/compagnie_stage.png', 'assets/images/dance_contemporary.png'];
+          let photos = [];
+          if (typeof VITRINE_DATA !== 'undefined' && VITRINE_DATA.gallery && VITRINE_DATA.gallery[key]) {
+             photos = VITRINE_DATA.gallery[key];
+          } else {
+             const stylePhotos = {
+               'eveil': ['assets/images/eveil_kids.png', 'assets/images/dance_ballet.png'],
+               'classique': ['assets/images/dance_ballet.png', 'assets/images/compagnie_stage.png', 'assets/images/dance_contemporary.png'],
+               'hiphop': ['assets/images/breakdance_freeze.png', 'assets/images/hiphop_dancer.png']
+             };
+             photos = stylePhotos[key] || [data.modalImage || 'assets/images/hero_dancer.png', 'assets/images/compagnie_stage.png', 'assets/images/dance_contemporary.png'];
+          }
+
 
           let carouselHtml = `
             <div class="modal-carousel-container" style="position: relative; width: 100%; height: 250px; border-radius: var(--radius); overflow: hidden; margin-bottom: 1rem; box-shadow: 0 6px 20px rgba(0,0,0,0.15); border: 2px solid var(--gold);">
@@ -1161,5 +1162,5 @@
     }
   </script>
 
-<script type="module" src="js/data.js?v=52"></script><script type="module" src="js/app.js?v=107"></script></body>
+<script type="module" src="js/data.js?v=53"></script><script type="module" src="js/app.js?v=108"></script></body>
 </html>
