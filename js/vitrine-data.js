@@ -36,10 +36,10 @@ const ALL_COURSES = [
     { id: 21, style: 'ragga',       name: 'Pomdance (àpd 12 ans)',                      desc: 'Pomdance avec pompons, technique, souplesse et dynamisme.',                                                           ages: 'àpd 12 ans',  levels: 'Tous niveaux',     prof: 'Margaux',                  lieu: 'adk',     schedule: 'Mercredi 19h00 à 20h00',                   biweekly: false, emoji: '🎀', image: 'assets/images/ragga_dancer.png' },
     { id: 22, style: 'special',     name: 'Libre',                                         desc: 'Entraînement libre',                                                                                                ages: 'Tous âges',   levels: 'Tous niveaux',     prof: '',                         lieu: 'adk',     schedule: 'Mardi 18h00 à 20h00',                   biweekly: false, emoji: '🤸', image: 'assets/images/hero_dancer.png' },
     { id: 23, style: 'jazz_contemporain',        name: 'Street Jazz (Ados/Adultes àpd 16 ans)',        desc: 'Clips, publicités, shows : la danse urbaine version commerciale et show-biz pour adultes.',                         ages: 'àpd 16 ans',  levels: 'Tous niveaux',     prof: 'Maeva',                    lieu: 'adk',     schedule: 'Mardi 20h00 à 21h30',                   biweekly: false, emoji: '🎬', image: 'assets/images/hiphop_dancer.png' },
-    { id: 24, style: 'hiphop',      name: 'Adultes Hiphop & Ragga',                     desc: 'Cours adultes mêlant hip-hop et ragga dancehall pour se défouler et progresser en rythme.',                        ages: 'Adultes',     levels: 'Tous niveaux',     prof: 'Margaux',                  lieu: 'adk',     schedule: 'Jeudi 19h00 à 20h00',                   biweekly: false, emoji: '💃', image: 'assets/images/hiphop_dancer.png' },
-    { id: 25, style: 'jazz_contemporain',name: 'Adultes Jazz / Contemporain',                 desc: 'Expression, fluidité et interprétation pour adultes en danse contemporaine et jazz.',                               ages: 'Adultes',     levels: 'Tous niveaux',     prof: 'Janis',                    lieu: 'adk',     schedule: 'Jeudi 20h00 à 21h00',                   biweekly: false, emoji: '🎭', image: 'assets/images/dance_contemporary.png' },
-    { id: 26, style: 'jazz_contemporain',        name: 'Line Dance',                                    desc: 'Danse en ligne sur des musiques variées, convivialité et bonne humeur garanties !',                                 ages: 'àpd 13 ans',   levels: 'Tous niveaux',     prof: 'Alain',                    lieu: 'izel',    schedule: 'Lundi 20h00 à 21h30 – Centre Culturel Izel', biweekly: false, emoji: '🤠', image: 'assets/images/dance_jazz.png' },
-    { id: 27, style: 'special',     name: 'Pole Dance (1 sem/2) ⏳',                    desc: 'Art du Pole Dance : force, grâce et aérien. Cours 1 sem/2 au Complexe Sportif de Florenville.',                    ages: 'Ados/Adultes',  levels: 'Tous niveaux',     prof: 'Florence',                 lieu: 'flore',   schedule: 'Jeudi 19h30 à 21h00 – C.S. Florenville (1 sem/2)', biweekly: true, emoji: '🎪', image: 'assets/images/hero_dancer.png' },
+    { id: 24, style: 'adultes', name: 'Adultes Hip-Hop - Ragga', desc: 'Apprentissage de techniques hiphop et Ragga dans une ambiance conviviale.', ages: 'Adultes', levels: 'Débutant - Intermédiaire', prof: 'Margaux', lieu: 'adk', schedule: 'Jeudi 19h00 - 20h00', biweekly: false, emoji: '🔥', image: 'assets/images/hiphop_dancer.png' },
+    { id: 25, style: 'adultes', name: 'Adultes Jazz - Contemporain', desc: 'Apprentissage de techniques jazz et contemporaine dans une ambiance conviviale.', ages: 'Adultes', levels: 'Débutant - Intermédiaire', prof: 'Janis', lieu: 'adk', schedule: 'Jeudi 20h00-21h00', biweekly: false, emoji: '✨', image: 'assets/images/dance_contemporary.png' },
+    { id: 26, style: 'adultes', name: 'Line Dance', desc: 'Danse conviviale et dynamique, pratiquée en ligne sur des chorégraphies variées, accessible à tous et sans partenaire.', ages: 'Tout public', levels: 'Débutant - Intermédiaire', prof: 'Alain', lieu: 'izel', schedule: 'Lundi 20h00-21h15 (sauf dernier lundi du mois)', biweekly: false, emoji: '🤠', image: 'assets/images/dance_jazz.png' },
+    { id: 27, style: 'poledance', name: 'Pole Dance', desc: 'Développe la féminité, l’assurance, l’expression corporelle, élégantes et pleines d’attitude', ages: 'à pd 12 ans', levels: 'Débutant - Intermédiaire', prof: 'Florence', lieu: 'flore', schedule: 'Jeudi 19h30 - 21h00', biweekly: false, emoji: '🧘‍♀️', image: 'assets/images/hero_dancer.png' },
     { id: 28, style: 'compagnie',   name: 'ADK Moove / ADK Unity ⏳',                             desc: 'Compagnies hip-hop : création chorégraphique, répétitions et performances scéniques.',                        ages: 'Sélection',   levels: 'Compagnie',        prof: 'Maurine',                  lieu: 'adk',     schedule: 'Samedi 12h00 à 13h30 (1 sem/2)',        biweekly: true,  emoji: '🏆', image: 'assets/images/compagnie_stage.png' },
     { id: 30, style: 'compagnie',   name: 'ADK Team ⏳',              desc: 'Compagnie Team jazz/contemporain : créativité artistique et niveau de compétition.',                                ages: 'Sélection',   levels: 'Compagnie',        prof: 'Janis',                    lieu: 'adk',     schedule: 'Samedi 14h00 à 16h00 (1 sem/2)',        biweekly: true,  emoji: '🌟', image: 'assets/images/compagnie_stage.png' },
     { id: 31, style: 'compagnie',   name: 'Atelier Chorégraphique Girly (Niv Av.)',     desc: 'Atelier de création chorégraphique style Girly, niveau avancé. 1 semaine sur 2.',                         ages: 'Niv Avancé',  levels: 'Avancé',           prof: 'Corentin',                 lieu: 'adk',     schedule: 'Dimanche 9h00 à 10h30 (1 sem/2)',               biweekly: true, emoji: '👠', image: 'assets/images/compagnie_stage.png' },
@@ -213,6 +213,44 @@ const VITRINE_DATA = {
   },
   "cours": {
 
+    "adultes": {
+      "title": "Cours Adultes",
+      "avatar": "assets/images/hero_dancer.png",
+      "modalImage": "assets/images/hero_dancer.png",
+      "content": ""
+    },
+    "poledance": {
+      "title": "Pole Dance",
+      "avatar": "assets/images/hero_dancer.png",
+      "modalImage": "assets/images/hero_dancer.png",
+      "content": "La Pole Dance est une discipline sportive et artistique complète qui allie force, souplesse, grâce et confiance en soi. Accessible à tous, quel que soit l'âge ou le niveau, elle permet de développer sa condition physique tout en s'amusant.
+
+Lors des cours, les élèves apprennent progressivement différentes figures, rotations, montées, enchaînements chorégraphiques et techniques autour de la barre. Chaque séance comprend un échauffement, un travail technique adapté au niveau du groupe, du renforcement musculaire ainsi que des étirements.
+
+Au-delà de l'aspect physique, la Pole Dance aide à gagner en assurance, à améliorer sa posture et à exprimer sa créativité dans une ambiance bienveillante et motivante.
+
+Les bienfaits de la Pole Dance :
+- Renforcement musculaire complet
+- Développement de la souplesse
+- Amélioration de la coordination et de l'équilibre
+- Gain de confiance en soi
+- Travail de la grâce et de l'expression corporelle
+- Dépassement de soi dans le respect de son rythme
+
+Que vous souhaitiez pratiquer pour le sport, le plaisir, le défi personnel ou l'expression artistique, la Pole Dance vous permettra de découvrir une discipline passionnante et valorisante dans une ambiance conviviale."
+    },
+    "pomdance": {
+      "title": "Pomdance",
+      "avatar": "assets/images/ragga_dancer.png",
+      "modalImage": "assets/images/ragga_dancer.png",
+      "content": "Le pomdance est un style chorégraphique inspiré du cheerleading, qui repose sur un esprit d’équipe et une énergie positive.
+
+Il mêle des mouvements de danse très structurés à l’utilisation de pompoms, pour accentuer le rythme, l’énergie et la précision. Visuel et dynamique, ce style repose sur la synchronisation, les lignes nettes, les transitions rapides et une forte présence scénique.
+
+Ce cours te permettra de développer ta coordination, ton endurance et ta confiance en toi, le tout sur des musiques modernes et entraînantes.
+
+Au programme : Apprentissage des pommotions (mouvements de bras) et du vocabulaire propre à la danse pom, apprentissage de chorégraphies entrainantes, travail des pirouettes, des sauts, de la souplesse… et bien plus encore."
+    },
     "girly": {
       "title": "Girly",
       "avatar": "assets/images/ragga_dancer.png",
