@@ -684,7 +684,7 @@
   </div>
 
   <!-- Data Script -->
-  <script src="js/vitrine-data.js?v=43"></script>
+  <script src="js/vitrine-data.js?v=44"></script>
 
   <!-- Simple script for Modals & Data Injection -->
   <script>
@@ -737,9 +737,10 @@
               <button onclick="moveModalCarousel(1)" style="position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.9); color: #9C5858; width: 38px; height: 38px; border-radius: 50%; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.25); transition: 0.2s; z-index: 5;">&#10095;</button>
               <div id="modal-carousel-dots" style="position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 10;">
           `;
-          photos.forEach((_, idx) => {
+          const dotsCount = Math.max(1, photos.length - 2);
+          for (let idx = 0; idx < dotsCount; idx++) {
             carouselHtml += `<span class="modal-dot ${idx === 0 ? 'active' : ''}" onclick="goModalCarousel(${idx})" style="width: 9px; height: 9px; border-radius: 50%; background: #ffffff; cursor: pointer; transition: 0.3s; opacity: ${idx === 0 ? '1' : '0.4'}; box-shadow: 0 0 5px rgba(0,0,0,0.6);"></span>`;
-          });
+          }
           carouselHtml += `
               </div>
             </div>
@@ -800,15 +801,18 @@
           }
 
           document.getElementById('modal-dynamic-content').innerHTML = `
-            ${carouselHtml}
-            <div style="margin-bottom: 0.5rem;">
+            <div style="margin-bottom: 1.5rem;">
                <p style="font-size: 0.95rem; line-height: 1.5; margin: 0; color: var(--text-light); text-align: justify;">${data.content}</p>
             </div>
             ${subCoursesHtml}
-          `;
+            <div style="margin-top: 2rem;">
+              <h4 style="color: #9C5858; font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 0.8rem 0;">Galerie</h4>
+              ${carouselHtml}
+            </div>
+`;
 
           let modalSlide = 0;
-          const modalTotalSlides = photos.length;
+          const modalTotalSlides = Math.max(1, photos.length - 2);
           window.moveModalCarousel = function(dir) {
             modalSlide = (modalSlide + dir + modalTotalSlides) % modalTotalSlides;
             updateModalCarousel();
@@ -822,7 +826,8 @@
           function updateModalCarousel() {
             const track = document.getElementById('modal-carousel-track');
             if (track) {
-              track.style.transform = `translateX(-${modalSlide * 100}%)`;
+              // Each slide takes 33.3333%, and we scroll by that amount.
+              track.style.transform = `translateX(calc(-${modalSlide * 33.3333}% - ${modalSlide * 4}px))`;
               const dots = document.querySelectorAll('#modal-carousel-dots .modal-dot');
               dots.forEach((dot, idx) => {
                 dot.style.opacity = idx === modalSlide ? '1' : '0.4';
@@ -1151,5 +1156,5 @@
     }
   </script>
 
-<script type="module" src="js/data.js?v=43"></script><script type="module" src="js/app.js?v=98"></script></body>
+<script type="module" src="js/data.js?v=44"></script><script type="module" src="js/app.js?v=99"></script></body>
 </html>
