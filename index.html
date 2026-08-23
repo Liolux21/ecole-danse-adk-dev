@@ -684,7 +684,7 @@
   </div>
 
   <!-- Data Script -->
-  <script src="js/vitrine-data.js?v=50"></script>
+  <script src="js/vitrine-data.js?v=51"></script>
 
   <!-- Simple script for Modals & Data Injection -->
   <script>
@@ -768,31 +768,31 @@
                 let profAvatarHtml = '';
                 const profName = course.prof ? course.prof.split(' · ')[0].trim() : '';
                 if (profName && typeof VITRINE_DATA !== 'undefined' && VITRINE_DATA.professeurs && VITRINE_DATA.professeurs[profName] && VITRINE_DATA.professeurs[profName].avatar) {
-                  profAvatarHtml = `<img src="${VITRINE_DATA.professeurs[profName].avatar}" alt="${profName}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 4px auto;border:2px solid #ffffff;box-shadow:0 2px 5px rgba(0,0,0,0.2);">`;
+                  profAvatarHtml = `<img src="${VITRINE_DATA.professeurs[profName].avatar}" alt="${profName}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 4px auto;border:2px solid #ffffff;box-shadow:0 2px 5px rgba(0,0,0,0.2);">`;
                 } else {
-                  profAvatarHtml = `<div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 4px auto;border:2px solid #ffffff;box-shadow:0 2px 5px rgba(0,0,0,0.2);"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
+                  profAvatarHtml = `<div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 4px auto;border:2px solid #ffffff;box-shadow:0 2px 5px rgba(0,0,0,0.2);"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#fff" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
                 }
 
                 subCoursesHtml += `
                   <div class="course-card" style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2); height: 100%; background: #C68B8B; border-radius: var(--radius-sm); overflow: hidden; display: flex; flex-direction: column;">
-                    <div style="height: 85px; width: 100%; overflow: hidden; position: relative; background: #222;">
+                    <div style="height: 140px; width: 100%; overflow: hidden; position: relative; background: #222;">
                       <img src="${course.image || 'assets/images/hero_dancer.png'}" alt="${course.name}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
                       <div style="position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); padding: 2px 7px; border-radius: 50px; font-size: 0.65rem; color: #fff; font-weight: 600;">${course.levels}</div>
                     </div>
                     <div class="course-body" style="padding: 0.65rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; background: #C68B8B;">
                       <div>
-                        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.35rem;">
-                          ${lieuBadge}
-                          ${course.biweekly ? '<span style="font-size:0.65rem;color:#ffffff;background:rgba(0,0,0,0.25);padding:0.1rem 0.5rem;border-radius:50px;font-weight:600;">1 sem/2</span>' : ''}
-                        </div>
-                        <h3 class="course-name" style="font-size: 0.95rem; margin: 0.2rem 0 0.4rem 0; color: #ffffff; font-family: var(--font-display); font-weight: 700; line-height: 1.25; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">${course.name}</h3>
+                        <h3 class="course-name" style="font-size: 1.1rem; margin: 0 0 0.4rem 0; color: #ffffff; font-family: var(--font-display); font-weight: 700; line-height: 1.25; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">${course.name}</h3>
                       </div>
                       <div class="course-meta" style="margin-top: 0.4rem; font-size: 0.78rem; display: flex; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem; justify-content: space-between;">
-                        <div style="display: flex; flex-direction: column; gap: 0.35rem; justify-content: center; flex: 1; padding-right: 0.5rem; border-right: 1px solid rgba(255,255,255,0.2);">
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem; justify-content: center; flex: 1; padding-right: 0.5rem; border-right: 1px solid rgba(255,255,255,0.2);">
                           <span class="course-meta-item" style="color: #ffffff; font-weight: 600; display: flex; align-items: flex-start; line-height: 1.25;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:5px;flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>${course.schedule}</span></span>
                           <span class="course-meta-item" style="color: #ffffff; font-weight: 600; display: flex; align-items: flex-start; line-height: 1.25;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:5px;flex-shrink:0;margin-top:1px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>${course.ages}</span></span>
+                          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.35rem;margin-top:0.2rem;">
+                            ${lieuBadge}
+                            ${course.biweekly ? '<span style="font-size:0.65rem;color:#ffffff;background:rgba(0,0,0,0.25);padding:0.1rem 0.5rem;border-radius:50px;font-weight:600;">1 sem/2</span>' : ''}
+                          </div>
                         </div>
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 65px; padding-left: 0.5rem;">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 75px; padding-left: 0.5rem;">
                           ${profAvatarHtml}
                           <span style="color: #ffffff; font-weight: 700; font-size: 0.7rem; text-align: center; line-height: 1.1;">${course.prof}</span>
                         </div>
@@ -1161,5 +1161,5 @@
     }
   </script>
 
-<script type="module" src="js/data.js?v=50"></script><script type="module" src="js/app.js?v=105"></script></body>
+<script type="module" src="js/data.js?v=51"></script><script type="module" src="js/app.js?v=106"></script></body>
 </html>
