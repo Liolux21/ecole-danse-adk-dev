@@ -684,7 +684,7 @@
   </div>
 
   <!-- Data Script -->
-  <script src="js/vitrine-data.js?v=32"></script>
+  <script src="js/vitrine-data.js?v=33"></script>
 
   <!-- Simple script for Modals & Data Injection -->
   <script>
@@ -1112,7 +1112,7 @@
             continue;
           }
 
-          const profKeys = Object.keys(VITRINE_DATA.professeurs).filter(k => k !== 'Anne' && k !== 'Andrew');
+          const profKeys = Object.keys(VITRINE_DATA.professeurs).filter(k => k !== 'Anne' && k !== 'Andrew' && k !== 'Sylvie' && k !== 'Mégan');
           
           html += `<div class="grid-profs" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2.2rem; margin-top: 1.5rem; margin-bottom: 2.5rem;">`;
           for (const key of profKeys) {
@@ -1151,5 +1151,5 @@
     }
   </script>
 
-<script type="module" src="js/data.js?v=32"></script><script type="module" src="js/app.js?v=87"></script></body>
+<script type="module" src="js/data.js?v=33"></script><script type="module" src="js/app.js?v=88"></script></body>
 </html>

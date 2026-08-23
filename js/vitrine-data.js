@@ -56,6 +56,18 @@ const VITRINE_DATA = {
       "avatar": "https://annedkdanse.be/gallery_gen/b357bcb3e8bd30a1378c917bcc32d82e_876x812_fit.jpg?ts=1784984525",
       "content": "Andrew gère toute la logistique, la création vidéo et toute la technique. Il veille à toutes la partie technique de l'école : powerpoint et vidéos pour les spectacles, réparations, installations et soutien logistique du Studio ADK."
     },
+    "Sylvie": {
+      "title": "Sylvie",
+      "category": "Kinésithérapeute accompagnatrice",
+      "avatar": "https://annedkdanse.be/gallery_gen/cffd52798af8c5887dcff43b132cb97a_603x628_0x0_603x761_crop.jpg?ts=1784984525",
+      "content": "Sylvie accompagne les danseurs dans leur préparation physique, le renforcement musculaire, la prévention des blessures et le suivi corporel des compagnies surtout avant un spectacle ou un concours. Grâce à son expertise du corps en mouvement, elle aide les danseurs à développer force, équilibre et endurance tout en préservant leur bien-être physique."
+    },
+    "Mégan": {
+      "title": "Mégan",
+      "category": "Responsable décoration scénique",
+      "avatar": "https://annedkdanse.be/gallery/482349329_1785755885609251_7586817620626532284_n.jpg?ts=1784984525",
+      "content": "Mégan est une véritable artiste de l'ombre, elle imagine et crée les décors, ambiances et univers visuels qui donnent vie aux spectacles. Grâce à son imagination et son talent artistique, elle nous transporte dans l'aventure ADK."
+    },
     "Daisy": {
       "title": "Daisy",
       "styles": "Éveil & Initiation (3-5 ans)",
