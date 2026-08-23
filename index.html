@@ -677,14 +677,14 @@
     <div class="vitrine-modal-content" style="max-width: 1150px; width: 94%;">
       <button class="vitrine-modal-close" onclick="closeModal('modal-dynamic')">×</button>
       <h3 class="vitrine-title" id="modal-dynamic-title" style="margin: 0 0 0.4rem 0; font-size: 1.6rem; text-align: left; color: #9C5858;">Titre</h3>
-      <div id="modal-dynamic-content" style="color: var(--text-light); line-height: 1.5; white-space: pre-wrap;">
+      <div id="modal-dynamic-content" style="color: var(--text-light); line-height: 1.5;">
         <!-- Content injected here -->
       </div>
     </div>
   </div>
 
   <!-- Data Script -->
-  <script src="js/vitrine-data.js?v=45"></script>
+  <script src="js/vitrine-data.js?v=46"></script>
 
   <!-- Simple script for Modals & Data Injection -->
   <script>
@@ -802,7 +802,7 @@
 
           document.getElementById('modal-dynamic-content').innerHTML = `
             <div style="margin-bottom: 0.5rem;">
-               <p style="font-size: 0.95rem; line-height: 1.5; margin: 0; color: var(--text-light); text-align: justify;">${data.content}</p>
+               <p style="font-size: 0.95rem; line-height: 1.5; margin: 0; color: var(--text-light); text-align: justify; white-space: pre-wrap;">${data.content}</p>
             </div>
             ${subCoursesHtml}
             <div style="margin-top: 1rem;">
@@ -1156,5 +1156,5 @@
     }
   </script>
 
-<script type="module" src="js/data.js?v=45"></script><script type="module" src="js/app.js?v=100"></script></body>
+<script type="module" src="js/data.js?v=46"></script><script type="module" src="js/app.js?v=101"></script></body>
 </html>
