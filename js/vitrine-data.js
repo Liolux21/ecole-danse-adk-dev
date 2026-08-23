@@ -212,24 +212,41 @@ const VITRINE_DATA = {
     }
   },
   "cours": {
-
-    "adultes": {
-      "title": "Cours Adultes",
+    "eveil": {
+      "title": "Eveil & Initiation 3-5 ans",
+      "avatar": "assets/images/eveil_kids.png",
+      "modalImage": "assets/images/eveil_kids.png",
+      "content": "Un cours spécialement conçu pour permettre aux tout-petits de découvrir le plaisir de danser dans une ambiance joyeuse, douce et bienveillante.\n\nÀ travers des jeux dansés, des histoires, des musiques variées et de petits exercices adaptés à leur âge, les enfants apprennent progressivement à :\n- découvrir leur corps et ses possibilités ;\n- développer leur motricité, leur équilibre et leur coordination ;\n- se repérer dans l’espace et suivre le rythme de la musique ;\n- stimuler leur imagination et leur créativité ;\n- mémoriser de petits enchaînements ;\n- prendre confiance en eux et évoluer au sein d’un groupe.\n\nLes activités sont courtes et variées afin de respecter le rythme et la capacité de concentration des enfants. L’apprentissage se fait tout en douceur, sans recherche de performance : l’essentiel est de bouger, de s’exprimer et de prendre plaisir à danser.\n\nUne merveilleuse première approche de la danse, qui prépare naturellement les enfants à découvrir ensuite différentes disciplines."
+    },
+    "classique": {
+      "title": "Danse Classique enfants",
+      "avatar": "assets/images/dance_ballet_1781601330406.png",
+      "modalImage": "assets/images/dance_ballet_1781601330406.png",
+      "content": "La danse classique est une discipline élégante et intemporelle qui permet aux enfants de découvrir les bases fondamentales de la danse tout en développant grâce, posture et musicalité.\n\nLes élèves apprennent progressivement les premiers mouvements techniques à travers des exercices adaptés à leur âge, réalisés à la barre, au centre et au sol. Chaque cours leur permet de travailler la coordination, la souplesse, l’équilibre et la précision des gestes, tout en développant leur écoute de la musique.\n\nPour les plus jeunes, l’apprentissage se fait de manière ludique et bienveillante afin de stimuler leur imagination, leur créativité et leur sensibilité artistique. La danse classique aide également les enfants à gagner en confiance, en concentration et en discipline, tout en leur offrant un véritable moyen d’expression à travers le mouvement.\n\nÀ la fois exigeante et pleine de poésie, cette discipline apprend aux jeunes danseurs à ressentir la musique, à maîtriser leur corps et à évoluer avec élégance et harmonie."
+    },
+    "ballet_pointes": {
+      "title": "Ballet - Pointes Ados/Adultes",
       "avatar": "assets/images/hero_dancer.png",
       "modalImage": "assets/images/hero_dancer.png",
-      "content": ""
+      "content": "Ce cours de danse classique pour adolescents permet de développer progressivement les bases essentielles de la technique du ballet dans un cadre à la fois exigeant, élégant et bienveillant.\n\nLes élèves travaillent la posture, l’alignement du corps, la coordination des mouvements, l’équilibre, la souplesse ainsi que le placement gracieux de la tête et des bras. À travers le travail à la barre et au centre, ils apprennent à maîtriser leur technique tout en développant leur musicalité et leur expression artistique.\n\nLa danse classique apporte également rigueur, discipline, confiance en soi et sens du détail, tout en permettant à chaque danseur de s’épanouir artistiquement.\n\nTravail sur Pointes\n\nAprès l’acquisition des bases techniques nécessaires, les élèves peuvent évoluer vers le travail sur pointes. Le cours pointes est destiné aux élèves suivant déjà une formation en danse classique et possédant une préparation musculaire suffisante au niveau des chevilles, des pieds et du maintien du corps.\n\nChez ADK, l’apprentissage des pointes débute à partir de 13 ans minimum, afin de respecter le développement physique de l’élève et de garantir une progression en toute sécurité. Ce travail progressif permet de renforcer les muscles, d’améliorer la stabilité et d’apprendre à évoluer sur pointes avec contrôle, élégance et sans risque pour le corps.\n\nUne étape emblématique de la danse classique, symbole de grâce, de précision et de dépassement de soi."
     },
-    "poledance": {
-      "title": "Pole Dance",
-      "avatar": "assets/images/hero_dancer.png",
-      "modalImage": "assets/images/hero_dancer.png",
-      "content": "La Pole Dance est une discipline sportive et artistique complète qui allie force, souplesse, grâce et confiance en soi. Accessible à tous, quel que soit l'âge ou le niveau, elle permet de développer sa condition physique tout en s'amusant.\n\nLors des cours, les élèves apprennent progressivement différentes figures, rotations, montées, enchaînements chorégraphiques et techniques autour de la barre. Chaque séance comprend un échauffement, un travail technique adapté au niveau du groupe, du renforcement musculaire ainsi que des étirements.\n\nAu-delà de l'aspect physique, la Pole Dance aide à gagner en assurance, à améliorer sa posture et à exprimer sa créativité dans une ambiance bienveillante et motivante.\n\nLes bienfaits de la Pole Dance :\n- Renforcement musculaire complet\n- Développement de la souplesse\n- Amélioration de la coordination et de l'équilibre\n- Gain de confiance en soi\n- Travail de la grâce et de l'expression corporelle\n- Dépassement de soi dans le respect de son rythme\n\nQue vous souhaitiez pratiquer pour le sport, le plaisir, le défi personnel ou l'expression artistique, la Pole Dance vous permettra de découvrir une discipline passionnante et valorisante dans une ambiance conviviale."
+    "jazz_contemporain": {
+      "title": "Contemporain / Jazz",
+      "avatar": "assets/images/dance_contemporary.png",
+      "modalImage": "assets/images/dance_contemporary.png",
+      "content": "Énergique, expressive et pleine d’émotions, la danse Jazz & Contemporaine permet aux danseurs de développer à la fois leur technique, leur créativité et leur personnalité artistique.\n\nInspirée de plusieurs influences, cette discipline mêle rythme, dynamisme, fluidité et expression corporelle. Le modern jazz puise son énergie dans le mouvement, les contrastes, les sensations et la musicalité, tandis que le contemporain apporte une dimension plus émotionnelle, libre et artistique.\n\nLes cours travaillent la coordination, la souplesse, les déplacements, les sauts, les tours ainsi que l’interprétation chorégraphique. Les élèves apprennent également les bases techniques essentielles, inspirées notamment de la danse classique, afin de développer précision, posture et maîtrise du corps.\n\nSur des musiques modernes et variées, les danseurs explorent différentes qualités de mouvement : puissance, fluidité, énergie, relâchement et émotion. L’improvisation et l’expression personnelle occupent aussi une place importante, permettant à chacun de développer son propre style et de transmettre des émotions à travers la danse.\n\nAccessible et évolutive, cette discipline offre un parfait équilibre entre technique, liberté et créativité, dans une ambiance dynamique et inspirante."
     },
-    "pomdance": {
-      "title": "Pomdance",
+    "hiphop": {
+      "title": "Hip-Hop & Break",
+      "avatar": "assets/images/hiphop_dancer.png",
+      "modalImage": "assets/images/hiphop_dancer.png",
+      "content": "Le Hip-Hop est une danse urbaine dynamique, créative et incontournable, née dans les quartiers du Bronx à New York dans les années 1970.\n\nBien plus qu’un style de danse, le hip-hop est une véritable culture qui rassemble la musique, le mouvement, le partage et l’expression de soi. Aujourd’hui présent partout dans le monde, il continue d’évoluer à travers différents styles et influences urbaines.\n\nLes cours sont construits autour de chorégraphies rythmées sur des musiques actuelles, où les élèves développent coordination, musicalité, énergie, précision et confiance en eux. Dans une ambiance familiale, motivante et bienveillante, chacun progresse à son rythme tout en découvrant son propre style.\n\nLe Hip-Hop permet également de travailler :\n- le sens du rythme\n- la mémoire chorégraphique\n- la condition physique\n- la créativité et l’improvisation\n- la présence scénique et l’attitude"
+    },
+    "ragga": {
+      "title": "Ragga & Girly",
       "avatar": "assets/images/ragga_dancer.png",
       "modalImage": "assets/images/ragga_dancer.png",
-      "content": "Le pomdance est un style chorégraphique inspiré du cheerleading, qui repose sur un esprit d’équipe et une énergie positive.\n\nIl mêle des mouvements de danse très structurés à l’utilisation de pompoms, pour accentuer le rythme, l’énergie et la précision. Visuel et dynamique, ce style repose sur la synchronisation, les lignes nettes, les transitions rapides et une forte présence scénique.\n\nCe cours te permettra de développer ta coordination, ton endurance et ta confiance en toi, le tout sur des musiques modernes et entraînantes.\n\nAu programme : Apprentissage des pommotions (mouvements de bras) et du vocabulaire propre à la danse pom, apprentissage de chorégraphies entrainantes, travail des pirouettes, des sauts, de la souplesse… et bien plus encore."
+      "content": "Originaire des rues de Jamaïque, le Ragga Dancehall est une discipline urbaine énergique, expressive et pleine de caractère.\n\nMélange d’influences afro-jamaïcaines, de mouvements hip-hop et d’attitudes scéniques affirmées, cette danse se distingue par son énergie, sa puissance, sa musicalité et sa sensualité. Le travail du bassin, du torse, des isolations et des rebonds rythmiques est au cœur de ce style unique et vibrant.\n\nSur des musiques entraînantes et actuelles, les danseurs développent coordination, rythme, endurance et confiance en soi tout en apprenant à libérer leur expression corporelle.\n\nLe Ragga Dancehall permet également de travailler :\n- la fluidité des mouvements ;\n- la présence scénique ;\n- l’attitude et l’interprétation ;\n- la souplesse et le cardio ;\n- la connexion avec la musique et les émotions.\n\nÀ la fois intense, libératrice et conviviale, cette discipline invite chacun à danser avec personnalité, énergie et authenticité dans une ambiance dynamique et motivante."
     },
     "girly": {
       "title": "Girly",
@@ -249,32 +266,24 @@ const VITRINE_DATA = {
       "modalImage": "assets/images/hiphop_dancer.png",
       "content": "Le Street Jazz est une discipline moderne qui allie l'énergie des danses urbaines à la technique du jazz. Véritable mélange de puissance, de précision, de musicalité et d'expression, ce cours séduit les danseurs qui aiment les chorégraphies actuelles, dynamiques et pleines de personnalité.\n\nTout au long de l'année, les élèves développent leur technique, leur coordination, leur sens du rythme, leur mémoire chorégraphique, leur présence scénique ainsi que leur interprétation. Les cours alternent échauffement, travail technique, apprentissage des fondamentaux, déplacements, isolations, souplesse et chorégraphies sur des musiques actuelles.\n\nLe Street Jazz intègre également une touche de Girly, permettant de travailler l'attitude, l'élégance, la féminité, l'assurance et l'expression corporelle. Il ne s'agit pas simplement de reproduire des mouvements, mais d'apprendre à interpréter une chorégraphie avec style, caractère et émotion, tout en développant sa propre personnalité artistique.\n\nCette discipline offre un excellent travail physique en améliorant l'endurance, le renforcement musculaire, la mobilité et la confiance en soi, tout en laissant une grande place au plaisir de danser.\n\nAccessible dès que les bases techniques sont acquises, le Street Jazz est idéal pour les danseurs qui souhaitent évoluer dans un univers moderne, créatif et exigeant, où l'énergie des danses urbaines rencontre l'élégance et la technique du jazz."
     },
-    "eveil": {
-      "title": "Eveil & Initiation 3-5 ans",
-      "avatar": "assets/images/eveil_kids.png",
-      "modalImage": "assets/images/eveil_kids.png",
-      "content": "Un cours spécialement conçu pour permettre aux tout-petits de découvrir le plaisir de danser dans une ambiance joyeuse, douce et bienveillante.\n\nÀ travers des jeux dansés, des histoires, des musiques variées et de petits exercices adaptés à leur âge, les enfants apprennent progressivement à :\n- découvrir leur corps et ses possibilités ;\n- développer leur motricité, leur équilibre et leur coordination ;\n- se repérer dans l’espace et suivre le rythme de la musique ;\n- stimuler leur imagination et leur créativité ;\n- mémoriser de petits enchaînements ;\n- prendre confiance en eux et évoluer au sein d’un groupe.\n\nLes activités sont courtes et variées afin de respecter le rythme et la capacité de concentration des enfants. L’apprentissage se fait tout en douceur, sans recherche de performance : l’essentiel est de bouger, de s’exprimer et de prendre plaisir à danser.\n\nUne merveilleuse première approche de la danse, qui prépare naturellement les enfants à découvrir ensuite différentes disciplines."
+    "adultes": {
+      "title": "Cours Adultes",
+      "avatar": "assets/images/hero_dancer.png",
+      "modalImage": "assets/images/hero_dancer.png",
+      "content": ""
     },
-    "hiphop": {
-      "title": "Hip-Hop & Break",
-      "avatar": "assets/images/hiphop_dancer.png",
-      "modalImage": "assets/images/hiphop_dancer.png",
-      "content": "Le Hip-Hop est une danse urbaine dynamique, créative et incontournable, née dans les quartiers du Bronx à New York dans les années 1970.\n\nBien plus qu’un style de danse, le hip-hop est une véritable culture qui rassemble la musique, le mouvement, le partage et l’expression de soi. Aujourd’hui présent partout dans le monde, il continue d’évoluer à travers différents styles et influences urbaines.\n\nLes cours sont construits autour de chorégraphies rythmées sur des musiques actuelles, où les élèves développent coordination, musicalité, énergie, précision et confiance en eux. Dans une ambiance familiale, motivante et bienveillante, chacun progresse à son rythme tout en découvrant son propre style.\n\nLe Hip-Hop permet également de travailler :\n- le sens du rythme\n- la mémoire chorégraphique\n- la condition physique\n- la créativité et l’improvisation\n- la présence scénique et l’attitude"
+    "poledance": {
+      "title": "Pole Dance",
+      "avatar": "assets/images/hero_dancer.png",
+      "modalImage": "assets/images/hero_dancer.png",
+      "content": "La Pole Dance est une discipline sportive et artistique complète qui allie force, souplesse, grâce et confiance en soi. Accessible à tous, quel que soit l'âge ou le niveau, elle permet de développer sa condition physique tout en s'amusant.\n\nLors des cours, les élèves apprennent progressivement différentes figures, rotations, montées, enchaînements chorégraphiques et techniques autour de la barre. Chaque séance comprend un échauffement, un travail technique adapté au niveau du groupe, du renforcement musculaire ainsi que des étirements.\n\nAu-delà de l'aspect physique, la Pole Dance aide à gagner en assurance, à améliorer sa posture et à exprimer sa créativité dans une ambiance bienveillante et motivante.\n\nLes bienfaits de la Pole Dance :\n- Renforcement musculaire complet\n- Développement de la souplesse\n- Amélioration de la coordination et de l'équilibre\n- Gain de confiance en soi\n- Travail de la grâce et de l'expression corporelle\n- Dépassement de soi dans le respect de son rythme\n\nQue vous souhaitiez pratiquer pour le sport, le plaisir, le défi personnel ou l'expression artistique, la Pole Dance vous permettra de découvrir une discipline passionnante et valorisante dans une ambiance conviviale."
     },
-    "ragga": {
-      "title": "Ragga & Girly",
+    "pomdance": {
+      "title": "Pomdance",
       "avatar": "assets/images/ragga_dancer.png",
       "modalImage": "assets/images/ragga_dancer.png",
-      "content": "Originaire des rues de Jamaïque, le Ragga Dancehall est une discipline urbaine énergique, expressive et pleine de caractère.\n\nMélange d’influences afro-jamaïcaines, de mouvements hip-hop et d’attitudes scéniques affirmées, cette danse se distingue par son énergie, sa puissance, sa musicalité et sa sensualité. Le travail du bassin, du torse, des isolations et des rebonds rythmiques est au cœur de ce style unique et vibrant.\n\nSur des musiques entraînantes et actuelles, les danseurs développent coordination, rythme, endurance et confiance en soi tout en apprenant à libérer leur expression corporelle.\n\nLe Ragga Dancehall permet également de travailler :\n- la fluidité des mouvements ;\n- la présence scénique ;\n- l’attitude et l’interprétation ;\n- la souplesse et le cardio ;\n- la connexion avec la musique et les émotions.\n\nÀ la fois intense, libératrice et conviviale, cette discipline invite chacun à danser avec personnalité, énergie et authenticité dans une ambiance dynamique et motivante."
+      "content": "Le pomdance est un style chorégraphique inspiré du cheerleading, qui repose sur un esprit d’équipe et une énergie positive.\n\nIl mêle des mouvements de danse très structurés à l’utilisation de pompoms, pour accentuer le rythme, l’énergie et la précision. Visuel et dynamique, ce style repose sur la synchronisation, les lignes nettes, les transitions rapides et une forte présence scénique.\n\nCe cours te permettra de développer ta coordination, ton endurance et ta confiance en toi, le tout sur des musiques modernes et entraînantes.\n\nAu programme : Apprentissage des pommotions (mouvements de bras) et du vocabulaire propre à la danse pom, apprentissage de chorégraphies entrainantes, travail des pirouettes, des sauts, de la souplesse… et bien plus encore."
     },
-    "classique": {
-      "title": "Danse Classique enfants",
-      "avatar": "assets/images/dance_ballet_1781601330406.png",
-      "modalImage": "assets/images/dance_ballet_1781601330406.png",
-      "content": "La danse classique est une discipline élégante et intemporelle qui permet aux enfants de découvrir les bases fondamentales de la danse tout en développant grâce, posture et musicalité.\n\nLes élèves apprennent progressivement les premiers mouvements techniques à travers des exercices adaptés à leur âge, réalisés à la barre, au centre et au sol. Chaque cours leur permet de travailler la coordination, la souplesse, l’équilibre et la précision des gestes, tout en développant leur écoute de la musique.\n\nPour les plus jeunes, l’apprentissage se fait de manière ludique et bienveillante afin de stimuler leur imagination, leur créativité et leur sensibilité artistique. La danse classique aide également les enfants à gagner en confiance, en concentration et en discipline, tout en leur offrant un véritable moyen d’expression à travers le mouvement.\n\nÀ la fois exigeante et pleine de poésie, cette discipline apprend aux jeunes danseurs à ressentir la musique, à maîtriser leur corps et à évoluer avec élégance et harmonie."
-    },
-    
-    
     "compagnie": {
       "title": "Compagnies ADK",
       "avatar": "assets/images/compagnie_stage.png",
@@ -286,18 +295,6 @@ const VITRINE_DATA = {
       "avatar": "assets/images/hero_dancer_1781601293705.png",
       "modalImage": "assets/images/hero_dancer_1781601293705.png",
       "content": "Des cours spécifiques comme la Pole Dance ou des formations intensives (préparatifs concours, formation de futurs professeurs). Des disciplines uniques pour repousser ses limites ou se professionnaliser."
-    },
-    "ballet_pointes": {
-      "title": "Ballet - Pointes Ados/Adultes",
-      "avatar": "assets/images/hero_dancer.png",
-      "modalImage": "assets/images/hero_dancer.png",
-      "content": "Ce cours de danse classique pour adolescents permet de développer progressivement les bases essentielles de la technique du ballet dans un cadre à la fois exigeant, élégant et bienveillant.\n\nLes élèves travaillent la posture, l’alignement du corps, la coordination des mouvements, l’équilibre, la souplesse ainsi que le placement gracieux de la tête et des bras. À travers le travail à la barre et au centre, ils apprennent à maîtriser leur technique tout en développant leur musicalité et leur expression artistique.\n\nLa danse classique apporte également rigueur, discipline, confiance en soi et sens du détail, tout en permettant à chaque danseur de s’épanouir artistiquement.\n\nTravail sur Pointes\n\nAprès l’acquisition des bases techniques nécessaires, les élèves peuvent évoluer vers le travail sur pointes. Le cours pointes est destiné aux élèves suivant déjà une formation en danse classique et possédant une préparation musculaire suffisante au niveau des chevilles, des pieds et du maintien du corps.\n\nChez ADK, l’apprentissage des pointes débute à partir de 13 ans minimum, afin de respecter le développement physique de l’élève et de garantir une progression en toute sécurité. Ce travail progressif permet de renforcer les muscles, d’améliorer la stabilité et d’apprendre à évoluer sur pointes avec contrôle, élégance et sans risque pour le corps.\n\nUne étape emblématique de la danse classique, symbole de grâce, de précision et de dépassement de soi."
-    },
-    "jazz_contemporain": {
-      "title": "Contemporain / Jazz",
-      "avatar": "assets/images/dance_contemporary.png",
-      "modalImage": "assets/images/dance_contemporary.png",
-      "content": "Énergique, expressive et pleine d’émotions, la danse Jazz & Contemporaine permet aux danseurs de développer à la fois leur technique, leur créativité et leur personnalité artistique.\n\nInspirée de plusieurs influences, cette discipline mêle rythme, dynamisme, fluidité et expression corporelle. Le modern jazz puise son énergie dans le mouvement, les contrastes, les sensations et la musicalité, tandis que le contemporain apporte une dimension plus émotionnelle, libre et artistique.\n\nLes cours travaillent la coordination, la souplesse, les déplacements, les sauts, les tours ainsi que l’interprétation chorégraphique. Les élèves apprennent également les bases techniques essentielles, inspirées notamment de la danse classique, afin de développer précision, posture et maîtrise du corps.\n\nSur des musiques modernes et variées, les danseurs explorent différentes qualités de mouvement : puissance, fluidité, énergie, relâchement et émotion. L’improvisation et l’expression personnelle occupent aussi une place importante, permettant à chacun de développer son propre style et de transmettre des émotions à travers la danse.\n\nAccessible et évolutive, cette discipline offre un parfait équilibre entre technique, liberté et créativité, dans une ambiance dynamique et inspirante."
     }
   }
 };
