@@ -534,6 +534,16 @@ ul { list-style: none; }
 .tag-ragga       { background: #40C4A4; color: #ffffff; border: 1px solid #40C4A4; }
 .tag-compagnie   { background: #B478DC; color: #ffffff; border: 1px solid #B478DC; }
 .tag-special     { background: #DC8C50; color: #ffffff; border: 1px solid #DC8C50; }
+
+.tag-adultes           { background: #8c92ac; color: #ffffff; border: 1px solid #8c92ac; }
+.tag-poledance         { background: #E8A2B9; color: #ffffff; border: 1px solid #E8A2B9; }
+.tag-pomdance          { background: #FF9999; color: #ffffff; border: 1px solid #FF9999; }
+.tag-girly             { background: #F28CDB; color: #ffffff; border: 1px solid #F28CDB; }
+.tag-breakdance        { background: #5C8ABF; color: #ffffff; border: 1px solid #5C8ABF; }
+.tag-streetjazz        { background: #A66352; color: #ffffff; border: 1px solid #A66352; }
+.tag-ballet_pointes    { background: #D48CBF; color: #ffffff; border: 1px solid #D48CBF; }
+.tag-jazz_contemporain { background: #C9A84C; color: #ffffff; border: 1px solid #C9A84C; }
+
 .course-name {
   font-family: var(--font-display);
   font-size: 1.5rem;
