@@ -296,6 +296,16 @@ const VITRINE_DATA = {
       "modalImage": "assets/images/hero_dancer_1781601293705.png",
       "content": "Des cours spécifiques comme la Pole Dance ou des formations intensives (préparatifs concours, formation de futurs professeurs). Des disciplines uniques pour repousser ses limites ou se professionnaliser."
     }
+  },
+  "gallery": {
+    "eveil": [
+      "assets/images/eveil_3_4_ans.png",
+      "assets/images/eveil_kids.png",
+      "assets/images/dance_ballet.png",
+      "assets/images/dance_jazz.png",
+      "assets/images/ragga_dancer.png",
+      "assets/images/hiphop_dancer.png"
+    ]
   }
 };
 window.VITRINE_DATA = VITRINE_DATA;
