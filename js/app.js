@@ -1183,13 +1183,14 @@ function renderProfDashboard(user) {
   document.getElementById('prof-name').textContent = user.name;
   document.getElementById('prof-avatar').textContent = user.avatar;
 
-  const courseIds = user.courseIds || [];
-  let selectedCourseId = courseIds[0] || null;
+  const taughtCourseIds = DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);
+  
+  let selectedCourseId = taughtCourseIds[0] || null;
   const courseSelector = document.getElementById('appel-courses-select');
   if (courseSelector) {
     courseSelector.innerHTML = '';
 
-    courseIds.forEach((cid) => {
+    taughtCourseIds.forEach((cid) => {
       const c = DATA.getCourseById(cid);
       if (!c) return;
       
@@ -1223,31 +1224,34 @@ function renderProfDashboard(user) {
   btnEnseignes.onclick = () => {
     btnEnseignes.classList.add('active');
     btnSuivis.classList.remove('active');
-    renderPlanningCards(user.courseIds || [], 'prof-planning-list', 'Aucun cours.', user);
-    renderWeeklyCalendar(user.courseIds || [], 'prof-planning-calendar');
+    renderPlanningCards(taughtCourseIds, 'prof-planning-list', 'Aucun cours enseigné.', user);
+    renderWeeklyCalendar(taughtCourseIds, 'prof-planning-calendar');
   };
   btnSuivis.onclick = () => {
     btnSuivis.classList.add('active');
     btnEnseignes.classList.remove('active');
-    renderPlanningCards(user.takenCourseIds || [], 'prof-planning-list', 'Vous ne suivez aucun cours.', user);
-    renderWeeklyCalendar(user.takenCourseIds || [], 'prof-planning-calendar');
+    renderPlanningCards(user.courseIds || [], 'prof-planning-list', 'Vous ne suivez aucun cours.', user);
+    renderWeeklyCalendar(user.courseIds || [], 'prof-planning-calendar');
   };
   // Init default view
   btnEnseignes.click();
 
-  document.getElementById('appel-save-btn').onclick = () => {
-    const dInput = document.getElementById('appel-date');
-    const date = dInput.value.split('-').reverse().join('/');
-    document.querySelectorAll('.appel-item').forEach(item => {
-      const sid = parseInt(item.dataset.studentId);
-      const selected = item.querySelector('.appel-btn.selected');
-      if (selected) {
-        const status = selected.dataset.status;
-        DATA.markAttendance(sid, selectedCourseId, date, status);
-      }
-    });
-    showToast('✅ Appel sauvegardé !', 'success');
-  };
+  const appelSaveBtn = document.getElementById('appel-save-btn');
+  if (appelSaveBtn) {
+    appelSaveBtn.onclick = () => {
+      const dInput = document.getElementById('appel-date');
+      const date = dInput.value.split('-').reverse().join('/');
+      document.querySelectorAll('.appel-item').forEach(item => {
+        const sid = parseInt(item.dataset.studentId);
+        const selected = item.querySelector('.appel-btn.selected');
+        if (selected) {
+          const status = selected.dataset.status;
+          DATA.markAttendance(sid, selectedCourseId, date, status);
+        }
+      });
+      showToast('✅ Appel sauvegardé !', 'success');
+    };
+  }
   
   document.getElementById('appel-date')?.addEventListener('change', () => {
     document.querySelectorAll('.appel-item .appel-btn').forEach(b => b.classList.remove('selected'));
@@ -1340,24 +1344,24 @@ function renderAppelList(courseId) {
 
 function renderProfEleves(user) {
   const tbody = document.getElementById('prof-eleves-body');
-  const courseIds = user.courseIds || [];
-  const allStudents = [...new Map(courseIds.flatMap(cid => DATA.getStudentsByCourse(cid)).map(s => [s.id, s])).values()];
+  const taughtCourseIds = DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);
+  const allStudents = [...new Map(taughtCourseIds.flatMap(cid => DATA.getStudentsByCourse(cid)).map(s => [s.id, s])).values()];
   tbody.innerHTML = allStudents.map(s => {
     const att = DATA.getAttendanceByStudent(s.id);
     const pres = att.filter(a => a.status === 'present').length;
     const rate = att.length ? Math.round(pres / att.length * 100) : 100;
-    const courses = s.courseIds.filter(id => courseIds.includes(id)).map(id => DATA.getCourseById(id)?.name).filter(Boolean).join(', ');
+    const courses = s.courseIds.filter(id => taughtCourseIds.includes(id)).map(id => DATA.getCourseById(id)?.name).filter(Boolean).join(', ');
     const color = rate >= 80 ? '#90CC90' : rate >= 60 ? 'var(--gold)' : '#DC6464';
     
     // Cotisation display
-    const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee';
+    const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee' || s.cotisation === 'paye';
     const cotClass = isPayee ? 'pill-approved' : 'pill-pending';
-    const cotLabel = isPayee ? '✓ Payée' : '⏳ En attente';
+    const cotLabel = isPayee ? '✅ Payée' : '⏳ En attente';
     
     // Mutuelle display
     const mutStatus = s.mutuelle || 'attente';
     const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'cours' ? 'pill-pending' : 'pill-rejected');
-    const mutLabel = mutStatus === 'remis' ? '✓ Remis' : (mutStatus === 'cours' ? '🔄 En cours' : '⏳ En attente');
+    const mutLabel = mutStatus === 'remis' ? '✅ Remis' : (mutStatus === 'cours' ? '🔄 En cours' : '⏳ En attente');
     
     return `<tr>
       <td><strong>${s.firstname} ${s.lastname}</strong></td>
@@ -2240,7 +2244,7 @@ window.openAddCourseModal = function(courseId = null) {
     document.getElementById('manage-course-title').textContent = "Nouveau cours";
   }
   
-  document.getElementById('modal-manage-course').classList.add('active');
+  openModal('modal-add-course');
 };
 
 window.submitManageCourse = async function() {
