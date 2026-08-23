@@ -223,88 +223,33 @@ const VITRINE_DATA = {
       "title": "Pole Dance",
       "avatar": "assets/images/hero_dancer.png",
       "modalImage": "assets/images/hero_dancer.png",
-      "content": "La Pole Dance est une discipline sportive et artistique complète qui allie force, souplesse, grâce et confiance en soi. Accessible à tous, quel que soit l'âge ou le niveau, elle permet de développer sa condition physique tout en s'amusant.
-
-Lors des cours, les élèves apprennent progressivement différentes figures, rotations, montées, enchaînements chorégraphiques et techniques autour de la barre. Chaque séance comprend un échauffement, un travail technique adapté au niveau du groupe, du renforcement musculaire ainsi que des étirements.
-
-Au-delà de l'aspect physique, la Pole Dance aide à gagner en assurance, à améliorer sa posture et à exprimer sa créativité dans une ambiance bienveillante et motivante.
-
-Les bienfaits de la Pole Dance :
-- Renforcement musculaire complet
-- Développement de la souplesse
-- Amélioration de la coordination et de l'équilibre
-- Gain de confiance en soi
-- Travail de la grâce et de l'expression corporelle
-- Dépassement de soi dans le respect de son rythme
-
-Que vous souhaitiez pratiquer pour le sport, le plaisir, le défi personnel ou l'expression artistique, la Pole Dance vous permettra de découvrir une discipline passionnante et valorisante dans une ambiance conviviale."
+      "content": "La Pole Dance est une discipline sportive et artistique complète qui allie force, souplesse, grâce et confiance en soi. Accessible à tous, quel que soit l'âge ou le niveau, elle permet de développer sa condition physique tout en s'amusant.\n\nLors des cours, les élèves apprennent progressivement différentes figures, rotations, montées, enchaînements chorégraphiques et techniques autour de la barre. Chaque séance comprend un échauffement, un travail technique adapté au niveau du groupe, du renforcement musculaire ainsi que des étirements.\n\nAu-delà de l'aspect physique, la Pole Dance aide à gagner en assurance, à améliorer sa posture et à exprimer sa créativité dans une ambiance bienveillante et motivante.\n\nLes bienfaits de la Pole Dance :\n- Renforcement musculaire complet\n- Développement de la souplesse\n- Amélioration de la coordination et de l'équilibre\n- Gain de confiance en soi\n- Travail de la grâce et de l'expression corporelle\n- Dépassement de soi dans le respect de son rythme\n\nQue vous souhaitiez pratiquer pour le sport, le plaisir, le défi personnel ou l'expression artistique, la Pole Dance vous permettra de découvrir une discipline passionnante et valorisante dans une ambiance conviviale."
     },
     "pomdance": {
       "title": "Pomdance",
       "avatar": "assets/images/ragga_dancer.png",
       "modalImage": "assets/images/ragga_dancer.png",
-      "content": "Le pomdance est un style chorégraphique inspiré du cheerleading, qui repose sur un esprit d’équipe et une énergie positive.
-
-Il mêle des mouvements de danse très structurés à l’utilisation de pompoms, pour accentuer le rythme, l’énergie et la précision. Visuel et dynamique, ce style repose sur la synchronisation, les lignes nettes, les transitions rapides et une forte présence scénique.
-
-Ce cours te permettra de développer ta coordination, ton endurance et ta confiance en toi, le tout sur des musiques modernes et entraînantes.
-
-Au programme : Apprentissage des pommotions (mouvements de bras) et du vocabulaire propre à la danse pom, apprentissage de chorégraphies entrainantes, travail des pirouettes, des sauts, de la souplesse… et bien plus encore."
+      "content": "Le pomdance est un style chorégraphique inspiré du cheerleading, qui repose sur un esprit d’équipe et une énergie positive.\n\nIl mêle des mouvements de danse très structurés à l’utilisation de pompoms, pour accentuer le rythme, l’énergie et la précision. Visuel et dynamique, ce style repose sur la synchronisation, les lignes nettes, les transitions rapides et une forte présence scénique.\n\nCe cours te permettra de développer ta coordination, ton endurance et ta confiance en toi, le tout sur des musiques modernes et entraînantes.\n\nAu programme : Apprentissage des pommotions (mouvements de bras) et du vocabulaire propre à la danse pom, apprentissage de chorégraphies entrainantes, travail des pirouettes, des sauts, de la souplesse… et bien plus encore."
     },
     "girly": {
       "title": "Girly",
       "avatar": "assets/images/ragga_dancer.png",
       "modalImage": "assets/images/ragga_dancer.png",
-      "content": "Le cours de Girly Dance est une discipline moderne, fun et pleine d’attitude, qui permet de révéler sa féminité, sa confiance en soi et son expression artistique.
-
-Accessible avec ou sans talons, ce cours mélange techniques de danse, démarche, posture, musicalité et expression scénique dans une ambiance dynamique et bienveillante.
-
-À travers des chorégraphies inspirées des clips, des shows et de l’univers commercial, les élèves travaillent :
-- l’aisance corporelle ;
-- la confiance en soi ;
-- la grâce et la posture ;
-- la sensualité et l’attitude ;
-- la coordination et la présence scénique.
-
-Le Girly Dance est également un véritable moment de partage et de plaisir grâce à des musiques variées mêlant grands classiques revisités et hits actuels. Des univers rétro aux chorégraphies inspirées des artistes d’aujourd’hui comme Beyoncé, chaque cours permet de s’amuser, de se dépasser et d’exprimer pleinement sa personnalité.
-
-Une discipline énergique et libératrice où élégance, puissance et confiance se rencontrent."
+      "content": "Le cours de Girly Dance est une discipline moderne, fun et pleine d’attitude, qui permet de révéler sa féminité, sa confiance en soi et son expression artistique.\n\nAccessible avec ou sans talons, ce cours mélange techniques de danse, démarche, posture, musicalité et expression scénique dans une ambiance dynamique et bienveillante.\n\nÀ travers des chorégraphies inspirées des clips, des shows et de l’univers commercial, les élèves travaillent :\n- l’aisance corporelle ;\n- la confiance en soi ;\n- la grâce et la posture ;\n- la sensualité et l’attitude ;\n- la coordination et la présence scénique.\n\nLe Girly Dance est également un véritable moment de partage et de plaisir grâce à des musiques variées mêlant grands classiques revisités et hits actuels. Des univers rétro aux chorégraphies inspirées des artistes d’aujourd’hui comme Beyoncé, chaque cours permet de s’amuser, de se dépasser et d’exprimer pleinement sa personnalité.\n\nUne discipline énergique et libératrice où élégance, puissance et confiance se rencontrent."
     },
     "breakdance": {
       "title": "Break Dance",
       "avatar": "assets/images/breakdance_freeze.png",
       "modalImage": "assets/images/breakdance_freeze.png",
-      "content": "Le Breakdance, aussi appelé Breaking, est l’une des disciplines les plus emblématiques de la culture hip-hop.
-
-Né dans les rues de New York dans les années 70, ce style spectaculaire mélange performance physique, créativité, musicalité et dépassement de soi. Reconnaissable par son travail au sol, ses figures acrobatiques et ses mouvements dynamiques, le Breakdance demande à la fois force, coordination, équilibre et maîtrise du corps.
-
-Les danseurs, appelés B-boys et B-girls, apprennent progressivement différentes techniques : footwork, freezes, passages au sol, mouvements de puissance et figures acrobatiques adaptées à leur niveau.
-
-Au-delà de l’aspect technique, le Breakdance développe :
-- la confiance en soi ;
-- l’endurance et la condition physique ;
-- la discipline et la persévérance ;
-- la créativité et l’improvisation ;
-- l’esprit d’équipe et le respect des autres.
-
-Dans une ambiance urbaine, motivante et conviviale, les cours se terminent souvent par des moments de freestyle ou des battles, permettant aux élèves d’exprimer leur personnalité, leur style et leur énergie tout en conservant l’esprit authentique et “street” du Breaking.
-
-Une discipline impressionnante et passionnante où chacun apprend à se dépasser tout en s’amusant."
+      "content": "Le Breakdance, aussi appelé Breaking, est l’une des disciplines les plus emblématiques de la culture hip-hop.\n\nNé dans les rues de New York dans les années 70, ce style spectaculaire mélange performance physique, créativité, musicalité et dépassement de soi. Reconnaissable par son travail au sol, ses figures acrobatiques et ses mouvements dynamiques, le Breakdance demande à la fois force, coordination, équilibre et maîtrise du corps.\n\nLes danseurs, appelés B-boys et B-girls, apprennent progressivement différentes techniques : footwork, freezes, passages au sol, mouvements de puissance et figures acrobatiques adaptées à leur niveau.\n\nAu-delà de l’aspect technique, le Breakdance développe :\n- la confiance en soi ;\n- l’endurance et la condition physique ;\n- la discipline et la persévérance ;\n- la créativité et l’improvisation ;\n- l’esprit d’équipe et le respect des autres.\n\nDans une ambiance urbaine, motivante et conviviale, les cours se terminent souvent par des moments de freestyle ou des battles, permettant aux élèves d’exprimer leur personnalité, leur style et leur énergie tout en conservant l’esprit authentique et “street” du Breaking.\n\nUne discipline impressionnante et passionnante où chacun apprend à se dépasser tout en s’amusant."
     },
     "streetjazz": {
       "title": "Street Jazz",
       "avatar": "assets/images/hiphop_dancer.png",
       "modalImage": "assets/images/hiphop_dancer.png",
-      "content": "Le Street Jazz est une discipline moderne qui allie l'énergie des danses urbaines à la technique du jazz. Véritable mélange de puissance, de précision, de musicalité et d'expression, ce cours séduit les danseurs qui aiment les chorégraphies actuelles, dynamiques et pleines de personnalité.
-
-Tout au long de l'année, les élèves développent leur technique, leur coordination, leur sens du rythme, leur mémoire chorégraphique, leur présence scénique ainsi que leur interprétation. Les cours alternent échauffement, travail technique, apprentissage des fondamentaux, déplacements, isolations, souplesse et chorégraphies sur des musiques actuelles.
-
-Le Street Jazz intègre également une touche de Girly, permettant de travailler l'attitude, l'élégance, la féminité, l'assurance et l'expression corporelle. Il ne s'agit pas simplement de reproduire des mouvements, mais d'apprendre à interpréter une chorégraphie avec style, caractère et émotion, tout en développant sa propre personnalité artistique.
-
-Cette discipline offre un excellent travail physique en améliorant l'endurance, le renforcement musculaire, la mobilité et la confiance en soi, tout en laissant une grande place au plaisir de danser.
-
-Accessible dès que les bases techniques sont acquises, le Street Jazz est idéal pour les danseurs qui souhaitent évoluer dans un univers moderne, créatif et exigeant, où l'énergie des danses urbaines rencontre l'élégance et la technique du jazz."
-    },    "eveil": {
+      "content": "Le Street Jazz est une discipline moderne qui allie l'énergie des danses urbaines à la technique du jazz. Véritable mélange de puissance, de précision, de musicalité et d'expression, ce cours séduit les danseurs qui aiment les chorégraphies actuelles, dynamiques et pleines de personnalité.\n\nTout au long de l'année, les élèves développent leur technique, leur coordination, leur sens du rythme, leur mémoire chorégraphique, leur présence scénique ainsi que leur interprétation. Les cours alternent échauffement, travail technique, apprentissage des fondamentaux, déplacements, isolations, souplesse et chorégraphies sur des musiques actuelles.\n\nLe Street Jazz intègre également une touche de Girly, permettant de travailler l'attitude, l'élégance, la féminité, l'assurance et l'expression corporelle. Il ne s'agit pas simplement de reproduire des mouvements, mais d'apprendre à interpréter une chorégraphie avec style, caractère et émotion, tout en développant sa propre personnalité artistique.\n\nCette discipline offre un excellent travail physique en améliorant l'endurance, le renforcement musculaire, la mobilité et la confiance en soi, tout en laissant une grande place au plaisir de danser.\n\nAccessible dès que les bases techniques sont acquises, le Street Jazz est idéal pour les danseurs qui souhaitent évoluer dans un univers moderne, créatif et exigeant, où l'énergie des danses urbaines rencontre l'élégance et la technique du jazz."
+    },
+    "eveil": {
       "title": "Eveil & Initiation 3-5 ans",
       "avatar": "assets/images/eveil_kids.png",
       "modalImage": "assets/images/eveil_kids.png",
@@ -314,37 +259,13 @@ Accessible dès que les bases techniques sont acquises, le Street Jazz est idéa
       "title": "Hip-Hop & Break",
       "avatar": "assets/images/hiphop_dancer.png",
       "modalImage": "assets/images/hiphop_dancer.png",
-      "content": "Le Hip-Hop est une danse urbaine dynamique, créative et incontournable, née dans les quartiers du Bronx à New York dans les années 1970.
-
-Bien plus qu’un style de danse, le hip-hop est une véritable culture qui rassemble la musique, le mouvement, le partage et l’expression de soi. Aujourd’hui présent partout dans le monde, il continue d’évoluer à travers différents styles et influences urbaines.
-
-Les cours sont construits autour de chorégraphies rythmées sur des musiques actuelles, où les élèves développent coordination, musicalité, énergie, précision et confiance en eux. Dans une ambiance familiale, motivante et bienveillante, chacun progresse à son rythme tout en découvrant son propre style.
-
-Le Hip-Hop permet également de travailler :
-- le sens du rythme
-- la mémoire chorégraphique
-- la condition physique
-- la créativité et l’improvisation
-- la présence scénique et l’attitude"
+      "content": "Le Hip-Hop est une danse urbaine dynamique, créative et incontournable, née dans les quartiers du Bronx à New York dans les années 1970.\n\nBien plus qu’un style de danse, le hip-hop est une véritable culture qui rassemble la musique, le mouvement, le partage et l’expression de soi. Aujourd’hui présent partout dans le monde, il continue d’évoluer à travers différents styles et influences urbaines.\n\nLes cours sont construits autour de chorégraphies rythmées sur des musiques actuelles, où les élèves développent coordination, musicalité, énergie, précision et confiance en eux. Dans une ambiance familiale, motivante et bienveillante, chacun progresse à son rythme tout en découvrant son propre style.\n\nLe Hip-Hop permet également de travailler :\n- le sens du rythme\n- la mémoire chorégraphique\n- la condition physique\n- la créativité et l’improvisation\n- la présence scénique et l’attitude"
     },
     "ragga": {
       "title": "Ragga & Girly",
       "avatar": "assets/images/ragga_dancer.png",
       "modalImage": "assets/images/ragga_dancer.png",
-      "content": "Originaire des rues de Jamaïque, le Ragga Dancehall est une discipline urbaine énergique, expressive et pleine de caractère.
-
-Mélange d’influences afro-jamaïcaines, de mouvements hip-hop et d’attitudes scéniques affirmées, cette danse se distingue par son énergie, sa puissance, sa musicalité et sa sensualité. Le travail du bassin, du torse, des isolations et des rebonds rythmiques est au cœur de ce style unique et vibrant.
-
-Sur des musiques entraînantes et actuelles, les danseurs développent coordination, rythme, endurance et confiance en soi tout en apprenant à libérer leur expression corporelle.
-
-Le Ragga Dancehall permet également de travailler :
-- la fluidité des mouvements ;
-- la présence scénique ;
-- l’attitude et l’interprétation ;
-- la souplesse et le cardio ;
-- la connexion avec la musique et les émotions.
-
-À la fois intense, libératrice et conviviale, cette discipline invite chacun à danser avec personnalité, énergie et authenticité dans une ambiance dynamique et motivante."
+      "content": "Originaire des rues de Jamaïque, le Ragga Dancehall est une discipline urbaine énergique, expressive et pleine de caractère.\n\nMélange d’influences afro-jamaïcaines, de mouvements hip-hop et d’attitudes scéniques affirmées, cette danse se distingue par son énergie, sa puissance, sa musicalité et sa sensualité. Le travail du bassin, du torse, des isolations et des rebonds rythmiques est au cœur de ce style unique et vibrant.\n\nSur des musiques entraînantes et actuelles, les danseurs développent coordination, rythme, endurance et confiance en soi tout en apprenant à libérer leur expression corporelle.\n\nLe Ragga Dancehall permet également de travailler :\n- la fluidité des mouvements ;\n- la présence scénique ;\n- l’attitude et l’interprétation ;\n- la souplesse et le cardio ;\n- la connexion avec la musique et les émotions.\n\nÀ la fois intense, libératrice et conviviale, cette discipline invite chacun à danser avec personnalité, énergie et authenticité dans une ambiance dynamique et motivante."
     },
     "classique": {
       "title": "Danse Classique enfants",
