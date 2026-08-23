@@ -1,5 +1,11 @@
 const ALL_COURSES = [
 
+    { id: 45, style: 'ragga', name: 'Ragga ROX - Rouvroy', desc: 'Mélange énergie, rythme et chorégraphie inspirée de la Jamaïque.', ages: 'à pd 13 ans', levels: 'Débutant - Intermédiaire', prof: '', lieu: 'rox', schedule: 'Samedi 13h30 à 15h30 (1 sem/2)', biweekly: true, emoji: '🔥', image: 'assets/images/ragga_dancer.png' },
+    { id: 46, style: 'ragga', name: 'Ragga Bertrix', desc: "Energie, rythme et expression, chorégraphies dynamiques adaptées à l'âge du danseur.", ages: '9 - 12 ans', levels: 'Débutant', prof: '', lieu: 'bertrix', schedule: 'Jeudi 17h00 à 18h00', biweekly: false, emoji: '🔥', image: 'assets/images/ragga_dancer.png' },
+
+    { id: 43, style: 'hiphop', name: 'Hip-Hop ROX - Rouvroy', desc: 'Perfectionnment hiphop niveau intermédiaire (cours 1 samedi sur 2). 1er cours le 26/09', ages: 'à pd 13 ans', levels: 'Débutant - Intermédiaire', prof: '', lieu: 'rox', schedule: 'Samedi 14h00 à 16h00 (1 sem/2)', biweekly: true, emoji: '🔥', image: 'assets/images/breakdance_freeze.png' },
+    { id: 44, style: 'hiphop', name: 'Hip-Hop Bertrix', desc: "Développement du rythme, de la coordination, de l'énergie et la confiance en soi.", ages: '9 - 12 ans', levels: 'Débutant', prof: '', lieu: 'bertrix', schedule: 'Jeudi 17h00 à 18h00', biweekly: false, emoji: '🔥', image: 'assets/images/breakdance_freeze.png' },
+
     { id: 40, style: 'jazz_contemporain', name: 'Jazz Contemporain 5 perfectionnement', desc: 'Haut niveau jazz/contemporain : technique avancée et interprétation scénique poussée.', ages: 'à pd 14 ans', levels: 'Avancé', prof: '', lieu: 'adk', schedule: 'A DEFINIR', biweekly: false, emoji: '✨', image: 'assets/images/dance_contemporary.png' },
     { id: 41, style: 'jazz_contemporain', name: 'Jazz Contemporain ROX - Rouvroy', desc: 'Mélange jazz et contemporain, expression libre et technique.', ages: 'à pd 13 ans', levels: 'Débutant/Interméd.', prof: '', lieu: 'rox', schedule: 'Samedi 16h00 à 18h00 - ROx', biweekly: false, emoji: '✨', image: 'assets/images/dance_contemporary.png' },
     { id: 42, style: 'jazz_contemporain', name: 'Jazz Contemporain Atelier Pro', desc: 'Atelier de création contemporaine avancée - Formation intensive (un dimanche sur 2)', ages: 'à pd 13 ans', levels: 'Avancé', prof: '', lieu: 'adk', schedule: 'Dimanche 10h30 à 12h00 (1 sem/2)', biweekly: true, emoji: '✨', image: 'assets/images/dance_contemporary.png' },
@@ -19,9 +25,9 @@ const ALL_COURSES = [
     { id: 13, style: 'classique',   name: 'Classique 1',                         desc: 'Introduction à la danse classique (posture, barre, placement, grâce et musicalité).',                               ages: '6 - 8 ans',   levels: 'Débutant',         prof: 'Charlotte',                    lieu: 'adk',     schedule: 'Mardi 17h00 à 18h00',                biweekly: false, emoji: '🩰', image: 'assets/images/dance_ballet.png' },
     { id: 132, style: 'classique',   name: 'Classique 2',                         desc: 'Approfondissement classique : barre, milieu, vocabulaire académique et variations.',                               ages: '9 - 11 ans',   levels: 'Débutant',         prof: 'Charlotte',                    lieu: 'adk',     schedule: 'Mardi 17h00 à 18h00',                biweekly: false, emoji: '🩰', image: 'assets/images/dance_ballet.png' },
     { id: 15, style: 'classique',   name: 'Ballet Classique & Pointes (àpd 12 ans)',       desc: 'Cours avancé de ballet : travail sur pointes, variations de répertoire et technique approfondie.',                  ages: 'àpd 12 ans',  levels: 'Avancé',           prof: 'Corentin',                 lieu: 'adk',     schedule: 'Lundi 20h00 à 21h30',                   biweekly: false, emoji: '🦢', image: 'assets/images/hero_dancer.png' },
-    { id: 16, style: 'ragga',       name: 'Ragga 1 (9-12 ans)',                            desc: 'Introduction au ragga dancehall : rythme, moves caribéens et énergie communicative.',                               ages: '9 à 12 ans',  levels: 'Débutant',         prof: 'Jade',                     lieu: 'adk',     schedule: 'Jeudi 17h00 à 18h00',                   biweekly: false, emoji: '🌴', image: 'assets/images/ragga_dancer.png' },
-    { id: 17, style: 'ragga',       name: 'Ragga 2 (àpd 13 ans) – Déb/Int',               desc: 'Ragga dancehall pour ados et adultes débutants à intermédiaires.',                                                   ages: 'àpd 13 ans',  levels: 'Déb / Interméd.',  prof: 'Jade',                     lieu: 'adk',     schedule: 'Mercredi 17h00 à 18h00',                biweekly: false, emoji: '🔥', image: 'assets/images/ragga_dancer.png' },
-    { id: 18, style: 'ragga',       name: 'Ragga 3 (àpd 14 ans) – Int/Avancé',            desc: 'Ragga niveau intermédiaire à avancé : style affirmé et préparation aux compétitions.',                              ages: 'àpd 14 ans',  levels: 'Interméd./Avancé', prof: 'Margaux',                  lieu: 'adk',     schedule: 'Mercredi 20h00 à 21h00',                biweekly: false, emoji: '💥', image: 'assets/images/ragga_dancer.png' },
+    { id: 16, style: 'ragga',       name: 'Ragga 1',                            desc: 'Introduction au ragga dancehall : rythme, moves caribéens et énergie communicative.',                               ages: '9 à 12 ans',  levels: 'Débutant',         prof: 'Jade',                     lieu: 'adk',     schedule: 'Jeudi 17h00 à 18h00',                   biweekly: false, emoji: '🌴', image: 'assets/images/ragga_dancer.png' },
+    { id: 17, style: 'ragga',       name: 'Ragga 2',               desc: 'Ragga dancehall pour ados et adultes débutants à intermédiaires.',                                                   ages: 'àpd 13 ans',  levels: 'Déb / Interméd.',  prof: 'Jade',                     lieu: 'adk',     schedule: 'Mercredi 17h00 à 18h00',                biweekly: false, emoji: '🔥', image: 'assets/images/ragga_dancer.png' },
+    { id: 18, style: 'ragga',       name: 'Ragga 3',            desc: 'Ragga niveau intermédiaire à avancé : style affirmé et préparation aux compétitions.',                              ages: 'àpd 14 ans',  levels: 'Interméd./Avancé', prof: 'Margaux',                  lieu: 'adk',     schedule: 'Mercredi 20h00 à 21h00',                biweekly: false, emoji: '💥', image: 'assets/images/ragga_dancer.png' },
     { id: 19, style: 'ragga',       name: 'Girly (àpd 12 ans) – Déb.',              desc: 'Style Girly : féminité, sensualité et expression, niveau débutant.',                                                 ages: 'àpd 12 ans',  levels: 'Débutant',         prof: 'Margaux',                  lieu: 'adk',     schedule: 'Mercredi 18h00 à 19h00',                   biweekly: false, emoji: '💋', image: 'assets/images/ragga_dancer.png' },
     { id: 20, style: 'hiphop',      name: 'Break Dance (àpd 8 ans)',                       desc: 'B-boying/b-girling : footwork, freezes, power moves et windmills. Énergie et créativité !',                         ages: 'àpd 8 ans',   levels: 'Tous niveaux',     prof: 'Adam',                     lieu: 'adk',     schedule: 'Jeudi 18h00 à 19h00',                   biweekly: false, emoji: '🌪️', image: 'assets/images/breakdance_freeze.png' },
     { id: 21, style: 'ragga',       name: 'Pomdance (àpd 12 ans)',                      desc: 'Pomdance avec pompons, technique, souplesse et dynamisme.',                                                           ages: 'àpd 12 ans',  levels: 'Tous niveaux',     prof: 'Margaux',                  lieu: 'adk',     schedule: 'Mercredi 19h00 à 20h00',                   biweekly: false, emoji: '🎀', image: 'assets/images/ragga_dancer.png' },
@@ -213,13 +219,37 @@ const VITRINE_DATA = {
       "title": "Hip-Hop & Break",
       "avatar": "assets/images/hiphop_dancer.png",
       "modalImage": "assets/images/hiphop_dancer.png",
-      "content": "Le Hip-Hop est une danse urbaine dynamique, créative et incontournable. Bien plus qu'un style de danse, c'est une véritable culture. Les cours sont construits autour de chorégraphies rythmées où les élèves développent coordination, musicalité, énergie et attitude."
+      "content": "Le Hip-Hop est une danse urbaine dynamique, créative et incontournable, née dans les quartiers du Bronx à New York dans les années 1970.
+
+Bien plus qu’un style de danse, le hip-hop est une véritable culture qui rassemble la musique, le mouvement, le partage et l’expression de soi. Aujourd’hui présent partout dans le monde, il continue d’évoluer à travers différents styles et influences urbaines.
+
+Les cours sont construits autour de chorégraphies rythmées sur des musiques actuelles, où les élèves développent coordination, musicalité, énergie, précision et confiance en eux. Dans une ambiance familiale, motivante et bienveillante, chacun progresse à son rythme tout en découvrant son propre style.
+
+Le Hip-Hop permet également de travailler :
+- le sens du rythme
+- la mémoire chorégraphique
+- la condition physique
+- la créativité et l’improvisation
+- la présence scénique et l’attitude"
     },
     "ragga": {
       "title": "Ragga & Girly",
       "avatar": "assets/images/ragga_dancer.png",
       "modalImage": "assets/images/ragga_dancer.png",
-      "content": "Rythmes caribéens, dansehall et touches Girly : une section riche en énergie, féminité et expression corporelle. Idéal pour ceux qui souhaitent se défouler et travailler l'attitude, la présence scénique et la confiance en soi sur des musiques chaleureuses."
+      "content": "Originaire des rues de Jamaïque, le Ragga Dancehall est une discipline urbaine énergique, expressive et pleine de caractère.
+
+Mélange d’influences afro-jamaïcaines, de mouvements hip-hop et d’attitudes scéniques affirmées, cette danse se distingue par son énergie, sa puissance, sa musicalité et sa sensualité. Le travail du bassin, du torse, des isolations et des rebonds rythmiques est au cœur de ce style unique et vibrant.
+
+Sur des musiques entraînantes et actuelles, les danseurs développent coordination, rythme, endurance et confiance en soi tout en apprenant à libérer leur expression corporelle.
+
+Le Ragga Dancehall permet également de travailler :
+- la fluidité des mouvements ;
+- la présence scénique ;
+- l’attitude et l’interprétation ;
+- la souplesse et le cardio ;
+- la connexion avec la musique et les émotions.
+
+À la fois intense, libératrice et conviviale, cette discipline invite chacun à danser avec personnalité, énergie et authenticité dans une ambiance dynamique et motivante."
     },
     "classique": {
       "title": "Danse Classique enfants",
