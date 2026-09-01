@@ -116,7 +116,7 @@ window.switchChat = function(chatId, chatTitle) {
 
             const row = document.createElement('div');
             row.className = `msg-row ${isMe ? 'me' : 'other'}`;
-            row.style = `display: flex; width: 100%; margin-bottom: 5px; justify-content: ${isMe ? 'flex-end' : 'flex-start'};`;
+            row.setAttribute('style', `display: flex; width: 100%; align-self: stretch; margin-bottom: 5px; justify-content: ${isMe ? 'flex-end' : 'flex-start'};`);
             
             row.innerHTML = `
                 <div class="msg-bubble" style="max-width: 75%; padding: 10px 15px; border-radius: 15px; text-align: left; position: relative; word-break: break-word; ${isMe ? 'background: #CAA9A9; color: #fff; border-bottom-right-radius: 2px;' : 'background: #fff; border: 1px solid rgba(202, 169, 169, 0.4); color: #4A3E3E; border-bottom-left-radius: 2px;'}">
