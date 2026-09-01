@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importation & Impression ADK</title>
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+        .admin-panel { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #9C5858; text-align: center; }
+        .btn { background: #9C5858; color: white; border: none; padding: 10px 20px; font-size: 1rem; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #7a4444; }
+        .progress-bar { width: 100%; background: #e0e0e0; border-radius: 5px; margin-top: 20px; display: none; overflow: hidden; }
+        .progress-fill { height: 20px; background: #C9A84C; width: 0%; transition: width 0.3s; }
+        #log { margin-top: 20px; max-height: 200px; overflow-y: auto; background: #111; color: #0f0; padding: 10px; font-family: monospace; font-size: 12px; border-radius: 5px; display: none; }
+        
+        /* Print Styles */
+        #print-section { display: none; }
+        .cards-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .card { width: 45%; border: 2px dashed #9C5858; border-radius: 10px; padding: 20px; background: white; box-sizing: border-box; page-break-inside: avoid; margin-bottom: 20px; }
+        .card-header { text-align: center; color: #9C5858; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .card-header h2 { margin: 0; font-size: 1.5rem; }
+        .card-body { display: flex; gap: 20px; }
+        .card-qr { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 120px; }
+        .card-qr div { margin-bottom: 5px; }
+        .card-info { flex: 1; font-size: 0.95rem; line-height: 1.5; color: #333; }
+        .card-info strong { color: #9C5858; }
+        .card-credentials { background: #fcf8f2; padding: 10px; border-radius: 5px; margin: 10px 0; border: 1px solid #eaddb6; }
+        .card-pwa { font-size: 0.8rem; background: #eee; padding: 8px; border-radius: 5px; margin-top: 10px; }
+        .student-list { font-weight: bold; color: #C9A84C; margin-bottom: 10px; }
+
+        @media print {
+            body { background: white; padding: 0; margin: 0; }
+            .admin-panel { display: none !important; }
+            #print-section { display: block !important; }
+            .card { width: 48%; margin: 1%; box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-panel" id="admin-panel">
+    <h1>Outil d'Importation ADK</h1>
+    <p>Sélectionnez le fichier <code>students_import.json</code> généré pour importer les élèves et créer les fiches parents sans envoyer d'e-mail.</p>
+    
+    <div style="margin-bottom: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 5px;">
+        <strong>Important :</strong> Vous devez être connecté avec votre compte Administrateur pour que l'importation fonctionne.
+    </div>
+
+    <input type="file" id="json-file" accept=".json" style="margin-bottom: 20px;">
+    <br>
+    <button class="btn" id="btn-import">Démarrer l'importation</button>
+    <button class="btn" id="btn-print" style="display: none; background: #C9A84C; margin-left: 10px;">Imprimer les fiches</button>
+
+    <div class="progress-bar" id="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div id="log"></div>
+</div>
+
+<div id="print-section">
+    <div class="cards-container" id="cards-container">
+        <!-- Cards will be injected here -->
+    </div>
+</div>
+
+<script type="module">
+    import { firebaseConfig } from './js/firebase-config.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+    // Initialize secondary app to avoid logging out the admin
+    const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
+    const secondaryAuth = getAuth(secondaryApp);
+    const db = getFirestore(initializeApp(firebaseConfig));
+
+    const logEl = document.getElementById('log');
+    const fillEl = document.getElementById('progress-fill');
+    const barEl = document.getElementById('progress-bar');
+    let parentCardsData = {}; // email -> data
+
+    function log(msg) {
+        logEl.style.display = 'block';
+        logEl.innerHTML += msg + '<br>';
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    document.getElementById('btn-import').addEventListener('click', async () => {
+        const fileInput = document.getElementById('json-file');
+        if (!fileInput.files.length) {
+            alert("Veuillez sélectionner le fichier JSON d'abord !");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const students = JSON.parse(e.target.result);
+                await processImport(students);
+            } catch (err) {
+                alert("Erreur lors de la lecture du JSON : " + err.message);
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    async function processImport(students) {
+        barEl.style.display = 'block';
+        document.getElementById('btn-import').disabled = true;
+        log("Démarrage de l'importation de " + students.length + " élèves...");
+
+        let i = 0;
+        for (const student of students) {
+            i++;
+            fillEl.style.width = ((i / students.length) * 100) + '%';
+            
+            const email = student.parentEmail.toLowerCase().trim();
+            const studentName = student.studentFirstName + ' ' + student.studentLastName;
+
+            if (!email) {
+                log(`[SKIP] Élève ${studentName} sans email.`);
+                continue;
+            }
+
+            // 1. Prepare Parent Auth
+            let tempPassword = "ADK" + Math.floor(1000 + Math.random() * 9000);
+            let isNewParent = false;
+
+            if (!parentCardsData[email]) {
+                try {
+                    // Try to create auth user in secondary app
+                    await createUserWithEmailAndPassword(secondaryAuth, email, tempPassword);
+                    isNewParent = true;
+                    log(`[AUTH] Création du parent: ${email}`);
+                } catch (error) {
+                    if (error.code === 'auth/email-already-in-use') {
+                        log(`[AUTH] Le parent existe déjà: ${email}`);
+                        tempPassword = "(Déjà configuré)";
+                    } else {
+                        log(`[AUTH-ERROR] Impossible de créer le compte pour ${email} : ${error.message}`);
+                        continue; // Skip this one if auth completely fails for another reason
+                    }
+                }
+                
+                parentCardsData[email] = {
+                    email: email,
+                    password: tempPassword,
+                    children: []
+                };
+            }
+
+            // 2. Add Student to Firestore
+            try {
+                const studentRef = await addDoc(collection(db, 'students'), {
+                    firstName: student.studentFirstName,
+                    lastName: student.studentLastName,
+                    dob: student.dob,
+                    parentEmail: email,
+                    coursesRaw: student.coursesRaw,
+                    status: 'actif',
+                    createdAt: new Date().toISOString()
+                });
+                
+                log(`[FIRESTORE] Élève ajouté: ${studentName} (${studentRef.id})`);
+                parentCardsData[email].children.push(studentName);
+
+                // 3. Update or Create Parent Document
+                const userRef = doc(db, 'users', email);
+                const userSnap = await getDoc(userRef);
+                
+                if (!userSnap.exists()) {
+                    await setDoc(userRef, {
+                        email: email,
+                        role: 'parent',
+                        mustChangePassword: true,
+                        childrenIds: [studentRef.id],
+                        createdAt: new Date().toISOString()
+                    });
+                } else {
+                    await updateDoc(userRef, {
+                        childrenIds: arrayUnion(studentRef.id)
+                    });
+                }
+
+            } catch (err) {
+                log(`[FIRESTORE-ERROR] Erreur pour ${studentName} : ${err.message}`);
+            }
+        }
+
+        log("✅ IMPORTATION TERMINÉE !");
+        document.getElementById('btn-print').style.display = 'inline-block';
+        generateCards();
+    }
+
+    function generateCards() {
+        const container = document.getElementById('cards-container');
+        container.innerHTML = '';
+        const portalUrl = "https://liolux21.github.io/ecole-danse-adk-dev/portail.html";
+
+        Object.values(parentCardsData).forEach((data, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <h2>Bienvenue chez ADK !</h2>
+                </div>
+                <div class="card-body">
+                    <div class="card-qr">
+                        <div id="qr-${index}"></div>
+                        <span style="font-size: 0.7rem; color: #666; text-align: center;">Scannez-moi !</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="student-list">Élève(s) : ${data.children.join(', ')}</div>
+                        <div><strong>1.</strong> Scannez le QR Code ou allez sur le site :<br><span style="font-size:0.8rem; color:#666;">${portalUrl}</span></div>
+                        
+                        <div class="card-credentials">
+                            <strong>2. Connectez-vous :</strong><br>
+                            Email : <span>${data.email}</span><br>
+                            Mot de passe provisoire : <strong>${data.password}</strong>
+                        </div>
+                        
+                        <div class="card-pwa">
+                            <strong>3. Installez l'Application :</strong><br>
+                            - <strong>iPhone (Safari) :</strong> Touchez l'icône Partager (carré avec flèche) puis "Sur l'écran d'accueil".<br>
+                            - <strong>Android (Chrome) :</strong> Touchez les 3 points en haut à droite, puis "Installer l'application".
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+
+            // Generate QR Code
+            setTimeout(() => {
+                new QRCode(document.getElementById(`qr-${index}`), {
+                    text: portalUrl,
+                    width: 100,
+                    height: 100,
+                    colorDark : "#4A3E3E",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.L
+                });
+            }, 100);
+        });
+    }
+
+    document.getElementById('btn-print').addEventListener('click', () => {
+        window.print();
+    });
+
+</script>
+</body>
+</html>
