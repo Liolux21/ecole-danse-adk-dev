@@ -830,6 +830,19 @@ window.openProfHoursDetail = function(profId, profName, monthStr) {
   openModal('modal-hours-detail');
 };
 
+
+window.openAdminHours = function() {
+  document.querySelectorAll('#admin-panel .tab-content').forEach(c => c.classList.remove('active'));
+  const hoursTab = document.getElementById('tab-admin-hours');
+  if (hoursTab) hoursTab.classList.add('active');
+};
+
+window.closeAdminHours = function() {
+  document.querySelectorAll('#admin-panel .tab-content').forEach(c => c.classList.remove('active'));
+  const profsTab = document.getElementById('tab-profs');
+  if (profsTab) profsTab.classList.add('active');
+};
+
 window.exportProfHours = function() {
   const monthInput = document.getElementById('admin-hours-month');
   if (!monthInput || !monthInput.value) return;
