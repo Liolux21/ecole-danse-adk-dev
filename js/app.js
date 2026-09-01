@@ -595,11 +595,48 @@ function showPortalDashboard(user) {
     }
   }
 
-  // Handle Prof <-> Parent switching
-  if (user.role === 'prof') {
+  // Handle Role Switching (Prof <-> Parent, Admin <-> Prof)
+  if (user.role === 'admin') {
+    let adminSwitchBtn = document.getElementById('admin-switch-btn');
+    if (!adminSwitchBtn) {
+      adminSwitchBtn = document.createElement('button');
+      adminSwitchBtn.id = 'admin-switch-btn';
+      adminSwitchBtn.className = 'btn btn-outline btn-sm';
+      adminSwitchBtn.innerHTML = '🔄 Espace Prof (Appel)';
+      adminSwitchBtn.onclick = () => {
+        const profUser = { ...user, role: 'prof', realRole: 'admin' };
+        showPortalDashboard(profUser);
+      };
+      const logoutBtn = document.getElementById('admin-logout');
+      if (logoutBtn && logoutBtn.parentNode) {
+        logoutBtn.parentNode.insertBefore(adminSwitchBtn, logoutBtn);
+      }
+    }
+  } else if (user.role === 'prof') {
+    let profToAdminBtn = document.getElementById('prof-to-admin-btn');
+    if (user.realRole === 'admin') {
+      if (!profToAdminBtn) {
+        profToAdminBtn = document.createElement('button');
+        profToAdminBtn.id = 'prof-to-admin-btn';
+        profToAdminBtn.className = 'btn btn-outline btn-sm';
+        profToAdminBtn.innerHTML = '🔄 Espace Admin';
+        profToAdminBtn.onclick = () => {
+          const originalUser = { ...user, role: 'admin' };
+          delete originalUser.realRole;
+          showPortalDashboard(originalUser);
+        };
+        const logoutBtn = document.getElementById('prof-logout');
+        if (logoutBtn && logoutBtn.parentNode) {
+          logoutBtn.parentNode.insertBefore(profToAdminBtn, logoutBtn);
+        }
+      }
+    } else if (profToAdminBtn) {
+      profToAdminBtn.remove();
+    }
+
     const hasStudents = DATA.students.some(s => s.parentId === user.id || s.parentId === user.email || s.contactEmail === user.email);
     let switchBtn = document.getElementById('prof-switch-btn');
-    if (hasStudents) {
+    if (hasStudents && user.realRole !== 'admin') {
       if (!switchBtn) {
         switchBtn = document.createElement('button');
         switchBtn.id = 'prof-switch-btn';
