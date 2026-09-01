@@ -198,7 +198,7 @@
           <div class="dash-header">
             <h3>Gestion des Élèves</h3>
             <button class="btn btn-primary" onclick="openAddStudentModal()">+ Ajouter un élève</button>
-              <button class="btn btn-outline" style="margin-left: 10px;" onclick="window.exportStudentsExcel()">📊 Extraire (Excel)</button>
+              <button class="btn btn-primary" style="margin-left: 10px;" onclick="window.exportStudentsExcel()">📊 Extraire (Excel)</button>
           </div>
           <div class="data-table-wrapper">
             <div class="data-table-header" style="justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
@@ -750,6 +750,10 @@
               </div>
             </div>
             <div class="form-group">
+              <label class="form-label">Email du tuteur</label>
+              <input type="email" id="add-student-email" class="form-input" required>
+            </div>
+            <div class="form-group">
               <label class="form-label">Téléphone tuteur</label>
               <input type="tel" id="add-student-tutor-phone" class="form-input" required>
             </div>
@@ -759,10 +763,7 @@
               <!-- Dynamique checkboxes -->
             </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Email de contact (Parent)</label>
-            <input type="email" id="add-student-email" class="form-input" required>
-          </div>
+          
           <div style="text-align: right; margin-top: 1.5rem;">
             <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">Enregistrer</button>
           </div>
@@ -1248,6 +1249,6 @@
   <script type="module" src="js/data.js?v=54"></script>
   <script type="module" src="js/auth.js?v=24"></script>
   <script type="module" src="js/chat.js?v=21"></script>
-  <script type="module" src="js/app.js?v=24"></script>
+  <script type="module" src="js/app.js?v=25"></script>
 </body>
 </html>

@@ -833,7 +833,7 @@ function renderAdminEleves() {
         const cotStatus = s.cotisation || 'en attente';
     const cotClass = cotStatus === 'payee_cash' || cotStatus === 'payee_compte' ? 'select-remis' : 'select-attente';
     const cotSelect = `
-      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem;">
+      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem; background-color: ${cotStatus === 'en attente' ? '#ffeeba' : ''};">
         <option value="en attente" ${cotStatus === 'en attente' ? 'selected' : ''}>⏳ En attente</option>
         <option value="payee_cash" ${cotStatus === 'payee_cash' ? 'selected' : ''}>💶 Payée cash</option>
         <option value="payee_compte" ${cotStatus === 'payee_compte' ? 'selected' : ''}>💳 Payée compte</option>
@@ -844,9 +844,9 @@ function renderAdminEleves() {
     `;
 
         const mutStatus = s.mutuelle || 'masque';
-    const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'en_cours' ? 'select-encours' : (mutStatus === 'attente' ? 'select-attente' : ''));
+    const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'en_cours' ? 'select-encours' : 'select-masque');
     const mutSelect = `
-      <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem;">
+      <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem; background-color: ${mutStatus === 'masque' ? '#e0e0e0' : ''};">
         <option value="masque" ${mutStatus === 'masque' ? 'selected' : ''}>Masqué</option>
         <option value="en_cours" ${mutStatus === 'en_cours' ? 'selected' : ''}>🏃 En cours</option>
         <option value="remis" ${mutStatus === 'remis' ? 'selected' : ''}>✅ Remis</option>
@@ -860,15 +860,15 @@ function renderAdminEleves() {
         </div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📚 Cours suivis :</strong> ${courses || '-'}</div>
         <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: rgba(0,0,0,0.02); padding: 0.8rem; border-radius: var(--radius);">
-          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 120px;">
+          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 0 1 auto;">
             <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Cotisation</span>
             ${cotSelect}
           </div>
-          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 120px;">
+          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 0 1 auto;">
             <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Date paiement</span>
             ${cotDateSelect}
           </div>
-          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 120px;">
+          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 0 1 auto;">
             <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Mutuelle</span>
             ${mutSelect}
           </div>
