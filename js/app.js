@@ -721,7 +721,7 @@ async function adminApprove(id) {
     if (isNewParent) {
       try {
         await emailjs.send(
-          "service_jooqt2m",
+          "service_ADK",
           "template_1mp1jad",
           {
             to_email: emailKey,
@@ -2252,7 +2252,7 @@ window.submitAddStudent = async function() {
     if (isNew && tempPassword) {
       try {
         await emailjs.send(
-          "service_jooqt2m",
+          "service_ADK",
           "template_1mp1jad",
           {
             to_email: email,
