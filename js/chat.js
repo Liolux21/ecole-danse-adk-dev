@@ -17,7 +17,7 @@ window.loadConversations = function() {
     if (currentUser.role === 'admin') {
         q = query(collection(db, 'conversations'), orderBy('lastMessageAt', 'desc'));
     } else {
-        q = query(collection(db, 'conversations'), where('participants', 'array-contains', currentUser.uid), orderBy('lastMessageAt', 'desc'));
+        q = query(collection(db, 'conversations'), where('participants', 'array-contains', currentUser.email), orderBy('lastMessageAt', 'desc'));
     }
 
     onSnapshot(q, (snapshot) => {
@@ -95,7 +95,7 @@ window.switchChat = function(chatId, chatTitle) {
         snapshot.forEach(docSnap => {
             const msg = docSnap.data();
             const currentUser = window.AUTH ? window.AUTH.currentUser : null;
-            const isMe = currentUser && msg.senderId === currentUser.uid;
+            const isMe = currentUser && msg.senderId === currentUser.email;
 
             let timeString = '';
             if (msg.timestamp && typeof msg.timestamp.toDate === 'function') {
@@ -124,6 +124,50 @@ window.switchChat = function(chatId, chatTitle) {
 document.addEventListener('DOMContentLoaded', () => {
 
     
+    
+    // Send Message Logic
+    const btnSendMsg = document.getElementById('btn-send-msg');
+    const msgInput = document.getElementById('chat-input');
+    
+    if (btnSendMsg && msgInput) {
+        btnSendMsg.addEventListener('click', async () => {
+            const text = msgInput.value.trim();
+            const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+            
+            if (!text || !currentChatId || !currentUser) return;
+            
+            btnSendMsg.disabled = true;
+            try {
+                // Add message
+                await addDoc(collection(db, 'conversations', currentChatId, 'messages'), {
+                    text: text,
+                    senderId: currentUser.email,
+                    senderName: currentUser.name || currentUser.email,
+                    timestamp: serverTimestamp()
+                });
+                
+                // Update conversation lastMessage and time
+                await updateDoc(doc(db, 'conversations', currentChatId), {
+                    lastMessage: text,
+                    lastMessageAt: serverTimestamp()
+                });
+                
+                msgInput.value = '';
+            } catch (e) {
+                console.error("Error sending message: ", e);
+                alert("Erreur lors de l'envoi.");
+            }
+            btnSendMsg.disabled = false;
+        });
+
+        msgInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                btnSendMsg.click();
+            }
+        });
+    }
+
+
     // New Chat logic
     const btnNewChat = document.getElementById('btn-new-chat');
     if (btnNewChat) {
@@ -203,14 +247,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             try {
                 // Determine participants based on target
-                let participants = [currentUser.uid];
+                let participants = [currentUser.email];
                 // For a real app we'd fetch the user UIDs. Since we use a demo system with local users, we store the "target group" string for filtering.
                 
                 const newConvRef = await addDoc(collection(db, 'conversations'), {
                     title: title,
                     targetGroup: target, // e.g. "all", "course_3"
                     participants: participants,
-                    creatorId: currentUser.uid,
+                    creatorId: currentUser.email,
                     isGroup: true,
                     lastMessage: firstMsg,
                     lastMessageAt: serverTimestamp()
@@ -219,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Add the first message
                 await addDoc(collection(db, 'conversations', newConvRef.id, 'messages'), {
                     text: firstMsg,
-                    senderId: currentUser.uid,
+                    senderId: currentUser.email,
                     senderName: currentUser.name || currentUser.email,
                     timestamp: serverTimestamp()
                 });
