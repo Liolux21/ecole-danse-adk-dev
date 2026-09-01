@@ -27,6 +27,12 @@ window.loadConversations = function() {
             return;
         }
 
+        const disclaimer = document.createElement('div');
+        disclaimer.style = "text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-bottom: 1.5rem;";
+        disclaimer.innerHTML = "⚠️ Toutes les communications sont visibles par l'administration.";
+        messagesContainer.appendChild(disclaimer);
+
+
         snapshot.forEach(docSnap => {
             const conv = docSnap.data();
             const convId = docSnap.id;
@@ -93,6 +99,12 @@ window.switchChat = function(chatId, chatTitle) {
             messagesContainer.innerHTML = '<div style="text-align: center; color: var(--text-light); padding: 2rem;">Aucun message. Dites bonjour !</div>';
             return;
         }
+
+        const disclaimer = document.createElement('div');
+        disclaimer.style = "text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-bottom: 1.5rem;";
+        disclaimer.innerHTML = "⚠️ Toutes les communications sont visibles par l'administration.";
+        messagesContainer.appendChild(disclaimer);
+
 
         snapshot.forEach(docSnap => {
             const msg = docSnap.data();

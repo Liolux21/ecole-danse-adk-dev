@@ -2297,12 +2297,8 @@ footer {
   display: flex;
   width: 100%;
 }
-.msg-row.me {
-  justify-content: flex-end;
-}
-.msg-row.other {
-  justify-content: flex-start;
-}
+.msg-row.me { justify-content: flex-end !important; }
+.msg-row.other { justify-content: flex-start !important; }
 .msg-bubble {
   max-width: 70%;
   padding: 10px 15px;
