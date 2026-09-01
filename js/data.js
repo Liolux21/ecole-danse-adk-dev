@@ -131,6 +131,9 @@ export const DATA = {
   // ---- PRÉSENCES (démo) ----
   attendance: [],
 
+  // ---- HEURES PROFS ----
+  prof_hours: [],
+
   // ---- INSCRIPTIONS (démo) ----
   inscriptions: [],
 
@@ -298,7 +301,19 @@ export const DATA = {
 
 
       
-      // 4. Fetch Announcements
+      
+      // 5. Fetch Prof Hours
+      try {
+        const phSnap = await getDocs(collection(db, "prof_hours"));
+        this.prof_hours = [];
+        phSnap.forEach(doc => {
+          this.prof_hours.push({ id: doc.id, ...doc.data() });
+        });
+      } catch (e) {
+        console.warn("prof_hours collection missing or error: ", e);
+      }
+
+      // 6. Fetch Announcements
       try {
         const annSnap = await getDocs(collection(db, "announcements"));
         this.announcements = [];
