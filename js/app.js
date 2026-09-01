@@ -579,7 +579,18 @@ function initTabs(tabsContainerId, contentIds) {
       contentIds.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
       tab.classList.add('active');
       const target = document.getElementById(contentIds[i]);
-      if (target) target.classList.add('active');
+              if (target) {
+          target.classList.add('active');
+          const targetId = contentIds[i];
+          if (targetId.includes('messagerie')) {
+            const messenger = document.getElementById('global-messenger-container');
+            if (messenger) {
+              target.appendChild(messenger);
+              messenger.style.display = 'flex';
+              if (window.loadConversations) window.loadConversations();
+            }
+          }
+        }
     });
   });
 }
