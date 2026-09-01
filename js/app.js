@@ -516,9 +516,9 @@ async function initPortal() {
   });
 
   // Tabs admin
-  initTabs('admin-tabs', ['tab-inscriptions', 'tab-eleves', 'tab-profs', 'tab-admin-cours', 'tab-admin-settings', 'tab-admin-gala', 'tab-admin-annonces']);
-  initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves', 'tab-prof-gala', 'tab-prof-notifications']);
-  initTabs('parent-tabs', ['tab-parent-planning', 'tab-parent-gala', 'tab-parent-notifications']);
+  initTabs('admin-tabs', ['tab-inscriptions', 'tab-eleves', 'tab-profs', 'tab-admin-cours', 'tab-admin-settings', 'tab-admin-gala', 'tab-admin-annonces', 'tab-admin-messagerie']);
+  initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves', 'tab-prof-gala', 'tab-prof-notifications', 'tab-prof-messagerie']);
+  initTabs('parent-tabs', ['tab-parent-planning', 'tab-parent-gala', 'tab-parent-notifications', 'tab-parent-messagerie']);
   
   // Sub-tabs Gala
   initTabs('sub-admin-gala-tabs', ['tab-admin-gala-repets', 'tab-admin-gala-tenues', 'tab-admin-gala-infos', 'tab-admin-gala-notes']);
