@@ -1019,18 +1019,32 @@
   
   <!-- Modal Nouvelle Conversation -->
   <div class="vitrine-modal" id="modal-new-chat">
-    <div class="vitrine-modal-content" style="max-width: 400px;">
+    <div class="vitrine-modal-content" style="max-width: 500px;">
       <div class="vitrine-modal-header">
         <h4 class="vitrine-modal-title">Nouvelle Discussion</h4>
         <button class="vitrine-modal-close" onclick="closeModal('modal-new-chat')">&times;</button>
       </div>
       <div class="vitrine-modal-body">
+        
         <div class="form-group">
-          <label class="form-label">Sujet / Nom du contact</label>
-          <input type="text" id="new-chat-title" class="form-input" placeholder="Ex: Maman de Léo, ou Éveil...">
+          <label class="form-label">Destinataires</label>
+          <select id="new-chat-target" class="form-input" required>
+            <!-- Filled by JS -->
+          </select>
         </div>
+
+        <div class="form-group">
+          <label class="form-label">Sujet de la discussion</label>
+          <input type="text" id="new-chat-title" class="form-input" placeholder="Ex: Informations Gala, Rappel cours..." required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Premier message</label>
+          <textarea id="new-chat-first-msg" class="form-input" rows="4" placeholder="Écrivez votre message ici..." required></textarea>
+        </div>
+
         <div style="text-align: right; margin-top: 1.5rem;">
-          <button id="btn-create-chat-confirm" class="btn btn-primary" style="width: 100%;">Créer la discussion</button>
+          <button id="btn-create-chat-confirm" class="btn btn-primary" style="width: 100%;">Envoyer le message</button>
         </div>
       </div>
     </div>
@@ -1132,7 +1146,7 @@
 
   
   <!-- GLOBAL MESSENGER CONTAINER -->
-  <div id="global-messenger-container" style="display:none; height: 75vh; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: row; margin-top: 1rem;">
+  <div id="global-messenger-container" class="global-messenger-container" style="display:none; height: 75vh; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border); overflow: hidden; flex-direction: row; margin-top: 1rem;">
     <!-- LEFT SIDEBAR -->
     <div style="width: 320px; background: #f8f9fa; border-right: 1px solid var(--border); display: flex; flex-direction: column;">
       <div style="padding: 1rem; border-bottom: 1px solid var(--border); background: #fff; display: flex; justify-content: space-between; align-items: center;">
@@ -1167,7 +1181,7 @@
 
   <script type="module" src="js/data.js?v=54"></script>
   <script type="module" src="js/auth.js?v=23"></script>
-  <script type="module" src="js/chat.js?v=4"></script>
+  <script type="module" src="js/chat.js?v=6"></script>
   <script type="module" src="js/app.js?v=113"></script>
 </body>
 </html>
