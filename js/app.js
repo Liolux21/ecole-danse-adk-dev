@@ -884,28 +884,28 @@ function renderAdminEleves() {
 
 window.updateCotisationDate = async function(studentId, dateVal) {
     try {
-      const student = DATA.students.find(st => st.id === studentId);
+      const student = DATA.getStudentById(studentId);
       if (!student) {
         alert("Erreur: Etudiant non trouvé! ID=" + studentId);
         return;
       }
       student.cotisationDate = dateVal;
       const firebase = await import('./firebase-config.js');
-      await firebase.updateDoc(firebase.doc(firebase.db, 'students', studentId), { cotisationDate: dateVal });
+      await firebase.updateDoc(firebase.doc(firebase.db, 'students', String(studentId)), { cotisationDate: dateVal });
     } catch (e) {
       alert("Erreur Date: " + e.message);
     }
   };
 window.updateCotisation = async function(studentId, value) {
     try {
-      const student = DATA.students.find(st => st.id === studentId);
+      const student = DATA.getStudentById(studentId);
       if (!student) {
         alert("Erreur: Etudiant non trouvé! ID=" + studentId);
         return;
       }
       student.cotisation = value;
       const firebase = await import('./firebase-config.js');
-      await firebase.updateDoc(firebase.doc(firebase.db, 'students', studentId), { cotisation: value });
+      await firebase.updateDoc(firebase.doc(firebase.db, 'students', String(studentId)), { cotisation: value });
       renderAdminEleves();
     } catch (e) {
       alert("Erreur Cotisation: " + e.message);
@@ -914,14 +914,14 @@ window.updateCotisation = async function(studentId, value) {
 
 window.updateMutuelle = async function(studentId, value) {
     try {
-      const student = DATA.students.find(st => st.id === studentId);
+      const student = DATA.getStudentById(studentId);
       if (!student) {
         alert("Erreur: Etudiant non trouvé! ID=" + studentId);
         return;
       }
       student.mutuelle = value;
       const firebase = await import('./firebase-config.js');
-      await firebase.updateDoc(firebase.doc(firebase.db, 'students', studentId), { mutuelle: value });
+      await firebase.updateDoc(firebase.doc(firebase.db, 'students', String(studentId)), { mutuelle: value });
       renderAdminEleves();
     } catch (e) {
       alert("Erreur Mutuelle: " + e.message);
