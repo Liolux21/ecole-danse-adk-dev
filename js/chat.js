@@ -118,6 +118,50 @@ window.switchChat = function(chatId, chatTitle) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // New Chat logic
+    const btnNewChat = document.getElementById('btn-new-chat');
+    if (btnNewChat) {
+        btnNewChat.addEventListener('click', () => {
+            if (window.openModal) window.openModal('modal-new-chat');
+        });
+    }
+
+    const btnCreateChatConfirm = document.getElementById('btn-create-chat-confirm');
+    if (btnCreateChatConfirm) {
+        btnCreateChatConfirm.addEventListener('click', async () => {
+            const titleInput = document.getElementById('new-chat-title');
+            const title = titleInput.value.trim();
+            const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+            if (!title || !currentUser) return;
+            
+            btnCreateChatConfirm.disabled = true;
+            btnCreateChatConfirm.textContent = "Création...";
+            
+            try {
+                const newConvRef = await addDoc(collection(db, 'conversations'), {
+                    title: title,
+                    participants: [currentUser.uid], // Admin can see it anyway if we query all
+                    isGroup: false,
+                    lastMessage: "Conversation créée",
+                    lastMessageAt: serverTimestamp()
+                });
+                
+                if (window.closeModal) window.closeModal('modal-new-chat');
+                titleInput.value = '';
+                
+                // switch to this chat
+                window.switchChat(newConvRef.id, title);
+            } catch(e) {
+                console.error("Error creating chat", e);
+                alert("Erreur lors de la création.");
+            }
+            
+            btnCreateChatConfirm.disabled = false;
+            btnCreateChatConfirm.textContent = "Créer la discussion";
+        });
+    }
+
     const btnSend = document.getElementById('btn-send-msg');
     const msgInput = document.getElementById('msg-input');
 
