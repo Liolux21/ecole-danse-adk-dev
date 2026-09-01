@@ -722,7 +722,7 @@ async function adminApprove(id) {
       try {
         await emailjs.send(
           "service_ADK",
-          "template_1mp1jad",
+          "template_ADK_Compte",
           {
             to_email: emailKey,
             to_name: ins.parentName,
@@ -2253,7 +2253,7 @@ window.submitAddStudent = async function() {
       try {
         await emailjs.send(
           "service_ADK",
-          "template_1mp1jad",
+          "template_ADK_Compte",
           {
             to_email: email,
             to_name: `${prenom} ${nom}`,
