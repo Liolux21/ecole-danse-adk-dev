@@ -38,7 +38,6 @@ const ALL_COURSES = [
     { id: 23, style: 'jazz_contemporain',        name: 'Street Jazz (Ados/Adultes àpd 16 ans)',        desc: 'Clips, publicités, shows : la danse urbaine version commerciale et show-biz pour adultes.',                         ages: 'àpd 16 ans',  levels: 'Tous niveaux',     prof: 'Maeva',                    lieu: 'adk',     schedule: 'Mardi 20h00 à 21h30',                   biweekly: false, emoji: '🎬', image: 'assets/images/hiphop_dancer.png' },
     { id: 24, style: 'adultes', name: 'Adultes Hip-Hop - Ragga', desc: 'Apprentissage de techniques hiphop et Ragga dans une ambiance conviviale.', ages: 'Adultes', levels: 'Débutant - Intermédiaire', prof: 'Margaux', lieu: 'adk', schedule: 'Jeudi 19h00 - 20h00', biweekly: false, emoji: '🔥', image: 'assets/images/hiphop_dancer.png' },
     { id: 25, style: 'adultes', name: 'Adultes Jazz - Contemporain', desc: 'Apprentissage de techniques jazz et contemporaine dans une ambiance conviviale.', ages: 'Adultes', levels: 'Débutant - Intermédiaire', prof: 'Janis', lieu: 'adk', schedule: 'Jeudi 20h00-21h00', biweekly: false, emoji: '✨', image: 'assets/images/dance_contemporary.png' },
-    { id: 26, style: 'adultes', name: 'Line Dance', desc: 'Danse conviviale et dynamique, pratiquée en ligne sur des chorégraphies variées, accessible à tous et sans partenaire.', ages: 'Tout public', levels: 'Débutant - Intermédiaire', prof: 'Alain', lieu: 'izel', schedule: 'Lundi 20h00-21h15 (sauf dernier lundi du mois)', biweekly: false, emoji: '🤠', image: 'assets/images/dance_jazz.png' },
     { id: 27, style: 'poledance', name: 'Pole Dance', desc: 'Développe la féminité, l’assurance, l’expression corporelle, élégantes et pleines d’attitude', ages: 'à pd 12 ans', levels: 'Débutant - Intermédiaire', prof: 'Florence', lieu: 'flore', schedule: 'Jeudi 19h30 - 21h00', biweekly: false, emoji: '🧘‍♀️', image: 'assets/images/hero_dancer.png' },
     { id: 28, style: 'compagnie',   name: 'ADK Moove / ADK Unity ⏳',                             desc: 'Compagnies hip-hop : création chorégraphique, répétitions et performances scéniques.',                        ages: 'Sélection',   levels: 'Compagnie',        prof: 'Maurine',                  lieu: 'adk',     schedule: 'Samedi 12h00 à 13h30 (1 sem/2)',        biweekly: true,  emoji: '🏆', image: 'assets/images/compagnie_stage.png' },
     { id: 30, style: 'compagnie',   name: 'ADK Team ⏳',              desc: 'Compagnie Team jazz/contemporain : créativité artistique et niveau de compétition.',                                ages: 'Sélection',   levels: 'Compagnie',        prof: 'Janis',                    lieu: 'adk',     schedule: 'Samedi 14h00 à 16h00 (1 sem/2)',        biweekly: true,  emoji: '🌟', image: 'assets/images/compagnie_stage.png' },
@@ -188,13 +187,6 @@ const VITRINE_DATA = {
       "avatar": "https://annedkdanse.be/gallery_gen/9c4496f7cc1201f8dc2b814d5e3d03ba_500x506_fit.jpg?ts=1784984525",
       "modalImage": "https://annedkdanse.be/gallery_gen/9c4496f7cc1201f8dc2b814d5e3d03ba_500x506_fit.jpg?ts=1784984525",
       "content": "Professeure de Pole Dance au Complexe Sportif de Florenville. Florence enseigne cette discipline aérienne et artistique qui allie force, souplesse, grâce et acrobatie. Dans un cadre sécurisé et bienveillant, elle permet à chaque élève de repousser ses limites physiques et de gagner en confiance en soi."
-    },
-    "Alain": {
-      "title": "Alain",
-      "styles": "Line Dance",
-      "avatar": "assets/images/alain.png",
-      "modalImage": "assets/images/alain.png",
-      "content": "Professeur de Line Dance au Centre Culturel d'Izel. Alain anime des cours chaleureux et accessibles à tous, où l'on apprend à danser en ligne et en synchronisation sur des styles musicaux variés (country, pop, rock, musiques du monde). Convivialité, rythme et bonne humeur garanties !"
     },
     "Adam": {
       "title": "Adam",
