@@ -2270,9 +2270,12 @@ window.openAddStudentModal = function(studentId = null) {
   
   if (studentId) {
     const student = DATA.getStudentById(studentId);
-    document.getElementById('add-student-firstname').value = student.firstname;
-    document.getElementById('add-student-lastname').value = student.lastname;
-    document.getElementById('add-student-age').value = student.age;
+    document.getElementById('add-student-firstname').value = student.firstname || '';
+    document.getElementById('add-student-lastname').value = student.lastname || '';
+    document.getElementById('add-student-dob').value = student.dob || '';
+    document.getElementById('add-student-tutor-firstname').value = student.tutorFirstname || '';
+    document.getElementById('add-student-tutor-lastname').value = student.tutorLastname || '';
+    document.getElementById('add-student-tutor-phone').value = student.tutorPhone || '';
     document.getElementById('add-student-email').value = student.contactEmail || '';
     
     if (container) {
@@ -2306,7 +2309,10 @@ window.submitAddStudent = async function() {
     const isNew = !studentId;
     const prenom = document.getElementById('add-student-firstname').value;
     const nom = document.getElementById('add-student-lastname').value;
-    const age = document.getElementById('add-student-age').value;
+    const dob = document.getElementById('add-student-dob').value;
+      const tutorFirstname = document.getElementById('add-student-tutor-firstname').value;
+      const tutorLastname = document.getElementById('add-student-tutor-lastname').value;
+      const tutorPhone = document.getElementById('add-student-tutor-phone').value;
     const email = document.getElementById('add-student-email').value;
     const checkboxes = document.querySelectorAll('#add-student-courses .course-checkbox:checked');
       const selectedCourses = Array.from(checkboxes).map(chk => chk.value);
@@ -2315,7 +2321,11 @@ window.submitAddStudent = async function() {
     const studentData = {
       firstname: prenom,
       lastname: nom,
-      age: parseInt(age, 10),
+      dob: dob,
+        age: (dob ? (new Date().getFullYear() - new Date(dob).getFullYear() - ((new Date().getMonth() - new Date(dob).getMonth() < 0 || (new Date().getMonth() === new Date(dob).getMonth() && new Date().getDate() < new Date(dob).getDate())) ? 1 : 0)) : 0),
+        tutorFirstname: tutorFirstname,
+        tutorLastname: tutorLastname,
+        tutorPhone: tutorPhone,
       contactEmail: email,
       courseIds: selectedCourses
     };
