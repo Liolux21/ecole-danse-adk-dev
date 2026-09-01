@@ -1,3 +1,41 @@
+
+window.openContactInscriptionModal = function(email, parentName) {
+    document.getElementById('contact-inscription-email').value = email;
+    document.getElementById('contact-inscription-name').value = parentName;
+    document.getElementById('contact-inscription-message').value = '';
+    document.getElementById('modal-contact-inscription').classList.add('active');
+};
+
+window.sendContactInscription = async function() {
+    const email = document.getElementById('contact-inscription-email').value;
+    const name = document.getElementById('contact-inscription-name').value;
+    const message = document.getElementById('contact-inscription-message').value;
+    const btn = document.querySelector('#form-contact-inscription button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.textContent = "Envoi...";
+    btn.disabled = true;
+
+    try {
+        await emailjs.send(
+            "service_ADK", 
+            "template_contact_inscription", // Remplacez par l'ID réel de votre template EmailJS pour la prise de contact
+            {
+                to_email: email,
+                to_name: name,
+                message: message
+            }
+        );
+        showToast('Message envoyé avec succès !', 'success');
+        closeModal('modal-contact-inscription');
+    } catch (e) {
+        console.error(e);
+        showToast('Erreur lors de l\'envoi du message', 'error');
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+};
+
 import { db, collection, addDoc, doc, setDoc, getDoc } from './firebase-config.js';
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -792,20 +830,23 @@ function renderAdminEleves() {
 
   tbody.innerHTML = filteredStudents.map(s => {
     const courses = s.courseIds.map(id => DATA.getCourseById(id)?.name || '').filter(Boolean).join(', ');
-    const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee';
-    const cotClass = isPayee ? 'select-payee' : 'select-attente';
+        const cotStatus = s.cotisation || 'en attente';
+    const cotClass = cotStatus === 'payee_cash' || cotStatus === 'payee_compte' ? 'select-remis' : 'select-attente';
     const cotSelect = `
-      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem;">
-        <option value="attente" ${!isPayee ? 'selected' : ''}>⏳ En attente</option>
-        <option value="payée" ${isPayee ? 'selected' : ''}>✅ Payée</option>
+      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem; margin-bottom:5px;">
+        <option value="en attente" ${cotStatus === 'en attente' ? 'selected' : ''}>⏳ En attente</option>
+        <option value="payee_cash" ${cotStatus === 'payee_cash' ? 'selected' : ''}>💶 Payée cash</option>
+        <option value="payee_compte" ${cotStatus === 'payee_compte' ? 'selected' : ''}>💳 Payée compte</option>
       </select>
+      <input type="date" value="${s.cotisationDate || ''}" onchange="updateCotisationDate('${s.id}', this.value)" style="padding:0.2rem; font-size:0.8rem; border-radius:4px; border:1px solid var(--border); width: 100%; box-sizing: border-box;">
     `;
-    const mutStatus = s.mutuelle || 'attente';
-    const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'cours' ? 'select-encours' : 'select-attente');
+        const mutStatus = s.mutuelle || 'masque';
+    const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'en_cours' ? 'select-encours' : (mutStatus === 'attente' ? 'select-attente' : ''));
     const mutSelect = `
       <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem;">
+        <option value="masque" ${mutStatus === 'masque' ? 'selected' : ''}>Masqué</option>
         <option value="attente" ${mutStatus === 'attente' ? 'selected' : ''}>⏳ En attente</option>
-        <option value="cours" ${mutStatus === 'cours' ? 'selected' : ''}>🔄 En cours</option>
+        <option value="en_cours" ${mutStatus === 'en_cours' ? 'selected' : ''}>🏃 En cours</option>
         <option value="remis" ${mutStatus === 'remis' ? 'selected' : ''}>✅ Remis</option>
       </select>
     `;
@@ -835,15 +876,31 @@ function renderAdminEleves() {
   }).join('');
 }
 
-window.updateCotisation = function(studentId, value) {
+window.updateCotisationDate = async function(studentId, dateVal) {
   const student = DATA.students.find(st => st.id === studentId);
-  if (student) student.cotisation = value;
+  if (student) {
+    student.cotisationDate = dateVal;
+    const firebase = await import('./firebase-config.js');
+    await firebase.updateDoc(firebase.doc(firebase.db, 'students', studentId), { cotisationDate: dateVal });
+  }
+};
+window.updateCotisation = async function(studentId, value) {
+  const student = DATA.students.find(st => st.id === studentId);
+  if (student) {
+    student.cotisation = value;
+    const firebase = await import('./firebase-config.js');
+    await firebase.updateDoc(firebase.doc(firebase.db, 'students', studentId), { cotisation: value });
+  }
   renderAdminEleves();
 };
 
-window.updateMutuelle = function(studentId, value) {
+window.updateMutuelle = async function(studentId, value) {
   const student = DATA.students.find(st => st.id === studentId);
-  if (student) student.mutuelle = value;
+  if (student) {
+    student.mutuelle = value;
+    const firebase = await import('./firebase-config.js');
+    await firebase.updateDoc(firebase.doc(firebase.db, 'students', studentId), { mutuelle: value });
+  }
   renderAdminEleves();
 };
 
@@ -1426,9 +1483,10 @@ function renderProfEleves(user) {
     const cotLabel = isPayee ? '✅ Payée' : '⏳ En attente';
     
     // Mutuelle display
-    const mutStatus = s.mutuelle || 'attente';
-    const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'cours' ? 'pill-pending' : 'pill-rejected');
-    const mutLabel = mutStatus === 'remis' ? '✅ Remis' : (mutStatus === 'cours' ? '🔄 En cours' : '⏳ En attente');
+    const mutStatus = s.mutuelle || 'masque';
+    const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'en_cours' ? 'pill-pending' : 'pill-rejected');
+    const mutLabel = mutStatus === 'remis' ? '✅ Remis' : (mutStatus === 'en_cours' ? '⏳ En cours' : '⚠️ En attente');
+    const mutDisplay = (mutStatus === 'masque') ? '<td style="color:#aaa;">Masqué</td>' : `<td><span class="status-pill ${mutClass}">${mutLabel}</span></td>`;
     
     return `<tr>
       <td><strong>${s.firstname} ${s.lastname}</strong></td>
@@ -1436,7 +1494,7 @@ function renderProfEleves(user) {
       <td style="font-size:0.82rem;color:var(--text-muted)">${courses}</td>
       <td style="color:${color};font-weight:700">${rate}%</td>
       <td><span class="status-pill ${cotClass}">${cotLabel}</span></td>
-      <td><span class="status-pill ${mutClass}">${mutLabel}</span></td>
+      ${mutDisplay}
     </tr>`;
   }).join('');
 }
@@ -1513,11 +1571,11 @@ function renderChildData(child) {
   const cotLabel = isPayee ? '✓ Payée' : '⏳ En attente';
   document.getElementById('parent-stat-cotisation').innerHTML = `<span class="status-pill ${cotClass}">${cotLabel}</span>`;
   
-  // Mutuelle
-  const mutStatus = child.mutuelle || 'attente';
-  const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'cours' ? 'pill-pending' : 'pill-rejected');
-  const mutLabel = mutStatus === 'remis' ? '✓ Remis' : (mutStatus === 'cours' ? '🔄 En cours' : '⏳ En attente');
-  document.getElementById('parent-stat-mutuelle').innerHTML = `<span class="status-pill ${mutClass}">${mutLabel}</span>`;
+    // Mutuelle
+  const mutStatus = child.mutuelle || 'masque';
+  const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'en_cours' ? 'pill-pending' : 'pill-rejected');
+  const mutLabel = mutStatus === 'remis' ? '✅ Remis' : (mutStatus === 'en_cours' ? '⏳ En cours' : '⚠️ En attente');
+  document.getElementById('parent-stat-mutuelle').innerHTML = (mutStatus === 'masque') ? '<span style="color:#aaa; font-size:0.85rem;">Masqué</span>' : `<span class="status-pill ${mutClass}">${mutLabel}</span>`;
 
   const list = document.getElementById('parent-attendance-list');
   if (att.length === 0) {
@@ -2761,3 +2819,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+
+
+window.exportStudentsExcel = function() {
+    if (!DATA.students || DATA.students.length === 0) {
+        alert("Aucun élève à exporter.");
+        return;
+    }
+    
+    // Create CSV content
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+    csvContent += "Prenom,Nom,Date de naissance,Email Parent,Prenom Tuteur,Nom Tuteur,Telephone Tuteur,Mutuelle,Cotisation,Date Cotisation\n";
+    
+    DATA.students.forEach(st => {
+        const row = [
+            `"${st.firstname || ''}"`,
+            `"${st.lastname || ''}"`,
+            `"${st.dob || ''}"`,
+            `"${st.contactEmail || ''}"`,
+            `"${st.tutorFirstname || ''}"`,
+            `"${st.tutorLastname || ''}"`,
+            `"${st.tutorPhone || ''}"`,
+            `"${st.mutuelle || 'masque'}"`,
+            `"${st.cotisation || 'en attente'}"`,
+            `"${st.cotisationDate || ''}"`
+        ];
+        csvContent += row.join(",") + "\n";
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "eleves_adk.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
