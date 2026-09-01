@@ -156,12 +156,14 @@
             // 2. Add Student to Firestore
             try {
                 const studentRef = await addDoc(collection(db, 'students'), {
-                    firstName: student.studentFirstName,
-                    lastName: student.studentLastName,
+                    firstname: student.studentFirstName,
+                    lastname: student.studentLastName,
                     dob: student.dob,
-                    parentEmail: email,
+                    contactEmail: email,
+                    parentId: email,
                     coursesRaw: student.coursesRaw,
                     status: 'actif',
+                    saison: "2026-2027",
                     createdAt: new Date().toISOString()
                 });
                 
