@@ -832,13 +832,19 @@ window.openProfHoursDetail = function(profId, profName, monthStr) {
 
 
 window.openAdminHours = function() {
-  document.querySelectorAll('#admin-panel .tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#panel-admin .tab-content').forEach(c => c.classList.remove('active'));
   const hoursTab = document.getElementById('tab-admin-hours');
-  if (hoursTab) hoursTab.classList.add('active');
+  if (hoursTab) {
+    hoursTab.classList.add('active');
+    // Ensure renderAdminHours is called so data is loaded
+    if (typeof window.renderAdminHours === 'function') {
+      window.renderAdminHours();
+    }
+  }
 };
 
 window.closeAdminHours = function() {
-  document.querySelectorAll('#admin-panel .tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#panel-admin .tab-content').forEach(c => c.classList.remove('active'));
   const profsTab = document.getElementById('tab-profs');
   if (profsTab) profsTab.classList.add('active');
 };
