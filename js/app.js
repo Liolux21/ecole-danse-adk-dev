@@ -840,7 +840,7 @@ function renderAdminEleves() {
       </select>
     `;
     const cotDateSelect = `
-      <input type="date" value="${s.cotisationDate || ''}" onchange="updateCotisationDate('${s.id}', this.value)" style="padding:0.2rem; font-size:0.8rem; border-radius:4px; border:1px solid var(--border); box-sizing: border-box; min-width: 120px;">
+      <input type="date" value="${s.cotisationDate || ''}" onchange="updateCotisationDate('${s.id}', this.value)" style="padding:0.2rem 0.7rem; font-size:0.8rem; border-radius:50px; border:1px solid #ccc; box-sizing: border-box; min-width: 120px; outline:none;">
     `;
 
         const mutStatus = s.mutuelle || 'masque';
