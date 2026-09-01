@@ -292,6 +292,450 @@
             <h3 style="margin-top:0; margin-bottom:1.5rem; color:#9C5858; font-size: 1.5rem;">Rédiger une nouvelle annonce</h3>
             <form id="form-add-annonce" onsubmit="event.preventDefault(); submitAddAnnonce();">
               <div class="form-group">
+                <label class="form-label">Destinataires</label>
+                <select id="annonce-target" class="form-input" style="font-size: 1.1rem; padding: 0.75rem;" required>
+                  <option value="all">Tous (Parents et Profs)</option>
+                  <option value="parents">Tous les Parents</option>
+                  <option value="profs">Tous les Professeurs</option>
+                  <!-- Les cours seront insérés ici dynamiquement -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Titre de l'annonce</label>
+                <input type="text" id="annonce-title" class="form-input" style="font-size: 1.1rem; padding: 0.75rem;" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea id="annonce-content" class="form-input" rows="6" style="font-size: 1.1rem; padding: 0.75rem;" required></textarea>
+              </div>
+              <div style="text-align: right; margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1.1rem;">Publier l'annonce</button>
+              </div>
+            </form>
+          </div>
+
+          <h3 style="margin-bottom: 1rem; color:var(--primary);">Historique des annonces</h3>
+          <div id="admin-annonces-list" style="display:flex; flex-direction:column; gap:1rem;">
+            <!-- Rempli en JS -->
+          </div>
+        </div>
+
+        <!-- Tab: Gala Admin -->
+        <div class="tab-content" id="tab-admin-gala">
+          <select class="form-input gala-mobile-select" data-target="sub-admin-gala-tabs" style="display:none; margin-bottom:1rem; width:50%; cursor:pointer;">
+            <option value="admin-gala-repets">📅 Répétitions</option>
+            <option value="admin-gala-tenues">👗 Tenues</option>
+            <option value="admin-gala-infos">📝 Infos tableaux</option>
+            <option value="admin-gala-notes">📌 Notes réunions</option>
+          </select>
+          <div class="prof-planning-controls gala-desktop-tabs" id="sub-admin-gala-tabs">
+          <button class="btn btn-outline btn-sm btn-tab active" data-tab="admin-gala-repets">📅 Répétitions</button>
+          <button class="btn btn-outline btn-sm btn-tab" data-tab="admin-gala-tenues">👗 Tenues</button>
+          <button class="btn btn-outline btn-sm btn-tab" data-tab="admin-gala-infos">📝 Infos tableaux</button>
+          <button class="btn btn-outline btn-sm btn-tab" data-tab="admin-gala-notes">📌 Notes réunions</button>
+        </div>
+          <div class="tab-content active" id="tab-admin-gala-repets">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-rep'); initGalaRepModal();">+ Ajouter une répétition</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Date & Heure</th><th>Élèves concernés</th><th>Lieu</th><th>Tenues</th><th>Actions</th></tr></thead>
+                <tbody id="admin-gala-rep-body"><tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-admin-gala-tenues">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-tenue'); initGalaTenueModal();">+ Ajouter une tenue</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Cours</th><th>Vêtements requis</th><th>Actions</th></tr></thead>
+                <tbody id="admin-gala-tenue-body"><tr class="empty-state"><td colspan="3">Aucune information de tenue.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-admin-gala-infos">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-info'); initGalaInfoModal();">+ Ajouter une info tableau</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Horaire</th><th>Cours</th><th>Thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
+                <tbody id="admin-gala-info-body"><tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-admin-gala-notes">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-note'); initGalaNoteModal();">+ Nouveau rapport</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Date</th><th>Présents</th><th>Actions</th></tr></thead>
+                <tbody id="admin-gala-note-body"><tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DASHBOARD PROF ===== -->
+      <div class="dashboard-panel" id="panel-prof">
+        <div class="dash-header">
+          <div class="dash-header-left">
+            <div class="dash-avatar" id="prof-avatar">👩‍🏫</div>
+            <div>
+              <div class="dash-user-name" id="prof-name">Sophie Martin</div>
+              <div class="dash-user-role"><span class="role-badge badge-prof">👩‍🏫 Professeure</span></div>
+            </div>
+          </div>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+              <button class="btn btn-outline btn-sm" id="prof-logout">Déconnexion</button>
+            </div>
+        </div>
+<div class="dash-tabs" id="prof-tabs">
+          <button class="dash-tab active" data-tab="mon-planning">🗓️ Mon Planning</button>
+          <button class="dash-tab" data-tab="appel">📋 Feuille d'appel</button>
+          <button class="dash-tab" data-tab="mes-eleves">👥 Mes élèves</button>
+          <button class="dash-tab" data-tab="prof-gala">🎭 Gala</button>
+          <button class="dash-tab" data-tab="prof-messagerie">💬 Messagerie</button>
+            <button class="dash-tab" data-tab="prof-notifications">🔔 Notifications <span id="prof-notif-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
+        </div>
+          <!-- ANNONCES PROF -->
+          <div id="prof-announcements-container" style="display:none; margin-bottom: 2rem; margin-top: 1rem;">
+            <div id="prof-announcements-list" style="display:flex; flex-direction:column; gap:1rem;"></div>
+          </div>
+
+        <!-- Tab: Messagerie --><div class="tab-content" id="tab-prof-messagerie"></div>
+          <!-- Tab: Mon Planning -->
+        <div class="tab-content active" id="tab-mon-planning">
+          <div class="prof-planning-controls">
+            <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-enseignes">Cours enseignés</button>
+            <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
+          </div>
+          <div id="prof-planning-calendar"></div>
+          <div class="planning-cards-list" id="prof-planning-list"></div>
+        </div>
+
+        <!-- Tab: Appel -->
+        <div class="tab-content" id="tab-appel">
+          <div class="appel-date-row" style="margin-bottom: 0.5rem;">
+            <span class="appel-date-label">Choix du cours :</span>
+            <select class="form-input" id="appel-courses-select" style="width:auto;padding:0.5rem 0.75rem;min-width:200px;cursor:pointer;"></select>
+          </div>
+          <div class="appel-date-row">
+            <span class="appel-date-label">Date du cours :</span>
+            <select class="form-input" id="appel-date" style="width:auto;padding:0.5rem 0.75rem;min-width:200px;cursor:pointer;"></select>
+          </div>
+          <div class="appel-list" id="appel-list"></div>
+          <div class="appel-save-row">
+            <button class="btn btn-primary btn-sm" id="appel-save-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+              Sauvegarder l'appel
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab: Mes élèves -->
+        <div class="tab-content" id="tab-mes-eleves">
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <span class="data-table-title" id="prof-eleves-title">Mes élèves</span>
+            </div>
+            <div style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Élève</th><th>Âge</th><th>Cours</th><th>Présence</th><th>Cotisation</th><th>Mutuelle</th></tr></thead>
+                <tbody id="prof-eleves-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+                  <!-- Tab: Prof Notifications -->
+          <div class="tab-content" id="tab-prof-notifications">
+            <div class="parent-section-header" style="color: #9C5858;">🔔 Centre de Notifications</div>
+            <div id="prof-notifications-full-list" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;"></div>
+          </div>
+          <!-- Tab: Prof Gala -->
+        <div class="tab-content" id="tab-prof-gala">
+          <select class="form-input gala-mobile-select" data-target="sub-prof-gala-tabs" style="display:none; margin-bottom:1rem; width:50%; cursor:pointer;">
+            <option value="prof-gala-repets">📅 Répétitions</option>
+            <option value="prof-gala-tenues">👗 Tenues</option>
+            <option value="prof-gala-infos">📝 Infos tableaux</option>
+            <option value="prof-gala-notes">📌 Notes réunions</option>
+          </select>
+          <div class="prof-planning-controls gala-desktop-tabs" id="sub-prof-gala-tabs">
+            <button class="btn btn-outline btn-sm btn-tab active" data-tab="prof-gala-repets">📅 Répétitions</button>
+            <button class="btn btn-outline btn-sm btn-tab" data-tab="prof-gala-tenues">👗 Tenues</button>
+            <button class="btn btn-outline btn-sm btn-tab" data-tab="prof-gala-infos">📝 Infos tableaux</button>
+            <button class="btn btn-outline btn-sm btn-tab" data-tab="prof-gala-notes">📌 Notes réunions</button>
+          </div>
+          <div class="tab-content active" id="tab-prof-gala-repets">
+            <div class="empty-state"><p>Aucune répétition planifiée.</p></div>
+          </div>
+          <div class="tab-content" id="tab-prof-gala-tenues">
+            <div class="empty-state"><p>Aucune information de tenue.</p></div>
+          </div>
+          <div class="tab-content" id="tab-prof-gala-infos">
+            <div class="empty-state"><p>Aucune info tableau.</p></div>
+          </div>
+          <div class="tab-content" id="tab-prof-gala-notes">
+            <div class="empty-state"><p>Aucune note de réunion.</p></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== DASHBOARD PARENT ===== -->
+      <div class="dashboard-panel" id="panel-parent">
+        <div class="dash-header">
+          <div class="dash-header-left">
+            <div class="dash-avatar" id="parent-avatar">👩</div>
+            <div>
+              <div class="dash-user-name" id="parent-name">Marie Dupont</div>
+              <div class="dash-user-role"><span class="role-badge badge-parent">🩰 Élève</span></div>
+            </div>
+          </div>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+              <button class="btn btn-outline btn-sm" id="parent-logout">Déconnexion</button>
+            </div>
+        </div>
+<div class="dash-tabs" id="parent-tabs">
+          <button class="dash-tab active" data-tab="parent-planning">🗓️ Mon Planning</button>
+          <button class="dash-tab" data-tab="parent-gala">🎭 Gala</button>
+          <button class="dash-tab" data-tab="parent-messagerie">💬 Messagerie</button>
+            <button class="dash-tab" data-tab="parent-notifications">🔔 Notifications <span id="parent-notif-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
+        </div>
+          <!-- ANNONCES PARENT -->
+          <div id="parent-announcements-container" style="display:none; margin-bottom: 2rem; margin-top: 1rem;">
+            <div id="parent-announcements-list" style="display:flex; flex-direction:column; gap:1rem;"></div>
+          </div>
+
+        <!-- Tab: Parent Planning -->
+        <div class="tab-content active" id="tab-parent-planning">
+            <div class="child-tabs" id="child-tabs"></div>
+
+          <div class="parent-notification-banner" id="parent-next-course-banner" style="display: none;">
+            <div class="banner-icon">🔔</div>
+            <div class="banner-content" id="parent-next-course-content"></div>
+          </div>
+
+          <div class="parent-stats">
+
+            <div class="stat-card">
+              <div class="stat-card-label">Présences</div>
+              <div class="stat-card-value" id="parent-stat-presence" style="color:#90CC90">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Absences</div>
+              <div class="stat-card-value" id="parent-stat-absence" style="color:#DC6464">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Cotisation</div>
+              <div class="stat-card-value" id="parent-stat-cotisation" style="margin-top: 0.5rem;">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Mutuelle</div>
+              <div class="stat-card-value" id="parent-stat-mutuelle" style="margin-top: 0.5rem;">-</div>
+            </div>
+          </div>
+
+          <div class="parent-dashboard-grid">
+            <div class="parent-planning-section">
+              <div class="parent-section-header" style="color: #9C5858;">📅 Planning de la semaine — <span id="parent-child-name-plan"></span></div>
+              <div id="parent-planning-calendar"></div>
+              <div class="planning-cards-list" id="parent-planning-list"></div>
+            </div>
+
+            <div class="parent-attendance-section">
+              <div class="parent-section-header">📋 Historique des présences</div>
+              <div class="parent-attendance-list" id="parent-attendance-list"></div>
+            </div>
+          </div>
+        </div>
+
+                  <!-- Tab: Parent Notifications -->
+          <div class="tab-content" id="tab-parent-notifications">
+            <div class="parent-section-header" style="color: #9C5858;">🔔 Centre de Notifications</div>
+            <div id="parent-notifications-full-list" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;"></div>
+          </div>
+          <!-- Tab: Gala Parent -->
+        <div class="tab-content" id="tab-parent-gala">
+          <select class="form-input gala-mobile-select" data-target="sub-parent-gala-tabs" style="display:none; margin-bottom:1rem; width:50%; cursor:pointer;">
+            <option value="parent-gala-repets">📅 Répétitions</option>
+            <option value="parent-gala-tenues">👗 Tenues</option>
+          </select>
+          <div class="prof-planning-controls gala-desktop-tabs" id="sub-parent-gala-tabs">
+            <button class="btn btn-outline btn-sm btn-tab active" data-tab="parent-gala-repets">📅 Répétitions</button>
+            <button class="btn btn-outline btn-sm btn-tab" data-tab="parent-gala-tenues">👗 Tenues</button>
+          </div>
+          <div class="tab-content active" id="tab-parent-gala-repets">
+            <div class="empty-state"><p>Aucune répétition planifiée.</p></div>
+          </div>
+          <div class="tab-content" id="tab-parent-gala-tenues">
+            <div class="empty-state"><p>Aucune information de tenue.</p></div>
+          </div>
+        </div>
+
+      </div>
+
+  </section>
+  <!-- Footer supprimé pour le portail -->
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Agrandissement photo">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Fermer">✕</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  </div>
+
+  <!-- ==================== MODALS (Gestion & Messages) ==================== -->
+  
+  <!-- Modale Gestion de Cours (Prof) -->
+  <div class="lightbox" id="modal-manage-course">
+    <div class="lightbox-content" style="max-width:500px; background:var(--dark); padding:2rem; border-radius:var(--radius); border:1px solid var(--border); text-align:left;">
+      <button class="lightbox-close" id="close-manage-course">×</button>
+      <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:1rem;" id="manage-course-title">Gérer le cours</h3>
+      
+      <form id="manage-course-form" style="display:flex; flex-direction:column; gap:1rem;">
+        <input type="hidden" id="manage-course-id">
+        
+        <div>
+          <label class="form-label">Type de modification</label>
+          <select class="form-input" id="manage-course-type" required>
+            <option value="temporaire">Temporaire (prochaine séance)</option>
+            <option value="definitif">Définitif (reste de l'année)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Statut</label>
+          <select class="form-input" id="manage-course-status" required>
+            <option value="maintenu">✅ Maintenu</option>
+            <option value="annule">❌ Annulé</option>
+          </select>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div>
+            <label class="form-label">Heure</label>
+            <input type="time" class="form-input" id="manage-course-hour" required>
+          </div>
+          <div>
+            <label class="form-label">Date/Jour</label>
+            <input type="date" class="form-input" id="manage-course-date" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Lieu</label>
+          <select class="form-input" id="manage-course-lieu" required>
+            <option value="ADK">Studio ADK (Pin)</option>
+            <option value="Rox">Le Rox (Rouvroy)</option>
+            <option value="Bertrix">Complexe sportif de Bertrix</option>
+            <option value="Izel">Centre Culturel d'Izel</option>
+            <option value="Jamoigne">Complexe sportif de Jamoigne</option>
+            <option value="FloreSport">Complexe sportif de Florenville</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Déléguer à un(e) remplaçant(e) (Optionnel)</label>
+          <select class="form-input" id="manage-course-sub">
+            <option value="">-- Aucun --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Message d'information pour les élèves</label>
+          <textarea class="form-input" id="manage-course-msg" rows="3" placeholder="Ex: Prenez des baskets propres pour la salle..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Enregistrer les modifications</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modale Absence (Parent) -->
+  <div class="lightbox" id="modal-absence">
+    <div class="lightbox-content" style="max-width:400px; background:var(--dark); padding:2rem; border-radius:var(--radius); border:1px solid var(--border); text-align:left;">
+      <button class="lightbox-close" id="close-absence">×</button>
+      <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:1rem;">Présence / Absence</h3>
+      <form id="absence-form" style="display:flex; flex-direction:column; gap:1rem;">
+        <input type="hidden" id="absence-course-id">
+        <input type="hidden" id="absence-student-id">
+        <div>
+          <label class="form-label">Date du cours</label>
+          <select class="form-input" id="absence-date" required></select>
+        </div>
+        <div>
+          <label class="form-label">Statut</label>
+          <select class="form-input" id="absence-status" required>
+            <option value="excuse">⏳ Sera absent(e)</option>
+            <option value="present">✅ Sera présent(e)</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Message :</label>
+          <textarea class="form-input" id="absence-message" rows="3" placeholder="Facultatif"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Confirmer</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modale Messagerie Cours -->
+  <div class="lightbox" id="modal-messages">
+    <div class="lightbox-content" style="max-width:600px; width:90%; height:80vh; background:var(--dark); border-radius:var(--radius); border:1px solid var(--border); display:flex; flex-direction:column; text-align:left;">
+      <div style="padding:1.5rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-family:'Playfair Display',serif; color:var(--gold); margin:0;" id="chat-course-title">Messages du cours</h3>
+        <button class="lightbox-close" id="close-messages" style="position:relative; top:0; right:0;">×</button>
+      </div>
+      
+      <div id="chat-history" style="flex:1; padding:1.5rem; overflow-y:auto; display:flex; flex-direction:column; gap:1rem; background:var(--dark-2);">
+        <!-- Messages will be injected here -->
+      </div>
+      
+      <form id="chat-form" style="padding:1.5rem; border-top:1px solid var(--border); background:var(--dark);">
+        <input type="hidden" id="chat-course-id">
+        <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+          <select id="chat-msg-type" class="form-input" style="width:auto; padding:0.5rem;" required>
+            <option value="public">🌍 Message Public (Tous les élèves)</option>
+            <option value="private">🔒 Message Privé (Professeur uniquement)</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <input type="text" id="chat-input" class="form-input" placeholder="Écrire un message..." required style="flex:1;">
+          <button type="submit" class="btn btn-primary" style="padding:0.75rem 1.5rem;">Envoyer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <!-- Modal: Ajouter un élève -->
+  <div class="vitrine-modal" id="modal-add-student">
+    <div class="vitrine-modal-content" style="max-width: 550px;">
+      <div class="vitrine-modal-header" style="padding-right: 2.5rem;">
+        <h2 class="vitrine-modal-title">Ajouter un élève</h2>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-add-student')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <form id="form-add-student" onsubmit="event.preventDefault(); submitAddStudent();">
+          <input type="hidden" id="add-student-id">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Prénom</label>
+              <input type="text" id="add-student-firstname" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nom</label>
+              <input type="text" id="add-student-lastname" class="form-input" required>
+            </div>
+          </div>
+          <div class="form-group">
               <label class="form-label">Date de naissance</label>
               <input type="date" id="add-student-dob" class="form-input" required>
             </div>
@@ -804,6 +1248,6 @@
   <script type="module" src="js/data.js?v=54"></script>
   <script type="module" src="js/auth.js?v=24"></script>
   <script type="module" src="js/chat.js?v=21"></script>
-  <script type="module" src="js/app.js?v=22"></script>
+  <script type="module" src="js/app.js?v=24"></script>
 </body>
 </html>
