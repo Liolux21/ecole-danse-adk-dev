@@ -602,7 +602,7 @@ function showPortalDashboard(user) {
       adminSwitchBtn = document.createElement('button');
       adminSwitchBtn.id = 'admin-switch-btn';
       adminSwitchBtn.className = 'btn btn-outline btn-sm';
-      adminSwitchBtn.innerHTML = '🔄 Espace Prof (Appel)';
+      adminSwitchBtn.innerHTML = '🔄 Espace Prof';
       adminSwitchBtn.onclick = () => {
         const profUser = { ...user, role: 'prof', realRole: 'admin' };
         showPortalDashboard(profUser);
