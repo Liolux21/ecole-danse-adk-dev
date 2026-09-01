@@ -77,15 +77,32 @@ const AUTH = {
   },
 
 
-  async resetPassword(email) {
-    try {
-      await sendPasswordResetEmail(auth, email);
-      return true;
-    } catch(e) {
-      console.error("Reset password error:", e);
-      return false;
-    }
-  },
+  
+    async resetPassword(email) {
+      try {
+        await sendPasswordResetEmail(auth, email);
+        return true;
+      } catch(e) {
+        console.error("Reset password error:", e);
+        return false;
+      }
+    },
+
+    async forceChangePassword(newPassword) {
+      try {
+        if (!auth.currentUser) return false;
+        await updatePassword(auth.currentUser, newPassword);
+        // Update Firestore
+        await updateDoc(doc(db, "users", this.currentUser.id), {
+          mustChangePassword: false
+        });
+        this.currentUser.mustChangePassword = false;
+        return true;
+      } catch(e) {
+        console.error("Force password change error:", e);
+        throw e;
+      }
+    },
 
   async updateUserProfile(currentPassword, newEmail, newPassword, newTelephone, newAvatarBase64) {
     try {

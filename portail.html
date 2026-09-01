@@ -1050,6 +1050,29 @@
     </div>
   </div>
 
+  
+  <!-- Modal Force Password Change -->
+  <div class="vitrine-modal" id="modal-force-password" style="z-index: 9999; background: rgba(0,0,0,0.9);">
+    <div class="vitrine-modal-content" style="max-width: 400px; padding: 2rem;">
+      <h3 style="color: var(--gold); margin-top:0;">Bienvenue !</h3>
+      <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1.5rem;">Pour des raisons de sécurité, veuillez personnaliser votre mot de passe pour votre première connexion.</p>
+      
+      <form id="form-force-password" onsubmit="event.preventDefault(); window.submitForcePassword();">
+        <div class="form-group">
+          <label class="form-label">Nouveau mot de passe</label>
+          <input type="password" id="force-pwd-1" class="form-input" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirmez le mot de passe</label>
+          <input type="password" id="force-pwd-2" class="form-input" required minlength="6">
+        </div>
+        <div id="force-pwd-error" style="color: #e74c3c; font-size: 0.8rem; margin-bottom: 1rem; display: none;">Les mots de passe ne correspondent pas.</div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%;" id="btn-force-pwd">Enregistrer et Continuer</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal Tenue Gala -->
   <div class="vitrine-modal" id="modal-gala-tenue">
     <div class="vitrine-modal-content">
@@ -1183,8 +1206,8 @@
   </div>
 
   <script type="module" src="js/data.js?v=54"></script>
-  <script type="module" src="js/auth.js?v=23"></script>
+  <script type="module" src="js/auth.js?v=24"></script>
   <script type="module" src="js/chat.js?v=8"></script>
-  <script type="module" src="js/app.js?v=116"></script>
+  <script type="module" src="js/app.js?v=117"></script>
 </body>
 </html>

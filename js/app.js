@@ -2114,7 +2114,37 @@ window.calculateNextCourses = calculateNextCourses;
 window.openManageCourseModal = openManageCourseModal;
 window.openMessagesModal = openMessagesModal;
 window.renderChatHistory = renderChatHistory;
-window.submitResetPassword = async function() {
+
+  window.submitForcePassword = async function() {
+    const pwd1 = document.getElementById('force-pwd-1').value;
+    const pwd2 = document.getElementById('force-pwd-2').value;
+    const err = document.getElementById('force-pwd-error');
+    const btn = document.getElementById('btn-force-pwd');
+    
+    if (pwd1 !== pwd2) {
+      err.textContent = "Les mots de passe ne correspondent pas.";
+      err.style.display = "block";
+      return;
+    }
+    
+    err.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "Enregistrement...";
+    
+    try {
+      await AUTH.forceChangePassword(pwd1);
+      document.getElementById('modal-force-password').classList.remove('active');
+      showToast("Mot de passe mis à jour avec succès !", "success");
+    } catch(e) {
+      err.textContent = "Erreur lors du changement de mot de passe. Veuillez réessayer.";
+      err.style.display = "block";
+    }
+    
+    btn.disabled = false;
+    btn.textContent = "Enregistrer et Continuer";
+  };
+
+  window.submitResetPassword = async function() {
   const email = document.getElementById('reset-password-email').value;
   const btn = document.querySelector('#form-reset-password button[type="submit"]');
   const originalText = btn.textContent;
