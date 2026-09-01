@@ -5,7 +5,7 @@ let unsubscribeMessages = null;
 
 // Ensure this is called when the user opens the Messagerie tab
 window.loadConversations = function() {
-    const currentUser = window.currentUser; // Assuming currentUser is global from auth.js / app.js
+    const currentUser = window.AUTH ? window.AUTH.currentUser : null; // Assuming currentUser is global from auth.js / app.js
     if (!currentUser) return;
 
     const convListEl = document.getElementById('conversations-list');
@@ -94,7 +94,7 @@ window.switchChat = function(chatId, chatTitle) {
 
         snapshot.forEach(docSnap => {
             const msg = docSnap.data();
-            const isMe = msg.senderId === window.currentUser.uid;
+            const isMe = msg.senderId === currentUser.uid;
 
             let timeString = '';
             if (msg.timestamp) {
@@ -124,15 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnSend && msgInput) {
         const sendMsg = async () => {
             const text = msgInput.value.trim();
-            if (!text || !currentChatId || !window.currentUser) return;
+            if (!text || !currentChatId || !window.AUTH || !window.AUTH.currentUser) return;
+            const currentUser = window.AUTH.currentUser;
 
             msgInput.value = '';
 
             try {
                 await addDoc(collection(db, 'conversations', currentChatId, 'messages'), {
                     text: text,
-                    senderId: window.currentUser.uid,
-                    senderName: window.currentUser.name || window.currentUser.email,
+                    senderId: currentUser.uid,
+                    senderName: currentUser.name || currentUser.email,
                     timestamp: serverTimestamp()
                 });
 
