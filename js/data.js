@@ -270,7 +270,7 @@ export const DATA = {
       const usersSnap = await getDocs(collection(db, "users"));
       this.users = [];
       usersSnap.forEach(doc => {
-        this.users.push({ id: doc.id, ...doc.data() });
+        this.users.push({ docId: doc.id, id: doc.id, ...doc.data() });
       });
 
       // 2. Fetch Students
@@ -283,20 +283,20 @@ export const DATA = {
           delete sData.courses;
         }
         sData.courseIds = sData.courseIds || [];
-        this.students.push({ id: doc.id, ...sData });
+        this.students.push({ docId: doc.id, id: doc.id, ...sData });
       });
       // 3. Fetch Courses
       const coursesSnap = await getDocs(collection(db, "courses"));
       this.courses = [];
       coursesSnap.forEach(doc => {
-        this.courses.push({ id: doc.id, ...doc.data() });
+        this.courses.push({ docId: doc.id, id: doc.id, ...doc.data() });
       });
 
       // 4. Fetch Inscriptions
       const inscSnap = await getDocs(collection(db, "inscriptions"));
       this.inscriptions = [];
       inscSnap.forEach(doc => {
-        this.inscriptions.push({ id: doc.id, ...doc.data() });
+        this.inscriptions.push({ docId: doc.id, id: doc.id, ...doc.data() });
       });
 
 

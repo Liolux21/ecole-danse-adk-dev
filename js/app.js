@@ -1333,10 +1333,10 @@ window.saveProf = async function() {
       if (profChanged) {
         c.prof = newProfString;
         try {
-          await firebase.updateDoc(firebase.doc(firebase.db, 'courses', String(c.id)), { prof: c.prof });
+          const targetDocId = c.docId || String(c.id);
+          await firebase.updateDoc(firebase.doc(firebase.db, 'courses', targetDocId), { prof: c.prof });
         } catch (e) {
           console.warn("Could not update course in Firebase: ", c.id, e);
-          // If it doesn't exist, we could create it, but usually courses should exist.
         }
       }
     }
