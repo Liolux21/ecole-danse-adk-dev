@@ -192,7 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const firstMsg = msgInput.value.trim();
             const target = targetSelect.value;
             
-                        if (!title || !firstMsg || !currentUser || !target) return;
+                        const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+            if (!title || !firstMsg || !currentUser || !target) return;
             
             btnCreateChatConfirm.disabled = true;
             btnCreateChatConfirm.textContent = "Création...";
