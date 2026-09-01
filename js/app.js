@@ -1375,8 +1375,8 @@ window.renderAdminCourses = function() {
           <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${c.emoji || '💃'} ${c.name}</h4>
         </div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>👤 Professeur :</strong> ${c.prof}</div>
-        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📅 Horaire :</strong> ${c.day} à ${c.time}</div>
-        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>🎂 Âge :</strong> ${c.age}</div>
+        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📅 Horaire :</strong> ${c.schedule || "Non défini"}</div>
+        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>🎂 Âge :</strong> ${c.ages || "Non défini"}</div>
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.2rem;">
           <button class="btn btn-outline btn-sm" onclick="openAddCourseModal('${c.id}')">✏️ Modifier</button>
           <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteCourse('${c.id}')">🗑️ Supprimer</button>
@@ -2713,7 +2713,7 @@ Mot de passe temporaire: ${tempPassword}
   }
 };
 window.openAddCourseModal = function(courseId = null) {
-  const profSelect = document.getElementById('manage-course-prof');
+  const profSelect = document.getElementById('admin-course-prof');
   if (profSelect) {
     const profs = DATA.users.filter(u => u.role === 'prof');
     profSelect.innerHTML = profs.map(p => `<option value="${p.firstname ? p.firstname + ' ' + p.lastname : p.name}">${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</option>`).join('');
@@ -2721,62 +2721,70 @@ window.openAddCourseModal = function(courseId = null) {
   
   if (courseId) {
     const course = DATA.getCourseById(courseId);
-    document.getElementById('manage-course-id').value = course.id;
-    document.getElementById('manage-course-name').value = course.name;
-    if (profSelect) profSelect.value = course.prof;
-    document.getElementById('manage-course-schedule').value = course.schedule || '';
-    document.getElementById('manage-course-age').value = course.ages || '';
-    document.getElementById('manage-course-title').textContent = "Modifier le cours";
+    if (course) {
+      document.getElementById('admin-course-id').value = course.id;
+      document.getElementById('admin-course-name').value = course.name;
+      if (profSelect) profSelect.value = course.prof || '';
+      document.getElementById('admin-course-schedule').value = course.schedule || '';
+      document.getElementById('admin-course-age').value = course.ages || '';
+      document.getElementById('admin-course-title').textContent = "Modifier le cours";
+    }
   } else {
-    document.getElementById('form-manage-course').reset();
-    document.getElementById('manage-course-id').value = '';
-    document.getElementById('manage-course-title').textContent = "Nouveau cours";
+    const form = document.getElementById('form-admin-course');
+    if (form) form.reset();
+    document.getElementById('admin-course-id').value = '';
+    document.getElementById('admin-course-title').textContent = "Nouveau cours";
   }
   
-  openModal('modal-add-course');
+  openModal('modal-admin-course');
 };
 
-window.submitManageCourse = async function() {
-  const btn = document.querySelector('#form-manage-course button[type="submit"]');
+window.submitAdminCourse = async function() {
+  const btn = document.querySelector('#form-admin-course button[type="submit"]');
   const originalText = btn.textContent;
   btn.textContent = "Sauvegarde...";
   btn.disabled = true;
 
   try {
-    let id = document.getElementById('manage-course-id').value;
+    let id = document.getElementById('admin-course-id').value;
     const isNew = !id;
     if (isNew) id = "crs_" + Date.now();
     
     const courseData = {
       id: id,
-      name: document.getElementById('manage-course-name').value,
-      prof: document.getElementById('manage-course-prof').value,
-      schedule: document.getElementById('manage-course-schedule').value,
-      ages: document.getElementById('manage-course-age').value,
+      name: document.getElementById('admin-course-name').value,
+      prof: document.getElementById('admin-course-prof').value,
+      schedule: document.getElementById('admin-course-schedule').value,
+      ages: document.getElementById('admin-course-age').value,
       category: "Nouveau",
       style: "classique", // par défaut
       lieu: "ADK" // par défaut
     };
+
+    const firebase = await import('./firebase-config.js');
     
+    let targetDocId = String(id);
+    if (!isNew) {
+      const existing = DATA.getCourseById(id);
+      if (existing && existing.docId) {
+        targetDocId = existing.docId;
+      }
+    }
+    
+    await firebase.setDoc(firebase.doc(firebase.db, 'courses', targetDocId), courseData, { merge: true });
+
     if (isNew) {
-      // Pour un nouveau cours, on peut rajouter desc, levels...
-      courseData.desc = "Nouveau cours ajouté.";
-      courseData.levels = "Tous niveaux";
-      courseData.studentsCount = 0;
+      DATA.courses.push({ docId: targetDocId, ...courseData });
+    } else {
+      const existing = DATA.getCourseById(id);
+      if (existing) Object.assign(existing, courseData);
     }
 
-    await setDoc(doc(db, "courses", id), courseData, { merge: true });
-    
-    await DATA.syncFromFirebase();
-    if (AUTH.hasRole('admin')) {
-      showPortalDashboard(AUTH.currentUser);
-    }
-    
-    closeModal('modal-manage-course');
-    showToast('✅ Cours sauvegardé avec succès', 'success');
-  } catch(err) {
+    closeModal('modal-admin-course');
+    renderAdminCourses();
+  } catch (err) {
     console.error(err);
-    showToast('❌ Erreur lors de la sauvegarde du cours', 'error');
+    alert("Erreur: " + err.message);
   } finally {
     btn.textContent = originalText;
     btn.disabled = false;
