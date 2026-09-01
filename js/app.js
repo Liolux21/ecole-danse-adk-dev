@@ -833,19 +833,21 @@ function renderAdminEleves() {
         const cotStatus = s.cotisation || 'en attente';
     const cotClass = cotStatus === 'payee_cash' || cotStatus === 'payee_compte' ? 'select-remis' : 'select-attente';
     const cotSelect = `
-      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem; margin-bottom:5px;">
+      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem;">
         <option value="en attente" ${cotStatus === 'en attente' ? 'selected' : ''}>⏳ En attente</option>
         <option value="payee_cash" ${cotStatus === 'payee_cash' ? 'selected' : ''}>💶 Payée cash</option>
         <option value="payee_compte" ${cotStatus === 'payee_compte' ? 'selected' : ''}>💳 Payée compte</option>
       </select>
-      <input type="date" value="${s.cotisationDate || ''}" onchange="updateCotisationDate('${s.id}', this.value)" style="padding:0.2rem; font-size:0.8rem; border-radius:4px; border:1px solid var(--border); width: 100%; box-sizing: border-box;">
     `;
+    const cotDateSelect = `
+      <input type="date" value="${s.cotisationDate || ''}" onchange="updateCotisationDate('${s.id}', this.value)" style="padding:0.2rem; font-size:0.8rem; border-radius:4px; border:1px solid var(--border); box-sizing: border-box; min-width: 120px;">
+    `;
+
         const mutStatus = s.mutuelle || 'masque';
     const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'en_cours' ? 'select-encours' : (mutStatus === 'attente' ? 'select-attente' : ''));
     const mutSelect = `
       <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem;">
         <option value="masque" ${mutStatus === 'masque' ? 'selected' : ''}>Masqué</option>
-        <option value="attente" ${mutStatus === 'attente' ? 'selected' : ''}>⏳ En attente</option>
         <option value="en_cours" ${mutStatus === 'en_cours' ? 'selected' : ''}>🏃 En cours</option>
         <option value="remis" ${mutStatus === 'remis' ? 'selected' : ''}>✅ Remis</option>
       </select>
@@ -858,11 +860,15 @@ function renderAdminEleves() {
         </div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📚 Cours suivis :</strong> ${courses || '-'}</div>
         <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: rgba(0,0,0,0.02); padding: 0.8rem; border-radius: var(--radius);">
-          <div style="display: flex; flex-direction: column; gap: 0.3rem;">
+          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 120px;">
             <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Cotisation</span>
             ${cotSelect}
           </div>
-          <div style="display: flex; flex-direction: column; gap: 0.3rem;">
+          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 120px;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Date paiement</span>
+            ${cotDateSelect}
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 120px;">
             <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Mutuelle</span>
             ${mutSelect}
           </div>
@@ -2459,21 +2465,8 @@ window.deleteStudent = async function(id) {
     // 1. Delete student
     await firebase.deleteDoc(firebase.doc(firebase.db, "students", id));
     
-    // 2. Clean up parent users
-    const parentUsers = DATA.users.filter(u => u.childrenIds && u.childrenIds.includes(id));
-    for (const parent of parentUsers) {
-      const newChildrenIds = parent.childrenIds.filter(cid => cid !== id);
-      if (newChildrenIds.length === 0 && parent.role === 'parent') {
-        // Supprime le profil Parent de Firestore s'il n'a plus d'enfant
-        await firebase.deleteDoc(firebase.doc(firebase.db, "users", parent.id));
-      } else {
-        await firebase.updateDoc(firebase.doc(firebase.db, "users", parent.id), {
-          childrenIds: newChildrenIds
-        });
-      }
-    }
-
-    await DATA.syncFromFirebase();
+    // 2. Parent cleanup skipped
+      await DATA.syncFromFirebase();
     renderAdminEleves();
     showToast('Élève supprimé avec succès', 'success');
   } catch(e) {
