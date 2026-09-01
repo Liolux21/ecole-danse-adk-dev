@@ -238,33 +238,37 @@
         
                 <!-- Tab: Heures Profs -->
         <div class="tab-content" id="tab-admin-hours">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div class="dash-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div style="display: flex; align-items: center; gap: 1rem;">
-              <button class="btn btn-outline btn-sm" onclick="closeAdminHours()">← Retour</button>
+              <button class="btn btn-outline btn-sm" onclick="closeAdminHours()" style="border-radius: 50px; padding: 0.25rem 0.75rem;">← Retour</button>
               <div>
                 <h3 style="margin: 0; color: var(--primary);">Décompte des heures</h3>
-                <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Heures validées par les professeurs lors de l'appel</p>
               </div>
             </div>
             <div style="display: flex; gap: 0.5rem;">
-              <input type="month" id="admin-hours-month" class="form-input" style="width: auto;">
-              <button class="btn btn-outline" id="admin-hours-export" onclick="window.exportProfHours()">Exporter CSV</button>
+              <button class="btn btn-primary" onclick="window.exportProfHours()">📥 Exporter CSV</button>
             </div>
           </div>
           
-          <div class="data-table-container">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Professeur</th>
-                  <th>Mois</th>
-                  <th>Total Heures</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="admin-hours-body">
-              </tbody>
-            </table>
+          <div class="data-table-wrapper">
+            <div class="data-table-header" style="justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+              <span class="data-table-title">🕒 Heures validées par mois</span>
+              <input type="month" id="admin-hours-month" class="form-input" style="width: auto; padding: 0.4rem 0.8rem; border-radius: 50px;">
+            </div>
+            <div style="overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Professeur</th>
+                    <th>Mois</th>
+                    <th>Total Heures</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-hours-body">
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         
