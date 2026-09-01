@@ -2327,3 +2327,25 @@ footer {
   margin-top: 5px;
   opacity: 0.8;
 }
+
+/* Mobile Messenger */
+@media (max-width: 768px) {
+  #messenger-sidebar {
+    width: 100% !important;
+  }
+  #messenger-chat-area {
+    display: none !important;
+  }
+  
+  #global-messenger-container.chat-active #messenger-sidebar {
+    display: none !important;
+  }
+  #global-messenger-container.chat-active #messenger-chat-area {
+    display: flex !important;
+    width: 100% !important;
+  }
+  
+  #btn-back-to-list {
+    display: block !important;
+  }
+}

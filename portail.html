@@ -19,7 +19,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ADK App">
-  <link rel="stylesheet" href="css/style.css?v=201">
+  <link rel="stylesheet" href="css/style.css?v=202">
   <script>
     window.addEventListener('error', function(e) {
       alert("JS Error: " + e.message + " at " + e.filename + ":" + e.lineno);
@@ -1171,7 +1171,7 @@
   <!-- GLOBAL MESSENGER CONTAINER -->
   <div id="global-messenger-container" class="global-messenger-container" style="display:none; height: 75vh; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border); overflow: hidden; flex-direction: row; margin-top: 1rem;">
     <!-- LEFT SIDEBAR -->
-    <div style="width: 320px; background: #f8f9fa; border-right: 1px solid var(--border); display: flex; flex-direction: column;">
+    <div id="messenger-sidebar" style="width: 320px; background: #f8f9fa; border-right: 1px solid var(--border); display: flex; flex-direction: column;">
       <div style="padding: 1rem; border-bottom: 1px solid var(--border); background: #fff; display: flex; justify-content: space-between; align-items: center;">
         <h3 style="margin:0; font-size: 1.1rem; color: var(--gold);">Conversations</h3>
         <button id="btn-new-chat" class="btn btn-outline btn-sm" style="padding: 0.3rem 0.6rem; font-size: 1.1rem;">+</button>
@@ -1184,10 +1184,11 @@
     </div>
     
     <!-- RIGHT CHAT AREA -->
-    <div style="flex: 1; display: flex; flex-direction: column; background: #ffffff;">
+    <div id="messenger-chat-area" style="flex: 1; display: flex; flex-direction: column; background: #ffffff;">
       <!-- Chat Header -->
       <div style="padding: 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; height: 60px; box-sizing: border-box;">
         <div style="display: flex; align-items: center; gap: 1rem;">
+          <button id="btn-back-to-list" style="background: none; border: none; font-size: 1.5rem; color: #CAA9A9; cursor: pointer; display: none;">&larr;</button>
           <h3 id="active-chat-title" style="margin:0; font-size: 1.1rem; color: var(--gold);">Sélectionnez une discussion</h3>
           <span style="font-size: 0.75rem; color: var(--text-muted);">⚠️ Toutes les discussions sont visibles par l'administration.</span>
         </div>
@@ -1207,7 +1208,7 @@
 
   <script type="module" src="js/data.js?v=54"></script>
   <script type="module" src="js/auth.js?v=24"></script>
-  <script type="module" src="js/chat.js?v=15"></script>
+  <script type="module" src="js/chat.js?v=16"></script>
   <script type="module" src="js/app.js?v=119"></script>
 </body>
 </html>

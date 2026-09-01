@@ -68,6 +68,8 @@ window.switchChat = function(chatId, chatTitle) {
 
     // Update header
     document.getElementById('active-chat-title').textContent = chatTitle;
+    const messenger = document.getElementById('global-messenger-container');
+    if (messenger) messenger.classList.add('chat-active');
 
     // Update active class in list
     document.querySelectorAll('.conv-item').forEach(el => {
@@ -125,6 +127,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     
+    
+    const btnBack = document.getElementById('btn-back-to-list');
+    if (btnBack) {
+        btnBack.addEventListener('click', () => {
+            const messenger = document.getElementById('global-messenger-container');
+            if (messenger) messenger.classList.remove('chat-active');
+            currentChatId = null;
+        });
+    }
+
     // Send Message Logic
     const btnSendMsg = document.getElementById('btn-send-msg');
     const msgInput = document.getElementById('msg-input');
