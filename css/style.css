@@ -2258,8 +2258,8 @@ footer {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--gold-light);
-  color: var(--white);
+  background: #E8D0C3 !important;
+  color: #4A3E3E !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2311,14 +2311,14 @@ footer {
   position: relative;
 }
 .msg-row.me .msg-bubble {
-  background: var(--gold);
-  color: #fff;
+  background: #CAA9A9 !important;
+  color: #fff !important;
   border-bottom-right-radius: 2px;
 }
 .msg-row.other .msg-bubble {
-  background: #fff;
-  border: 1px solid var(--border);
-  color: var(--white);
+  background: #fff !important;
+  border: 1px solid rgba(202, 169, 169, 0.4) !important;
+  color: #4A3E3E !important;
   border-bottom-left-radius: 2px;
 }
 .msg-meta {

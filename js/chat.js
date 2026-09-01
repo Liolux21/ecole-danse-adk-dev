@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Send Message Logic
     const btnSendMsg = document.getElementById('btn-send-msg');
-    const msgInput = document.getElementById('chat-input');
+    const msgInput = document.getElementById('msg-input');
     
     if (btnSendMsg && msgInput) {
         btnSendMsg.addEventListener('click', async () => {
