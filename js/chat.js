@@ -27,10 +27,7 @@ window.loadConversations = function() {
             return;
         }
 
-        const disclaimer = document.createElement('div');
-        disclaimer.style = "text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-bottom: 1.5rem;";
-        disclaimer.innerHTML = "⚠️ Toutes les communications sont visibles par l'administration.";
-        messagesContainer.appendChild(disclaimer);
+
 
 
         snapshot.forEach(docSnap => {
