@@ -98,7 +98,7 @@ window.switchChat = function(chatId, chatTitle) {
             const isMe = currentUser && msg.senderId === currentUser.uid;
 
             let timeString = '';
-            if (msg.timestamp) {
+            if (msg.timestamp && typeof msg.timestamp.toDate === 'function') {
                 const date = msg.timestamp.toDate();
                 timeString = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             }
@@ -108,13 +108,16 @@ window.switchChat = function(chatId, chatTitle) {
             row.innerHTML = `
                 <div class="msg-bubble">
                     ${!isMe ? `<strong style="font-size:0.8rem; opacity:0.8;">${msg.senderName || 'Utilisateur'}</strong><br>` : ''}
-                    ${msg.text}
+                    ${msg.text || ''}
                     <div class="msg-meta">${timeString}</div>
                 </div>
             `;
             messagesContainer.appendChild(row);
         });
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, (error) => {
+        console.error("Error loading messages: ", error);
+        messagesContainer.innerHTML = '<div style="text-align: center; color: #e74c3c; padding: 2rem;">Erreur : ' + error.message + '</div>';
     });
 };
 
