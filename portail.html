@@ -218,10 +218,14 @@
 
         <!-- Tab: Professeurs -->
         <div class="tab-content" id="tab-profs">
-          <div class="dash-header">
-            <h3>Gestion des Professeurs</h3>
-            <button class="btn btn-primary" onclick="openAddProfModal()">+ Ajouter un professeur</button>
+          <div class="dash-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="margin:0;">Gestion des Professeurs</h3>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-primary" onclick="openAdminHours()">🕒 Heures Profs</button>
+                <button class="btn btn-primary" onclick="openAddProfModal()">+ Ajouter un professeur</button>
           </div>
+            </div>
+
           <div class="data-table-wrapper">
             <div class="data-table-header">
               <span class="data-table-title">👩‍🏫 Équipe pédagogique</span>
