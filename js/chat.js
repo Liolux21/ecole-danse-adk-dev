@@ -156,6 +156,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     // Parent can message admin
                     options += `<option value="admin">Administration ADK</option>`;
+                    
+                    // Parent can message profs of their courses
+                    if (window.DATA && window.DATA.courses) {
+                        const myCourseIds = user.courseIds || [];
+                        const myCourses = window.DATA.courses.filter(c => myCourseIds.includes(c.id));
+                        
+                        // Extract unique prof names from those courses
+                        const profNames = [...new Set(myCourses.map(c => c.prof))];
+                        
+                        if (profNames.length > 0) {
+                            options += `<optgroup label="Professeurs de mes enfants">`;
+                            profNames.forEach(prof => {
+                                options += `<option value="prof_${prof}">Professeur : ${prof}</option>`;
+                            });
+                            options += `</optgroup>`;
+                        }
+                    }
                 }
                 select.innerHTML = options;
             }
