@@ -171,6 +171,7 @@
           <button class="dash-tab active" data-tab="inscriptions">📝 Inscriptions <span class="tab-badge" id="pending-badge">3</span></button>
           <button class="dash-tab" data-tab="eleves">👦 Élèves</button>
           <button class="dash-tab" data-tab="profs">🧑‍🏫 Professeurs</button>
+          <button class="dash-tab" data-tab="admin-hours">🕒 Heures Profs</button>
           <button class="dash-tab" data-tab="admin-cours">📅 Cours</button>
           <button class="dash-tab" data-tab="admin-settings">⚙️ Paramètres</button>
           <button class="dash-tab" data-tab="admin-gala">🩰 Gala</button>
@@ -229,6 +230,35 @@
             <div style="overflow-x: auto;">
               <div id="admin-profs-body" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;"></div>
             </div>
+          </div>
+        </div>
+        
+                <!-- Tab: Heures Profs -->
+        <div class="tab-content" id="tab-admin-hours">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+              <h3 style="margin: 0; color: var(--primary);">Décompte des heures</h3>
+              <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Heures validées par les professeurs lors de l'appel</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="month" id="admin-hours-month" class="form-input" style="width: auto;">
+              <button class="btn btn-outline" id="admin-hours-export" onclick="window.exportProfHours()">Exporter CSV</button>
+            </div>
+          </div>
+          
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Professeur</th>
+                  <th>Mois</th>
+                  <th>Total Heures</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-hours-body">
+              </tbody>
+            </table>
           </div>
         </div>
         
