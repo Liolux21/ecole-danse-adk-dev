@@ -31,30 +31,7 @@ export const DATA = {
   ],
 
   // ---- UTILISATEURS ----
-  users: [
-    // Admin
-    { id: 1,  email: 'admin@adk.be',       password: 'admin2026',  role: 'admin',  name: 'Anne De Keyser',   avatar: '👑', title: 'Directrice' },
-    // Profs (compte générique + comptes nominatifs)
-    { id: 2,  email: 'prof@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  phone: '0471/12.34.56', courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
-    { id: 3,  email: 'janis@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Janis',         avatar: '👩‍🏫', title: 'Professeure',  phone: '0471/12.34.56', courseIds: [10, 12, 13, 25, 30], takenCourseIds: [15, 24] },
-    { id: 4,  email: 'maurine@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Maurine',       avatar: '💃',  title: 'Professeure',  phone: '0472/23.45.67', courseIds: [3, 5, 8, 28, 29] },
-    { id: 5,  email: 'corentin@adk.be',    password: 'prof2026',   role: 'prof',   name: 'Corentin',      avatar: '🕺',  title: 'Professeur',   phone: '0473/34.56.78', courseIds: [15, 31, 32] },
-    { id: 6,  email: 'charlotte@adk.be',   password: 'prof2026',   role: 'prof',   name: 'Charlotte',     avatar: '👩‍🏫', title: 'Professeure',  phone: '0474/45.67.89', courseIds: [11, 14] },
-    { id: 7,  email: 'margaux@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Margaux',       avatar: '💃',  title: 'Professeure',  phone: '0475/56.78.90', courseIds: [18, 19, 22, 24, 37, 38] },
-    { id: 8,  email: 'jade@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Jade',          avatar: '👩‍🏫', title: 'Professeure',  phone: '0476/67.89.01', courseIds: [16, 17] },
-    { id: 9,  email: 'adam@adk.be',        password: 'prof2026',   role: 'prof',   name: 'Adam',          avatar: '🕺',  title: 'Professeur',   phone: '0477/78.90.12', courseIds: [20, 21] },
-    { id: 10, email: 'daisy@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Daisy',         avatar: '🌸',  title: 'Professeure',  phone: '0478/89.01.23', courseIds: [1, 2] },
-    { id: 11, email: 'loreen@adk.be',      password: 'prof2026',   role: 'prof',   name: 'Loreen',        avatar: '👩‍🏫', title: 'Professeure',  phone: '0479/90.12.34', courseIds: [39, 40] },
-    { id: 12, email: 'zoe@adk.be',         password: 'prof2026',   role: 'prof',   name: 'Zoé',           avatar: '💃',  title: 'Professeure',  phone: '0480/01.23.45', courseIds: [7, 35, 36] },
-    { id: 13, email: 'jeanne@adk.be',      password: 'prof2026',   role: 'prof',   name: 'Jeanne',        avatar: '👩‍🏫', title: 'Professeure',  phone: '0481/12.34.56', courseIds: [4] },
-    { id: 14, email: 'pauline@adk.be',     password: 'prof2026',   role: 'prof',   name: 'Pauline',       avatar: '💃',  title: 'Professeure',  phone: '0482/23.45.67', courseIds: [6] },
-    { id: 15, email: 'clementine@adk.be',  password: 'prof2026',   role: 'prof',   name: 'Clémentine',    avatar: '👩‍🏫', title: 'Professeure',  phone: '0483/34.56.78', courseIds: [9] },
-    { id: 16, email: 'maeva@adk.be',       password: 'prof2026',   role: 'prof',   name: 'Maeva',         avatar: '💃',  title: 'Professeure',  courseIds: [23] },
-    { id: 18, email: 'florence@adk.be',    password: 'prof2026',   role: 'prof',   name: 'Florence',      avatar: '👩‍🏫', title: 'Professeure',  courseIds: [27] },
-    // Parents
-    { id: 19, email: 'parent@adk.be',  password: 'parent2026', role: 'parent', name: 'Marie Dupont', avatar: '👩', childrenIds: [1, 9] },
-    { id: 20, email: 'parent2@adk.be', password: 'parent2026', role: 'parent', name: 'Jean Petit',   avatar: '👨', childrenIds: [2, 3] },
-  ],
+  users: [],
 
   // ---- COURS (Saison 2026-2027) ----
   courses: [
@@ -149,48 +126,13 @@ export const DATA = {
   },
 
   // ---- ÉLÈVES (démo) ----
-  students: [
-    { id: 1, firstname: 'Léa',   lastname: 'Dupont',   age: 9,  courseIds: [1, 10],   parentId: 19, cotisation: 'payée', mutuelle: 'attente', montant: 480 },
-    { id: 2, firstname: 'Emma',  lastname: 'Petit',    age: 7,  courseIds: [3],      parentId: 20, cotisation: 'payée', mutuelle: 'attente', montant: 280 },
-    { id: 3, firstname: 'Tom',   lastname: 'Petit',    age: 12, courseIds: [5],      parentId: 20, cotisation: 'en attente', mutuelle: 'attente', montant: 280 },
-    { id: 4, firstname: 'Chloé', lastname: 'Bernard',  age: 14, courseIds: [11, 15], parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 480 },
-    { id: 5, firstname: 'Inès',  lastname: 'Martin',   age: 10, courseIds: [10, 9],  parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 480 },
-    { id: 6, firstname: 'Zoé',   lastname: 'Lambert',  age: 5,  courseIds: [2],      parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 280 },
-    { id: 7, firstname: 'Milo',  lastname: 'Rousseau', age: 12, courseIds: [5, 17],  parentId: null, cotisation: 'en attente', mutuelle: 'attente', montant: 480 },
-    { id: 8, firstname: 'Alice', lastname: 'Moreau',   age: 7,  courseIds: [3, 1],   parentId: null, cotisation: 'payée', mutuelle: 'attente', montant: 480 },
-    { id: 9, firstname: 'Lucas', lastname: 'Dupont',   age: 11, courseIds: [4, 6],   parentId: 19, cotisation: 'payée', mutuelle: 'remis', montant: 300 },
-  ],
+  students: [],
 
   // ---- PRÉSENCES (démo) ----
-  attendance: [
-    { studentId: 1, courseId: 1,  date: '10/09', status: 'present' },
-    { studentId: 1, courseId: 10, date: '10/09', status: 'present' },
-    { studentId: 1, courseId: 1,  date: '17/09', status: 'absent'  },
-    { studentId: 1, courseId: 10, date: '17/09', status: 'excuse'  },
-    { studentId: 1, courseId: 1,  date: '24/09', status: 'present' },
-    { studentId: 2, courseId: 3,  date: '13/09', status: 'present' },
-    { studentId: 2, courseId: 3,  date: '20/09', status: 'present' },
-    { studentId: 2, courseId: 3,  date: '27/09', status: 'absent'  },
-    { studentId: 3, courseId: 5,  date: '13/09', status: 'present' },
-    { studentId: 3, courseId: 5,  date: '20/09', status: 'present' },
-    { studentId: 4, courseId: 11, date: '12/09', status: 'present' },
-    { studentId: 4, courseId: 15, date: '14/09', status: 'present' },
-    { studentId: 4, courseId: 11, date: '19/09', status: 'excuse'  },
-    { studentId: 5, courseId: 10, date: '14/09', status: 'present' },
-    { studentId: 5, courseId: 9,  date: '10/09', status: 'absent'  },
-    { studentId: 7, courseId: 5,  date: '13/09', status: 'present' },
-    { studentId: 7, courseId: 17, date: '10/09', status: 'present' },
-    { studentId: 8, courseId: 3,  date: '13/09', status: 'present' },
-    { studentId: 8, courseId: 1,  date: '10/09', status: 'present' },
-  ],
+  attendance: [],
 
   // ---- INSCRIPTIONS (démo) ----
-  inscriptions: [
-    { id: 1, childName: 'Zoé Laurent',   age: 8,  parentName: 'Claire Laurent', email: 'claire.laurent@email.com', phone: '0476 12 34 56', courses: ['Hip-Hop 1 (6-8 ans)'], level: 'Débutant', status: 'pending',  date: '20/06/2026', message: 'Ma fille adore la danse hip-hop !' },
-    { id: 2, childName: 'Milo Rousseau', age: 11, parentName: 'Paul Rousseau',  email: 'paul.rousseau@email.com',  phone: '0486 54 32 10', courses: ['Hip-Hop 3 (11-13 ans)'], level: '1-2 ans', status: 'pending',  date: '19/06/2026', message: '' },
-    { id: 3, childName: 'Alice Moreau',  age: 5,  parentName: 'Julie Moreau',   email: 'julie.moreau@email.com',   phone: '0472 98 76 54', courses: ['Initiation (4-5 ans)'], level: 'Débutant', status: 'approved', date: '15/06/2026', message: 'Première fois en danse.' },
-    { id: 4, childName: 'Lucas Girard',  age: 15, parentName: 'Eric Girard',    email: 'eric.girard@email.com',    phone: '0479 11 22 33', courses: ['Jazz-Contempo 4 (Avancé)', 'Break Dance'], level: '3-5 ans', status: 'pending', date: '22/06/2026', message: 'Lucas a déjà 4 ans de danse.' },
-  ],
+  inscriptions: [],
 
   // ---- ACTUALITÉS ----
   news: [
