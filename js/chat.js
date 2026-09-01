@@ -1,4 +1,4 @@
-import { db, collection, addDoc, doc, getDoc, updateDoc, onSnapshot, query, orderBy, where, serverTimestamp } from './firebase-config.js';
+import { db, collection, addDoc, doc, getDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, where, serverTimestamp } from './firebase-config.js';
 
 let currentChatId = null;
 let unsubscribeMessages = null;
@@ -118,11 +118,15 @@ window.switchChat = function(chatId, chatTitle) {
             row.className = `msg-row ${isMe ? 'me' : 'other'}`;
             row.setAttribute('style', `display: flex; width: 100%; align-self: stretch; margin-bottom: 5px; justify-content: ${isMe ? 'flex-end' : 'flex-start'};`);
             
+            const canDelete = isMe || (currentUser && currentUser.role === 'admin');
             row.innerHTML = `
                 <div class="msg-bubble" style="max-width: 75%; padding: 10px 15px; border-radius: 15px; text-align: left; position: relative; word-break: break-word; ${isMe ? 'background: #CAA9A9; color: #fff; border-bottom-right-radius: 2px;' : 'background: #fff; border: 1px solid rgba(202, 169, 169, 0.4); color: #4A3E3E; border-bottom-left-radius: 2px;'}">
                     ${!isMe ? `<strong style="font-size:0.8rem; opacity:0.8; display: block; margin-bottom: 3px;">${msg.senderName || 'Utilisateur'}</strong>` : ''}
                     <div style="line-height: 1.4;">${msg.text || ''}</div>
-                    <div class="msg-meta" style="font-size: 0.7rem; text-align: right; margin-top: 5px; opacity: 0.8;">${timeString}</div>
+                    <div class="msg-meta" style="font-size: 0.7rem; display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 5px; opacity: 0.8;">
+                        ${timeString}
+                        ${canDelete ? `<span class="delete-msg-btn" data-msg-id="${docSnap.id}" style="cursor: pointer; opacity: 0.7;" title="Supprimer ce message">🗑️</span>` : ''}
+                    </div>
                 </div>
             `;
             messagesContainer.appendChild(row);
@@ -135,6 +139,28 @@ window.switchChat = function(chatId, chatTitle) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Delete Message Delegation
+    const msgsContainer = document.getElementById('chat-messages');
+    if (msgsContainer) {
+        msgsContainer.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.delete-msg-btn');
+            if (btn) {
+                const msgId = btn.getAttribute('data-msg-id');
+                if (msgId && currentChatId) {
+                    if (confirm("Voulez-vous vraiment supprimer ce message ?")) {
+                        try {
+                            await deleteDoc(doc(db, 'conversations', currentChatId, 'messages', msgId));
+                        } catch(err) {
+                            console.error("Erreur de suppression: ", err);
+                            alert("Erreur lors de la suppression.");
+                        }
+                    }
+                }
+            }
+        });
+    }
+
 
     
     
