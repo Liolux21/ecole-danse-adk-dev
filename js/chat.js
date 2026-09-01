@@ -94,7 +94,8 @@ window.switchChat = function(chatId, chatTitle) {
 
         snapshot.forEach(docSnap => {
             const msg = docSnap.data();
-            const isMe = msg.senderId === currentUser.uid;
+            const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+            const isMe = currentUser && msg.senderId === currentUser.uid;
 
             let timeString = '';
             if (msg.timestamp) {
@@ -191,8 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const firstMsg = msgInput.value.trim();
             const target = targetSelect.value;
             
-            const currentUser = window.AUTH ? window.AUTH.currentUser : null;
-            if (!title || !firstMsg || !currentUser || !target) return;
+                        if (!title || !firstMsg || !currentUser || !target) return;
             
             btnCreateChatConfirm.disabled = true;
             btnCreateChatConfirm.textContent = "Création...";
