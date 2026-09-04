@@ -1350,6 +1350,10 @@
         <!-- Filled by chat.js -->
         <div style="text-align: center; color: var(--text-light); padding: 2rem;">Chargement...</div>
       </div>
+      <!-- Toggle Archive -->
+      <div style="padding: 0.5rem; border-top: 1px solid var(--border); background: #f0f0f0;">
+        <button id="btn-toggle-archived" style="width: 100%; background: none; border: none; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; padding: 0.3rem;">🗃️ Voir les archives</button>
+      </div>
     </div>
     
     <!-- RIGHT CHAT AREA -->
@@ -1360,6 +1364,7 @@
           <button id="btn-back-to-list" style="background: none; border: none; font-size: 1.5rem; color: #CAA9A9; cursor: pointer; display: none;">&larr;</button>
           <h3 id="active-chat-title" style="margin:0; font-size: 1.1rem; color: var(--gold);">Sélectionnez une discussion</h3>
         </div>
+        <button id="btn-archive-chat" style="display:none; background:none; border:none; cursor:pointer; font-size:1.2rem; padding:0.4rem; border-radius:8px;" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'" title="Archiver cette discussion">🗃️</button>
       </div>
 
       <!-- Messages -->

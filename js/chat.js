@@ -1,7 +1,8 @@
-import { db, storage, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, where, serverTimestamp, storageRef, uploadBytes, getDownloadURL } from './firebase-config.js';
+import { db, storage, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, where, serverTimestamp, storageRef, uploadBytes, getDownloadURL, arrayUnion, arrayRemove } from './firebase-config.js';
 
 let currentChatId = null;
 let unsubscribeMessages = null;
+let showArchivedConversations = false;
 
 // =============================================
 // LOAD CONVERSATIONS — groupés par catégorie
@@ -33,9 +34,17 @@ window.loadConversations = function() {
             onetoone: { label: '💬 Canal One to One', convs: [] },
         };
 
+        let hasAnyConv = false;
+
         snapshot.forEach(docSnap => {
             const conv = docSnap.data();
             const convId = docSnap.id;
+            
+            // Check archive status
+            const isArchived = Array.isArray(conv.archivedBy) && conv.archivedBy.includes(currentUser.email);
+            if (isArchived !== showArchivedConversations) return;
+
+            hasAnyConv = true;
             const tg = conv.targetGroup || '';
 
             if (tg === 'admin' || tg === 'all' || tg === 'all_profs' || tg === 'all_students') {
@@ -46,6 +55,11 @@ window.loadConversations = function() {
                 groups.onetoone.convs.push({ id: convId, data: conv });
             }
         });
+
+        if (!hasAnyConv) {
+            convListEl.innerHTML = `<div style="padding: 1rem; color: var(--text-light); text-align: center;">Aucune conversation ${showArchivedConversations ? 'archivée' : ''}</div>`;
+            return;
+        }
 
         // Rendre chaque groupe
         Object.values(groups).forEach(group => {
@@ -105,6 +119,15 @@ window.switchChat = function(chatId, chatTitle) {
     currentChatId = chatId;
 
     document.getElementById('active-chat-title').textContent = chatTitle;
+    
+    // Update archive button visibility and text
+    const btnArchiveChat = document.getElementById('btn-archive-chat');
+    if (btnArchiveChat) {
+        btnArchiveChat.style.display = 'block';
+        btnArchiveChat.innerHTML = showArchivedConversations ? '⤴️' : '🗃️';
+        btnArchiveChat.title = showArchivedConversations ? 'Désarchiver' : 'Archiver';
+    }
+
     const messenger = document.getElementById('global-messenger-container');
     if (messenger) messenger.classList.add('chat-active');
 
@@ -240,6 +263,49 @@ document.addEventListener('DOMContentLoaded', () => {
             const messenger = document.getElementById('global-messenger-container');
             if (messenger) messenger.classList.remove('chat-active');
             currentChatId = null;
+        });
+    }
+
+    // ---- Voir les archives ----
+    const btnToggleArchived = document.getElementById('btn-toggle-archived');
+    if (btnToggleArchived) {
+        btnToggleArchived.addEventListener('click', () => {
+            showArchivedConversations = !showArchivedConversations;
+            btnToggleArchived.innerHTML = showArchivedConversations ? '⬅️ Retour aux discussions' : '🗃️ Voir les archives';
+            window.loadConversations();
+        });
+    }
+
+    // ---- Archiver la conversation ----
+    const btnArchiveChat = document.getElementById('btn-archive-chat');
+    if (btnArchiveChat) {
+        btnArchiveChat.addEventListener('click', async () => {
+            const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+            if (!currentChatId || !currentUser) return;
+            try {
+                // Toggle archive status
+                if (showArchivedConversations) {
+                    await updateDoc(doc(db, 'conversations', currentChatId), {
+                        archivedBy: arrayRemove(currentUser.email)
+                    });
+                    alert("Conversation désarchivée");
+                } else {
+                    await updateDoc(doc(db, 'conversations', currentChatId), {
+                        archivedBy: arrayUnion(currentUser.email)
+                    });
+                }
+                
+                // Return to list or clear chat view
+                const messenger = document.getElementById('global-messenger-container');
+                if (messenger) messenger.classList.remove('chat-active');
+                currentChatId = null;
+                document.getElementById('active-chat-title').textContent = "Sélectionnez une discussion";
+                document.getElementById('chat-messages').innerHTML = '<div style="text-align: center; color: var(--text-light); margin-top: 2rem;">Veuillez sélectionner ou créer une discussion pour commencer.</div>';
+                btnArchiveChat.style.display = 'none';
+            } catch (err) {
+                console.error("Erreur d'archivage", err);
+                alert("Erreur lors de l'archivage.");
+            }
         });
     }
 

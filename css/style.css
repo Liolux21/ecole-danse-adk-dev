@@ -2344,6 +2344,14 @@ footer {
 }
 
 /* Mobile Messenger */
+#msg-input::-webkit-scrollbar {
+  display: none;
+}
+#msg-input {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 @media (max-width: 768px) {
   #messenger-sidebar {
     width: 100% !important;
