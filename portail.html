@@ -1344,9 +1344,16 @@
         <div style="text-align: center; color: var(--text-light); margin-top: 2rem;">Veuillez sélectionner ou créer une discussion pour commencer.</div>
       </div>
       <!-- Input Area -->
-      <div style="padding: 1rem; border-top: 1px solid var(--border); background: #fff; display: flex; gap: 0.5rem;">
+      <div style="padding: 0.75rem 1rem; border-top: 1px solid var(--border); background: #fff; display: flex; gap: 0.5rem; align-items: center; position: relative;">
+        <!-- Emoji picker dropdown -->
+        <div id="emoji-picker" style="display:none; position:absolute; bottom:calc(100% + 4px); left:0; background:#fff; border:1px solid var(--border); border-radius:12px; padding:0.5rem; box-shadow:0 4px 20px rgba(0,0,0,0.12); z-index:100; width:280px; flex-wrap:wrap; gap:2px;">
+          <!-- Filled by JS below -->
+        </div>
+        <button id="btn-emoji" title="Emojis" style="background:none;border:none;font-size:1.3rem;cursor:pointer;padding:0.2rem 0.4rem;border-radius:8px;flex-shrink:0;" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'">😊</button>
+        <button id="btn-attach" title="Joindre un fichier" style="background:none;border:none;font-size:1.2rem;cursor:pointer;padding:0.2rem 0.4rem;border-radius:8px;flex-shrink:0;" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'">📎</button>
+        <input type="file" id="chat-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none;">
         <input type="text" id="msg-input" class="form-input" placeholder="Écrivez votre message..." style="flex: 1; border-radius: 20px;">
-        <button id="btn-send-msg" class="btn btn-primary" style="border-radius: 20px; padding: 0.5rem 1.5rem;">Envoyer</button>
+        <button id="btn-send-msg" class="btn btn-primary" style="border-radius: 20px; padding: 0.5rem 1.5rem; flex-shrink:0;">Envoyer</button>
       </div>
     </div>
   </div>
@@ -1354,8 +1361,29 @@
   <script src="js/vitrine-data.js?v=3"></script>
   <script type="module" src="js/data.js?v=54"></script>
   <script type="module" src="js/auth.js?v=24"></script>
-  <script type="module" src="js/chat.js?v=21"></script>
+  <script type="module" src="js/chat.js?v=22"></script>
   <script type="module" src="js/app.js?v=33"></script>
+  <script>
+    // Init emoji picker
+    document.addEventListener('DOMContentLoaded', () => {
+      const emojis = ['😊','😂','🥰','😍','🤩','😎','🥳','🤗','😁','😄','👍','👏','🙌','❤️','🎉','🔥','✨','💪','🙏','💯','🎭','🩰','📅','📌','📎','🗓️','👩‍🏫','🎶','🎵','🎸','🌟','⭐','💫','🌸','🌺','🌼','🌻','🍀','🏆','🥇'];
+      const picker = document.getElementById('emoji-picker');
+      if (picker) {
+        picker.style.display = 'flex';
+        picker.style.flexWrap = 'wrap';
+        emojis.forEach(em => {
+          const span = document.createElement('span');
+          span.className = 'emoji-item';
+          span.textContent = em;
+          span.style.cssText = 'font-size:1.4rem;cursor:pointer;padding:4px;border-radius:6px;line-height:1;';
+          span.onmouseenter = () => span.style.background = '#f0f0f0';
+          span.onmouseleave = () => span.style.background = 'transparent';
+          picker.appendChild(span);
+        });
+        picker.style.display = 'none';
+      }
+    });
+  </script>
 
   <!-- Modal: Détail Heures -->
   <div class="vitrine-modal-overlay" id="modal-hours-detail">
