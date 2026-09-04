@@ -164,7 +164,7 @@ export const DATA = {
   getStudentById(id)            { return this.students.find(s => String(s.id) === String(id)); },
   getUserById(id)               { return this.users.find(u => String(u.id) === String(id)); },
   getStudentsByCourse(cid)      { return this.students.filter(s => (s.courseIds||[]).map(String).includes(String(cid))); },
-  getAttendanceByStudent(sid)   { return this.attendance.filter(a => a.studentId === sid); },
+  getAttendanceByStudent(sid)   { return this.attendance.filter(a => String(a.studentId) === String(sid)); },
   getPendingInscriptions()      { return this.inscriptions.filter(i => i.status === 'pending'); },
   getChildrenByParent(user) {
       if (!user) return [];
@@ -199,11 +199,18 @@ export const DATA = {
       this.saveState(); 
     } 
   },
-  markAttendance(studentId, courseId, date, status) {
-    const existing = this.attendance.find(a => a.studentId === studentId && a.courseId === courseId && a.date === date);
+  async markAttendance(studentId, courseId, date, status) {
+    const existing = this.attendance.find(a => String(a.studentId) === String(studentId) && String(a.courseId) === String(courseId) && a.date === date);
     if (existing) existing.status = status;
-    else this.attendance.push({ studentId, courseId, date, status });
+    else this.attendance.push({ studentId: String(studentId), courseId: String(courseId), date, status });
     this.saveState();
+    try {
+      const { doc, setDoc, db } = await import('./firebase-config.js');
+      const docId = studentId + "_" + courseId + "_" + date.replace(/\//g, '-');
+      await setDoc(doc(db, "attendance", docId), { studentId: String(studentId), courseId: String(courseId), date, status, timestamp: Date.now() });
+    } catch (e) {
+      console.error("Firebase save attendance error:", e);
+    }
   },
 
   // ---- ADVANCED COURSE MANAGEMENT ----
@@ -306,7 +313,19 @@ export const DATA = {
 
       
       
-      // 5. Fetch Prof Hours
+      
+      // Fetch Attendance
+      try {
+        const attSnap = await getDocs(collection(db, "attendance"));
+        this.attendance = [];
+        attSnap.forEach(doc => {
+          this.attendance.push({ id: doc.id, ...doc.data() });
+        });
+      } catch (e) {
+        console.warn("attendance collection missing or error: ", e);
+      }
+      
+      // 5b. Fetch Prof Hours
       try {
         const phSnap = await getDocs(collection(db, "prof_hours"));
         this.prof_hours = [];

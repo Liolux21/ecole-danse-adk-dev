@@ -432,7 +432,7 @@ function initInscription() {
 
   courseSelectHeader.addEventListener('click', (e) => {
     if (e.target.classList.contains('remove')) {
-      const id = parseInt(e.target.dataset.id);
+      const id = e.target.dataset.id;
       selectedCourses.delete(id);
       renderTags();
       renderOptions(courseSearchInput.value);
@@ -554,7 +554,7 @@ async function initPortal() {
 
   // Tabs admin
   initTabs('admin-tabs', ['tab-inscriptions', 'tab-eleves', 'tab-profs', 'tab-admin-cours', 'tab-admin-settings', 'tab-admin-gala', 'tab-admin-annonces', 'tab-admin-messagerie']);
-  initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves', 'tab-prof-gala', 'tab-prof-messagerie', 'tab-prof-notifications']);
+  initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves', 'tab-mes-heures', 'tab-prof-gala', 'tab-prof-messagerie', 'tab-prof-notifications']);
   initTabs('parent-tabs', ['tab-parent-planning', 'tab-parent-gala', 'tab-parent-messagerie', 'tab-parent-notifications']);
   
   // Sub-tabs Gala
@@ -1268,7 +1268,7 @@ window.openAddProfModal = function(id = null) {
       
       if (taughtContainer) {
         taughtContainer.querySelectorAll('.prof-taught-checkbox').forEach(cb => {
-          const c = DATA.getCourseById(parseInt(cb.value));
+          const c = DATA.getCourseById(cb.value);
           const profFullName = p.firstname ? `${p.firstname} ${p.lastname}` : p.name;
           if (c && c.prof && c.prof.includes(profFullName)) {
             cb.checked = true;
@@ -1846,7 +1846,7 @@ function renderProfDashboard(user) {
     });
 
     courseSelector.onchange = (e) => {
-      selectedCourseId = parseInt(e.target.value);
+      selectedCourseId = e.target.value;
       populateAppelDates(selectedCourseId);
       renderAppelList(selectedCourseId);
     };
@@ -1856,6 +1856,7 @@ function renderProfDashboard(user) {
     renderAppelList(selectedCourseId);
   }
   renderProfEleves(user);
+    window.renderProfHeures(user);
   
   // Onglet: Mon Planning
   const btnEnseignes = document.getElementById('prof-planning-toggle-enseignes');
@@ -1932,7 +1933,7 @@ function renderProfDashboard(user) {
       const dInput = document.getElementById('appel-date');
       const date = dInput.value.split('-').reverse().join('/');
       document.querySelectorAll('.appel-item').forEach(item => {
-        const sid = parseInt(item.dataset.studentId);
+        const sid = item.dataset.studentId;
         const selected = item.querySelector('.appel-btn.selected');
         if (selected) {
           const status = selected.dataset.status;
@@ -1979,51 +1980,83 @@ function populateAppelDates(courseId) {
   if (!select) return;
   select.innerHTML = '';
   
-  const slot = DATA.schedule.slots.find(s => s.courseId === courseId);
-  const courseDay = slot ? slot.day : 0; // 0 = Lundi, 1 = Mardi, etc.
-  const targetJsDay = (courseDay + 1) % 7; // Lundi = 1, Dimanche = 0
-  
+  const course = DATA.getCourseById(courseId);
+  if (!course) return;
+  const daysMap = { 'Lundi': 1, 'Mardi': 2, 'Mercredi': 3, 'Jeudi': 4, 'Vendredi': 5, 'Samedi': 6, 'Dimanche': 0 };
+  let dayStr = course.schedule ? course.schedule.split(' ')[0] : 'Lundi';
+  let targetJsDay = daysMap[dayStr] !== undefined ? daysMap[dayStr] : 1;
+
   const today = new Date();
   
-  let d = new Date(today);
-  while (d.getDay() !== targetJsDay) {
-    d.setDate(d.getDate() + 1);
-  }
+  const seasonYear = today.getMonth() < 7 ? today.getFullYear() - 1 : today.getFullYear();
+  const seasonStart = new Date(seasonYear, 8, 1); 
   
+  let firstDate = new Date(seasonStart);
+  while (firstDate.getDay() !== targetJsDay) {
+    firstDate.setDate(firstDate.getDate() + 1);
+  }
+
+  let nextDate = new Date(today);
+  while (nextDate.getDay() !== targetJsDay) {
+    nextDate.setDate(nextDate.getDate() + 1);
+  }
+
+  const datesSet = new Set();
   const dates = [];
-  dates.push(new Date(d)); // Prochaine occurrence ou aujourd'hui
-  
-  for (let i = 1; i <= 8; i++) { // 8 dernières semaines
-    const pastDate = new Date(d);
-    pastDate.setDate(d.getDate() - (i * 7));
-    dates.push(pastDate);
-  }
-  
-  dates.sort((a, b) => b - a);
-  
-  const todayStr = today.toISOString().split('T')[0];
-  let selectedIndex = 0;
-  
-  dates.forEach((dateObj, idx) => {
-    const dateStr = dateObj.toISOString().split('T')[0];
-    let displayStr = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
-    displayStr = displayStr.charAt(0).toUpperCase() + displayStr.slice(1);
-    
-    if (slot && slot.hour) {
-      displayStr += ` à ${slot.hour.replace(':', 'h')}`;
+
+  const addDate = (d) => {
+    const dStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    if (!datesSet.has(dStr)) {
+      datesSet.add(dStr);
+      dates.push(new Date(d));
     }
+  };
+
+  if (firstDate <= nextDate) {
+    addDate(firstDate);
+  }
+
+  for (let i = 4; i >= 1; i--) {
+    let past = new Date(nextDate);
+    past.setDate(past.getDate() - (i * 7));
+    if (past >= seasonStart) {
+      addDate(past);
+    }
+  }
+
+  for (let i = 0; i < 4; i++) {
+    let future = new Date(nextDate);
+    future.setDate(future.getDate() + (i * 7));
+    addDate(future);
+  }
+
+  dates.sort((a, b) => b - a);
+
+  let closestDiff = Infinity;
+  let closestIndex = 0;
+
+  dates.forEach((dateObj, idx) => {
+    const yyyy = dateObj.getFullYear();
+    const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const dd = String(dateObj.getDate()).padStart(2, '0');
+    const dStr = yyyy + '-' + mm + '-' + dd;
     
     const option = document.createElement('option');
-    option.value = dateStr;
-    option.textContent = displayStr;
-    select.appendChild(option);
+    option.value = dStr;
+    option.textContent = dd + '/' + mm + '/' + yyyy;
     
-    if (dateStr <= todayStr && selectedIndex === 0) {
-      selectedIndex = idx;
+    const diff = Math.abs(dateObj - today);
+    if (diff < closestDiff) {
+      closestDiff = diff;
+      closestIndex = idx;
     }
+    
+    select.appendChild(option);
   });
   
-  select.selectedIndex = selectedIndex;
+  if (select.options.length > 0) {
+    select.selectedIndex = closestIndex;
+  }
 }
 
 function renderAppelList(courseId) {
@@ -2094,6 +2127,74 @@ function renderAppelList(courseId) {
   });
 }
 
+window.renderProfHeures = function(user) {
+  user = user || (window.AUTH && window.AUTH.currentUser);
+  if (!user) return;
+  const list = document.getElementById('prof-heures-list');
+  const totalEl = document.getElementById('prof-heures-total');
+  if (!list || !totalEl) return;
+  
+  if (!DATA.prof_hours || DATA.prof_hours.length === 0) {
+    list.innerHTML = '<div class="empty-state">Aucune prestation enregistree.</div>';
+    totalEl.textContent = '0h';
+    return;
+  }
+  
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  
+  let totalCurrentMonth = 0;
+  const monthData = {};
+  
+  DATA.prof_hours.forEach(r => {
+    if (String(r.profId) !== String(user.id)) return;
+    const parts = r.date.split('/');
+    const dObj = new Date(parts[2], parts[1] - 1, parts[0]);
+    const key = parts[2] + '-' + parts[1];
+    
+    if (!monthData[key]) monthData[key] = { total: 0, items: [] };
+    monthData[key].total += r.hours;
+    monthData[key].items.push(r);
+    
+    if (dObj.getMonth() === currentMonth && dObj.getFullYear() === currentYear) {
+      totalCurrentMonth += r.hours;
+    }
+  });
+  
+  totalEl.textContent = totalCurrentMonth + 'h';
+  
+  const sortedKeys = Object.keys(monthData).sort().reverse();
+  
+  if (sortedKeys.length === 0) {
+    list.innerHTML = '<div class="empty-state">Aucune prestation enregistree.</div>';
+    return;
+  }
+  
+  list.innerHTML = sortedKeys.map(key => {
+    const data = monthData[key];
+    const yyyy = key.split('-')[0];
+    const mm = key.split('-')[1];
+    const date = new Date(yyyy, mm - 1, 1);
+    const monthName = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    
+    data.items.sort((a,b) => {
+      const aParts = a.date.split('/');
+      const bParts = b.date.split('/');
+      return new Date(bParts[2], bParts[1]-1, bParts[0]) - new Date(aParts[2], aParts[1]-1, aParts[0]);
+    });
+    
+    const itemsHtml = data.items.map(item => {
+      const course = DATA.getCourseById(item.courseId);
+      const cName = course ? course.name : 'Cours inconnu';
+      return '<div style="display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid var(--border-color); font-size:0.9rem;"><div><strong style="color:var(--text);">' + item.date + '</strong> - <span style="color:var(--text-muted);">' + cName + '</span></div><div style="font-weight:bold; color:var(--primary);">' + item.hours + 'h</div></div>';
+    }).join('');
+    
+    return '<div style="margin-bottom:2rem;"><h4 style="margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:2px solid var(--primary-light); color:var(--primary); text-transform:capitalize;">' + monthName + ' <span style="float:right;">' + data.total + 'h</span></h4>' + itemsHtml + '</div>';
+  }).join('');
+};
+
+
 window.renderProfEleves = function(user) {
     user = user || (window.AUTH && window.AUTH.currentUser);
     if (!user) return;
@@ -2120,7 +2221,7 @@ window.renderProfEleves = function(user) {
     
     let courseIdsToFetch = selectedCourseId === 'all' 
         ? taughtCourseIds 
-        : [parseInt(selectedCourseId, 10)]; // assuming course IDs are numeric or can be parsed
+        : [selectedCourseId]; // assuming course IDs are numeric or can be parsed
 
     const allStudents = [...new Map(courseIdsToFetch.flatMap(cid => DATA.getStudentsByCourse(cid)).map(s => [s.id, s])).values()];
     
@@ -2490,13 +2591,13 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
 
   // Attach event listeners
   container.querySelectorAll('.btn-manage').forEach(btn => {
-    btn.onclick = () => openManageCourseModal(parseInt(btn.dataset.courseId));
+    btn.onclick = () => openManageCourseModal(btn.dataset.courseId);
   });
   container.querySelectorAll('.btn-absent').forEach(btn => {
-    btn.onclick = () => openAbsenceModal(parseInt(btn.dataset.courseId), parseInt(btn.dataset.studentId));
+    btn.onclick = () => openAbsenceModal(btn.dataset.courseId, btn.dataset.studentId);
   });
   container.querySelectorAll('.btn-msg').forEach(btn => {
-    btn.onclick = () => openMessagesModal(parseInt(btn.dataset.courseId), user);
+    btn.onclick = () => openMessagesModal(btn.dataset.courseId, user);
   });
 }
 
@@ -2554,8 +2655,8 @@ document.getElementById('close-absence')?.addEventListener('click', () => {
 
 document.getElementById('absence-form')?.addEventListener('submit', (e) => {
   e.preventDefault();
-  const cid = parseInt(document.getElementById('absence-course-id').value);
-  const sid = parseInt(document.getElementById('absence-student-id').value);
+  const cid = document.getElementById('absence-course-id').value;
+  const sid = document.getElementById('absence-student-id').value;
   const dateVal = document.getElementById('absence-date').value;
   const dateStr = dateVal.split('-').reverse().join('/');
   let status = document.getElementById('absence-status').value;
@@ -2740,7 +2841,7 @@ document.getElementById('close-manage-course')?.addEventListener('click', () => 
 
 document.getElementById('manage-course-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const id = parseInt(document.getElementById('manage-course-id').value);
+  const id = document.getElementById('manage-course-id').value;
   
   DATA.courseOverrides[id] = {
     type: document.getElementById('manage-course-type').value,
@@ -2748,7 +2849,7 @@ document.getElementById('manage-course-form')?.addEventListener('submit', async 
     hour: document.getElementById('manage-course-hour').value,
     date: document.getElementById('manage-course-date').value,
     lieu: document.getElementById('manage-course-lieu').value,
-    substituteId: document.getElementById('manage-course-sub').value ? parseInt(document.getElementById('manage-course-sub').value) : null,
+    substituteId: document.getElementById('manage-course-sub').value || null,
     message: document.getElementById('manage-course-msg').value
   };
 
@@ -2853,7 +2954,7 @@ document.getElementById('chat-form')?.addEventListener('submit', (e) => {
   
   if (typeVal.startsWith('private-')) {
     type = 'private';
-    recipientId = parseInt(typeVal.split('-')[1]);
+    recipientId = typeVal.split('-')[1];
   }
 
   DATA.messages.push({
