@@ -7,14 +7,17 @@ service cloud.firestore {
     // FONCTIONS D'AIDE (Helper functions)
     // ---------------------------------------------------------
 
+    // Vérifie si l'utilisateur est connecté
     function isAuthenticated() {
       return request.auth != null;
     }
 
+    // Récupère les données de l'utilisateur connecté depuis la collection users
     function getUserData() {
       return get(/databases/$(database)/documents/users/$(request.auth.token.email)).data;
     }
 
+    // Vérifie le rôle de l'utilisateur
     function isAdmin() {
       return isAuthenticated() && getUserData().role == 'admin';
     }
@@ -28,55 +31,94 @@ service cloud.firestore {
     }
 
     // ---------------------------------------------------------
-    // REGLES PAR COLLECTION
+    // RÈGLES PAR COLLECTION
     // ---------------------------------------------------------
 
+    // Collection USERS (Profs, Parents, Admins)
     match /users/{userId} {
       allow read: if isAuthenticated() && (request.auth.token.email == userId || isAdmin() || isProf());
       allow update: if isAuthenticated() && (request.auth.token.email == userId || isAdmin());
       allow create, delete: if isAdmin();
     }
 
+    // Collection STUDENTS (Les élèves)
     match /students/{studentId} {
       allow read: if isAuthenticated() && (
         isAdmin() || 
         isProf() || 
         (isParent() && String(studentId) in getUserData().childrenIds)
       );
+      // L'Admin gère les élèves, mais le Prof a besoin d'écrire pour noter les absences
       allow write: if isAdmin() || isProf();
     }
     
+    // Collection PROF_HOURS (Heures des professeurs)
     match /prof_hours/{docId} {
       allow read: if isAdmin() || isProf();
       allow write: if isAdmin() || isProf();
     }
 
+    // Collection ANNOUNCEMENTS (Les notifications internes et push)
     match /announcements/{announcementId} {
       allow read: if isAuthenticated();
       allow create: if isAdmin() || isProf();
       allow update, delete: if isAdmin() || (isProf() && resource.data.authorId == request.auth.token.email);
     }
 
+    // Collection COURSES / PLANNING
     match /courses/{courseId} {
       allow read: if true;
       allow write: if isAdmin();
     }
     
+    // Collection SETTINGS (Paramètres saison et congés)
     match /settings/{settingId} {
       allow read: if true;
       allow write: if isAdmin();
     }
     
+    // Historique des actions
     match /history/{historyId} {
       allow read: if isAdmin();
       allow write: if isAdmin() || isProf(); 
     }
 
+    // Collection INSCRIPTIONS
     match /inscriptions/{inscId} {
       allow create: if true; 
       allow read, update, delete: if isAdmin();
     }
 
+    // =========================================================
+    // MESSAGERIE / CHAT
+    // =========================================================
+    match /conversations/{conversationId} {
+      
+      // Fonction pour vérifier si l'utilisateur est dans la conversation
+      function isConvParticipant() {
+        return isAuthenticated() && (request.auth.token.email in resource.data.participants);
+      }
+      
+      allow read: if isConvParticipant() || isAdmin();
+      allow create: if isAuthenticated(); 
+      allow update: if isConvParticipant() || isAdmin();
+
+      // SOUS-COLLECTION MESSAGES
+      match /messages/{messageId} {
+      
+        // Fonction spécifique pour lire les participants dans le document parent
+        function isParentConvParticipant() {
+          return isAuthenticated() && (request.auth.token.email in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants);
+        }
+      
+        // Lecture, Ajout et Suppression
+        allow read: if isParentConvParticipant() || isAdmin();
+        allow create: if (isParentConvParticipant() || isAdmin()) && request.resource.data.senderId == request.auth.token.email;
+        allow delete: if isAdmin() || resource.data.senderId == request.auth.token.email;
+      }
+    }
+
+    // Règle de secours : tout ce qui n'est pas explicitement autorisé est refusé
     match /{document=**} {
       allow read, write: if false;
     }
