@@ -561,8 +561,8 @@ async function initPortal() {
   initTabs('parent-tabs', ['tab-parent-planning', 'tab-parent-gala', 'tab-parent-notifications', 'tab-parent-messagerie']);
   
   // Sub-tabs Gala
-  initTabs('sub-admin-gala-tabs', ['tab-admin-gala-repets', 'tab-admin-gala-tenues', 'tab-admin-gala-infos', 'tab-admin-gala-notes']);
-  initTabs('sub-prof-gala-tabs', ['tab-prof-gala-repets', 'tab-prof-gala-tenues', 'tab-prof-gala-infos', 'tab-prof-gala-notes']);
+  initTabs('sub-admin-gala-tabs', ['tab-admin-gala-repets', 'tab-admin-gala-infos', 'tab-admin-gala-notes']);
+  initTabs('sub-prof-gala-tabs', ['tab-prof-gala-repets', 'tab-prof-gala-infos', 'tab-prof-gala-notes']);
   initTabs('sub-parent-gala-tabs', ['tab-parent-gala-repets', 'tab-parent-gala-tenues']);
 
   // Mobile Gala select logic
