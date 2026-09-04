@@ -1830,7 +1830,7 @@ function renderProfDashboard(user) {
   document.getElementById('prof-name').textContent = user.name;
   document.getElementById('prof-avatar').textContent = user.avatar;
 
-  const taughtCourseIds = user.role === 'admin' 
+  const taughtCourseIds = (user.role === 'admin' || user.realRole === 'admin') 
     ? DATA.courses.map(c => c.id)
     : DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);
   
@@ -2058,7 +2058,7 @@ window.renderProfEleves = function(user) {
     if (!user) return;
 
     const tbody = document.getElementById('prof-eleves-body');
-    const taughtCourseIds = user.role === 'admin' 
+    const taughtCourseIds = (user.role === 'admin' || user.realRole === 'admin') 
         ? DATA.courses.map(c => c.id)
         : DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);
     
