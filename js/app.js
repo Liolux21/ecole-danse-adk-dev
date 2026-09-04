@@ -1863,18 +1863,63 @@ function renderProfDashboard(user) {
   // Onglet: Mon Planning
   const btnEnseignes = document.getElementById('prof-planning-toggle-enseignes');
   const btnSuivis = document.getElementById('prof-planning-toggle-suivis');
-  
+  const filterStyle = document.getElementById('prof-planning-style');
+  const filterLieu = document.getElementById('prof-planning-lieu');
+
+  // Populate filter dropdowns based on DATA.courses
+  if (filterStyle && filterStyle.options.length === 1) {
+    const styles = [...new Set(DATA.courses.map(c => c.style).filter(Boolean))];
+    styles.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+      filterStyle.appendChild(opt);
+    });
+  }
+  if (filterLieu && filterLieu.options.length === 1) {
+    const lieux = [...new Set(DATA.courses.map(c => c.lieu).filter(Boolean))];
+    lieux.forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = l;
+      // Format "adk" -> "ADK", etc.
+      opt.textContent = l.toUpperCase() === 'ADK' || l.toUpperCase() === 'ROX' ? l.toUpperCase() : l.charAt(0).toUpperCase() + l.slice(1);
+      filterLieu.appendChild(opt);
+    });
+  }
+
+  const applyPlanningFilters = () => {
+    const isEnseignes = btnEnseignes.classList.contains('active');
+    let baseCourseIds = isEnseignes ? taughtCourseIds : (user.courseIds || []);
+    
+    if (filterStyle && filterStyle.value !== 'all') {
+      baseCourseIds = baseCourseIds.filter(cid => {
+        const c = DATA.getCourseById(cid);
+        return c && c.style === filterStyle.value;
+      });
+    }
+    if (filterLieu && filterLieu.value !== 'all') {
+      baseCourseIds = baseCourseIds.filter(cid => {
+        const c = DATA.getCourseById(cid);
+        return c && c.lieu === filterLieu.value;
+      });
+    }
+    
+    renderPlanningCards(baseCourseIds, 'prof-planning-list', isEnseignes ? 'Aucun cours enseigné avec ces filtres.' : 'Aucun cours suivi avec ces filtres.', user);
+    renderWeeklyCalendar(baseCourseIds, 'prof-planning-calendar');
+  };
+
+  if (filterStyle) filterStyle.onchange = applyPlanningFilters;
+  if (filterLieu) filterLieu.onchange = applyPlanningFilters;
+
   btnEnseignes.onclick = () => {
     btnEnseignes.classList.add('active');
     btnSuivis.classList.remove('active');
-    renderPlanningCards(taughtCourseIds, 'prof-planning-list', 'Aucun cours enseigné.', user);
-    renderWeeklyCalendar(taughtCourseIds, 'prof-planning-calendar');
+    applyPlanningFilters();
   };
   btnSuivis.onclick = () => {
     btnSuivis.classList.add('active');
     btnEnseignes.classList.remove('active');
-    renderPlanningCards(user.courseIds || [], 'prof-planning-list', 'Vous ne suivez aucun cours.', user);
-    renderWeeklyCalendar(user.courseIds || [], 'prof-planning-calendar');
+    applyPlanningFilters();
   };
   // Init default view
   btnEnseignes.click();

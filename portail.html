@@ -474,12 +474,22 @@
 
         <!-- Tab: Messagerie --><div class="tab-content" id="tab-prof-messagerie"></div>
           <!-- Tab: Mon Planning -->
-        <div class="tab-content active" id="tab-mon-planning">
-          <div class="prof-planning-controls">
-            <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-enseignes">Cours enseignés</button>
-            <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
-          </div>
-          <div id="prof-planning-calendar"></div>
+          <div class="tab-content active" id="tab-mon-planning">
+            <div class="prof-planning-controls">
+              <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-enseignes">Cours enseignés</button>
+              <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
+            </div>
+            
+            <div id="prof-planning-filters" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+              <select id="prof-planning-style" class="form-input" style="flex:1; min-width:150px; padding:0.3rem;">
+                <option value="all">Tous les styles de danse</option>
+              </select>
+              <select id="prof-planning-lieu" class="form-input" style="flex:1; min-width:150px; padding:0.3rem;">
+                <option value="all">Tous les lieux</option>
+              </select>
+            </div>
+
+            <div id="prof-planning-calendar"></div>
           <div class="planning-cards-list" id="prof-planning-list"></div>
         </div>
 
