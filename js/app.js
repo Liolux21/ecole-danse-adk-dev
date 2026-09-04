@@ -1643,12 +1643,9 @@ window.saveGalaToFirebase = async function() {
 
 window.renderGalaTables = function() {
   // Répétitions
-  const repBody = document.getElementById('admin-gala-rep-body');
-  if (repBody) {
-    if (DATA.galaRepets.length === 0) {
-      repBody.innerHTML = '<tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr>';
-    } else {
-      repBody.innerHTML = DATA.galaRepets.map(r => {
+  const htmlRep = DATA.galaRepets.length === 0 
+    ? '<tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr>'
+    : DATA.galaRepets.map(r => {
         const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
         return `<tr>
           <td>${r.date} à ${r.time}</td>
@@ -1658,21 +1655,17 @@ window.renderGalaTables = function() {
           <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaRep('${r.id}')">X</button></td>
         </tr>`;
       }).join('');
-    }
-  }
+  const repBody = document.getElementById('admin-gala-rep-body');
+  const profRepBody = document.getElementById('prof-gala-rep-body');
+  if (repBody) repBody.innerHTML = htmlRep;
+  if (profRepBody) profRepBody.innerHTML = htmlRep;
 
-  // Tenues
-  
   // Infos
-  const infoBody = document.getElementById('admin-gala-info-body');
-  if (infoBody) {
-    if (DATA.galaInfos.length === 0) {
-      infoBody.innerHTML = '<tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr>';
-    } else {
-      infoBody.innerHTML = DATA.galaInfos.map(i => {
+  const htmlInfo = DATA.galaInfos.length === 0 
+    ? '<tr class="empty-state"><td colspan="5">Aucune info tableau.</td></tr>'
+    : DATA.galaInfos.map(i => {
         const courseName = DATA.getCourseById(i.course)?.name || i.course;
         return `<tr>
-          
           <td>${courseName}</td>
           <td>${i.theme}</td>
           <td>${i.music || '-'}</td>
@@ -1680,28 +1673,29 @@ window.renderGalaTables = function() {
           <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaInfo('${i.id}')">X</button></td>
         </tr>`;
       }).join('');
-    }
-  }
+  const infoBody = document.getElementById('admin-gala-info-body');
+  const profInfoBody = document.getElementById('prof-gala-info-body');
+  if (infoBody) infoBody.innerHTML = htmlInfo;
+  if (profInfoBody) profInfoBody.innerHTML = htmlInfo;
 
   // Notes
-  const noteBody = document.getElementById('admin-gala-note-body');
-  if (noteBody) {
-    if (DATA.galaNotes.length === 0) {
-      noteBody.innerHTML = '<tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr>';
-    } else {
-      noteBody.innerHTML = DATA.galaNotes.map(n => {
+  const htmlNote = DATA.galaNotes.length === 0 
+    ? '<tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr>'
+    : DATA.galaNotes.map(n => {
         return `<tr>
           <td>${n.date}</td>
-          <td>${n.presents.join(', ')}</td>
+          <td>${(n.presents || []).join(', ')}</td>
           <td style="display:flex;gap:0.5rem;">
-            <button class="btn btn-outline btn-sm" onclick="viewGalaNote('${n.id}')">Voir</button>
+            <button class="btn btn-outline btn-sm" onclick="viewGalaNote('${n.id}')">👁️ Voir</button>
             <button class="btn btn-outline btn-sm" onclick="editGalaNote('${n.id}')">Modifier</button>
             <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaNote('${n.id}')">X</button>
           </td>
         </tr>`;
       }).join('');
-    }
-  }
+  const noteBody = document.getElementById('admin-gala-note-body');
+  const profNoteBody = document.getElementById('prof-gala-note-body');
+  if (noteBody) noteBody.innerHTML = htmlNote;
+  if (profNoteBody) profNoteBody.innerHTML = htmlNote;
 };
 
 window.initGalaRepModal = function() {

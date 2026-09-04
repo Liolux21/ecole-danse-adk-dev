@@ -548,14 +548,37 @@
             <button class="btn btn-outline btn-sm btn-tab" data-tab="prof-gala-notes">📌 Notes réunions</button>
           </div>
           <div class="tab-content active" id="tab-prof-gala-repets">
-            <div class="empty-state"><p>Aucune répétition planifiée.</p></div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-rep'); initGalaRepModal();">+ Ajouter une répétition</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Date & Heure</th><th>Élèves concernés</th><th>Lieu</th><th>Tenues</th><th>Actions</th></tr></thead>
+                <tbody id="prof-gala-rep-body"><tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr></tbody>
+              </table>
+            </div>
           </div>
-                    </div>
           <div class="tab-content" id="tab-prof-gala-infos">
-            <div class="empty-state"><p>Aucune info tableau.</p></div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                <button class="btn btn-primary" onclick="openModal('modal-gala-info'); initGalaInfoModal();">+ Ajouter une info tableau</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Cours</th><th>Thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
+                <tbody id="prof-gala-info-body"><tr class="empty-state"><td colspan="5">Aucune info tableau.</td></tr></tbody>
+              </table>
+            </div>
           </div>
           <div class="tab-content" id="tab-prof-gala-notes">
-            <div class="empty-state"><p>Aucune note de réunion.</p></div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-gala-note'); initGalaNoteModal();">+ Nouveau rapport</button>
+            </div>
+            <div class="data-table-wrapper" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Date</th><th>Présents</th><th>Actions</th></tr></thead>
+                <tbody id="prof-gala-note-body"><tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
