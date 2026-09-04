@@ -2118,6 +2118,25 @@ footer {
   #tab-mes-eleves .data-table tbody td:nth-child(5)::before { content: "Cotisation : "; font-size: 0.75rem; margin-right: 0.3rem; color: var(--text-muted); font-weight: 600; }
   #tab-mes-eleves .data-table tbody td:nth-child(6) { width: 100%; display: flex; align-items: center; justify-content: flex-start; margin-top: 0.3rem; }
   #tab-mes-eleves .data-table tbody td:nth-child(6)::before { content: "Mutuelle : "; font-size: 0.75rem; margin-right: 0.3rem; color: var(--text-muted); font-weight: 600; }
+  
+  #tab-admin-hours .data-table thead { display: none; }
+  #tab-admin-hours .data-table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding: 0.75rem 0.5rem;
+    align-items: center;
+  }
+  #tab-admin-hours .data-table tbody td {
+    display: block;
+    border: none;
+    padding: 0.2rem 0.5rem;
+  }
+  #tab-admin-hours .data-table tbody td:nth-child(1) { width: 50%; font-size: 1rem; font-weight: bold; padding-bottom: 0; }
+  #tab-admin-hours .data-table tbody td:nth-child(2) { width: 50%; text-align: right; color: var(--text-muted); font-size: 0.85rem; padding-bottom: 0; }
+  #tab-admin-hours .data-table tbody td:nth-child(3) { width: 50%; margin-top: 0.5rem; font-size: 1rem; }
+  #tab-admin-hours .data-table tbody td:nth-child(3)::before { content: "Total : "; font-weight: normal; font-size: 0.85rem; color: var(--text-muted); }
+  #tab-admin-hours .data-table tbody td:nth-child(4) { width: 50%; text-align: right; margin-top: 0.5rem; }
 
   /* Gala Mobile Tabs */
   .gala-desktop-tabs { display: none !important; }

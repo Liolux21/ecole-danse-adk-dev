@@ -36,7 +36,7 @@ window.sendContactInscription = async function() {
     }
 };
 
-import { db, collection, addDoc, doc, setDoc, getDoc } from './firebase-config.js';
+import { db, collection, addDoc, doc, setDoc, getDoc, deleteDoc } from './firebase-config.js';
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 // =============================================
@@ -713,6 +713,8 @@ function initTabs(tabsContainerId, contentIds) {
     tab.addEventListener('click', () => {
       container.querySelectorAll('.dash-tab, .btn-tab').forEach(t => t.classList.remove('active'));
       contentIds.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
+        const hoursTab = document.getElementById(\'tab-admin-hours\');
+        if (hoursTab) hoursTab.classList.remove(\'active\');
       tab.classList.add('active');
       const target = document.getElementById(contentIds[i]);
               if (target) {
@@ -1417,12 +1419,19 @@ window.saveProf = async function() {
   }
 };
 
-window.deleteProf = function(id) {
-  if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
-    DATA.users = DATA.users.filter(u => u.id !== id);
-    renderAdminProfs();
-  }
-};
+window.deleteProf = async function(id) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
+      try {
+        await deleteDoc(doc(db, "users", id));
+        DATA.users = DATA.users.filter(u => u.id !== id);
+        renderAdminProfs();
+        showToast("Professeur supprimé avec succès", "success");
+      } catch (err) {
+        console.error(err);
+        alert("Erreur lors de la suppression : " + err.message);
+      }
+    }
+  };
 
 window.renderAdminCourses = function() {
   const tbody = document.getElementById('admin-courses-tbody');
@@ -1726,7 +1735,33 @@ function renderProfDashboard(user) {
           DATA.markAttendance(sid, selectedCourseId, date, status);
         }
       });
-      showToast('✅ Appel sauvegardé !', 'success');
+      
+        // Save Prof Hours to Firebase
+        const hoursInput = document.getElementById('prof-hours-input');
+        if (hoursInput && window.AUTH && window.AUTH.currentUser) {
+          const profId = window.AUTH.currentUser.id;
+          const profName = window.AUTH.currentUser.firstname ? `${window.AUTH.currentUser.firstname} ${window.AUTH.currentUser.lastname}` : window.AUTH.currentUser.name;
+          const docId = `${profId}_${selectedCourseId}_${date.replace(/\//g, '-')}`;
+          const hours = parseFloat(hoursInput.value) || 0;
+          
+          if (hours > 0) {
+            const record = { profId, profName, courseId: selectedCourseId, date, hours, timestamp: Date.now() };
+            try {
+              setDoc(doc(db, "prof_hours", docId), record);
+              if (!DATA.prof_hours) DATA.prof_hours = [];
+              const idx = DATA.prof_hours.findIndex(r => r.id === docId);
+              if (idx > -1) DATA.prof_hours[idx] = { id: docId, ...record };
+              else DATA.prof_hours.push({ id: docId, ...record });
+              
+              const statusEl = document.getElementById('prof-hours-status');
+              if (statusEl) statusEl.innerHTML = `<span style="color: #27ae60;">✔️ Prestation validée : ${hours} heures</span>`;
+            } catch (err) {
+              console.error("Error saving prof hours:", err);
+            }
+          }
+        }
+        
+        showToast('✅ Appel et heures sauvegardés !', 'success');, 'success');
     };
   }
   
