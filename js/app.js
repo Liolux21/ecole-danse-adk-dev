@@ -755,6 +755,7 @@ function renderAdminDashboard(user) {
   if (typeof renderGalaTables === 'function') renderGalaTables();
     
     if (typeof renderHolidays === 'function') renderHolidays();
+    updateSeasonDisplay();
     if (DATA.settings && DATA.settings.season) {
       if (DATA.settings.season.start) document.getElementById('settings-season-start').value = DATA.settings.season.start;
       if (DATA.settings.season.end) document.getElementById('settings-season-end').value = DATA.settings.season.end;
@@ -1525,7 +1526,10 @@ window.renderHolidays = function() {
                 <strong style="color: #9C5858;">${h.name}</strong><br>
                 <small style="color: var(--text-muted);">Du ${formatDateFR(h.start)} au ${formatDateFR(h.end)}</small>
             </div>
-            <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteHoliday(${index})">Supprimer</button>
+            <div style="display:flex; gap:0.5rem;">
+                <button class="btn btn-outline btn-sm" onclick="editHoliday(${index})">Modifier</button>
+                <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteHoliday(${index})">Supprimer</button>
+            </div>
         </div>
     `).join('');
 };
@@ -1559,6 +1563,18 @@ window.addHoliday = async function() {
     }
 };
 
+window.editHoliday = function(index) {
+    const h = DATA.settings.holidays[index];
+    if (!h) return;
+    document.getElementById('new-holiday-name').value = h.name;
+    document.getElementById('new-holiday-start').value = h.start;
+    document.getElementById('new-holiday-end').value = h.end;
+    DATA.settings.holidays.splice(index, 1);
+    renderHolidays();
+    document.getElementById('new-holiday-name').focus();
+    showToast("Modifiez les infos puis cliquez sur Sauvegarder", "info");
+};
+
 window.deleteHoliday = async function(index) {
     if(!confirm("Voulez-vous vraiment supprimer ce congé ?")) return;
     DATA.settings.holidays.splice(index, 1);
@@ -1573,6 +1589,17 @@ window.deleteHoliday = async function(index) {
     }
 };
 
+function updateSeasonDisplay() {
+    if (DATA.settings && DATA.settings.season && DATA.settings.season.start && DATA.settings.season.end) {
+        const p1 = DATA.settings.season.start.split('-');
+        const p2 = DATA.settings.season.end.split('-');
+        const s = `${p1[2]}/${p1[1]}/${p1[0]}`;
+        const e = `${p2[2]}/${p2[1]}/${p2[0]}`;
+        const span = document.getElementById('season-display');
+        if (span) span.textContent = `(Enregistré : du ${s} au ${e})`;
+    }
+}
+
 window.saveSeasonSettings = async function() {
     const start = document.getElementById('settings-season-start').value;
     const end = document.getElementById('settings-season-end').value;
@@ -1582,6 +1609,7 @@ window.saveSeasonSettings = async function() {
     try {
         const firebase = await import('./firebase-config.js');
         await firebase.setDoc(firebase.doc(firebase.db, 'settings', 'general'), DATA.settings, { merge: true });
+        updateSeasonDisplay();
         showToast("Saison enregistrée avec succès !", "success");
     } catch(err) {
         console.error(err);
@@ -2479,6 +2507,7 @@ document.getElementById('absence-form')?.addEventListener('submit', (e) => {
 
 function isDateValid(date, course) {
     if (course && course.isPriority) return true;
+    updateSeasonDisplay();
     if (DATA.settings && DATA.settings.season) {
         if (DATA.settings.season.start) {
             const s = new Date(DATA.settings.season.start);
