@@ -857,7 +857,7 @@ window.openProfHoursDetail = function(profId, profName, monthStr) {
     list.innerHTML = html;
   }
   
-  openModal('modal-hours-detail');
+  window.openModal('modal-hours-detail');
 };
 
 
@@ -1929,7 +1929,7 @@ function renderProfDashboard(user) {
 
   const appelSaveBtn = document.getElementById('appel-save-btn');
   if (appelSaveBtn) {
-    appelSaveBtn.onclick = () => {
+    appelSaveBtn.onclick = async () => {
       const dInput = document.getElementById('appel-date');
       const date = dInput.value.split('-').reverse().join('/');
       document.querySelectorAll('.appel-item').forEach(item => {
@@ -1944,15 +1944,27 @@ function renderProfDashboard(user) {
         // Save Prof Hours to Firebase
         const hoursInput = document.getElementById('prof-hours-input');
         if (hoursInput && window.AUTH && window.AUTH.currentUser) {
-          const profId = window.AUTH.currentUser.id;
-          const profName = window.AUTH.currentUser.firstname ? `${window.AUTH.currentUser.firstname} ${window.AUTH.currentUser.lastname}` : window.AUTH.currentUser.name;
+          let profId = window.AUTH.currentUser.id;
+          let profName = window.AUTH.currentUser.firstname ? `${window.AUTH.currentUser.firstname} ${window.AUTH.currentUser.lastname}` : window.AUTH.currentUser.name;
+          
+          if (window.AUTH.currentUser.role === 'admin' || window.AUTH.currentUser.realRole === 'admin') {
+            const c = DATA.getCourseById(selectedCourseId);
+            if (c && c.prof) {
+               const profUser = DATA.users.find(u => u.role === 'prof' && (c.prof.includes(u.name) || c.prof.includes(u.firstname)));
+               if (profUser) {
+                  profId = profUser.id;
+                  profName = profUser.firstname ? `${profUser.firstname} ${profUser.lastname}` : profUser.name;
+               }
+            }
+          }
+          
           const docId = `${profId}_${selectedCourseId}_${date.replace(/\//g, '-')}`;
           const hours = parseFloat(hoursInput.value) || 0;
           
           if (hours > 0) {
             const record = { profId, profName, courseId: selectedCourseId, date, hours, timestamp: Date.now() };
             try {
-              setDoc(doc(db, "prof_hours", docId), record);
+              await setDoc(doc(db, "prof_hours", docId), record);
               if (!DATA.prof_hours) DATA.prof_hours = [];
               const idx = DATA.prof_hours.findIndex(r => r.id === docId);
               if (idx > -1) DATA.prof_hours[idx] = { id: docId, ...record };
@@ -1960,8 +1972,16 @@ function renderProfDashboard(user) {
               
               const statusEl = document.getElementById('prof-hours-status');
               if (statusEl) statusEl.innerHTML = `<span style="color: #27ae60;">✔️ Prestation validée : ${hours} heures</span>`;
+              
+              if (window.renderProfHeures) {
+                window.renderProfHeures(window.AUTH.currentUser);
+              }
+              if (window.renderProfEleves) {
+                window.renderProfEleves(window.AUTH.currentUser);
+              }
             } catch (err) {
               console.error("Error saving prof hours:", err);
+              alert("Erreur de sauvegarde: " + err.message);
             }
           }
         }
@@ -2148,7 +2168,10 @@ window.renderProfHeures = function(user) {
   const monthData = {};
   
   DATA.prof_hours.forEach(r => {
-    if (String(r.profId) !== String(user.id)) return;
+    // If admin is masquerading, they can see all hours in Espace Prof for testing
+    if (user.realRole !== 'admin') {
+      if (String(r.profId).toLowerCase().trim() !== String(user.id).toLowerCase().trim()) return;
+    }
     const parts = r.date.split('/');
     const dObj = new Date(parts[2], parts[1] - 1, parts[0]);
     const key = parts[2] + '-' + parts[1];
