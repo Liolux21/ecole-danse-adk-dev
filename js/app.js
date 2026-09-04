@@ -1453,12 +1453,23 @@ window.renderAdminCourses = function() {
   const tbody = document.getElementById('admin-courses-tbody');
   if (!tbody) return;
   
-  if (DATA.courses.length === 0) {
-    tbody.innerHTML = '<div class="empty-state">Aucun cours défini.</div>';
-    return;
+  const typeFilter = document.getElementById('filter-course-type') ? document.getElementById('filter-course-type').value : 'all';
+  const styleFilter = document.getElementById('filter-course-style') ? document.getElementById('filter-course-style').value : 'all';
+  
+  let courses = DATA.courses || [];
+  if (typeFilter !== 'all') {
+     courses = courses.filter(c => (c.eventType || 'regulier') === typeFilter);
+  }
+  if (styleFilter !== 'all') {
+     courses = courses.filter(c => c.style === styleFilter);
   }
 
-  tbody.innerHTML = DATA.courses.map(c => {
+  if (courses.length === 0) {
+    tbody.innerHTML = '<div class="empty-state">Aucun cours ne correspond aux filtres.</div>';
+    return;
+  }
+  
+  tbody.innerHTML = courses.map(c => {
     return `
       <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
