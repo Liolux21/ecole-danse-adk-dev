@@ -341,21 +341,21 @@
             <div id="settings-holidays-list" style="margin-bottom: 1rem;">
               <!-- Dynamique -->
             </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
-              <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
-                <label class="form-label">Nom (ex: Toussaint)</label>
-                <input type="text" id="new-holiday-name" class="form-input">
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                <div class="form-group" style="flex: 1; min-width: 100%;">
+                  <label class="form-label">Nom (ex: Toussaint)</label>
+                  <input type="text" id="new-holiday-name" class="form-input">
+                </div>
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                  <label class="form-label">Début</label>
+                  <input type="date" id="new-holiday-start" class="form-input">
+                </div>
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                  <label class="form-label">Fin</label>
+                  <input type="date" id="new-holiday-end" class="form-input">
+                </div>
               </div>
-              <div class="form-group" style="flex: 1; min-width: 120px; margin-bottom: 0;">
-                <label class="form-label">Début</label>
-                <input type="date" id="new-holiday-start" class="form-input">
-              </div>
-              <div class="form-group" style="flex: 1; min-width: 120px; margin-bottom: 0;">
-                <label class="form-label">Fin</label>
-                <input type="date" id="new-holiday-end" class="form-input">
-              </div>
-              <button class="btn btn-outline" onclick="addHoliday()" style="margin-top: 1rem;">+ Ajouter</button>
-            </div>
+              <button class="btn btn-primary" onclick="addHoliday()" style="margin-top: 0.5rem;">+ Ajouter</button>
           </div>
         </div>
 
