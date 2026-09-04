@@ -104,12 +104,22 @@
       .msg-row.other .msg-bubble { background: #333; color: #fff; border-bottom-left-radius: 4px; }
       .msg-meta { font-size: 11px; opacity: 0.7; margin-top: 4px; text-align: right; }
 
-    </style>
+        @media (max-width: 768px) {
+      .dash-header-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .dash-header-actions button {
+        width: 100%;
+        margin-bottom: 0.25rem;
+      }
+    }
+  </style>
 
   <!-- ==================== ESPACE ADK — PORTAIL ==================== -->
   <section id="parents" class="vitrine-section" style="min-height: calc(100vh - 80px - 250px); display: flex; flex-direction: column;">
-      <h2 class="vitrine-title reveal" style="text-align: center; font-size: clamp(2rem, 8vw, 3.5rem);"><span style="color: #ffffff;">Mon</span> <span style="color: #9C5858;">Espace ADK</span></h2>
-      <p class="vitrine-subtitle reveal reveal-delay-1" style="margin-bottom: 3rem; text-align: center;">Connectez-vous avec votre compte pour accéder à votre espace personnalisé selon votre profil.</p>
+      <h2 class="vitrine-title reveal" style="text-align: center; font-size: clamp(1.6rem, 5vw, 2.5rem);"><span style="color: #ffffff;">Mon</span> <span style="color: #9C5858;">Espace ADK</span></h2>
+      <p id="portal-subtitle" class="vitrine-subtitle reveal reveal-delay-1" style="margin-bottom: 3rem; text-align: center;">Connectez-vous avec votre compte pour accéder à votre espace personnalisé selon votre profil.</p>
 
       <!-- PORTAIL DE CONNEXION -->
       <div class="portal-wrapper" id="portal-login-wrapper">
@@ -148,8 +158,8 @@
               <div class="dash-user-role"><span class="role-badge badge-admin">👑 Administratrice</span></div>
             </div>
           </div>
-            <div style="display:flex; gap:0.5rem;">
-              <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+            <div class="dash-header-actions" style="display:flex; gap:0.5rem;">
+                <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
               <button class="btn btn-outline btn-sm" id="admin-logout">Déconnexion</button>
             </div>
         </div>
@@ -433,8 +443,8 @@
               <div class="dash-user-role"><span class="role-badge badge-prof">👩‍🏫 Professeure</span></div>
             </div>
           </div>
-            <div style="display:flex; gap:0.5rem;">
-              <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+            <div class="dash-header-actions" style="display:flex; gap:0.5rem;">
+                <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
               <button class="btn btn-outline btn-sm" id="prof-logout">Déconnexion</button>
             </div>
         </div>
@@ -553,8 +563,8 @@
               <div class="dash-user-role"><span class="role-badge badge-parent">🩰 Élève</span></div>
             </div>
           </div>
-            <div style="display:flex; gap:0.5rem;">
-              <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+            <div class="dash-header-actions" style="display:flex; gap:0.5rem;">
+                <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
               <button class="btn btn-outline btn-sm" id="parent-logout">Déconnexion</button>
             </div>
         </div>

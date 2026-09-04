@@ -543,6 +543,8 @@ async function initPortal() {
     document.getElementById(`${role}-logout`).addEventListener('click', () => {
       AUTH.logout();
       document.getElementById('portal-login-wrapper').style.display = '';
+      const subtitle = document.getElementById(\'portal-subtitle\');
+      if (subtitle) subtitle.style.display = \'block\';
       document.querySelectorAll('.dashboard-panel').forEach(p => p.classList.remove('active'));
       document.getElementById('portal-submit-btn').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg> Se connecter`;
       document.getElementById('portal-submit-btn').disabled = false;
@@ -578,6 +580,8 @@ async function initPortal() {
 
 function showPortalDashboard(user) {
   document.getElementById('portal-login-wrapper').style.display = 'none';
+  const subtitle = document.getElementById('portal-subtitle');
+  if (subtitle) subtitle.style.display = 'none';
   document.querySelectorAll('.dashboard-panel').forEach(p => p.classList.remove('active'));
   const panel = document.getElementById(`panel-${user.role}`);
   if (panel) panel.classList.add('active');
