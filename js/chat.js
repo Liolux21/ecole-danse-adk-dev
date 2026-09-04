@@ -264,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastMessageAt: serverTimestamp()
             });
             msgInput.value = '';
+            msgInput.style.height = 'auto'; // Reset height
         } catch (e) {
             console.error("Error sending message: ", e);
             alert("Erreur lors de l'envoi.");
@@ -275,6 +276,10 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSendMsg.addEventListener('click', sendTextMessage);
         msgInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendTextMessage(); }
+        });
+        msgInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
         });
     }
 

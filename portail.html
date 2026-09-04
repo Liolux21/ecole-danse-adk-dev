@@ -1368,16 +1368,18 @@
         <div style="text-align: center; color: var(--text-light); margin-top: 2rem;">Veuillez sélectionner ou créer une discussion pour commencer.</div>
       </div>
       <!-- Input Area -->
-      <div style="padding: 0.75rem 1rem; border-top: 1px solid var(--border); background: #fff; display: flex; gap: 0.5rem; align-items: center; position: relative;">
+      <div id="chat-input-wrapper" style="padding: 0.75rem 1rem; border-top: 1px solid var(--border); background: #fff; display: flex; gap: 0.5rem; align-items: flex-end; position: relative; flex-wrap: wrap;">
         <!-- Emoji picker dropdown -->
         <div id="emoji-picker" style="display:none; position:absolute; bottom:calc(100% + 4px); left:0; background:#fff; border:1px solid var(--border); border-radius:12px; padding:0.5rem; box-shadow:0 4px 20px rgba(0,0,0,0.12); z-index:100; width:280px; flex-wrap:wrap; gap:2px;">
           <!-- Filled by JS below -->
         </div>
-        <button id="btn-emoji" title="Emojis" style="background:none;border:none;font-size:1.3rem;cursor:pointer;padding:0.2rem 0.4rem;border-radius:8px;flex-shrink:0;" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'">😊</button>
-        <button id="btn-attach" title="Joindre un fichier" style="background:none;border:none;font-size:1.2rem;cursor:pointer;padding:0.2rem 0.4rem;border-radius:8px;flex-shrink:0;" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'">📎</button>
+        <div style="display: flex; gap: 0.2rem; margin-bottom: 0.2rem;">
+          <button id="btn-emoji" title="Emojis" style="background:none;border:none;font-size:1.3rem;cursor:pointer;padding:0.2rem 0.4rem;border-radius:8px;flex-shrink:0;" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'">😊</button>
+          <button id="btn-attach" title="Joindre un fichier" style="background:none;border:none;font-size:1.2rem;cursor:pointer;padding:0.2rem 0.4rem;border-radius:8px;flex-shrink:0;" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'">📎</button>
+        </div>
         <input type="file" id="chat-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none;">
-        <input type="text" id="msg-input" class="form-input" placeholder="Écrivez votre message..." style="flex: 1; border-radius: 20px;">
-        <button id="btn-send-msg" class="btn btn-primary" style="border-radius: 20px; padding: 0.5rem 1.5rem; flex-shrink:0;">Envoyer</button>
+        <textarea id="msg-input" class="form-input" placeholder="Écrivez votre message..." rows="1" style="flex: 1; border-radius: 20px; resize: none; overflow-y: auto; max-height: 120px; padding: 0.6rem 1rem; font-family: inherit; line-height: 1.4; min-width: 150px;"></textarea>
+        <button id="btn-send-msg" class="btn btn-primary" style="border-radius: 20px; padding: 0.5rem 1.5rem; flex-shrink:0; margin-bottom: 0.1rem;">Envoyer</button>
       </div>
     </div>
   </div>
