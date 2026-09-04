@@ -106,10 +106,15 @@
 
         @media (max-width: 768px) {
       .dash-header-actions {
-        flex-direction: column;
-        align-items: flex-end !important;
+        display: grid !important;
+        grid-template-columns: auto auto;
+        gap: 0.5rem;
+        justify-content: flex-start;
         margin-top: 0.5rem;
       }
+      .dash-header-actions > button:nth-child(1) { grid-column: 1; grid-row: 1; }
+      .dash-header-actions > button:last-child { grid-column: 2; grid-row: 1; }
+      .dash-switch-btn { grid-column: 1; grid-row: 2; justify-self: flex-start; }
     }
   </style>
 
@@ -156,11 +161,9 @@
             </div>
           </div>
             <div class="dash-header-actions" style="display:flex; align-items:center; gap:0.5rem;">
-              <div class="dash-primary-actions" style="display:flex; gap:0.5rem;">
-                <button class="btn btn-outline btn-sm" onclick="openProfileModal()" >⚙️ Mon Profil</button>
-                <button class="btn btn-outline btn-sm" id="admin-logout" >Déconnexion</button>
+                  <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+                  <button class="btn btn-outline btn-sm" id="admin-logout">Déconnexion</button>
               </div>
-            </div>
         </div>
 
         <div class="stats-row">
@@ -443,11 +446,9 @@
             </div>
           </div>
             <div class="dash-header-actions" style="display:flex; align-items:center; gap:0.5rem;">
-              <div class="dash-primary-actions" style="display:flex; gap:0.5rem;">
-                <button class="btn btn-outline btn-sm" onclick="openProfileModal()" >⚙️ Mon Profil</button>
-                <button class="btn btn-outline btn-sm" id="prof-logout" >Déconnexion</button>
+                  <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+                  <button class="btn btn-outline btn-sm" id="prof-logout">Déconnexion</button>
               </div>
-            </div>
         </div>
 <div class="dash-tabs" id="prof-tabs">
           <button class="dash-tab active" data-tab="mon-planning">🗓️ Mon Planning</button>
@@ -565,11 +566,9 @@
             </div>
           </div>
             <div class="dash-header-actions" style="display:flex; align-items:center; gap:0.5rem;">
-              <div class="dash-primary-actions" style="display:flex; gap:0.5rem;">
-                <button class="btn btn-outline btn-sm" onclick="openProfileModal()" >⚙️ Mon Profil</button>
-                <button class="btn btn-outline btn-sm" id="parent-logout" >Déconnexion</button>
+                  <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
+                  <button class="btn btn-outline btn-sm" id="parent-logout">Déconnexion</button>
               </div>
-            </div>
         </div>
 <div class="dash-tabs" id="parent-tabs">
           <button class="dash-tab active" data-tab="parent-planning">🗓️ Mon Planning</button>

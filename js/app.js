@@ -605,7 +605,8 @@ function showPortalDashboard(user) {
     if (!adminSwitchBtn) {
       adminSwitchBtn = document.createElement('button');
       adminSwitchBtn.id = 'admin-switch-btn';
-      adminSwitchBtn.className = 'btn btn-outline btn-sm';
+      adminSwitchBtn.className = 'btn btn-outline btn-sm dash-switch-btn';
+        adminSwitchBtn.style.fontSize = '0.75rem';
         
       adminSwitchBtn.innerHTML = '🔄 Espace Prof';
       adminSwitchBtn.onclick = () => {
@@ -614,7 +615,7 @@ function showPortalDashboard(user) {
       };
       const logoutBtn = document.getElementById('admin-logout');
       if (logoutBtn && logoutBtn.parentNode) {
-        logoutBtn.closest(".dash-header-actions").appendChild(adminSwitchBtn);
+        logoutBtn.parentNode.insertBefore(adminSwitchBtn, logoutBtn);
       }
     }
   } else if (user.role === 'prof') {
@@ -623,7 +624,8 @@ function showPortalDashboard(user) {
       if (!profToAdminBtn) {
         profToAdminBtn = document.createElement('button');
         profToAdminBtn.id = 'prof-to-admin-btn';
-        profToAdminBtn.className = 'btn btn-outline btn-sm';
+        profToAdminBtn.className = 'btn btn-outline btn-sm dash-switch-btn';
+          profToAdminBtn.style.fontSize = '0.75rem';
           
         profToAdminBtn.innerHTML = '🔄 Espace Admin';
         profToAdminBtn.onclick = () => {
@@ -633,7 +635,7 @@ function showPortalDashboard(user) {
         };
         const logoutBtn = document.getElementById('prof-logout');
         if (logoutBtn && logoutBtn.parentNode) {
-          logoutBtn.closest(".dash-header-actions").appendChild(profToAdminBtn);
+          logoutBtn.parentNode.insertBefore(profToAdminBtn, logoutBtn);
         }
       }
     } else if (profToAdminBtn) {
@@ -646,7 +648,8 @@ function showPortalDashboard(user) {
       if (!switchBtn) {
         switchBtn = document.createElement('button');
         switchBtn.id = 'prof-switch-btn';
-        switchBtn.className = 'btn btn-outline btn-sm';
+        switchBtn.className = 'btn btn-outline btn-sm dash-switch-btn';
+          switchBtn.style.fontSize = '0.75rem';
           
         switchBtn.innerHTML = '🔄 Espace Élève';
         switchBtn.onclick = () => {
@@ -655,7 +658,7 @@ function showPortalDashboard(user) {
         };
         const logoutBtn = document.getElementById('prof-logout');
         if (logoutBtn && logoutBtn.parentNode) {
-          logoutBtn.closest(".dash-header-actions").appendChild(switchBtn);
+          logoutBtn.parentNode.insertBefore(switchBtn, logoutBtn);
         }
       }
     } else if (switchBtn) {
@@ -667,7 +670,8 @@ function showPortalDashboard(user) {
       if (!parentSwitchBtn) {
         parentSwitchBtn = document.createElement('button');
         parentSwitchBtn.id = 'parent-switch-btn';
-        parentSwitchBtn.className = 'btn btn-outline btn-sm';
+        parentSwitchBtn.className = 'btn btn-outline btn-sm dash-switch-btn';
+          parentSwitchBtn.style.fontSize = '0.75rem';
           
         parentSwitchBtn.innerHTML = user.realRole === 'prof' ? '🔄 Espace Prof' : '🔄 Espace Admin';
         parentSwitchBtn.onclick = () => {
@@ -677,7 +681,7 @@ function showPortalDashboard(user) {
         };
         const logoutBtn = document.getElementById('parent-logout');
         if (logoutBtn && logoutBtn.parentNode) {
-          logoutBtn.closest(".dash-header-actions").appendChild(parentSwitchBtn);
+          logoutBtn.parentNode.insertBefore(parentSwitchBtn, logoutBtn);
         }
       }
     } else if (parentSwitchBtn) {
