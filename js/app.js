@@ -753,7 +753,13 @@ function renderAdminDashboard(user) {
   renderAdminHours();
   if (typeof renderAdminCourses === 'function') renderAdminCourses();
   if (typeof renderGalaTables === 'function') renderGalaTables();
-}
+    
+    if (typeof renderHolidays === 'function') renderHolidays();
+    if (DATA.settings && DATA.settings.season) {
+      if (DATA.settings.season.start) document.getElementById('settings-season-start').value = DATA.settings.season.start;
+      if (DATA.settings.season.end) document.getElementById('settings-season-end').value = DATA.settings.season.end;
+    }
+  }
 
 
 window.renderAdminHours = function() {
