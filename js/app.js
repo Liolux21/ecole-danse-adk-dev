@@ -644,7 +644,8 @@ function showPortalDashboard(user) {
       profToAdminBtn.remove();
     }
 
-    const hasStudents = DATA.students.some(s => s.parentId === user.id || s.parentId === user.email || s.contactEmail === user.email);
+    const userEmail = (user.email || "").toLowerCase();
+    const hasStudents = DATA.students.some(s => (s.parentId || "").toLowerCase() === userEmail || (s.contactEmail || "").toLowerCase() === userEmail);
     let switchBtn = document.getElementById('prof-switch-btn');
     if (hasStudents && user.realRole !== 'admin') {
       if (!switchBtn) {
@@ -803,7 +804,8 @@ window.renderAdminHours = function() {
     const profName = p.firstname ? `${p.firstname} ${p.lastname}` : p.name;
       let photoUrl = p.avatar || (p.gender === 'Féminin' ? '👩‍🏫' : '👨‍🏫');
       let avatarHtml = photoUrl.startsWith('http') || photoUrl.startsWith('assets/') ? `<img src="${photoUrl}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : photoUrl;
-      const vitrineProf = window.VITRINE_DATA && window.VITRINE_DATA.professeurs ? window.VITRINE_DATA.professeurs[p.firstname || p.name] : null;
+      const searchName = p.firstname || (p.name ? p.name.split(' ')[0] : '');
+    const vitrineProf = window.VITRINE_DATA && window.VITRINE_DATA.professeurs ? window.VITRINE_DATA.professeurs[searchName] : null;
       if (vitrineProf && vitrineProf.avatar) {
           avatarHtml = `<img src="${vitrineProf.avatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
       }
@@ -1197,13 +1199,21 @@ function renderAdminProfs() {
       DATA.getStudentsByCourse(c.id).forEach(s => allStudentIds.add(s.id));
     });
     const nbEleves = allStudentIds.size;
+    const searchName = p.firstname || (p.name ? p.name.split(' ')[0] : '');
+    const vitrineProf = window.VITRINE_DATA && window.VITRINE_DATA.professeurs ? window.VITRINE_DATA.professeurs[searchName] : null;
+    let photoUrl = p.avatar || (p.gender === 'Féminin' ? '👩‍🏫' : '👨‍🏫');
+    let avatarHtml = (photoUrl.startsWith('http') || photoUrl.startsWith('assets/')) ? `<img src="${photoUrl}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : photoUrl;
+    if (vitrineProf && vitrineProf.avatar) {
+        avatarHtml = `<img src="${vitrineProf.avatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+    }
     
-    
-
     return `
       <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${p.avatar || '👤'} ${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</h4>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #f5e6e6; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; overflow: hidden;">${avatarHtml}</div>
+              <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</h4>
+            </div>
         </div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>💃 Cours enseignés :</strong> ${coursesNames || '-'}</div>
         
