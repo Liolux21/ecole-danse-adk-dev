@@ -2857,6 +2857,8 @@ window.openAddCourseModal = function(courseId = null) {
       
       const typeEl = document.getElementById('admin-course-type');
       if (typeEl) typeEl.value = course.eventType || 'regulier';
+      const styleEl = document.getElementById('admin-course-style');
+      if (styleEl) styleEl.value = course.style || 'classique';
       
       // Select profs
       let profsList = course.prof ? course.prof.split(', ') : [];
@@ -2928,6 +2930,8 @@ window.openAddCourseModal = function(courseId = null) {
     }
 
     document.getElementById('admin-course-title').textContent = "Nouveau cours / événement";
+    const styleEl = document.getElementById('admin-course-style');
+    if (styleEl) styleEl.value = 'classique';
   }
   
   window.toggleAdminCourseFields();
@@ -2995,7 +2999,7 @@ window.submitAdminCourse = async function() {
       eventType: eventType,
       isPriority: (eventType !== 'regulier'),
       category: "Nouveau",
-      style: "classique",
+      style: document.getElementById('admin-course-style') ? document.getElementById('admin-course-style').value : 'classique',
       lieu: "ADK"
     };
 

@@ -290,8 +290,29 @@
             <h3>Gestion des Cours</h3>
             <button class="btn btn-primary" onclick="openAddCourseModal()">+ Ajouter un cours</button>
           </div>
-          <div class="data-table-container">
-            <div id="admin-courses-tbody" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;"></div>
+          <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <select id="filter-course-type" class="form-input" style="width: 200px;" onchange="renderAdminCourses()">
+                <option value="all">Tous les types</option>
+                <option value="regulier">Cours réguliers</option>
+                <option value="pro">Cours Pro</option>
+                <option value="stage">Stages</option>
+                <option value="show">Shows</option>
+              </select>
+              <select id="filter-course-style" class="form-input" style="width: 200px;" onchange="renderAdminCourses()">
+                <option value="all">Tous les pôles</option>
+                <option value="classique">Classique</option>
+                <option value="jazz_contemporain">Jazz / Contemporain</option>
+                <option value="hiphop">Hip-Hop / Break</option>
+                <option value="ragga">Ragga / Girly</option>
+                <option value="eveil">Éveil / Préparatoire</option>
+                <option value="adultes">Adultes</option>
+                <option value="poledance">Pole Dance</option>
+                <option value="compagnie">Compagnies</option>
+                <option value="special">Spécial</option>
+              </select>
+            </div>
+            <div class="data-table-container">
+              <div id="admin-courses-tbody" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;"></div>
           </div>
         </div>
 
@@ -852,6 +873,20 @@
               <div class="form-group">
                 <label class="form-label">Nom du cours / événement</label>
                 <input type="text" id="admin-course-name" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pôle (Style de danse)</label>
+                <select id="admin-course-style" class="form-input" required>
+                  <option value="classique">Classique</option>
+                  <option value="jazz_contemporain">Jazz / Contemporain</option>
+                  <option value="hiphop">Hip-Hop / Break</option>
+                  <option value="ragga">Ragga / Girly</option>
+                  <option value="eveil">Éveil / Préparatoire</option>
+                  <option value="adultes">Adultes</option>
+                  <option value="poledance">Pole Dance</option>
+                  <option value="compagnie">Compagnies</option>
+                  <option value="special">Spécial</option>
+                </select>
               </div>
               <div class="form-group">
                 <label class="form-label">Type d'événement</label>
