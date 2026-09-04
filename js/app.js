@@ -606,7 +606,8 @@ function showPortalDashboard(user) {
       adminSwitchBtn = document.createElement('button');
       adminSwitchBtn.id = 'admin-switch-btn';
       adminSwitchBtn.className = 'btn btn-outline btn-sm dash-switch-btn';
-        adminSwitchBtn.style.fontSize = '0.75rem';
+        adminSwitchBtn.style.fontSize = '0.7rem';
+        adminSwitchBtn.style.minWidth = '115px';
         
       adminSwitchBtn.innerHTML = '🔄 Espace Prof';
       adminSwitchBtn.onclick = () => {
@@ -625,7 +626,8 @@ function showPortalDashboard(user) {
         profToAdminBtn = document.createElement('button');
         profToAdminBtn.id = 'prof-to-admin-btn';
         profToAdminBtn.className = 'btn btn-outline btn-sm dash-switch-btn';
-          profToAdminBtn.style.fontSize = '0.75rem';
+          profToAdminBtn.style.fontSize = '0.7rem';
+          profToAdminBtn.style.minWidth = '115px';
           
         profToAdminBtn.innerHTML = '🔄 Espace Admin';
         profToAdminBtn.onclick = () => {
@@ -649,7 +651,8 @@ function showPortalDashboard(user) {
         switchBtn = document.createElement('button');
         switchBtn.id = 'prof-switch-btn';
         switchBtn.className = 'btn btn-outline btn-sm dash-switch-btn';
-          switchBtn.style.fontSize = '0.75rem';
+          switchBtn.style.fontSize = '0.7rem';
+          switchBtn.style.minWidth = '115px';
           
         switchBtn.innerHTML = '🔄 Espace Élève';
         switchBtn.onclick = () => {
@@ -671,7 +674,8 @@ function showPortalDashboard(user) {
         parentSwitchBtn = document.createElement('button');
         parentSwitchBtn.id = 'parent-switch-btn';
         parentSwitchBtn.className = 'btn btn-outline btn-sm dash-switch-btn';
-          parentSwitchBtn.style.fontSize = '0.75rem';
+          parentSwitchBtn.style.fontSize = '0.7rem';
+          parentSwitchBtn.style.minWidth = '115px';
           
         parentSwitchBtn.innerHTML = user.realRole === 'prof' ? '🔄 Espace Prof' : '🔄 Espace Admin';
         parentSwitchBtn.onclick = () => {
