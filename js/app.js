@@ -2385,11 +2385,16 @@ function populateAbsenceDates(courseId) {
   }
   
   const dates = [];
-  for (let i = 0; i < 4; i++) {
-    const futureDate = new Date(d);
-    futureDate.setDate(d.getDate() + (i * 7));
-    dates.push(futureDate);
-  }
+    let safeguard = 0;
+    const c = DATA.getCourseWithOverride(courseId);
+    while (dates.length < 4 && safeguard < 52) {
+      const futureDate = new Date(d);
+      if (isDateValid(futureDate, c || {})) {
+        dates.push(futureDate);
+      }
+      d.setDate(d.getDate() + 7);
+      safeguard++;
+    }
   
   dates.forEach((dateObj) => {
     const yyyy = dateObj.getFullYear();
@@ -2464,10 +2469,36 @@ document.getElementById('absence-form')?.addEventListener('submit', (e) => {
   }
 });
 
+function isDateValid(date, course) {
+    if (course && course.isPriority) return true;
+    if (DATA.settings && DATA.settings.season) {
+        if (DATA.settings.season.start) {
+            const s = new Date(DATA.settings.season.start);
+            s.setHours(0,0,0,0);
+            if (date < s) return false;
+        }
+        if (DATA.settings.season.end) {
+            const e = new Date(DATA.settings.season.end);
+            e.setHours(23,59,59,999);
+            if (date > e) return false;
+        }
+    }
+    if (DATA.settings && DATA.settings.holidays) {
+        for (let h of DATA.settings.holidays) {
+            const hs = new Date(h.start);
+            hs.setHours(0,0,0,0);
+            const he = new Date(h.end);
+            he.setHours(23,59,59,999);
+            if (date >= hs && date <= he) return false;
+        }
+    }
+    return true;
+}
+
 function calculateNextCourses(children) {
-  const daysMap = { 'Lundi': 1, 'Mardi': 2, 'Mercredi': 3, 'Jeudi': 4, 'Vendredi': 5, 'Samedi': 6, 'Dimanche': 0 };
-  const now = new Date();
-  const currentDay = now.getDay();
+    const daysMap = { 'Lundi': 1, 'Mardi': 2, 'Mercredi': 3, 'Jeudi': 4, 'Vendredi': 5, 'Samedi': 6, 'Dimanche': 0 };
+    const now = new Date();
+    const currentDay = now.getDay();
   const currentHour = now.getHours() * 60 + now.getMinutes();
 
   const nextCourses = [];
