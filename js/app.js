@@ -2459,9 +2459,9 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
 
     // Boutons d'action
     let actionButtons = `<div style="display:flex; gap:0.5rem; margin-top:0.8rem;">`;
-    if (user && user.role === 'prof' && user.courseIds && user.courseIds.includes(c.id)) {
-      // Le prof titulaire peut gérer
-      actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.id}">⚙️ Gérer</button>`;
+    const isTeacher = user && (user.role === 'admin' || user.realRole === 'admin' || (c.prof && c.prof.includes(user.name)));
+    if (isTeacher) {
+      actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.id}">⚙️ Modifier cours</button>`;
     }
     if (user && user.role === 'parent' && studentId) {
       actionButtons += `<button class="btn btn-outline btn-sm btn-absent" data-course-id="${c.id}" data-student-id="${studentId}">📅 Présence</button>`;
@@ -2721,7 +2721,7 @@ document.getElementById('close-manage-course')?.addEventListener('click', () => 
   document.getElementById('modal-manage-course').classList.remove('open');
 });
 
-document.getElementById('manage-course-form')?.addEventListener('submit', (e) => {
+document.getElementById('manage-course-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const id = parseInt(document.getElementById('manage-course-id').value);
   
@@ -2737,7 +2737,28 @@ document.getElementById('manage-course-form')?.addEventListener('submit', (e) =>
 
   DATA.saveState();
 
-  showToast('✅ Modifications enregistrées');
+  try {
+    const firebase = await import('./firebase-config.js');
+    const course = DATA.getCourseById(id);
+    if (course) {
+      const overrides = DATA.courseOverrides[id];
+      const lieuFormate = window.formatLieu ? window.formatLieu(overrides.lieu) : overrides.lieu;
+      const notifHtml = `Le cours a été modifié.<br><strong>Statut:</strong> ${overrides.status}<br><strong>Date/Heure:</strong> ${overrides.date} ${overrides.hour}<br><strong>Lieu:</strong> ${lieuFormate}<br><strong>Message:</strong> ${overrides.message}`;
+      const annData = {
+        title: `⚠️ Changement : ${course.name}`,
+        content: notifHtml,
+        target: `course_${id}`,
+        timestamp: Date.now(),
+        authorId: AUTH.currentUser.id
+      };
+      await firebase.addDoc(firebase.collection(firebase.db, "announcements"), annData);
+      showToast('✅ Modifications enregistrées et notification envoyée');
+    }
+  } catch (err) {
+    console.error("Erreur notif:", err);
+    showToast('✅ Modifications enregistrées');
+  }
+
   document.getElementById('modal-manage-course').classList.remove('open');
   
   // Refresh dashboard
@@ -2749,34 +2770,28 @@ let currentChatCourseId = null;
 let currentChatUser = null;
 
 function openMessagesModal(courseId, user) {
-  const course = DATA.getCourseWithOverride(courseId);
-  if (!course) return;
-  currentChatCourseId = courseId;
-  currentChatUser = user;
-
-  document.getElementById('chat-course-title').textContent = `Messages : ${course.name}`;
+  // Determine role for dashboard panel tab
+  const role = (user.role === 'admin' || user.realRole === 'admin') ? 'admin' 
+             : (user.role === 'prof') ? 'prof' 
+             : 'parent';
+             
+  const tabBtn = document.querySelector(`#panel-${role} .dash-tab[data-tab*="messagerie"]`) || document.querySelector(`#panel-${role} [data-tab*="messagerie"]`);
+  if (tabBtn) tabBtn.click();
   
-  const msgTypeSelect = document.getElementById('chat-msg-type');
-  if (user.role === 'prof') {
-    const eleves = DATA.getStudentsByCourse(courseId)
-      .map(s => s.parentId ? DATA.getUserById(s.parentId) : null)
-      .filter(Boolean);
-    const uniqueParents = [...new Map(eleves.map(p => [p.id, p])).values()];
-    
-    msgTypeSelect.innerHTML = `
-      <option value="public">🌍 Message Public (Tous les eleves)</option>
-      ${uniqueParents.map(p => `<option value="private-${p.id}">🔒 Privé à ${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</option>`).join('')}
-    `;
-  } else {
-    msgTypeSelect.innerHTML = `
-      <option value="public">🌍 Message Public (Tous les eleves)</option>
-      <option value="private">🔒 Message Privé (Professeur uniquement)</option>
-    `;
-  }
-
-  renderChatHistory();
-
-  document.getElementById('modal-messages').classList.add('open');
+  // Give time for UI to switch tab
+  setTimeout(() => {
+    const btnNewChat = document.getElementById('btn-new-chat');
+    if (btnNewChat) {
+      btnNewChat.click();
+      
+      setTimeout(() => {
+        const targetSelect = document.getElementById('new-chat-target');
+        if (targetSelect) {
+          targetSelect.value = 'course_' + courseId;
+        }
+      }, 50);
+    }
+  }, 50);
 }
 
 document.getElementById('close-messages')?.addEventListener('click', () => {
