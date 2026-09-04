@@ -1708,7 +1708,7 @@ window.initGalaRepModal = function() {
   const select = document.getElementById('gala-rep-course');
   select.innerHTML = '<option value="all">Tous les élèves</option>' + DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 };
-window.saveGalaRep = function() {
+window.saveGalaRep = async function() {
   DATA.galaRepets.push({
     id: 'rep_' + Date.now(),
     date: document.getElementById('gala-rep-date').value,
@@ -1720,10 +1720,12 @@ window.saveGalaRep = function() {
   });
   closeModal('modal-gala-rep');
   renderGalaTables();
+  await window.saveGalaToFirebase();
 };
-window.deleteGalaRep = function(id) {
+window.deleteGalaRep = async function(id) {
   DATA.galaRepets = DATA.galaRepets.filter(r => r.id !== id);
   renderGalaTables();
+  await window.saveGalaToFirebase();
 };
 
 window.initGalaTenueModal = function() {
@@ -1755,7 +1757,7 @@ window.initGalaInfoModal = function() {
     selectTheme.innerHTML = '';
   }
 };
-window.saveGalaInfo = function() {
+window.saveGalaInfo = async function() {
   DATA.galaInfos.push({
     id: 'info_' + Date.now(),
     course: document.getElementById('gala-info-course').value,
@@ -1765,10 +1767,12 @@ window.saveGalaInfo = function() {
   });
   closeModal('modal-gala-info');
   renderGalaTables();
+  await window.saveGalaToFirebase();
 };
-window.deleteGalaInfo = function(id) {
+window.deleteGalaInfo = async function(id) {
   DATA.galaInfos = DATA.galaInfos.filter(r => r.id !== id);
   renderGalaTables();
+  await window.saveGalaToFirebase();
 };
 
 window.initGalaNoteModal = function() {
@@ -1790,7 +1794,7 @@ window.editGalaNote = function(id) {
   div.innerHTML = profs.map(p => `<div style="display:flex;gap:0.5rem;"><input type="checkbox" id="pres_${p.id}" value="${p.firstname ? p.firstname + ' ' + p.lastname : p.name}" ${note.presents.includes(p.name) ? 'checked' : ''}><label for="pres_${p.id}">${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</label></div>`).join('');
   openModal('modal-gala-note');
 };
-window.saveGalaNote = function() {
+window.saveGalaNote = async function() {
   const id = document.getElementById('gala-note-id').value;
   const date = document.getElementById('gala-note-date').value;
   const pv = document.getElementById('gala-note-pv').value;
@@ -1810,10 +1814,12 @@ window.saveGalaNote = function() {
   }
   closeModal('modal-gala-note');
   renderGalaTables();
+  await window.saveGalaToFirebase();
 };
-window.deleteGalaNote = function(id) {
+window.deleteGalaNote = async function(id) {
   DATA.galaNotes = DATA.galaNotes.filter(r => r.id !== id);
   renderGalaTables();
+  await window.saveGalaToFirebase();
 };
 
 // =============================================
