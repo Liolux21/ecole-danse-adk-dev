@@ -7,18 +7,14 @@ service cloud.firestore {
     // FONCTIONS D'AIDE (Helper functions)
     // ---------------------------------------------------------
 
-    // Vérifie si l'utilisateur est connecté
     function isAuthenticated() {
       return request.auth != null;
     }
 
-    // Récupère les données de l'utilisateur connecté depuis la collection users
-    // On utilise l'email comme ID de document dans la logique de l'app actuelle
     function getUserData() {
       return get(/databases/$(database)/documents/users/$(request.auth.token.email)).data;
     }
 
-    // Vérifie le rôle de l'utilisateur
     function isAdmin() {
       return isAuthenticated() && getUserData().role == 'admin';
     }
@@ -32,65 +28,49 @@ service cloud.firestore {
     }
 
     // ---------------------------------------------------------
-    // RÈGLES PAR COLLECTION
+    // REGLES PAR COLLECTION
     // ---------------------------------------------------------
 
-    // Collection USERS (Profs, Parents, Admins)
     match /users/{userId} {
-      // Lecture : On peut lire son propre profil, l'Admin peut tout lire, les profs peuvent lire pour trouver les parents
       allow read: if isAuthenticated() && (request.auth.token.email == userId || isAdmin() || isProf());
-      
-      // Modification : On peut modifier son propre profil (ex: ajouter un token FCM), l'Admin peut tout modifier
       allow update: if isAuthenticated() && (request.auth.token.email == userId || isAdmin());
-      
-      // Création / Suppression : Seul l'Admin a le droit
       allow create, delete: if isAdmin();
     }
 
-    // Collection STUDENTS (Les élèves)
     match /students/{studentId} {
-      // Lecture : Admins et Profs voient tout le monde. 
-      // Un parent ne peut voir l'élève que si l'ID de l'élève est dans son tableau 'childrenIds'
       allow read: if isAuthenticated() && (
         isAdmin() || 
         isProf() || 
         (isParent() && String(studentId) in getUserData().childrenIds)
       );
-
-      // Ecriture (Création/Modification/Suppression) : Seul l'Admin gère les élèves
-      allow write: if isAdmin();
+      // Les profs peuvent modifier les élèves pour faire l'appel (absences)
+      allow write: if isAdmin() || isProf();
+    }
+    
+    // Collection PROF_HOURS
+    match /prof_hours/{docId} {
+      allow read: if isAdmin() || isProf();
+      allow write: if isAdmin() || isProf();
     }
 
-    // Collection ANNOUNCEMENTS (Les notifications internes et push)
     match /announcements/{announcementId} {
-      // Lecture : Tous les utilisateurs connectés peuvent voir les annonces
       allow read: if isAuthenticated();
-
-      // Création : Admins et Profs uniquement
       allow create: if isAdmin() || isProf();
-
-      // Modification / Suppression : Admin a tous les droits, Prof peut modifier/supprimer ses propres annonces
       allow update, delete: if isAdmin() || (isProf() && resource.data.authorId == request.auth.token.email);
     }
 
-    // Collection COURSES / PLANNING
     match /courses/{courseId} {
-      // Les cours sont publics en lecture (pour le site)
       allow read: if true;
       allow write: if isAdmin();
     }
     
-    // Historique des actions
     match /history/{historyId} {
       allow read: if isAdmin();
-      allow write: if isAdmin() || isProf(); // Permettre d'enregistrer des historiques
+      allow write: if isAdmin() || isProf(); 
     }
 
-    // Règle de secours : tout ce qui n'est pas explicitement autorisé est refusé
-
-    // Collection INSCRIPTIONS
     match /inscriptions/{inscId} {
-      allow create: if true; // Tout le monde peut envoyer une demande
+      allow create: if true; 
       allow read, update, delete: if isAdmin();
     }
 

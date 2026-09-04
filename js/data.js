@@ -166,12 +166,16 @@ export const DATA = {
   getStudentsByCourse(cid)      { return this.students.filter(s => (s.courseIds||[]).map(String).includes(String(cid))); },
   getAttendanceByStudent(sid)   { return this.attendance.filter(a => a.studentId === sid); },
   getPendingInscriptions()      { return this.inscriptions.filter(i => i.status === 'pending'); },
-  getChildrenByParent(user)       { 
-    if (!user) return [];
-    return this.students.filter(s => {
-      return (s.parentId === user.id) || (s.parentId === user.email) || (user.childrenIds && user.childrenIds.includes(String(s.id)));
-    });
-  },
+  getChildrenByParent(user) {
+      if (!user) return [];
+      const userEmail = (user.email || "").toLowerCase();
+      return this.students.filter(s => {
+        return (s.parentId === user.id) ||
+               (s.parentId && s.parentId.toLowerCase() === userEmail) ||
+               (s.contactEmail && s.contactEmail.toLowerCase() === userEmail) ||
+               (user.childrenIds && user.childrenIds.includes(String(s.id)));
+      });
+    },
   getCoursesByLieu(lieuId)      { return this.courses.filter(c => c.lieu === lieuId); },
   async approveInscription(id)        { 
     const i = this.inscriptions.find(i => String(i.id) === String(id)); 

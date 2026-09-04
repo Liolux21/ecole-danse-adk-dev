@@ -801,6 +801,12 @@ window.renderAdminHours = function() {
   profs.forEach(p => {
     const pData = profTotals[p.id] || { total: 0, records: [] };
     const profName = p.firstname ? `${p.firstname} ${p.lastname}` : p.name;
+      let photoUrl = p.avatar || (p.gender === 'Féminin' ? '👩‍🏫' : '👨‍🏫');
+      let avatarHtml = photoUrl.startsWith('http') || photoUrl.startsWith('assets/') ? `<img src="${photoUrl}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : photoUrl;
+      const vitrineProf = window.VITRINE_DATA && window.VITRINE_DATA.professeurs ? window.VITRINE_DATA.professeurs[p.firstname || p.name] : null;
+      if (vitrineProf && vitrineProf.avatar) {
+          avatarHtml = `<img src="${vitrineProf.avatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+      }
     
     // Store records in global for modal access
     window[`prof_records_${p.id}`] = pData.records;
@@ -2713,7 +2719,7 @@ window.submitAddStudent = async function() {
       const tutorFirstname = document.getElementById('add-student-tutor-firstname').value;
       const tutorLastname = document.getElementById('add-student-tutor-lastname').value;
       const tutorPhone = document.getElementById('add-student-tutor-phone').value;
-    const email = document.getElementById('add-student-email').value;
+    const email = document.getElementById('add-student-email').value.toLowerCase().trim();
     const checkboxes = document.querySelectorAll('#add-student-courses .course-checkbox:checked');
       const selectedCourses = Array.from(checkboxes).map(chk => chk.value);
 
