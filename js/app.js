@@ -1648,22 +1648,7 @@ window.renderGalaTables = function() {
   }
 
   // Tenues
-  const tenueBody = document.getElementById('admin-gala-tenue-body');
-  if (tenueBody) {
-    if (DATA.galaTenues.length === 0) {
-      tenueBody.innerHTML = '<tr class="empty-state"><td colspan="3">Aucune information de tenue.</td></tr>';
-    } else {
-      tenueBody.innerHTML = DATA.galaTenues.map(t => {
-        const courseName = DATA.getCourseById(t.course)?.name || t.course;
-        return `<tr>
-          <td>${courseName}</td>
-          <td>${t.desc}</td>
-          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaTenue('${t.id}')">X</button></td>
-        </tr>`;
-      }).join('');
-    }
-  }
-
+  
   // Infos
   const infoBody = document.getElementById('admin-gala-info-body');
   if (infoBody) {
@@ -1673,7 +1658,7 @@ window.renderGalaTables = function() {
       infoBody.innerHTML = DATA.galaInfos.map(i => {
         const courseName = DATA.getCourseById(i.course)?.name || i.course;
         return `<tr>
-          <td>${i.time}</td>
+          
           <td>${courseName}</td>
           <td>${i.theme}</td>
           <td>${i.music || '-'}</td>
@@ -1695,7 +1680,8 @@ window.renderGalaTables = function() {
           <td>${n.date}</td>
           <td>${n.presents.join(', ')}</td>
           <td style="display:flex;gap:0.5rem;">
-            <button class="btn btn-outline btn-sm" onclick="editGalaNote('${n.id}')">Voir/Modifier</button>
+            <button class="btn btn-outline btn-sm" onclick="viewGalaNote('${n.id}')">Voir</button>
+            <button class="btn btn-outline btn-sm" onclick="editGalaNote('${n.id}')">Modifier</button>
             <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaNote('${n.id}')">X</button>
           </td>
         </tr>`;
@@ -1747,11 +1733,17 @@ window.deleteGalaTenue = function(id) {
 window.initGalaInfoModal = function() {
   const select = document.getElementById('gala-info-course');
   select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  
+  const selectTheme = document.getElementById('gala-info-theme');
+  if (DATA.settings && DATA.settings.galaThemes) {
+    selectTheme.innerHTML = DATA.settings.galaThemes.map(t => `<option value="${t}">${t}</option>`).join('');
+  } else {
+    selectTheme.innerHTML = '';
+  }
 };
 window.saveGalaInfo = function() {
   DATA.galaInfos.push({
     id: 'info_' + Date.now(),
-    time: document.getElementById('gala-info-time').value,
     course: document.getElementById('gala-info-course').value,
     theme: document.getElementById('gala-info-theme').value,
     music: document.getElementById('gala-info-music').value,
@@ -3505,4 +3497,73 @@ window.exportStudentsExcel = function() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+};
+
+window.viewGalaNote = function(id) {
+  const note = DATA.galaNotes.find(n => n.id === id);
+  if (!note) return;
+  
+  function formatDateFR(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  
+  document.getElementById('note-view-date').textContent = formatDateFR(note.date);
+  document.getElementById('note-view-presents').textContent = note.presents.join(', ') || 'Aucun';
+  document.getElementById('note-view-content').textContent = note.pv;
+  openModal('modal-gala-note-view');
+};
+
+window.renderGalaThemes = function() {
+  const list = document.getElementById('gala-themes-list');
+  if (!list) return;
+  if (!DATA.settings) DATA.settings = {};
+  if (!DATA.settings.galaThemes) DATA.settings.galaThemes = [];
+  
+  if (DATA.settings.galaThemes.length === 0) {
+    list.innerHTML = '<div class="empty-state">Aucun thème défini.</div>';
+    return;
+  }
+  
+  list.innerHTML = DATA.settings.galaThemes.map((t, idx) => `
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem; background:#f4f4f4; border-radius:var(--radius);">
+      <span>${t}</span>
+      <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaTheme(${idx})">X</button>
+    </div>
+  `).join('');
+};
+
+window.addGalaTheme = async function() {
+  const input = document.getElementById('new-gala-theme');
+  const val = input.value.trim();
+  if (!val) return;
+  if (!DATA.settings) DATA.settings = {};
+  if (!DATA.settings.galaThemes) DATA.settings.galaThemes = [];
+  
+  DATA.settings.galaThemes.push(val);
+  input.value = '';
+  
+  try {
+    const firebase = await import('./firebase-config.js');
+    await firebase.setDoc(firebase.doc(firebase.db, 'settings', 'general'), DATA.settings, { merge: true });
+    renderGalaThemes();
+  } catch(err) {
+    console.error(err);
+    showToast("Erreur de sauvegarde", "error");
+  }
+};
+
+window.deleteGalaTheme = async function(idx) {
+  if (!confirm("Supprimer ce thème ?")) return;
+  DATA.settings.galaThemes.splice(idx, 1);
+  try {
+    const firebase = await import('./firebase-config.js');
+    await firebase.setDoc(firebase.doc(firebase.db, 'settings', 'general'), DATA.settings, { merge: true });
+    renderGalaThemes();
+  } catch(err) {
+    console.error(err);
+    showToast("Erreur de sauvegarde", "error");
+  }
 };

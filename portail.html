@@ -420,24 +420,14 @@
               </table>
             </div>
           </div>
-          <div class="tab-content" id="tab-admin-gala-tenues">
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-              <button class="btn btn-primary" onclick="openModal('modal-gala-tenue'); initGalaTenueModal();">+ Ajouter une tenue</button>
-            </div>
-            <div class="data-table-wrapper" style="overflow-x: auto;">
-              <table class="data-table">
-                <thead><tr><th>Cours</th><th>Vêtements requis</th><th>Actions</th></tr></thead>
-                <tbody id="admin-gala-tenue-body"><tr class="empty-state"><td colspan="3">Aucune information de tenue.</td></tr></tbody>
-              </table>
-            </div>
-          </div>
           <div class="tab-content" id="tab-admin-gala-infos">
             <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-              <button class="btn btn-primary" onclick="openModal('modal-gala-info'); initGalaInfoModal();">+ Ajouter une info tableau</button>
+              <button class="btn btn-outline" style="margin-right:0.5rem;" onclick="openModal('modal-gala-themes'); window.renderGalaThemes();">🎭 Gérer les thèmes</button>
+                <button class="btn btn-primary" onclick="openModal('modal-gala-info'); initGalaInfoModal();">+ Ajouter une info tableau</button>
             </div>
             <div class="data-table-wrapper" style="overflow-x: auto;">
               <table class="data-table">
-                <thead><tr><th>Horaire</th><th>Cours</th><th>Thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
+                <thead><tr><th>Cours</th><th>Thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
                 <tbody id="admin-gala-info-body"><tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr></tbody>
               </table>
             </div>
@@ -1156,7 +1146,12 @@
           </div>
           <div class="form-group">
             <label class="form-label">Lieu</label>
-            <input type="text" id="gala-rep-lieu" class="form-input" required>
+            <select id="gala-rep-lieu" class="form-input" required>
+                <option value="ADK">ADK</option>
+                <option value="ROX">ROX</option>
+                <option value="Centre Culturel">Centre Culturel</option>
+                <option value="Autre">Autre</option>
+              </select>
           </div>
           <div class="form-group" style="display:flex; gap:0.5rem; align-items:center;">
             <input type="checkbox" id="gala-rep-tenue" style="width:18px;height:18px;">
@@ -1265,17 +1260,14 @@
       </div>
       <div class="vitrine-modal-body">
         <form onsubmit="event.preventDefault(); window.saveGalaInfo();">
-          <div class="form-group">
-            <label class="form-label">Horaire</label>
-            <input type="time" id="gala-info-time" class="form-input" required>
-          </div>
+          
           <div class="form-group">
             <label class="form-label">Cours</label>
             <select id="gala-info-course" class="form-input" required></select>
           </div>
           <div class="form-group">
             <label class="form-label">Thème</label>
-            <input type="text" id="gala-info-theme" class="form-input" required>
+            <select id="gala-info-theme" class="form-input" required></select>
           </div>
           <div class="form-group">
             <label class="form-label">Musique</label>
@@ -1378,6 +1370,43 @@
         <h4 class="vitrine-modal-title" id="hours-detail-title">Détail des prestations</h4>
         <div style="max-height: 300px; overflow-y: auto; margin-top: 1rem;" id="hours-detail-list">
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Gérer les thèmes -->
+  <div class="vitrine-modal" id="modal-gala-themes">
+    <div class="vitrine-modal-content">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title">🎭 Gérer les thèmes du Gala</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-gala-themes')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+          <input type="text" id="new-gala-theme" class="form-input" placeholder="Nouveau thème">
+          <button class="btn btn-primary" onclick="window.addGalaTheme()">Ajouter</button>
+        </div>
+        <div id="gala-themes-list" style="display:flex; flex-direction:column; gap:0.5rem;">
+          <!-- Dynamique -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Voir Note -->
+  <div class="vitrine-modal" id="modal-gala-note-view">
+    <div class="vitrine-modal-content" style="max-width: 600px;">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title" id="note-view-title">Rapport de réunion</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-gala-note-view')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <div style="margin-bottom:1rem;">
+          <strong>Date :</strong> <span id="note-view-date"></span><br>
+          <strong>Présents :</strong> <span id="note-view-presents"></span>
+        </div>
+        <div style="background:#f4f4f4; padding:1rem; border-radius:var(--radius); min-height:200px; white-space:pre-wrap;" id="note-view-content"></div>
       </div>
     </div>
   </div>
