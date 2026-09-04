@@ -2830,32 +2830,90 @@ Mot de passe temporaire: ${tempPassword}
     btn.disabled = false;
   }
 };
-window.openAddCourseModal = function(courseId = null) {
-  const profSelect = document.getElementById('admin-course-prof');
-  if (profSelect) {
-    const profs = DATA.users.filter(u => u.role === 'prof');
-    profSelect.innerHTML = profs.map(p => `<option value="${p.firstname ? p.firstname + ' ' + p.lastname : p.name}">${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</option>`).join('');
+window.toggleAdminCourseFields = function() {
+  const typeEl = document.getElementById('admin-course-type');
+  const regSec = document.getElementById('admin-course-regular-section');
+  const evtSec = document.getElementById('admin-course-event-section');
+  if(typeEl && regSec && evtSec) {
+    if(typeEl.value === 'regulier') {
+      regSec.style.display = 'block';
+      evtSec.style.display = 'none';
+    } else {
+      regSec.style.display = 'none';
+      evtSec.style.display = 'block';
+    }
   }
+};
+window.openAddCourseModal = function(courseId = null) {
+  const profs = DATA.users.filter(u => u.role === 'prof');
+  const profsContainer = document.getElementById('admin-course-profs');
   
   if (courseId) {
     const course = DATA.getCourseById(courseId);
     if (course) {
       document.getElementById('admin-course-id').value = course.id;
       document.getElementById('admin-course-name').value = course.name;
-      if (profSelect) profSelect.value = course.prof || '';
-      document.getElementById('admin-course-schedule').value = course.schedule || '';
       document.getElementById('admin-course-age').value = course.ages || '';
+      
       const typeEl = document.getElementById('admin-course-type');
       if (typeEl) typeEl.value = course.eventType || 'regulier';
-      document.getElementById('admin-course-title').textContent = "Modifier le cours";
+      
+      // Select profs
+      let profsList = course.prof ? course.prof.split(', ') : [];
+      if (profsContainer) {
+        profsContainer.innerHTML = profs.map(p => {
+          const pName = p.firstname ? p.firstname + ' ' + p.lastname : p.name;
+          const checked = profsList.includes(pName) ? 'checked' : '';
+          return `<label style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;cursor:pointer;"><input type="checkbox" value="${pName}" ${checked}> ${pName}</label>`;
+        }).join('');
+      }
+
+      if (course.eventType === 'regulier' || !course.eventType) {
+        let schedule = course.schedule || '';
+        let parts = schedule.split(' ');
+        if(parts.length >= 2) {
+            document.getElementById('admin-course-day').value = parts[0];
+            document.getElementById('admin-course-time').value = parts[1].replace('h', ':');
+        } else {
+            document.getElementById('admin-course-day').value = 'Lundi';
+            document.getElementById('admin-course-time').value = '';
+        }
+        document.getElementById('admin-course-start-date').value = '';
+        document.getElementById('admin-course-end-date').value = '';
+      } else {
+        document.getElementById('admin-course-day').value = 'Lundi';
+        document.getElementById('admin-course-time').value = '';
+        if(course.schedule) {
+           let sp = course.schedule.split(' - ');
+           if(sp.length >= 1) {
+             let d1 = sp[0].split('/');
+             if(d1.length === 3) document.getElementById('admin-course-start-date').value = `${d1[2]}-${d1[1]}-${d1[0]}`;
+           }
+           if(sp.length >= 2) {
+             let d2 = sp[1].split('/');
+             if(d2.length === 3) document.getElementById('admin-course-end-date').value = `${d2[2]}-${d2[1]}-${d2[0]}`;
+           }
+        }
+      }
+      
+      document.getElementById('admin-course-title').textContent = "Modifier le cours / événement";
     }
   } else {
     const form = document.getElementById('form-admin-course');
     if (form) form.reset();
     document.getElementById('admin-course-id').value = '';
-    document.getElementById('admin-course-title').textContent = "Nouveau cours";
+    
+    if (profsContainer) {
+        profsContainer.innerHTML = profs.map(p => {
+          const pName = p.firstname ? p.firstname + ' ' + p.lastname : p.name;
+          return `<label style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;cursor:pointer;"><input type="checkbox" value="${pName}"> ${pName}</label>`;
+        }).join('');
+    }
+
+    document.getElementById('admin-course-title').textContent = "Nouveau cours / événement";
   }
   
+  window.toggleAdminCourseFields();
   openModal('modal-admin-course');
 };
 
@@ -2870,17 +2928,41 @@ window.submitAdminCourse = async function() {
     const isNew = !id;
     if (isNew) id = "crs_" + Date.now();
     
+    let eventType = document.getElementById('admin-course-type') ? document.getElementById('admin-course-type').value : 'regulier';
+    let scheduleStr = '';
+    if (eventType === 'regulier') {
+        let day = document.getElementById('admin-course-day').value;
+        let time = document.getElementById('admin-course-time').value.replace(':', 'h');
+        scheduleStr = `${day} ${time}`;
+    } else {
+        let sd = document.getElementById('admin-course-start-date').value;
+        let ed = document.getElementById('admin-course-end-date').value;
+        if(sd) {
+           let dp = sd.split('-');
+           scheduleStr = `${dp[2]}/${dp[1]}/${dp[0]}`;
+        }
+        if(ed) {
+           let dp2 = ed.split('-');
+           scheduleStr += ` - ${dp2[2]}/${dp2[1]}/${dp2[0]}`;
+        }
+    }
+
+    // Get selected profs
+    let profsList = [];
+    const profCheckboxes = document.querySelectorAll('#admin-course-profs input[type="checkbox"]:checked');
+    profCheckboxes.forEach(cb => profsList.push(cb.value));
+
     const courseData = {
       id: id,
       name: document.getElementById('admin-course-name').value,
-      prof: document.getElementById('admin-course-prof').value,
-      schedule: document.getElementById('admin-course-schedule').value,
+      prof: profsList.join(', '),
+      schedule: scheduleStr,
       ages: document.getElementById('admin-course-age').value,
-      eventType: document.getElementById('admin-course-type') ? document.getElementById('admin-course-type').value : 'regulier',
-      isPriority: (document.getElementById('admin-course-type') && document.getElementById('admin-course-type').value !== 'regulier'),
+      eventType: eventType,
+      isPriority: (eventType !== 'regulier'),
       category: "Nouveau",
-      style: "classique", // par défaut
-      lieu: "ADK" // par défaut
+      style: "classique",
+      lieu: "ADK"
     };
 
     const firebase = await import('./firebase-config.js');
@@ -2901,100 +2983,6 @@ window.submitAdminCourse = async function() {
       const existing = DATA.getCourseById(id);
       if (existing) Object.assign(existing, courseData);
     }
-
-    closeModal('modal-admin-course');
-    renderAdminCourses();
-  } catch (err) {
-    console.error(err);
-    alert("Erreur: " + err.message);
-  } finally {
-    btn.textContent = originalText;
-    btn.disabled = false;
-  }
-};
-window.saveSeasonSettings = function() { alert('Saison enregistrée !'); };
-window.addHoliday = function() { alert('Congé ajouté !'); };
-
-window.deleteStudent = async function(id) {
-  if (!confirm('Êtes-vous sûr de vouloir supprimer cet élève ? (Action irréversible)')) return;
-  try {
-    const firebase = await import('./firebase-config.js');
-    
-    // 1. Delete student
-    await firebase.deleteDoc(firebase.doc(firebase.db, "students", id));
-    
-    // 2. Parent cleanup skipped
-      await DATA.syncFromFirebase();
-    renderAdminEleves();
-    showToast('Élève supprimé avec succès', 'success');
-  } catch(e) {
-    console.error(e);
-    showToast('Erreur lors de la suppression', 'error');
-  }
-};
-
-
-// ==================== ANNONCES (BROADCAST) ====================
-
-window.submitAddAnnonce = async function() {
-  const btn = document.querySelector('#form-add-annonce button[type="submit"]');
-  const originalText = btn.textContent;
-  btn.textContent = "Publication...";
-  btn.disabled = true;
-
-  try {
-    const firebase = await import('./firebase-config.js');
-    const target = document.getElementById('annonce-target').value;
-    const title = document.getElementById('annonce-title').value;
-    const content = document.getElementById('annonce-content').value;
-
-    await firebase.addDoc(firebase.collection(firebase.db, "announcements"), {
-      target: target,
-      title: title,
-      content: content,
-      timestamp: Date.now(),
-      sender: "Administration ADK"
-    });
-
-    await DATA.syncFromFirebase();
-    renderAdminAnnonces();
-    document.getElementById('form-add-annonce').reset();
-    showToast('Annonce publiée', 'success');
-  } catch (err) {
-    console.error(err);
-    showToast('Erreur lors de la publication', 'error');
-  } finally {
-    btn.textContent = originalText;
-    btn.disabled = false;
-  }
-};
-
-
-window.markAnnonceAsRead = async function(annonceId) {
-  if (!AUTH.currentUser) return;
-  const user = AUTH.currentUser;
-  if (!user.readAnnouncements) {
-    user.readAnnouncements = [];
-  }
-  if (!user.readAnnouncements.includes(annonceId)) {
-    user.readAnnouncements.push(annonceId);
-    
-    // UI update immediate (Optimistic UI)
-    if (user.role === 'prof') renderUserAnnonces('prof');
-    if (user.role === 'parent') renderUserAnnonces('parent');
-    
-    try {
-      const firebase = await import('./firebase-config.js');
-      // L'ID du document utilisateur dans Firestore est son email
-      const docId = user.email || String(user.id);
-      await firebase.updateDoc(firebase.doc(firebase.db, "users", docId), {
-        readAnnouncements: user.readAnnouncements
-      });
-    } catch (e) {
-      console.error("Erreur markAnnonceAsRead:", e);
-      alert("Erreur de sauvegarde : " + e.message + " (docId: " + (user.email || String(user.id)) + ")");
-    }
-  }
 };
 
 window.deleteAnnonce = async function(id) {
