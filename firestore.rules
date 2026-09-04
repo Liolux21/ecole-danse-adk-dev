@@ -43,11 +43,9 @@ service cloud.firestore {
         isProf() || 
         (isParent() && String(studentId) in getUserData().childrenIds)
       );
-      // Les profs peuvent modifier les élèves pour faire l'appel (absences)
       allow write: if isAdmin() || isProf();
     }
     
-    // Collection PROF_HOURS
     match /prof_hours/{docId} {
       allow read: if isAdmin() || isProf();
       allow write: if isAdmin() || isProf();
@@ -60,6 +58,11 @@ service cloud.firestore {
     }
 
     match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /settings/{settingId} {
       allow read: if true;
       allow write: if isAdmin();
     }
