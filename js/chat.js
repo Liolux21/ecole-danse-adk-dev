@@ -348,10 +348,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ---- Nouvelle conversation ----
+    // ---- Mode switcher ----
+    let chatMode = 'group'; // 'group' or 'oto'
+    let selectedOtoUser = null; // { email, name, role }
+
+    window.setChatType = function(mode) {
+        chatMode = mode;
+        selectedOtoUser = null;
+        document.getElementById('oto-selected').style.display = 'none';
+        document.getElementById('oto-results').style.display = 'none';
+        document.getElementById('oto-search').value = '';
+
+        document.getElementById('chat-mode-group').style.display = mode === 'group' ? '' : 'none';
+        document.getElementById('chat-mode-oto').style.display = mode === 'oto' ? '' : 'none';
+
+        document.getElementById('chat-type-group').className = `btn btn-sm ${mode === 'group' ? 'btn-primary' : 'btn-outline'}`;
+        document.getElementById('chat-type-oto').className = `btn btn-sm ${mode === 'oto' ? 'btn-primary' : 'btn-outline'}`;
+    };
+
+    // ---- Nouvelle conversation (open) ----
     const btnNewChat = document.getElementById('btn-new-chat');
     if (btnNewChat) {
         btnNewChat.addEventListener('click', () => {
+            // Reset state
+            chatMode = 'group';
+            selectedOtoUser = null;
+            window.setChatType('group');
+            document.getElementById('new-chat-title').value = '';
+            document.getElementById('new-chat-first-msg').value = '';
+
+            // Populate group select
             const select = document.getElementById('new-chat-target');
             if (select && window.AUTH && window.AUTH.currentUser) {
                 const user = window.AUTH.currentUser;
@@ -381,50 +407,132 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 } else {
                     options += `<option value="admin">Administration ADK</option>`;
-                    if (window.DATA && window.DATA.courses) {
-                        const myCourseIds = user.courseIds || [];
-                        const myCourses = window.DATA.courses.filter(c => myCourseIds.includes(c.id));
-                        const profNames = [...new Set(myCourses.map(c => c.prof))];
-                        if (profNames.length > 0) {
-                            options += `<optgroup label="Professeurs de mes enfants">`;
-                            profNames.forEach(prof => {
-                                options += `<option value="prof_${prof}">Professeur : ${prof}</option>`;
-                            });
-                            options += `</optgroup>`;
-                        }
-                    }
                 }
                 select.innerHTML = options;
             }
+
             if (window.openModal) window.openModal('modal-new-chat');
         });
     }
 
+    // ---- OTO search ----
+    const otoSearch = document.getElementById('oto-search');
+    if (otoSearch) {
+        otoSearch.addEventListener('input', () => {
+            const term = otoSearch.value.trim().toLowerCase();
+            const resultsEl = document.getElementById('oto-results');
+            selectedOtoUser = null;
+            document.getElementById('oto-selected').style.display = 'none';
+
+            if (term.length < 2) { resultsEl.style.display = 'none'; return; }
+
+            const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+            const myEmail = currentUser ? currentUser.email.toLowerCase() : '';
+
+            // Build search pool: users (profs) + students
+            let pool = [];
+            if (window.DATA) {
+                // Profs/Admins
+                (window.DATA.users || []).forEach(u => {
+                    if ((u.email || u.id || '').toLowerCase() === myEmail) return;
+                    const name = u.name || `${u.firstname || ''} ${u.lastname || ''}`.trim();
+                    if (name.toLowerCase().includes(term) || (u.email || '').toLowerCase().includes(term)) {
+                        pool.push({ email: u.email || u.id, name, role: u.role || 'prof' });
+                    }
+                });
+                // Students/Parents
+                (window.DATA.students || []).forEach(s => {
+                    const name = `${s.firstname || ''} ${s.lastname || ''}`.trim() || s.name || '';
+                    const email = s.contactEmail || s.parentId || '';
+                    if (email.toLowerCase() === myEmail) return;
+                    if (name.toLowerCase().includes(term) || email.toLowerCase().includes(term)) {
+                        pool.push({ email, name, role: 'élève', studentName: name });
+                    }
+                });
+            }
+
+            if (pool.length === 0) {
+                resultsEl.innerHTML = '<div style="padding:0.75rem 1rem; color:var(--text-muted); font-size:0.9rem;">Aucun résultat.</div>';
+                resultsEl.style.display = 'block';
+                return;
+            }
+
+            resultsEl.innerHTML = pool.slice(0, 15).map((u, idx) => `
+                <div class="oto-result-item" data-idx="${idx}" style="padding:0.6rem 1rem; cursor:pointer; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.75rem;" 
+                     onmouseenter="this.style.background='#f4f4f4'" onmouseleave="this.style.background='#fff'">
+                    <span style="font-size:1.2rem;">${u.role === 'prof' ? '👩‍🏫' : u.role === 'admin' ? '🔑' : '🎓'}</span>
+                    <div>
+                        <div style="font-weight:600;">${u.name}</div>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">${u.role} · ${u.email || '—'}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Store pool for selection
+            resultsEl._pool = pool;
+            resultsEl.style.display = 'block';
+
+            resultsEl.querySelectorAll('.oto-result-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    const idx = parseInt(el.dataset.idx);
+                    selectedOtoUser = resultsEl._pool[idx];
+                    resultsEl.style.display = 'none';
+                    otoSearch.value = '';
+                    const selEl = document.getElementById('oto-selected');
+                    selEl.innerHTML = `✅ ${selectedOtoUser.name} <span style="font-size:0.8rem;color:var(--text-muted);">(${selectedOtoUser.role})</span> <button onclick="window.clearOtoUser()" style="background:none;border:none;cursor:pointer;color:#e74c3c;font-size:1rem;margin-left:0.5rem;">×</button>`;
+                    selEl.style.display = 'block';
+                });
+            });
+        });
+    }
+
+    window.clearOtoUser = function() {
+        selectedOtoUser = null;
+        document.getElementById('oto-selected').style.display = 'none';
+        document.getElementById('oto-search').value = '';
+        document.getElementById('oto-search').focus();
+    };
+
+    // ---- Créer la conversation ----
     const btnCreateChatConfirm = document.getElementById('btn-create-chat-confirm');
     if (btnCreateChatConfirm) {
         btnCreateChatConfirm.addEventListener('click', async () => {
             const titleInput = document.getElementById('new-chat-title');
             const msgInput2 = document.getElementById('new-chat-first-msg');
-            const targetSelect = document.getElementById('new-chat-target');
 
             const title = titleInput.value.trim();
             const firstMsg = msgInput2.value.trim();
-            const target = targetSelect.value;
-
             const currentUser = window.AUTH ? window.AUTH.currentUser : null;
-            if (!title || !firstMsg || !currentUser || !target) return;
+            if (!title || !firstMsg || !currentUser) return;
+
+            // Validate target
+            let target, participants, isGroup;
+            if (chatMode === 'oto') {
+                if (!selectedOtoUser || !selectedOtoUser.email) {
+                    alert("Veuillez sélectionner une personne dans la recherche.");
+                    return;
+                }
+                target = `oto_${selectedOtoUser.email}`;
+                participants = [currentUser.email, selectedOtoUser.email];
+                isGroup = false;
+            } else {
+                const targetSelect = document.getElementById('new-chat-target');
+                target = targetSelect.value;
+                if (!target) return;
+                participants = [currentUser.email];
+                isGroup = true;
+            }
 
             btnCreateChatConfirm.disabled = true;
             btnCreateChatConfirm.textContent = "Création...";
 
             try {
-                let participants = [currentUser.email];
                 const newConvRef = await addDoc(collection(db, 'conversations'), {
                     title: title,
                     targetGroup: target,
                     participants: participants,
                     creatorId: currentUser.email,
-                    isGroup: true,
+                    isGroup: isGroup,
                     lastMessage: firstMsg,
                     lastMessageAt: serverTimestamp()
                 });
@@ -439,6 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (window.closeModal) window.closeModal('modal-new-chat');
                 titleInput.value = '';
                 msgInput2.value = '';
+                selectedOtoUser = null;
                 window.switchChat(newConvRef.id, title);
             } catch(e) {
                 console.error("Error creating chat", e);

@@ -1173,12 +1173,36 @@
         <button class="vitrine-modal-close" onclick="closeModal('modal-new-chat')">&times;</button>
       </div>
       <div class="vitrine-modal-body">
-        
+
+        <!-- Type selector -->
         <div class="form-group">
-          <label class="form-label">Destinataires</label>
-          <select id="new-chat-target" class="form-input" required>
-            <!-- Filled by JS -->
-          </select>
+          <label class="form-label">Type de discussion</label>
+          <div style="display:flex; gap:0.5rem;">
+            <button type="button" id="chat-type-group" class="btn btn-primary btn-sm" style="flex:1;" onclick="window.setChatType('group')">📢 Groupe / Canal</button>
+            <button type="button" id="chat-type-oto" class="btn btn-outline btn-sm" style="flex:1;" onclick="window.setChatType('oto')">💬 One to One</button>
+          </div>
+        </div>
+
+        <!-- GROUP MODE -->
+        <div id="chat-mode-group">
+          <div class="form-group">
+            <label class="form-label">Destinataires</label>
+            <select id="new-chat-target" class="form-input" required>
+              <!-- Filled by JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- ONE TO ONE MODE -->
+        <div id="chat-mode-oto" style="display:none;">
+          <div class="form-group">
+            <label class="form-label">Rechercher un prof ou un élève</label>
+            <input type="text" id="oto-search" class="form-input" placeholder="Tapez un nom...">
+            <div id="oto-results" style="margin-top:0.5rem; max-height:180px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius); display:none;">
+              <!-- Filled by JS -->
+            </div>
+            <div id="oto-selected" style="margin-top:0.5rem; display:none; background:#f4f4f4; padding:0.5rem 1rem; border-radius:var(--radius); font-weight:600; font-size:0.9rem;"></div>
+          </div>
         </div>
 
         <div class="form-group">
