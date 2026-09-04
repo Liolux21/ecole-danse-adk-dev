@@ -284,9 +284,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (emojiBtn && emojiPicker) {
         emojiBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            emojiPicker.classList.toggle('open');
+            const isOpen = emojiPicker.style.display === 'flex';
+            emojiPicker.style.display = isOpen ? 'none' : 'flex';
         });
         emojiPicker.addEventListener('click', (e) => {
+            e.stopPropagation();
             const emoji = e.target.closest('.emoji-item');
             if (emoji && msgInput) {
                 const pos = msgInput.selectionStart;
@@ -294,9 +296,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 msgInput.value = val.slice(0, pos) + emoji.textContent + val.slice(pos);
                 msgInput.focus();
                 msgInput.selectionStart = msgInput.selectionEnd = pos + emoji.textContent.length;
+                emojiPicker.style.display = 'none';
             }
         });
-        document.addEventListener('click', () => emojiPicker.classList.remove('open'));
+        document.addEventListener('click', () => { emojiPicker.style.display = 'none'; });
     }
 
     // ---- Pièces jointes ----
