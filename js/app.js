@@ -2983,6 +2983,17 @@ window.submitAdminCourse = async function() {
       const existing = DATA.getCourseById(id);
       if (existing) Object.assign(existing, courseData);
     }
+    
+    closeModal('modal-admin-course');
+    renderAdminCourses();
+    showToast('Cours sauvegardé', 'success');
+  } catch(err) {
+    console.error(err);
+    showToast('❌ Erreur lors de la sauvegarde', 'error');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
 };
 
 window.deleteAnnonce = async function(id) {
