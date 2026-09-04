@@ -1533,7 +1533,8 @@ window.addHoliday = async function() {
         return;
     }
     
-    if(!DATA.settings.holidays) DATA.settings.holidays = [];
+    if (!DATA.settings) DATA.settings = {};
+    if (!DATA.settings.holidays) DATA.settings.holidays = [];
     DATA.settings.holidays.push({ name, start, end });
     
     try {
@@ -1570,6 +1571,7 @@ window.saveSeasonSettings = async function() {
     const start = document.getElementById('settings-season-start').value;
     const end = document.getElementById('settings-season-end').value;
     
+    if (!DATA.settings) DATA.settings = { holidays: [] };
     DATA.settings.season = { start, end };
     try {
         const firebase = await import('./firebase-config.js');
