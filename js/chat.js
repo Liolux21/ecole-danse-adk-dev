@@ -470,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (user.role === 'prof') {
                     options += `<option value="admin">Administration ADK</option>`;
                     if (window.DATA && window.DATA.courses) {
-                        const myCourses = window.DATA.courses.filter(c => c.prof === user.name);
+                        const myCourses = window.DATA.courses.filter(c => user.realRole === 'admin' || (c.prof && c.prof.includes(user.name)));
                         if (myCourses.length > 0) {
                             options += `<optgroup label="Mes Cours">`;
                             myCourses.forEach(c => {

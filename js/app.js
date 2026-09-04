@@ -2628,11 +2628,9 @@ function isDateValid(date, course) {
 }
 
 function calculateNextCourses(children) {
-    const daysMap = { 'Lundi': 1, 'Mardi': 2, 'Mercredi': 3, 'Jeudi': 4, 'Vendredi': 5, 'Samedi': 6, 'Dimanche': 0 };
-    const now = new Date();
-    const currentDay = now.getDay();
-  const currentHour = now.getHours() * 60 + now.getMinutes();
-
+  const daysMap = { 'Lundi': 1, 'Mardi': 2, 'Mercredi': 3, 'Jeudi': 4, 'Vendredi': 5, 'Samedi': 6, 'Dimanche': 0 };
+  const now = new Date();
+  
   const nextCourses = [];
 
   children.forEach(child => {
@@ -2643,39 +2641,58 @@ function calculateNextCourses(children) {
       const c = DATA.getCourseWithOverride(cid);
       if (!c || c.status === 'annule') return;
       
-      let dayStr = c.schedule.split(' ')[0];
-      let hourStr = c.schedule.split(' ')[1];
-      if (c.date && c.date.includes(' ')) dayStr = c.date.split(' ')[0];
-      if (c.hour) hourStr = c.hour;
+      let targetDateObj;
+      let hourStr = c.hour || (c.schedule ? c.schedule.split(' ')[1] : '00h00');
+      let targetHourMin = 0;
+      if (hourStr && hourStr.includes('h')) {
+        const timeParts = hourStr.split('h');
+        targetHourMin = parseInt(timeParts[0]) * 60 + (parseInt(timeParts[1]) || 0);
+      } else if (hourStr && hourStr.includes(':')) {
+        const timeParts = hourStr.split(':');
+        targetHourMin = parseInt(timeParts[0]) * 60 + (parseInt(timeParts[1]) || 0);
+      }
 
-      if (!daysMap.hasOwnProperty(dayStr)) return;
-      
-      const targetDay = daysMap[dayStr];
-      const timeParts = hourStr.split('h');
-      const targetHour = parseInt(timeParts[0]) * 60 + (parseInt(timeParts[1]) || 0);
-
-      let diffDays = targetDay - currentDay;
-      if (diffDays < 0 || (diffDays === 0 && targetHour <= currentHour)) {
-        diffDays += 7; 
+      if (c.date && c.date.includes('-')) {
+         const parts = c.date.split('-');
+         targetDateObj = new Date(parts[0], parts[1] - 1, parts[2], Math.floor(targetHourMin/60), targetHourMin%60);
+      } else if (c.date && c.date.includes('/')) {
+         const parts = c.date.split('/');
+         targetDateObj = new Date(parts[2], parts[1] - 1, parts[0], Math.floor(targetHourMin/60), targetHourMin%60);
+      } else {
+         let dayStr = c.schedule ? c.schedule.split(' ')[0] : '';
+         if (!daysMap.hasOwnProperty(dayStr)) return;
+         
+         const targetDay = daysMap[dayStr];
+         let diffDays = targetDay - now.getDay();
+         if (diffDays < 0 || (diffDays === 0 && targetHourMin <= (now.getHours()*60 + now.getMinutes()))) {
+           diffDays += 7; 
+         }
+         targetDateObj = new Date(now);
+         targetDateObj.setDate(now.getDate() + diffDays);
+         targetDateObj.setHours(Math.floor(targetHourMin/60), targetHourMin%60, 0, 0);
       }
       
-      const targetDate = new Date(now);
-      targetDate.setDate(now.getDate() + diffDays);
-      const dd = String(targetDate.getDate()).padStart(2, '0');
-      const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
-      const dateStrObj = `${dd}/${mm}`;
-      
-      const diffMins = diffDays * 24 * 60 + (targetHour - currentHour);
-      
-      if (diffMins < minDiff) {
-        minDiff = diffMins;
-        nextCourse = { child, course: c, diffMins, dayStr, hourStr, dateStrObj };
+      const diffMs = targetDateObj.getTime() - now.getTime();
+      if (diffMs > 0 && diffMs < minDiff) {
+        minDiff = diffMs;
+        const dd = String(targetDateObj.getDate()).padStart(2, '0');
+        const mm = String(targetDateObj.getMonth() + 1).padStart(2, '0');
+        const dayNames = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+        
+        let displayHourStr = hourStr.replace(':', 'h');
+        
+        nextCourse = {
+          child,
+          course: c,
+          dayStr: dayNames[targetDateObj.getDay()],
+          dateStrObj: dd + '/' + mm,
+          hourStr: displayHourStr,
+          diffMins: diffMs / 60000
+        };
       }
     });
 
-    if (nextCourse) {
-      nextCourses.push(nextCourse);
-    }
+    if (nextCourse) nextCourses.push(nextCourse);
   });
 
   return nextCourses;
@@ -2751,6 +2768,7 @@ document.getElementById('manage-course-form')?.addEventListener('submit', async 
         timestamp: Date.now(),
         authorId: AUTH.currentUser.id
       };
+      DATA.announcements.push({...annData, id: 'temp_' + Date.now()});
       await firebase.addDoc(firebase.collection(firebase.db, "announcements"), annData);
       showToast('✅ Modifications enregistrées et notification envoyée');
     }
