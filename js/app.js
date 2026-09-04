@@ -713,8 +713,8 @@ function initTabs(tabsContainerId, contentIds) {
     tab.addEventListener('click', () => {
       container.querySelectorAll('.dash-tab, .btn-tab').forEach(t => t.classList.remove('active'));
       contentIds.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
-        const hoursTab = document.getElementById(\'tab-admin-hours\');
-        if (hoursTab) hoursTab.classList.remove(\'active\');
+        const hoursTab = document.getElementById('tab-admin-hours');
+        if (hoursTab) hoursTab.classList.remove('active');
       tab.classList.add('active');
       const target = document.getElementById(contentIds[i]);
               if (target) {
