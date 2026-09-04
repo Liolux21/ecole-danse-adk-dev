@@ -1391,17 +1391,17 @@
 
   <!-- Modal Voir Note -->
   <div class="vitrine-modal" id="modal-gala-note-view">
-    <div class="vitrine-modal-content" style="max-width: 600px;">
+    <div class="vitrine-modal-content" style="max-width: 95vw; width: 95vw; max-height: 90vh; display:flex; flex-direction:column;">
       <div class="vitrine-modal-header">
         <h4 class="vitrine-modal-title" id="note-view-title">Rapport de réunion</h4>
         <button class="vitrine-modal-close" onclick="closeModal('modal-gala-note-view')">&times;</button>
       </div>
-      <div class="vitrine-modal-body">
-        <div style="margin-bottom:1rem;">
-          <strong>Date :</strong> <span id="note-view-date"></span><br>
+      <div class="vitrine-modal-body" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:1rem;">
+        <div>
+          <strong>Date :</strong> <span id="note-view-date"></span> &nbsp;|&nbsp;
           <strong>Présents :</strong> <span id="note-view-presents"></span>
         </div>
-        <div style="background:#f4f4f4; padding:1rem; border-radius:var(--radius); min-height:200px; white-space:pre-wrap;" id="note-view-content"></div>
+        <div style="background:#f4f4f4; padding:1.5rem; border-radius:var(--radius); flex:1; min-height:300px; white-space:pre-wrap; font-size:1rem; line-height:1.7; overflow-y:auto;" id="note-view-content"></div>
       </div>
     </div>
   </div>
