@@ -1626,6 +1626,20 @@ if (!DATA.galaRepets) DATA.galaRepets = [];
 if (!DATA.galaTenues) DATA.galaTenues = [];
 if (!DATA.galaInfos) DATA.galaInfos = [];
 if (!DATA.galaNotes) DATA.galaNotes = [];
+window.saveGalaToFirebase = async function() {
+  try {
+    const firebase = await import('./firebase-config.js');
+    await firebase.setDoc(firebase.doc(firebase.db, 'settings', 'gala'), {
+      repets: DATA.galaRepets || [],
+      infos: DATA.galaInfos || [],
+      notes: DATA.galaNotes || []
+    }, { merge: true });
+  } catch(err) {
+    console.error("Gala save error", err);
+    showToast("Erreur de sauvegarde Gala", "error");
+  }
+};
+
 
 window.renderGalaTables = function() {
   // Répétitions

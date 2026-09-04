@@ -332,7 +332,13 @@ export const DATA = {
               this.settings = doc.data();
               if (!this.settings.holidays) this.settings.holidays = [];
             }
-          });
+          if (doc.id === 'gala') {
+                const galaData = doc.data();
+                this.galaRepets = galaData.repets || [];
+                this.galaInfos = galaData.infos || [];
+                this.galaNotes = galaData.notes || [];
+              }
+            });
         } catch(e) {
           console.warn("Settings fetch failed", e);
         }
