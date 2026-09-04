@@ -1868,7 +1868,7 @@ function renderProfDashboard(user) {
 
   // Populate filter dropdowns based on DATA.courses
   if (filterStyle && filterStyle.options.length === 1) {
-    const styles = [...new Set(DATA.courses.map(c => c.style).filter(Boolean))];
+    const styles = [...new Set(DATA.courses.map(c => c.style ? c.style.toLowerCase() : '').filter(Boolean))];
     styles.forEach(s => {
       const opt = document.createElement('option');
       opt.value = s;
@@ -1877,12 +1877,17 @@ function renderProfDashboard(user) {
     });
   }
   if (filterLieu && filterLieu.options.length === 1) {
-    const lieux = [...new Set(DATA.courses.map(c => c.lieu).filter(Boolean))];
+    const lieux = [...new Set(DATA.courses.map(c => c.lieu ? c.lieu.toLowerCase() : '').filter(Boolean))];
     lieux.forEach(l => {
       const opt = document.createElement('option');
       opt.value = l;
-      // Format "adk" -> "ADK", etc.
-      opt.textContent = l.toUpperCase() === 'ADK' || l.toUpperCase() === 'ROX' ? l.toUpperCase() : l.charAt(0).toUpperCase() + l.slice(1);
+      if (l === 'adk') {
+        opt.textContent = 'Studio ADK';
+      } else if (l === 'rox') {
+        opt.textContent = 'ROX';
+      } else {
+        opt.textContent = l.charAt(0).toUpperCase() + l.slice(1);
+      }
       filterLieu.appendChild(opt);
     });
   }
@@ -1894,13 +1899,13 @@ function renderProfDashboard(user) {
     if (filterStyle && filterStyle.value !== 'all') {
       baseCourseIds = baseCourseIds.filter(cid => {
         const c = DATA.getCourseById(cid);
-        return c && c.style === filterStyle.value;
+        return c && c.style && c.style.toLowerCase() === filterStyle.value;
       });
     }
     if (filterLieu && filterLieu.value !== 'all') {
       baseCourseIds = baseCourseIds.filter(cid => {
         const c = DATA.getCourseById(cid);
-        return c && c.lieu === filterLieu.value;
+        return c && c.lieu && c.lieu.toLowerCase() === filterLieu.value;
       });
     }
     
