@@ -557,8 +557,8 @@ async function initPortal() {
 
   // Tabs admin
   initTabs('admin-tabs', ['tab-inscriptions', 'tab-eleves', 'tab-profs', 'tab-admin-cours', 'tab-admin-settings', 'tab-admin-gala', 'tab-admin-annonces', 'tab-admin-messagerie']);
-  initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves', 'tab-prof-gala', 'tab-prof-notifications', 'tab-prof-messagerie']);
-  initTabs('parent-tabs', ['tab-parent-planning', 'tab-parent-gala', 'tab-parent-notifications', 'tab-parent-messagerie']);
+  initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves', 'tab-prof-gala', 'tab-prof-messagerie', 'tab-prof-notifications']);
+  initTabs('parent-tabs', ['tab-parent-planning', 'tab-parent-gala', 'tab-parent-messagerie', 'tab-parent-notifications']);
   
   // Sub-tabs Gala
   initTabs('sub-admin-gala-tabs', ['tab-admin-gala-repets', 'tab-admin-gala-infos', 'tab-admin-gala-notes']);
@@ -1830,7 +1830,9 @@ function renderProfDashboard(user) {
   document.getElementById('prof-name').textContent = user.name;
   document.getElementById('prof-avatar').textContent = user.avatar;
 
-  const taughtCourseIds = DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);
+  const taughtCourseIds = user.role === 'admin' 
+    ? DATA.courses.map(c => c.id)
+    : DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);
   
   let selectedCourseId = taughtCourseIds[0] || null;
   const courseSelector = document.getElementById('appel-courses-select');
@@ -2051,38 +2053,67 @@ function renderAppelList(courseId) {
   });
 }
 
-function renderProfEleves(user) {
-  const tbody = document.getElementById('prof-eleves-body');
-  const taughtCourseIds = DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);
-  const allStudents = [...new Map(taughtCourseIds.flatMap(cid => DATA.getStudentsByCourse(cid)).map(s => [s.id, s])).values()];
-  tbody.innerHTML = allStudents.map(s => {
-    const att = DATA.getAttendanceByStudent(s.id);
-    const pres = att.filter(a => a.status === 'present').length;
-    const rate = att.length ? Math.round(pres / att.length * 100) : 100;
-    const courses = s.courseIds.filter(id => taughtCourseIds.includes(id)).map(id => DATA.getCourseById(id)?.name).filter(Boolean).join(', ');
-    const color = rate >= 80 ? '#90CC90' : rate >= 60 ? 'var(--gold)' : '#DC6464';
+window.renderProfEleves = function(user) {
+    user = user || (window.AUTH && window.AUTH.currentUser);
+    if (!user) return;
+
+    const tbody = document.getElementById('prof-eleves-body');
+    const taughtCourseIds = user.role === 'admin' 
+        ? DATA.courses.map(c => c.id)
+        : DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);
     
-    // Cotisation display
-    const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee' || s.cotisation === 'paye';
-    const cotClass = isPayee ? 'pill-approved' : 'pill-pending';
-    const cotLabel = isPayee ? '✅ Payée' : '⏳ En attente';
+    // Populate the dropdown if not already populated
+    const filterSelect = document.getElementById('prof-eleves-filter');
+    if (filterSelect && filterSelect.getAttribute('data-populated') !== 'true') {
+        let opts = '<option value="all">Tous les élèves</option>';
+        taughtCourseIds.forEach(cid => {
+            const c = DATA.getCourseById(cid);
+            if (c) opts += `<option value="${c.id}">${c.name}</option>`;
+        });
+        filterSelect.innerHTML = opts;
+        filterSelect.setAttribute('data-populated', 'true');
+        filterSelect.addEventListener('change', () => window.renderProfEleves(user));
+    }
+
+    const selectedCourseId = filterSelect ? filterSelect.value : 'all';
     
-    // Mutuelle display
-    const mutStatus = s.mutuelle || 'masque';
-    const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'en_cours' ? 'pill-pending' : 'pill-rejected');
-    const mutLabel = mutStatus === 'remis' ? '✅ Remis' : (mutStatus === 'en_cours' ? '⏳ En cours' : '⚠️ En attente');
-    const mutDisplay = (mutStatus === 'masque') ? '<td style="color:#aaa;">Masqué</td>' : `<td><span class="status-pill ${mutClass}">${mutLabel}</span></td>`;
+    let courseIdsToFetch = selectedCourseId === 'all' 
+        ? taughtCourseIds 
+        : [parseInt(selectedCourseId, 10)]; // assuming course IDs are numeric or can be parsed
+
+    const allStudents = [...new Map(courseIdsToFetch.flatMap(cid => DATA.getStudentsByCourse(cid)).map(s => [s.id, s])).values()];
     
-    return `<tr>
-      <td><strong>${s.firstname} ${s.lastname}</strong></td>
-      <td>${s.age} ans</td>
-      <td style="font-size:0.82rem;color:var(--text-muted)">${courses}</td>
-      <td style="color:${color};font-weight:700">${rate}%</td>
-      <td><span class="status-pill ${cotClass}">${cotLabel}</span></td>
-      ${mutDisplay}
-    </tr>`;
-  }).join('');
-}
+    // Sort alphabetically by firstname
+    allStudents.sort((a,b) => (a.firstname || '').localeCompare(b.firstname || ''));
+
+    tbody.innerHTML = allStudents.map(s => {
+      const att = DATA.getAttendanceByStudent(s.id);
+      const pres = att.filter(a => a.status === 'present').length;
+      const rate = att.length ? Math.round(pres / att.length * 100) : 100;
+      const courses = s.courseIds.filter(id => taughtCourseIds.includes(id)).map(id => DATA.getCourseById(id)?.name).filter(Boolean).join(', ');
+      const color = rate >= 80 ? '#90CC90' : rate >= 60 ? 'var(--gold)' : '#DC6464';
+      
+      // Cotisation display
+      const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee' || s.cotisation === 'paye';
+      const cotClass = isPayee ? 'pill-approved' : 'pill-pending';
+      const cotLabel = isPayee ? '✔ Payée' : '⏳ En attente';
+      
+      // Mutuelle display
+      const mutStatus = s.mutuelle || 'masque';
+      const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'en_cours' ? 'pill-pending' : 'pill-rejected');
+      const mutLabel = mutStatus === 'remis' ? '✔ Remis' : (mutStatus === 'en_cours' ? '⏳ En cours' : '⚠️ En attente');
+      const mutDisplay = (mutStatus === 'masque') ? '<td style="color:#aaa;">Masqué</td>' : `<td><span class="status-pill ${mutClass}">${mutLabel}</span></td>`;
+      
+      return `<tr>
+        <td><strong>${s.firstname} ${s.lastname}</strong></td>
+        <td>${s.age} ans</td>
+        <td style="font-size:0.82rem;color:var(--text-muted)">${courses}</td>
+        <td style="color:${color};font-weight:700">${rate}%</td>
+        <td><span class="status-pill ${cotClass}">${cotLabel}</span></td>
+        ${mutDisplay}
+      </tr>`;
+    }).join('');
+};
 
 // =============================================
 // DASHBOARD PARENT
