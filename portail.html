@@ -106,11 +106,9 @@
 
         @media (max-width: 768px) {
       .dash-header-actions {
-        width: 100%;
+        flex-direction: column;
+        align-items: flex-end !important;
         margin-top: 0.5rem;
-      }
-      .dash-header-actions > button {
-        width: 100%;
       }
     }
   </style>
@@ -157,10 +155,10 @@
               <div class="dash-user-role"><span class="role-badge badge-admin">👑 Administratrice</span></div>
             </div>
           </div>
-            <div class="dash-header-actions" style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
-              <div class="dash-primary-actions" style="display:flex; gap:0.5rem; width:100%;">
-                <button class="btn btn-outline btn-sm" onclick="openProfileModal()" style="flex:1; white-space:nowrap;">⚙️ Mon Profil</button>
-                <button class="btn btn-outline btn-sm" id="admin-logout" style="flex:1; white-space:nowrap;">Déconnexion</button>
+            <div class="dash-header-actions" style="display:flex; align-items:center; gap:0.5rem;">
+              <div class="dash-primary-actions" style="display:flex; gap:0.5rem;">
+                <button class="btn btn-outline btn-sm" onclick="openProfileModal()" >⚙️ Mon Profil</button>
+                <button class="btn btn-outline btn-sm" id="admin-logout" >Déconnexion</button>
               </div>
             </div>
         </div>
@@ -444,10 +442,10 @@
               <div class="dash-user-role"><span class="role-badge badge-prof">👩‍🏫 Professeure</span></div>
             </div>
           </div>
-            <div class="dash-header-actions" style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
-              <div class="dash-primary-actions" style="display:flex; gap:0.5rem; width:100%;">
-                <button class="btn btn-outline btn-sm" onclick="openProfileModal()" style="flex:1; white-space:nowrap;">⚙️ Mon Profil</button>
-                <button class="btn btn-outline btn-sm" id="prof-logout" style="flex:1; white-space:nowrap;">Déconnexion</button>
+            <div class="dash-header-actions" style="display:flex; align-items:center; gap:0.5rem;">
+              <div class="dash-primary-actions" style="display:flex; gap:0.5rem;">
+                <button class="btn btn-outline btn-sm" onclick="openProfileModal()" >⚙️ Mon Profil</button>
+                <button class="btn btn-outline btn-sm" id="prof-logout" >Déconnexion</button>
               </div>
             </div>
         </div>
@@ -566,10 +564,10 @@
               <div class="dash-user-role"><span class="role-badge badge-parent">🩰 Élève</span></div>
             </div>
           </div>
-            <div class="dash-header-actions" style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
-              <div class="dash-primary-actions" style="display:flex; gap:0.5rem; width:100%;">
-                <button class="btn btn-outline btn-sm" onclick="openProfileModal()" style="flex:1; white-space:nowrap;">⚙️ Mon Profil</button>
-                <button class="btn btn-outline btn-sm" id="parent-logout" style="flex:1; white-space:nowrap;">Déconnexion</button>
+            <div class="dash-header-actions" style="display:flex; align-items:center; gap:0.5rem;">
+              <div class="dash-primary-actions" style="display:flex; gap:0.5rem;">
+                <button class="btn btn-outline btn-sm" onclick="openProfileModal()" >⚙️ Mon Profil</button>
+                <button class="btn btn-outline btn-sm" id="parent-logout" >Déconnexion</button>
               </div>
             </div>
         </div>
