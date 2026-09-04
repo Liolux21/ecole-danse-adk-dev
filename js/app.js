@@ -1761,7 +1761,7 @@ function renderProfDashboard(user) {
           }
         }
         
-        showToast('✅ Appel et heures sauvegardés !', 'success');, 'success');
+        showToast('✅ Appel et heures sauvegardés !', 'success');
     };
   }
   
