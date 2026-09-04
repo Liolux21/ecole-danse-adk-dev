@@ -324,6 +324,18 @@ export const DATA = {
         annSnap.forEach(doc => {
           this.announcements.push({ id: doc.id, ...doc.data() });
         });
+        
+        try {
+          const settingsSnap = await getDocs(collection(db, "settings"));
+          settingsSnap.forEach(doc => {
+            if (doc.id === 'general') {
+              this.settings = doc.data();
+              if (!this.settings.holidays) this.settings.holidays = [];
+            }
+          });
+        } catch(e) {
+          console.warn("Settings fetch failed", e);
+        }
         // Sort by timestamp desc
         this.announcements.sort((a, b) => b.timestamp - a.timestamp);
       } catch (err) {

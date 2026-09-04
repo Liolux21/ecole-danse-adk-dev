@@ -1507,7 +1507,7 @@ window.deleteCourse = async function(id) {
 window.renderHolidays = function() {
     const list = document.getElementById('settings-holidays-list');
     if (!list) return;
-    if (!DATA.settings.holidays || DATA.settings.holidays.length === 0) {
+    if (!DATA.settings || !DATA.settings.holidays || DATA.settings.holidays.length === 0) {
         list.innerHTML = '<div class="empty-state">Aucun congé enregistré.</div>';
         return;
     }
