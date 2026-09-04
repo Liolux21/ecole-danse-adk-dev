@@ -1479,8 +1479,10 @@ window.renderAdminCourses = function() {
 window.deleteCourse = async function(id) {
   if (confirm("Êtes-vous sûr de vouloir supprimer ce cours ?")) {
     const firebase = await import('./firebase-config.js');
-    await firebase.deleteDoc(firebase.doc(firebase.db, "courses", id));
-    await DATA.syncFromFirebase();
+    const course = DATA.getCourseById(id);
+    const targetDocId = (course && course.docId) ? course.docId : String(id);
+    await firebase.deleteDoc(firebase.doc(firebase.db, "courses", targetDocId));
+    DATA.courses = DATA.courses.filter(c => String(c.id) !== String(id));
     renderAdminCourses();
   }
 };
@@ -2843,6 +2845,8 @@ window.openAddCourseModal = function(courseId = null) {
       if (profSelect) profSelect.value = course.prof || '';
       document.getElementById('admin-course-schedule').value = course.schedule || '';
       document.getElementById('admin-course-age').value = course.ages || '';
+      const typeEl = document.getElementById('admin-course-type');
+      if (typeEl) typeEl.value = course.eventType || 'regulier';
       document.getElementById('admin-course-title').textContent = "Modifier le cours";
     }
   } else {
@@ -2872,6 +2876,8 @@ window.submitAdminCourse = async function() {
       prof: document.getElementById('admin-course-prof').value,
       schedule: document.getElementById('admin-course-schedule').value,
       ages: document.getElementById('admin-course-age').value,
+      eventType: document.getElementById('admin-course-type') ? document.getElementById('admin-course-type').value : 'regulier',
+      isPriority: (document.getElementById('admin-course-type') && document.getElementById('admin-course-type').value !== 'regulier'),
       category: "Nouveau",
       style: "classique", // par défaut
       lieu: "ADK" // par défaut

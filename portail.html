@@ -839,41 +839,50 @@
     </div>
   </div>
 
-  <!-- Modal: Gérer un cours -->
-  <div class="vitrine-modal" id="modal-manage-course">
-    <div class="vitrine-modal-content">
-      <button class="vitrine-modal-close" onclick="closeModal('modal-manage-course')">×</button>
-      <div class="vitrine-modal-header">
-        <h2 class="vitrine-modal-title" id="manage-course-title">Nouveau cours</h2>
-      </div>
-      <div class="vitrine-modal-body">
-        <form id="form-manage-course" onsubmit="event.preventDefault(); submitManageCourse();">
-          <input type="hidden" id="manage-course-id">
-          <div class="form-group">
-            <label class="form-label">Nom du cours</label>
-            <input type="text" id="manage-course-name" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Professeur</label>
-            <select id="manage-course-prof" class="form-control" required>
-              <!-- Dynamique -->
-            </select>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+  <!-- Modal: Gérer un cours (Admin) -->
+    <div class="vitrine-modal" id="modal-admin-course">
+      <div class="vitrine-modal-content">
+        <button class="vitrine-modal-close" onclick="closeModal('modal-admin-course')">×</button>
+        <div class="vitrine-modal-header">
+          <h2 class="vitrine-modal-title" id="admin-course-title">Nouveau cours</h2>
+        </div>
+        <div class="vitrine-modal-body">
+          <form id="form-admin-course" onsubmit="event.preventDefault(); submitAdminCourse();">
+            <input type="hidden" id="admin-course-id">
             <div class="form-group">
-              <label class="form-label">Jour/Heure (ex: Lundi 17h30)</label>
-              <input type="text" id="manage-course-schedule" class="form-control" required>
+              <label class="form-label">Nom du cours / événement</label>
+              <input type="text" id="admin-course-name" class="form-control" required>
             </div>
             <div class="form-group">
-              <label class="form-label">Tranche d'âge</label>
-              <input type="text" id="manage-course-age" class="form-control" required>
+              <label class="form-label">Type d'événement</label>
+              <select id="admin-course-type" class="form-control" required>
+                <option value="regulier">Cours régulier</option>
+                <option value="pro">Cours Pro (Prioritaire)</option>
+                <option value="stage">Stage (Prioritaire)</option>
+                <option value="show">Show (Prioritaire)</option>
+              </select>
             </div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="width:100%">Sauvegarder</button>
-        </form>
+            <div class="form-group">
+              <label class="form-label">Professeur</label>
+              <select id="admin-course-prof" class="form-control" required>
+                <!-- Dynamique -->
+              </select>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Jour/Heure (ex: Lundi 17h30)</label>
+                <input type="text" id="admin-course-schedule" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tranche d'âge</label>
+                <input type="text" id="admin-course-age" class="form-control" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%">Sauvegarder</button>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
 
 
   <!-- Modal Profil Utilisateur -->
