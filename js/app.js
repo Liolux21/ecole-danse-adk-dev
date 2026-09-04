@@ -3618,3 +3618,28 @@ window.deleteGalaTheme = async function(idx) {
     showToast("Erreur de sauvegarde", "error");
   }
 };
+
+window.markAnnonceAsRead = async function(annonceId) {
+    const user = window.AUTH ? window.AUTH.currentUser : null;
+    if (!user || !user.id) return;
+    try {
+        const { db, doc, updateDoc, arrayUnion } = await import('./firebase-config.js');
+        const userRef = doc(db, 'users', user.id);
+        await updateDoc(userRef, {
+            readAnnouncements: arrayUnion(annonceId)
+        });
+        
+        if (!user.readAnnouncements) user.readAnnouncements = [];
+        if (!user.readAnnouncements.includes(annonceId)) {
+            user.readAnnouncements.push(annonceId);
+        }
+        
+        if (user.role === 'admin') renderAdminDashboard(user);
+        else if (user.role === 'prof') renderProfDashboard(user);
+        else renderParentDashboard(user);
+        
+    } catch (error) {
+        console.error("Erreur lors du marquage comme lu:", error);
+    }
+};
+
