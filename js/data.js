@@ -133,6 +133,9 @@ export const DATA = {
 
   // ---- HEURES PROFS ----
   prof_hours: [],
+  galaRepets: [],
+  galaInfos: [],
+  galaNotes: [],
 
   // ---- INSCRIPTIONS (démo) ----
   inscriptions: [],

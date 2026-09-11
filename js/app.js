@@ -1856,7 +1856,8 @@ function renderProfDashboard(user) {
     renderAppelList(selectedCourseId);
   }
   renderProfEleves(user);
-    window.renderProfHeures(user);
+  window.renderProfHeures(user);
+  if (typeof window.renderGalaTables === 'function') window.renderGalaTables();
   
   // Onglet: Mon Planning
   const btnEnseignes = document.getElementById('prof-planning-toggle-enseignes');
