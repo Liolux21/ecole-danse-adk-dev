@@ -1829,7 +1829,6 @@ window.deleteGalaNote = async function(id) {
 function renderProfDashboard(user) {
   renderUserAnnonces('prof');
   document.getElementById('prof-name').textContent = user.name;
-  document.getElementById('prof-avatar').textContent = user.avatar;
 
   const taughtCourseIds = (user.role === 'admin' || user.realRole === 'admin') 
     ? DATA.courses.map(c => c.id)
@@ -2402,7 +2401,6 @@ window.renderProfEleves = function(user) {
 function renderParentDashboard(user) {
   renderUserAnnonces('parent');
   document.getElementById('parent-name').textContent = user.name;
-  document.getElementById('parent-avatar').textContent = user.avatar;
 
   const children = DATA.getChildrenByParent(user);
   const childTabs = document.getElementById('child-tabs');
