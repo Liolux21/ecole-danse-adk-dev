@@ -2278,8 +2278,8 @@ window.renderProfEleves = function(user) {
 
     const tbody = document.getElementById('prof-eleves-body');
     const taughtCourseIds = (user.role === 'admin' || user.realRole === 'admin') 
-        ? DATA.courses.map(c => c.id)
-        : DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);
+        ? DATA.courses.map(c => String(c.id))
+        : DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => String(c.id));
     
     // Populate the dropdown if not already populated
     const filterSelect = document.getElementById('prof-eleves-filter');
@@ -2298,40 +2298,97 @@ window.renderProfEleves = function(user) {
     
     let courseIdsToFetch = selectedCourseId === 'all' 
         ? taughtCourseIds 
-        : [selectedCourseId]; // assuming course IDs are numeric or can be parsed
+        : [String(selectedCourseId)];
 
-    const allStudents = [...new Map(courseIdsToFetch.flatMap(cid => DATA.getStudentsByCourse(cid)).map(s => [s.id, s])).values()];
-    
+    const rows = [];
+    courseIdsToFetch.forEach(cid => {
+        const studentsInCourse = DATA.getStudentsByCourse(cid);
+        const course = DATA.getCourseById(cid);
+        if (!course) return;
+
+        studentsInCourse.forEach(s => {
+            const att = DATA.attendance ? DATA.attendance.filter(a => String(a.studentId) === String(s.id) && String(a.courseId) === String(cid)) : [];
+            const pres = att.filter(a => a.status === 'present').length;
+            const rate = att.length ? Math.round(pres / att.length * 100) : 100;
+            
+            rows.push({
+                student: s,
+                course: course,
+                rate: rate
+            });
+        });
+    });
+
     // Sort alphabetically by firstname
-    allStudents.sort((a,b) => (a.firstname || '').localeCompare(b.firstname || ''));
+    rows.sort((a,b) => (a.student.firstname || '').localeCompare(b.student.firstname || ''));
 
-    tbody.innerHTML = allStudents.map(s => {
-      const att = DATA.getAttendanceByStudent(s.id);
-      const pres = att.filter(a => a.status === 'present').length;
-      const rate = att.length ? Math.round(pres / att.length * 100) : 100;
-      const courses = s.courseIds.filter(id => taughtCourseIds.includes(id)).map(id => DATA.getCourseById(id)?.name).filter(Boolean).join(', ');
-      const color = rate >= 80 ? '#90CC90' : rate >= 60 ? 'var(--gold)' : '#DC6464';
+    if (rows.length === 0) {
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Aucun élève trouvé.</td></tr>';
+        return;
+    }
+
+    if (tbody) tbody.innerHTML = rows.map(r => {
+      const s = r.student;
+      const color = r.rate >= 80 ? '#90CC90' : r.rate >= 60 ? 'var(--gold)' : '#DC6464';
       
       // Cotisation display
       const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee' || s.cotisation === 'paye';
-      const cotClass = isPayee ? 'pill-approved' : 'pill-pending';
-      const cotLabel = isPayee ? '✔ Payée' : '⏳ En attente';
+      const cotLabel = isPayee ? `✔️ Payée ${s.cotisationDate ? '('+s.cotisationDate+')' : ''}` : '⏳ En attente';
+      const cotDisplay = isPayee 
+          ? `<span class="status-pill pill-approved">${cotLabel}</span>`
+          : `<span class="status-pill pill-pending" style="cursor:pointer;" onclick="window.updateProfStudentStatus('${s.id}', 'cotisation')" title="Cliquez pour marquer comme Payée">⏳ En attente</span>`;
       
       // Mutuelle display
       const mutStatus = s.mutuelle || 'masque';
-      const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'en_cours' ? 'pill-pending' : 'pill-rejected');
-      const mutLabel = mutStatus === 'remis' ? '✔ Remis' : (mutStatus === 'en_cours' ? '⏳ En cours' : '⚠️ En attente');
-      const mutDisplay = (mutStatus === 'masque') ? '<td style="color:#aaa;">Masqué</td>' : `<td><span class="status-pill ${mutClass}">${mutLabel}</span></td>`;
+      let mutDisplay = '';
+      if (mutStatus === 'masque') {
+          mutDisplay = '<td style="color:#aaa;">Masqué</td>';
+      } else if (mutStatus === 'remis') {
+          mutDisplay = `<td><span class="status-pill pill-approved">✔️ Remis</span></td>`;
+      } else {
+          mutDisplay = `<td><span class="status-pill pill-pending" style="cursor:pointer;" onclick="window.updateProfStudentStatus('${s.id}', 'mutuelle')" title="Cliquez pour marquer comme Remis">⏳ En cours</span></td>`;
+      }
       
       return `<tr>
         <td><strong>${s.firstname} ${s.lastname}</strong></td>
         <td>${s.age} ans</td>
-        <td style="font-size:0.82rem;color:var(--text-muted)">${courses}</td>
-        <td style="color:${color};font-weight:700">${rate}%</td>
-        <td><span class="status-pill ${cotClass}">${cotLabel}</span></td>
+        <td style="font-size:0.82rem;color:var(--text-muted)">${r.course.name}</td>
+        <td style="color:${color};font-weight:700">${r.rate}%</td>
+        <td>${cotDisplay}</td>
         ${mutDisplay}
       </tr>`;
     }).join('');
+};
+
+window.updateProfStudentStatus = async function(studentId, field) {
+    if (!confirm(`Voulez-vous marquer ce statut comme réglé ?`)) return;
+    
+    let updates = {};
+    if (field === 'cotisation') {
+        const d = prompt("Date de paiement (JJ/MM/AAAA) :", new Date().toLocaleDateString('fr-FR'));
+        if (!d) return;
+        updates.cotisation = 'payée';
+        updates.cotisationDate = d;
+    } else if (field === 'mutuelle') {
+        updates.mutuelle = 'remis';
+    }
+
+    try {
+        const { doc, updateDoc, db } = await import('./firebase-config.js');
+        await updateDoc(doc(db, "students", studentId), updates);
+        
+        // Update local DATA
+        const student = DATA.getStudentById(studentId);
+        if (student) {
+            Object.assign(student, updates);
+        }
+        
+        window.renderProfEleves();
+        showToast("Statut mis à jour !", "success");
+    } catch (e) {
+        console.error("Error updating student status:", e);
+        alert("Erreur de mise à jour. Vous n'avez peut-être pas les permissions.");
+    }
 };
 
 // =============================================
