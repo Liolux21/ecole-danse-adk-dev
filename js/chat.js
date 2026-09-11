@@ -15,9 +15,9 @@ window.loadConversations = function() {
     
     let q;
     if (currentUser.role === 'admin') {
-        q = query(collection(db, 'conversations'), orderBy('lastMessageAt', 'desc'));
+        q = query(collection(db, 'conversations'));
     } else {
-        q = query(collection(db, 'conversations'), where('participants', 'array-contains', currentUser.email), orderBy('lastMessageAt', 'desc'));
+        q = query(collection(db, 'conversations'), where('participants', 'array-contains', currentUser.email));
     }
 
     onSnapshot(q, (snapshot) => {
@@ -27,18 +27,30 @@ window.loadConversations = function() {
             return;
         }
 
+        let allConvs = [];
+        snapshot.forEach(docSnap => {
+            allConvs.push({ id: docSnap.id, data: docSnap.data() });
+        });
+
+        // Sort locally to avoid Firebase composite index requirements
+        allConvs.sort((a, b) => {
+            const tA = a.data.lastMessageAt && typeof a.data.lastMessageAt.toMillis === 'function' ? a.data.lastMessageAt.toMillis() : 0;
+            const tB = b.data.lastMessageAt && typeof b.data.lastMessageAt.toMillis === 'function' ? b.data.lastMessageAt.toMillis() : 0;
+            return tB - tA;
+        });
+
         // Regrouper les conversations par catégorie
         const groups = {
-            admin: { label: '📌 Administration ADK', convs: [] },
-            cours: { label: '🎓 Canal Cours', convs: [] },
+            admin: { label: '🛡️ Administration ADK', convs: [] },
+            cours: { label: '🎵 Canal Cours', convs: [] },
             onetoone: { label: '💬 Canal One to One', convs: [] },
         };
 
         let hasAnyConv = false;
 
-        snapshot.forEach(docSnap => {
-            const conv = docSnap.data();
-            const convId = docSnap.id;
+        allConvs.forEach(convObj => {
+            const conv = convObj.data;
+            const convId = convObj.id;
             
             // Check archive status
             const isArchived = Array.isArray(conv.archivedBy) && conv.archivedBy.includes(currentUser.email);
