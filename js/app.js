@@ -2153,26 +2153,26 @@ function renderAppelList(courseId) {
   }
   list.innerHTML = '';
   
-  const courseAttendance = DATA.attendance ? DATA.attendance.filter(a => a.courseId === courseId && a.date === dateStr) : [];
+  const courseAttendance = DATA.attendance ? DATA.attendance.filter(a => String(a.courseId).trim() === String(courseId).trim() && String(a.date).trim() === dateStr.trim()) : [];
 
   students.forEach(s => {
     const item = document.createElement('div');
     item.className = 'appel-item';
     item.dataset.studentId = s.id;
     
-    const savedAtt = courseAttendance.find(a => a.studentId === String(s.id));
+    const savedAtt = courseAttendance.find(a => String(a.studentId).trim() === String(s.id).trim());
     const status = savedAtt ? savedAtt.status : null;
 
-    item.innerHTML = `
-      <div>
-        <div class="appel-student-name">${s.firstname} ${s.lastname}</div>
-        <div class="appel-student-info">${s.age} ans</div>
-      </div>
-      <div class="appel-btns">
-        <button class="appel-btn appel-btn-p ${status === 'present' ? 'selected' : ''}" data-status="present" title="Présent(e)">✔️ Présent</button>
-        <button class="appel-btn appel-btn-a ${status === 'absent' ? 'selected' : ''}" data-status="absent"  title="Absent(e)">❌ Absent</button>
-        <button class="appel-btn appel-btn-e ${status === 'excuse' ? 'selected' : ''}" data-status="excuse"  title="Excusé(e)">➖ Excusé</button>
-      </div>`;
+      item.innerHTML = `
+        <div>
+          <div class="appel-student-name">${s.firstname} ${s.lastname}</div>
+          <div class="appel-student-info">${s.age} ans</div>
+        </div>
+        <div class="appel-btns">
+          <button class="appel-btn appel-btn-p ${status === 'present' ? 'selected' : ''}" data-status="present" title="Présent(e)">✔️ Présent</button>
+          <button class="appel-btn appel-btn-a ${status === 'absent' ? 'selected' : ''}" data-status="absent"  title="Absent(e)">❌ Absent</button>
+          <button class="appel-btn appel-btn-e ${status === 'excuse' ? 'selected' : ''}" data-status="excuse"  title="Excusé(e)">➖ Excusé</button>
+        </div>`;
     item.querySelectorAll('.appel-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         item.querySelectorAll('.appel-btn').forEach(b => b.classList.remove('selected'));

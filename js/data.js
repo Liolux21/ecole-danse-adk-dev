@@ -200,14 +200,17 @@ export const DATA = {
     } 
   },
   async markAttendance(studentId, courseId, date, status) {
-    const existing = this.attendance.find(a => String(a.studentId) === String(studentId) && String(a.courseId) === String(courseId) && a.date === date);
+    const sId = String(studentId).trim();
+    const cId = String(courseId).trim();
+    const d = String(date).trim();
+    const existing = this.attendance.find(a => String(a.studentId).trim() === sId && String(a.courseId).trim() === cId && String(a.date).trim() === d);
     if (existing) existing.status = status;
-    else this.attendance.push({ studentId: String(studentId), courseId: String(courseId), date, status });
+    else this.attendance.push({ studentId: sId, courseId: cId, date: d, status });
     this.saveState();
     try {
       const { doc, setDoc, db } = await import('./firebase-config.js');
-      const docId = studentId + "_" + courseId + "_" + date.replace(/\//g, '-');
-      await setDoc(doc(db, "attendance", docId), { studentId: String(studentId), courseId: String(courseId), date, status, timestamp: Date.now() });
+      const docId = sId + "_" + cId + "_" + d.replace(/\//g, '-');
+      await setDoc(doc(db, "attendance", docId), { studentId: sId, courseId: cId, date: d, status, timestamp: Date.now() });
     } catch (e) {
       console.error("Firebase save attendance error:", e);
     }
