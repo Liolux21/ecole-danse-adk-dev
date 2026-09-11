@@ -1961,29 +1961,44 @@ function renderProfDashboard(user) {
           const docId = `${profId}_${selectedCourseId}_${date.replace(/\//g, '-')}`;
           const hours = parseFloat(hoursInput.value) || 0;
           
-          if (hours > 0) {
-            const record = { profId, profName, courseId: selectedCourseId, date, hours, timestamp: Date.now() };
-            try {
-              await setDoc(doc(db, "prof_hours", docId), record);
-              if (!DATA.prof_hours) DATA.prof_hours = [];
-              const idx = DATA.prof_hours.findIndex(r => r.id === docId);
-              if (idx > -1) DATA.prof_hours[idx] = { id: docId, ...record };
-              else DATA.prof_hours.push({ id: docId, ...record });
-              
-              const statusEl = document.getElementById('prof-hours-status');
-              if (statusEl) statusEl.innerHTML = `<span style="color: #27ae60;">✔️ Prestation validée : ${hours} heures</span>`;
-              
-              if (window.renderProfHeures) {
-                window.renderProfHeures(window.AUTH.currentUser);
+            if (hours > 0) {
+              const record = { profId, profName, courseId: selectedCourseId, date, hours, timestamp: Date.now() };
+              try {
+                await setDoc(doc(db, "prof_hours", docId), record);
+                if (!DATA.prof_hours) DATA.prof_hours = [];
+                const idx = DATA.prof_hours.findIndex(r => r.id === docId);
+                if (idx > -1) DATA.prof_hours[idx] = { id: docId, ...record };
+                else DATA.prof_hours.push({ id: docId, ...record });
+                
+                const statusEl = document.getElementById('prof-hours-status');
+                if (statusEl) statusEl.innerHTML = `<span style="color: #27ae60;">✔️ Prestation validée : ${hours} heures</span>`;
+                
+                if (window.renderProfHeures) {
+                  window.renderProfHeures(window.AUTH.currentUser);
+                }
+                if (window.renderProfEleves) {
+                  window.renderProfEleves(window.AUTH.currentUser);
+                }
+              } catch (err) {
+                console.error("Error saving prof hours:", err);
+                alert("Erreur de sauvegarde: " + err.message);
               }
-              if (window.renderProfEleves) {
-                window.renderProfEleves(window.AUTH.currentUser);
+            } else {
+              try {
+                const { deleteDoc, doc, db } = await import('./firebase-config.js');
+                await deleteDoc(doc(db, "prof_hours", docId));
+                if (DATA.prof_hours) {
+                  DATA.prof_hours = DATA.prof_hours.filter(r => r.id !== docId);
+                }
+                const statusEl = document.getElementById('prof-hours-status');
+                if (statusEl) statusEl.innerHTML = `<span style="color: #e74c3c;">❌ Prestation annulée</span>`;
+                if (window.renderProfHeures) {
+                  window.renderProfHeures(window.AUTH.currentUser);
+                }
+              } catch (e) {
+                console.error("Error deleting prof hours:", e);
               }
-            } catch (err) {
-              console.error("Error saving prof hours:", err);
-              alert("Erreur de sauvegarde: " + err.message);
             }
-          }
         }
         
         showToast('✅ Appel et heures sauvegardés !', 'success');
@@ -2168,6 +2183,22 @@ function renderAppelList(courseId) {
   });
 }
 
+window.deleteProfHour = async function(docId) {
+  if (!confirm('Voulez-vous vraiment supprimer cette prestation ?')) return;
+  try {
+    const { deleteDoc, doc, db } = await import('./firebase-config.js');
+    await deleteDoc(doc(db, "prof_hours", docId));
+    if (DATA.prof_hours) {
+      DATA.prof_hours = DATA.prof_hours.filter(r => r.id !== docId);
+    }
+    window.renderProfHeures();
+    alert('Prestation supprimée avec succès.');
+  } catch (err) {
+    console.error("Error deleting prof hours:", err);
+    alert("Erreur: " + err.message);
+  }
+};
+
 window.renderProfHeures = function(user) {
   user = user || (window.AUTH && window.AUTH.currentUser);
   if (!user) return;
@@ -2232,7 +2263,7 @@ window.renderProfHeures = function(user) {
     const itemsHtml = data.items.map(item => {
       const course = DATA.getCourseById(item.courseId);
       const cName = course ? course.name : 'Cours inconnu';
-      return '<div style="display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid var(--border-color); font-size:0.9rem;"><div><strong style="color:var(--text);">' + item.date + '</strong> - <span style="color:var(--text-muted);">' + cName + '</span></div><div style="font-weight:bold; color:var(--primary);">' + item.hours + 'h</div></div>';
+      return '<div style="display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid var(--border-color); font-size:0.9rem;"><div><strong style="color:var(--text);">' + item.date + '</strong> - <span style="color:var(--text-muted);">' + cName + '</span></div><div style="font-weight:bold; color:var(--primary);">' + item.hours + 'h <button onclick="window.deleteProfHour(\'' + item.id + '\')" style="background:none; border:none; cursor:pointer; margin-left:10px;" title="Supprimer">🗑️</button></div></div>';
     }).join('');
     
     return '<div style="margin-bottom:2rem;"><h4 style="margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:2px solid var(--primary-light); color:var(--primary); text-transform:capitalize;">' + monthName + ' <span style="float:right;">' + data.total + 'h</span></h4>' + itemsHtml + '</div>';
