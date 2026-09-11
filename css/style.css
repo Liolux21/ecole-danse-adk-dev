@@ -2326,8 +2326,9 @@ footer {
   position: relative;
 }
 .msg-row.me .msg-bubble {
-  background: #CAA9A9 !important;
-  color: #fff !important;
+  background: #F0D5D5 !important;
+  color: #4A3E3E !important;
+  border: 1px solid #CAA9A9 !important;
   border-bottom-right-radius: 2px;
 }
 .msg-row.other .msg-bubble {

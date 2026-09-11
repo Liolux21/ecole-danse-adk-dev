@@ -339,7 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             await updateDoc(doc(db, 'conversations', currentChatId), {
                 lastMessage: text,
-                lastMessageAt: serverTimestamp()
+                lastMessageAt: serverTimestamp(),
+                archivedBy: []
             });
             msgInput.value = '';
             msgInput.style.height = 'auto'; // Reset height
@@ -422,7 +423,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 await updateDoc(doc(db, 'conversations', currentChatId), {
                     lastMessage: `📎 ${file.name}`,
-                    lastMessageAt: serverTimestamp()
+                    lastMessageAt: serverTimestamp(),
+                    archivedBy: []
                 });
             } catch(e) {
                 console.error("Upload error:", e);
