@@ -1991,7 +1991,9 @@ function renderProfDashboard(user) {
   }
   
   document.getElementById('appel-date')?.addEventListener('change', () => {
-    document.querySelectorAll('.appel-item .appel-btn').forEach(b => b.classList.remove('selected'));
+    if (typeof selectedCourseId !== 'undefined' && selectedCourseId) {
+      renderAppelList(selectedCourseId);
+    }
   });
 }
 
@@ -2083,59 +2085,78 @@ function renderAppelList(courseId) {
   // Update Prof Hours UI
   const hoursInput = document.getElementById('prof-hours-input');
   const statusEl = document.getElementById('prof-hours-status');
-  if (hoursInput && statusEl && window.AUTH && window.AUTH.currentUser) {
-    const profId = window.AUTH.currentUser.id;
-    const dInput = document.getElementById('appel-date');
-    if (dInput) {
-      const dateStr = dInput.value.split('-').reverse().join('/');
-      const docId = `${profId}_${courseId}_${dateStr.replace(/\//g, '-')}`;
-      const existing = DATA.prof_hours && DATA.prof_hours.find(p => p.id === docId);
-      
-      if (existing) {
-        hoursInput.value = existing.hours;
-        statusEl.innerHTML = `<span style="color: #27ae60;">✅ Prestation validée : ${existing.hours} heures</span>`;
-      } else {
-        // Calculate default hours based on schedule slot
-        let defaultHours = 1;
-        const slot = DATA.schedule && DATA.schedule.slots.find(s => s.courseId === courseId);
-        if (slot && slot.hour && slot.hour.includes('-')) {
-          const parts = slot.hour.split('-');
-          const start = parts[0].trim().split('h');
-          const end = parts[1].trim().split('h');
-          if (start.length === 2 && end.length === 2) {
-            const startDec = parseInt(start[0]) + (parseInt(start[1] || '0') / 60);
-            const endDec = parseInt(end[0]) + (parseInt(end[1] || '0') / 60);
-            if (endDec > startDec) {
-              defaultHours = endDec - startDec;
-            }
+  const dInput = document.getElementById('appel-date');
+  let dateStr = "";
+  if (dInput) {
+    dateStr = dInput.value.split('-').reverse().join('/');
+  }
+
+  if (hoursInput && statusEl && window.AUTH && window.AUTH.currentUser && dateStr) {
+    let profId = window.AUTH.currentUser.id;
+    if (window.AUTH.currentUser.role === 'admin' || window.AUTH.currentUser.realRole === 'admin') {
+      const c = DATA.getCourseById(courseId);
+      if (c && c.prof) {
+         const profUser = DATA.users.find(u => u.role === 'prof' && (c.prof.includes(u.name) || c.prof.includes(u.firstname)));
+         if (profUser) {
+            profId = profUser.id;
+         }
+      }
+    }
+
+    const docId = `${profId}_${courseId}_${dateStr.replace(/\//g, '-')}`;
+    const existing = DATA.prof_hours && DATA.prof_hours.find(p => p.id === docId);
+    
+    if (existing) {
+      hoursInput.value = existing.hours;
+      statusEl.innerHTML = `<span style="color: #27ae60;">✔️ Prestation validée : ${existing.hours} heures</span>`;
+    } else {
+      // Calculate default hours based on schedule slot
+      let defaultHours = 1;
+      const slot = DATA.schedule && DATA.schedule.slots.find(s => s.courseId === courseId);
+      if (slot && slot.hour && slot.hour.includes('-')) {
+        const parts = slot.hour.split('-');
+        const start = parts[0].trim().split('h');
+        const end = parts[1].trim().split('h');
+        if (start.length === 2 && end.length === 2) {
+          const startDec = parseInt(start[0]) + (parseInt(start[1] || '0') / 60);
+          const endDec = parseInt(end[0]) + (parseInt(end[1] || '0') / 60);
+          if (endDec > startDec) {
+            defaultHours = endDec - startDec;
           }
         }
-        hoursInput.value = defaultHours;
-        statusEl.innerHTML = `Confirmez vos heures pour cette session`;
       }
+      hoursInput.value = defaultHours;
+      statusEl.innerHTML = `Confirmez vos heures pour cette session`;
     }
   }
 
   const list = document.getElementById('appel-list');
   const students = DATA.getStudentsByCourse(courseId);
   if (students.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🩰</div><p>Aucun élève dans ce cours</p></div>';
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👤</div><p>Aucun élève dans ce cours</p></div>';
     return;
   }
   list.innerHTML = '';
+  
+  const courseAttendance = DATA.attendance ? DATA.attendance.filter(a => a.courseId === courseId && a.date === dateStr) : [];
+
   students.forEach(s => {
     const item = document.createElement('div');
     item.className = 'appel-item';
     item.dataset.studentId = s.id;
+    
+    const savedAtt = courseAttendance.find(a => a.studentId === String(s.id));
+    const status = savedAtt ? savedAtt.status : null;
+
     item.innerHTML = `
       <div>
         <div class="appel-student-name">${s.firstname} ${s.lastname}</div>
         <div class="appel-student-info">${s.age} ans</div>
       </div>
       <div class="appel-btns">
-        <button class="appel-btn appel-btn-p" data-status="present" title="Présent(e)">✓ Présent</button>
-        <button class="appel-btn appel-btn-a" data-status="absent"  title="Absent(e)">✗ Absent</button>
-        <button class="appel-btn appel-btn-e" data-status="excuse"  title="Excusé(e)">~ Excusé</button>
+        <button class="appel-btn appel-btn-p ${status === 'present' ? 'selected' : ''}" data-status="present" title="Présent(e)">✔️ Présent</button>
+        <button class="appel-btn appel-btn-a ${status === 'absent' ? 'selected' : ''}" data-status="absent"  title="Absent(e)">❌ Absent</button>
+        <button class="appel-btn appel-btn-e ${status === 'excuse' ? 'selected' : ''}" data-status="excuse"  title="Excusé(e)">➖ Excusé</button>
       </div>`;
     item.querySelectorAll('.appel-btn').forEach(btn => {
       btn.addEventListener('click', () => {
