@@ -1146,21 +1146,7 @@ function renderAdminEleves() {
   }).join('');
 }
 
-window.updateCotisationDate = async function(studentId, dateVal) {
-    try {
-      const student = DATA.getStudentById(studentId);
-      if (!student) {
-        alert("Erreur: Etudiant non trouvé! ID=" + studentId);
-        return;
-      }
-      student.cotisationDate = dateVal;
-      const firebase = await import('./firebase-config.js');
-      await firebase.updateDoc(firebase.doc(firebase.db, 'students', String(studentId)), { cotisationDate: dateVal });
-    } catch (e) {
-      alert("Erreur Date: " + e.message);
-    }
-  };
-window.updateCotisation = async function(studentId, value) {
+  window.updateCotisation = async function(studentId, value) {
     try {
       const student = DATA.getStudentById(studentId);
       if (!student) {
@@ -1170,13 +1156,31 @@ window.updateCotisation = async function(studentId, value) {
       student.cotisation = value;
       const firebase = await import('./firebase-config.js');
       await firebase.updateDoc(firebase.doc(firebase.db, 'students', String(studentId)), { cotisation: value });
-      renderAdminEleves();
+      
+      const user = window.AUTH && window.AUTH.currentUser;
+      if (user && user.role === 'prof' && window.renderProfEleves) {
+        window.renderProfEleves();
+      } else if (window.renderAdminEleves) {
+        window.renderAdminEleves();
+      }
     } catch (e) {
       alert("Erreur Cotisation: " + e.message);
     }
   };
 
-window.updateMutuelle = async function(studentId, value) {
+  window.updateCotisationDate = async function(studentId, date) {
+    try {
+      const student = DATA.getStudentById(studentId);
+      if (!student) return;
+      student.cotisationDate = date;
+      const firebase = await import('./firebase-config.js');
+      await firebase.updateDoc(firebase.doc(firebase.db, 'students', String(studentId)), { cotisationDate: date });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  window.updateMutuelle = async function(studentId, value) {
     try {
       const student = DATA.getStudentById(studentId);
       if (!student) {
@@ -1186,7 +1190,13 @@ window.updateMutuelle = async function(studentId, value) {
       student.mutuelle = value;
       const firebase = await import('./firebase-config.js');
       await firebase.updateDoc(firebase.doc(firebase.db, 'students', String(studentId)), { mutuelle: value });
-      renderAdminEleves();
+      
+      const user = window.AUTH && window.AUTH.currentUser;
+      if (user && user.role === 'prof' && window.renderProfEleves) {
+        window.renderProfEleves();
+      } else if (window.renderAdminEleves) {
+        window.renderAdminEleves();
+      }
     } catch (e) {
       alert("Erreur Mutuelle: " + e.message);
     }
@@ -2323,7 +2333,7 @@ window.renderProfEleves = function(user) {
     rows.sort((a,b) => (a.student.firstname || '').localeCompare(b.student.firstname || ''));
 
     if (rows.length === 0) {
-        if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Aucun élève trouvé.</td></tr>';
+        if (tbody) tbody.innerHTML = '<div style="text-align:center; color: var(--text-muted);">Aucun élève trouvé.</div>';
         return;
     }
 
@@ -2331,64 +2341,59 @@ window.renderProfEleves = function(user) {
       const s = r.student;
       const color = r.rate >= 80 ? '#90CC90' : r.rate >= 60 ? 'var(--gold)' : '#DC6464';
       
-      // Cotisation display
-      const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee' || s.cotisation === 'paye';
-      const cotLabel = isPayee ? `✔️ Payée ${s.cotisationDate ? '('+s.cotisationDate+')' : ''}` : '⏳ En attente';
-      const cotDisplay = isPayee 
-          ? `<span class="status-pill pill-approved">${cotLabel}</span>`
-          : `<span class="status-pill pill-pending" style="cursor:pointer;" onclick="window.updateProfStudentStatus('${s.id}', 'cotisation')" title="Cliquez pour marquer comme Payée">⏳ En attente</span>`;
+      // Cotisation selects
+      const cotStatus = s.cotisation || 'en attente';
+      const cotClass = cotStatus === 'payee_cash' || cotStatus === 'payee_compte' ? 'select-remis' : 'select-attente';
+      const cotSelect = `
+        <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem; background-color: ${cotStatus === 'en attente' ? '#ffeeba' : ''};">
+          <option value="en attente" ${cotStatus === 'en attente' ? 'selected' : ''}>⏳ En attente</option>
+          <option value="payee_cash" ${cotStatus === 'payee_cash' ? 'selected' : ''}>💸 Payée cash</option>
+          <option value="payee_compte" ${cotStatus === 'payee_compte' ? 'selected' : ''}>💸 Payée compte</option>
+        </select>
+      `;
+      const cotDateSelect = `
+        <input type="date" value="${s.cotisationDate || ''}" onchange="updateCotisationDate('${s.id}', this.value)" style="padding:0.2rem 0.7rem; font-size:0.8rem; border-radius:50px; border:1px solid #ccc; box-sizing: border-box; min-width: 120px; outline:none;">
+      `;
       
       // Mutuelle display
       const mutStatus = s.mutuelle || 'masque';
       let mutDisplay = '';
       if (mutStatus === 'masque') {
-          mutDisplay = '<td style="color:#aaa;">Masqué</td>';
-      } else if (mutStatus === 'remis') {
-          mutDisplay = `<td><span class="status-pill pill-approved">✔️ Remis</span></td>`;
+          mutDisplay = `<span style="font-size: 0.85rem; color: #aaa; padding: 0.4rem 0;">👁️ Masqué</span>`;
       } else {
-          mutDisplay = `<td><span class="status-pill pill-pending" style="cursor:pointer;" onclick="window.updateProfStudentStatus('${s.id}', 'mutuelle')" title="Cliquez pour marquer comme Remis">⏳ En cours</span></td>`;
+          const mutClass = mutStatus === 'remis' ? 'select-remis' : 'select-encours';
+          mutDisplay = `
+            <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem;">
+              <option value="en_cours" ${mutStatus === 'en_cours' ? 'selected' : ''}>⏳ En cours</option>
+              <option value="remis" ${mutStatus === 'remis' ? 'selected' : ''}>✔️ Remis</option>
+            </select>
+          `;
       }
       
-      return `<tr>
-        <td><strong>${s.firstname} ${s.lastname}</strong></td>
-        <td>${s.age} ans</td>
-        <td style="font-size:0.82rem;color:var(--text-muted)">${r.course.name}</td>
-        <td style="color:${color};font-weight:700">${r.rate}%</td>
-        <td>${cotDisplay}</td>
-        ${mutDisplay}
-      </tr>`;
+      return `
+        <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">(${s.age} ans)</span></h4>
+            <div style="color:${color}; font-weight:700; font-size: 0.9rem;">Présence: ${r.rate}%</div>
+          </div>
+          <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>Cours suivi :</strong> ${r.course.name}</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: rgba(0,0,0,0.02); padding: 0.8rem; border-radius: var(--radius);">
+            <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 0 1 auto;">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Cotisation</span>
+              ${cotSelect}
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 0 1 auto;">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Date paiement</span>
+              ${cotDateSelect}
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 0 1 auto;">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Mutuelle</span>
+              ${mutDisplay}
+            </div>
+          </div>
+        </div>
+      `;
     }).join('');
-};
-
-window.updateProfStudentStatus = async function(studentId, field) {
-    if (!confirm(`Voulez-vous marquer ce statut comme réglé ?`)) return;
-    
-    let updates = {};
-    if (field === 'cotisation') {
-        const d = prompt("Date de paiement (JJ/MM/AAAA) :", new Date().toLocaleDateString('fr-FR'));
-        if (!d) return;
-        updates.cotisation = 'payée';
-        updates.cotisationDate = d;
-    } else if (field === 'mutuelle') {
-        updates.mutuelle = 'remis';
-    }
-
-    try {
-        const { doc, updateDoc, db } = await import('./firebase-config.js');
-        await updateDoc(doc(db, "students", studentId), updates);
-        
-        // Update local DATA
-        const student = DATA.getStudentById(studentId);
-        if (student) {
-            Object.assign(student, updates);
-        }
-        
-        window.renderProfEleves();
-        showToast("Statut mis à jour !", "success");
-    } catch (e) {
-        console.error("Error updating student status:", e);
-        alert("Erreur de mise à jour. Vous n'avez peut-être pas les permissions.");
-    }
 };
 
 // =============================================
