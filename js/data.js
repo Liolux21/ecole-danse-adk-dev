@@ -285,30 +285,42 @@ export const DATA = {
       });
 
       // 2. Fetch Students
-      const studentsSnap = await getDocs(collection(db, "students"));
-      this.students = [];
-      studentsSnap.forEach(doc => {
-        let sData = doc.data();
-        if (sData.courses && !sData.courseIds) {
-          sData.courseIds = sData.courses;
-          delete sData.courses;
-        }
-        sData.courseIds = sData.courseIds || [];
-        this.students.push({ docId: doc.id, id: doc.id, ...sData });
-      });
+      try {
+        const studentsSnap = await getDocs(collection(db, "students"));
+        this.students = [];
+        studentsSnap.forEach(doc => {
+          let sData = doc.data();
+          if (sData.courses && !sData.courseIds) {
+            sData.courseIds = sData.courses;
+            delete sData.courses;
+          }
+          sData.courseIds = sData.courseIds || [];
+          this.students.push({ docId: doc.id, id: doc.id, ...sData });
+        });
+      } catch(e) {
+        console.warn("students read error:", e);
+      }
       // 3. Fetch Courses
-      const coursesSnap = await getDocs(collection(db, "courses"));
-      this.courses = [];
-      coursesSnap.forEach(doc => {
-        this.courses.push({ docId: doc.id, id: doc.id, ...doc.data() });
-      });
+      try {
+        const coursesSnap = await getDocs(collection(db, "courses"));
+        this.courses = [];
+        coursesSnap.forEach(doc => {
+          this.courses.push({ docId: doc.id, id: doc.id, ...doc.data() });
+        });
+      } catch(e) {
+        console.warn("courses read error:", e);
+      }
 
       // 4. Fetch Inscriptions
-      const inscSnap = await getDocs(collection(db, "inscriptions"));
-      this.inscriptions = [];
-      inscSnap.forEach(doc => {
-        this.inscriptions.push({ docId: doc.id, id: doc.id, ...doc.data() });
-      });
+      try {
+        const inscSnap = await getDocs(collection(db, "inscriptions"));
+        this.inscriptions = [];
+        inscSnap.forEach(doc => {
+          this.inscriptions.push({ docId: doc.id, id: doc.id, ...doc.data() });
+        });
+      } catch (e) {
+        console.warn("inscriptions read error:", e);
+      }
 
 
       

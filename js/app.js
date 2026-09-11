@@ -2189,6 +2189,7 @@ window.renderProfHeures = function(user) {
   const monthData = {};
   
   DATA.prof_hours.forEach(r => {
+    if (!r.date) return;
     // If admin is masquerading, they can see all hours in Espace Prof for testing
     if (user.realRole !== 'admin') {
       if (String(r.profId).toLowerCase().trim() !== String(user.id).toLowerCase().trim()) return;
