@@ -2749,9 +2749,22 @@ function populateAbsenceDates(courseId) {
   if (!select) return;
   select.innerHTML = '';
   
-  const slot = DATA.schedule.slots.find(s => s.courseId === courseId);
-  const courseDay = slot ? slot.day : 0;
-  const targetJsDay = (courseDay + 1) % 7;
+  const c = DATA.getCourseWithOverride(courseId);
+  const daysMap = { 'Lundi': 1, 'Mardi': 2, 'Mercredi': 3, 'Jeudi': 4, 'Vendredi': 5, 'Samedi': 6, 'Dimanche': 0, 'lundi': 1, 'mardi': 2, 'mercredi': 3, 'jeudi': 4, 'vendredi': 5, 'samedi': 6, 'dimanche': 0 };
+  
+  let targetJsDay = 1; // Default to Monday
+  
+  if (c && c.schedule) {
+    const dayStr = c.schedule.split(' ')[0];
+    if (daysMap.hasOwnProperty(dayStr)) {
+        targetJsDay = daysMap[dayStr];
+    }
+  } else {
+    const slot = DATA.schedule.slots.find(s => String(s.courseId) === String(courseId));
+    if (slot) {
+        targetJsDay = (slot.day + 1) % 7;
+    }
+  }
   
   const today = new Date();
   let d = new Date(today);
@@ -2761,7 +2774,6 @@ function populateAbsenceDates(courseId) {
   
   const dates = [];
     let safeguard = 0;
-    const c = DATA.getCourseWithOverride(courseId);
     while (dates.length < 4 && safeguard < 52) {
       const futureDate = new Date(d);
       if (isDateValid(futureDate, c || {})) {
