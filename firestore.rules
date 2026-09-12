@@ -91,7 +91,7 @@ service cloud.firestore {
 
     // =========================================================
     // MESSAGERIE / CHAT
-        // =========================================================
+            // =========================================================
     // MESSAGERIE / CHAT
     // =========================================================
     match /conversations/{conversationId} {
@@ -100,19 +100,9 @@ service cloud.firestore {
         return isAuthenticated() && (request.auth.token.email in resource.data.participants);
       }
       
-      function isAllowedGroup() {
-        let tg = resource.data.targetGroup;
-        return isAuthenticated() && resource.data.isGroup == true && (
-          (tg == 'all') || 
-          (tg == 'all_students') || 
-          (tg == 'all_profs' && (isProf() || isAdmin())) ||
-          (tg.matches('course_.*'))
-        );
-      }
-      
-      allow read: if isConvParticipant() || isAdmin() || isAllowedGroup();
+      allow read: if isAuthenticated();
       allow create: if isAuthenticated(); 
-      allow update: if isConvParticipant() || isAdmin() || isAllowedGroup();
+      allow update: if isConvParticipant() || isAdmin() || (isAuthenticated() && resource.data.isGroup == true);
 
       // SOUS-COLLECTION MESSAGES
       match /messages/{messageId} {
@@ -125,19 +115,8 @@ service cloud.firestore {
           return isAuthenticated() && (request.auth.token.email in getParentConv().participants);
         }
         
-        function isParentAllowedGroup() {
-          let parentData = getParentConv();
-          let tg = parentData.targetGroup;
-          return isAuthenticated() && parentData.isGroup == true && (
-            (tg == 'all') || 
-            (tg == 'all_students') || 
-            (tg == 'all_profs' && (isProf() || isAdmin())) ||
-            (tg.matches('course_.*'))
-          );
-        }
-      
-        allow read: if isParentConvParticipant() || isAdmin() || isParentAllowedGroup();
-        allow create: if (isParentConvParticipant() || isAdmin() || isParentAllowedGroup()) && request.resource.data.senderId == request.auth.token.email;
+        allow read: if isAuthenticated();
+        allow create: if (isParentConvParticipant() || isAdmin() || (isAuthenticated() && getParentConv().isGroup == true)) && request.resource.data.senderId == request.auth.token.email;
         allow delete: if isAdmin() || resource.data.senderId == request.auth.token.email;
       }
     }
