@@ -98,23 +98,46 @@ window.loadConversations = function() {
                     }
                 }
 
-                let participantNames = '';
+                let displayTitle = conv.title || 'Discussion';
+                let displaySubtitle = '';
+                let displayAvatar = conv.isGroup ? '👥' : '👤';
                 let chatTitleParam = conv.title || 'Discussion';
                 
                 if (!conv.isGroup && Array.isArray(conv.participants)) {
                     const others = conv.participants.filter(p => p !== currentUser.email);
                     if (others.length > 0) {
+                        let otherAvatar = null;
                         const otherNames = others.map(email => {
                             if (window.DATA) {
                                 const prof = (window.DATA.users || []).find(u => (u.email || u.id) === email);
-                                if (prof) return prof.name || `${prof.firstname || ''} ${prof.lastname || ''}`.trim() || email;
+                                if (prof) {
+                                    if (prof.avatarUrl) otherAvatar = prof.avatarUrl;
+                                    else if (prof.avatar && (prof.avatar.startsWith('http') || prof.avatar.startsWith('assets/'))) otherAvatar = prof.avatar;
+                                    else if (window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs[prof.name] && window.VITRINE_DATA.professeurs[prof.name].avatar) {
+                                        otherAvatar = window.VITRINE_DATA.professeurs[prof.name].avatar;
+                                    }
+                                    return prof.name || `${prof.firstname || ''} ${prof.lastname || ''}`.trim() || email;
+                                }
                                 const student = (window.DATA.students || []).find(s => (s.contactEmail || s.parentId) === email);
-                                if (student) return `${student.firstname || ''} ${student.lastname || ''}`.trim() || student.name || email;
+                                if (student) {
+                                    if (student.avatarUrl) otherAvatar = student.avatarUrl;
+                                    else if (student.avatar && student.avatar.startsWith('http')) otherAvatar = student.avatar;
+                                    return `${student.firstname || ''} ${student.lastname || ''}`.trim() || student.name || email;
+                                }
                             }
                             return email;
                         });
-                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">👥 ${otherNames.join(', ')}</div>`;
-                        chatTitleParam += ` (avec ${otherNames.join(', ')})`;
+                        
+                        displayTitle = otherNames.join(', ');
+                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        
+                        if (otherAvatar) {
+                            displayAvatar = `<img src="${otherAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                        } else {
+                            displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">${displayTitle.charAt(0).toUpperCase()}</div>`;
+                        }
+                        
+                        chatTitleParam = `${conv.title || 'Discussion'} (avec ${displayTitle})`;
                     }
                 } else if (conv.isGroup && conv.targetGroup) {
                     if (conv.targetGroup.startsWith('course_')) {
@@ -122,36 +145,74 @@ window.loadConversations = function() {
                         if (window.DATA && window.DATA.courses) {
                             const course = window.DATA.courses.find(c => c.id === courseId);
                             if (course) {
-                                participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">🎵 ${course.name} (${course.prof})</div>`;
-                                chatTitleParam += ` (${course.name})`;
+                                displayTitle = course.name;
+                                displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                                
+                                let profAvatar = null;
+                                if (course.prof && window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs[course.prof]) {
+                                    profAvatar = window.VITRINE_DATA.professeurs[course.prof].avatar;
+                                }
+                                if (profAvatar) {
+                                    displayAvatar = `<img src="${profAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                                } else {
+                                    displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">🎵</div>`;
+                                }
+                                
+                                chatTitleParam = `${conv.title || 'Discussion'} (${course.name})`;
                             }
                         }
                     } else if (conv.targetGroup === 'admin') {
-                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">🛡️ Administration (Anne)</div>`;
-                        chatTitleParam += ` (avec Anne)`;
+                        displayTitle = 'Anne De Keyser';
+                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        
+                        let anneAvatar = null;
+                        if (window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs['Anne']) {
+                            anneAvatar = window.VITRINE_DATA.professeurs['Anne'].avatar;
+                        } else if (window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs['Anne De Keyser']) {
+                            anneAvatar = window.VITRINE_DATA.professeurs['Anne De Keyser'].avatar;
+                        }
+                        
+                        if (anneAvatar) {
+                            displayAvatar = `<img src="${anneAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                        } else {
+                            displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">A</div>`;
+                        }
+                        
+                        chatTitleParam = `${conv.title || 'Discussion'} (avec Anne)`;
                     } else if (conv.targetGroup === 'all') {
-                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">📢 Tous (Élèves et Profs)</div>`;
-                        chatTitleParam += ` (Tous)`;
+                        displayTitle = 'Tous (Élèves et Profs)';
+                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displayAvatar = '📢';
+                        chatTitleParam = `${conv.title || 'Discussion'} (Tous)`;
                     } else if (conv.targetGroup === 'all_students') {
-                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">🎓 Tous les élèves</div>`;
-                        chatTitleParam += ` (Tous les élèves)`;
+                        displayTitle = 'Tous les élèves';
+                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displayAvatar = '🎓';
+                        chatTitleParam = `${conv.title || 'Discussion'} (Tous les élèves)`;
                     } else if (conv.targetGroup === 'all_profs') {
-                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">👩‍🏫 Tous les profs</div>`;
-                        chatTitleParam += ` (Tous les profs)`;
+                        displayTitle = 'Tous les profs';
+                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displayAvatar = '👩‍🏫';
+                        chatTitleParam = `${conv.title || 'Discussion'} (Tous les profs)`;
                     }
                 }
 
                 const item = document.createElement('div');
                 item.className = `conv-item ${isActive}`;
                 item.dataset.chatId = convId;
+                
+                const isAvatarString = typeof displayAvatar === 'string' && !displayAvatar.includes('<');
+                
                 item.innerHTML = `
-                    <div class="conv-avatar">${conv.isGroup ? '👥' : '👤'}</div>
+                    <div class="conv-avatar" style="${isAvatarString ? '' : 'overflow: hidden; background: none; padding: 0; display: flex; align-items: center; justify-content: center;'}">
+                        ${displayAvatar}
+                    </div>
                     <div class="conv-info">
                         <div class="conv-top">
-                            <span class="conv-name">${conv.title || 'Discussion'}</span>
+                            <span class="conv-name" style="font-size: 0.95rem; font-weight: 600;">${displayTitle}</span>
                             <span class="conv-time">${timeString}</span>
                         </div>
-                        ${participantNames}
+                        ${displaySubtitle}
                         <p class="conv-preview">${conv.lastMessage || '...'}</p>
                     </div>
                 `;
