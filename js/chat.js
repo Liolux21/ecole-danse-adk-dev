@@ -831,7 +831,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => window.switchChat(newConvRef.id, ''), 300);
                 }
                 selectedOtoUser = null;
-                window.switchChat(newConvRef.id, title);
             } catch(e) {
                 console.error("Error creating chat", e);
                 alert("Erreur lors de la création.");
