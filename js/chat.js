@@ -886,7 +886,8 @@ if (btnUpdateChatTitle) {
             await updateDoc(doc(db, 'conversations', currentChatId), {
                 customName: newTitle
             });
-            if (window.closeModal) window.closeModal('modal-manage-chat');
+            document.getElementById('active-chat-title').textContent = newTitle;
+            alert("Nom du groupe mis à jour !");
         } catch(e) {
             console.error(e);
             alert("Erreur lors de la modification");
@@ -966,8 +967,8 @@ if (btnAddPersonChat) {
             
             const currentUser = window.AUTH ? window.AUTH.currentUser : null;
             await addDoc(collection(db, 'conversations', currentChatId, 'messages'), {
-                text: `${currentUser ? (currentUser.name || currentUser.firstname) : 'Quelqu\'un'} a ajouté ${window.selectedManageOtoUser.name} à la discussion.`,
-                senderId: 'system',
+                text: `${currentUser ? (currentUser.name || currentUser.firstname) : 'Quelqu\'un'} a ajouté ${window.selectedManageOtoUser.name} àà la discussion.`,
+                senderId: currentUser.email,
                 senderName: 'Système',
                 timestamp: serverTimestamp()
             });
