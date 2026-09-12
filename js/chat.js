@@ -57,7 +57,7 @@ window.loadConversations = function() {
                 if (!data.isGroup) {
                     if (!data.participants || !data.participants.includes(currentUser.email)) return;
                 } else {
-                    if (!myGroups.includes(data.targetGroup)) return;
+                    if (!myGroups.includes(data.targetGroup) && (!data.participants || !data.participants.includes(currentUser.email))) return;
                 }
             }
             
