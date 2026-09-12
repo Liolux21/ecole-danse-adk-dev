@@ -116,6 +116,29 @@ window.loadConversations = function() {
                         participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">👥 ${otherNames.join(', ')}</div>`;
                         chatTitleParam += ` (avec ${otherNames.join(', ')})`;
                     }
+                } else if (conv.isGroup && conv.targetGroup) {
+                    if (conv.targetGroup.startsWith('course_')) {
+                        const courseId = conv.targetGroup.replace('course_', '');
+                        if (window.DATA && window.DATA.courses) {
+                            const course = window.DATA.courses.find(c => c.id === courseId);
+                            if (course) {
+                                participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">🎵 ${course.name} (${course.prof})</div>`;
+                                chatTitleParam += ` (${course.name})`;
+                            }
+                        }
+                    } else if (conv.targetGroup === 'admin') {
+                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">🛡️ Administration (Anne)</div>`;
+                        chatTitleParam += ` (avec Anne)`;
+                    } else if (conv.targetGroup === 'all') {
+                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">📢 Tous (Élèves et Profs)</div>`;
+                        chatTitleParam += ` (Tous)`;
+                    } else if (conv.targetGroup === 'all_students') {
+                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">🎓 Tous les élèves</div>`;
+                        chatTitleParam += ` (Tous les élèves)`;
+                    } else if (conv.targetGroup === 'all_profs') {
+                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">👩‍🏫 Tous les profs</div>`;
+                        chatTitleParam += ` (Tous les profs)`;
+                    }
                 }
 
                 const item = document.createElement('div');
