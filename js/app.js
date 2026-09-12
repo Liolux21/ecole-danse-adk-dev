@@ -2703,11 +2703,11 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
 
     // Boutons d'action
     let actionButtons = `<div style="display:flex; gap:0.5rem; margin-top:0.8rem;">`;
-    const isTeacher = user && (user.role === 'admin' || user.realRole === 'admin' || (user.role === 'prof' && c.prof && (c.prof.includes(user.name) || c.prof.includes(user.firstname))));
+    const isTeacher = user && !studentId && (user.role === 'admin' || user.realRole === 'admin' || (user.role === 'prof' && c.prof && (c.prof.includes(user.name) || c.prof.includes(user.firstname))));
     if (isTeacher) {
       actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.id}">⚙️ Modifier cours</button>`;
     }
-    if (user && (user.role === 'parent' || user.role === 'eleve' || user.role === 'student') && studentId) {
+    if (studentId) {
       actionButtons += `<button class="btn btn-outline btn-sm btn-absent" data-course-id="${c.id}" data-student-id="${studentId}">📅 Présence</button>`;
     }
     actionButtons += `<button class="btn btn-outline btn-sm btn-msg" data-course-id="${c.id}">💬 Messages</button>`;
