@@ -143,15 +143,20 @@ window.loadConversations = function() {
                     if (conv.targetGroup.startsWith('course_')) {
                         const courseId = conv.targetGroup.replace('course_', '');
                         if (window.DATA && window.DATA.courses) {
-                            const course = window.DATA.courses.find(c => c.id === courseId);
+                            const course = window.DATA.courses.find(c => String(c.id) === String(courseId));
                             if (course) {
                                 displayTitle = course.name;
                                 displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                                 
-                                let profAvatar = null;
-                                if (course.prof && window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs[course.prof]) {
+                                let profAvatar = course.avatar;
+                                if (!profAvatar && course.prof && window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs[course.prof]) {
                                     profAvatar = window.VITRINE_DATA.professeurs[course.prof].avatar;
                                 }
+                                if (!profAvatar && course.prof && window.DATA && window.DATA.users) {
+                                    const profUser = window.DATA.users.find(u => u.name === course.prof || u.email === course.prof);
+                                    if (profUser) profAvatar = profUser.avatarUrl || profUser.avatar;
+                                }
+                                
                                 if (profAvatar) {
                                     displayAvatar = `<img src="${profAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                                 } else {
@@ -159,17 +164,30 @@ window.loadConversations = function() {
                                 }
                                 
                                 chatTitleParam = `${conv.title || 'Discussion'} (${course.name})`;
+                            } else {
+                                displayTitle = 'Cours inconnu';
+                                displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                             }
+                        } else {
+                            displayTitle = 'Cours ' + courseId;
+                            displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                         }
                     } else if (conv.targetGroup === 'admin') {
                         displayTitle = 'Anne De Keyser';
                         displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                         
                         let anneAvatar = null;
-                        if (window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs['Anne']) {
-                            anneAvatar = window.VITRINE_DATA.professeurs['Anne'].avatar;
-                        } else if (window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs['Anne De Keyser']) {
-                            anneAvatar = window.VITRINE_DATA.professeurs['Anne De Keyser'].avatar;
+                        // Retrieve Anne's avatar from users list exactly like OTO
+                        if (window.DATA && window.DATA.users) {
+                            const anne = window.DATA.users.find(u => u.role === 'admin' || (u.name && u.name.includes('Anne')));
+                            if (anne) {
+                                anneAvatar = anne.avatarUrl || (anne.avatar && anne.avatar.startsWith('http') ? anne.avatar : null);
+                            }
+                        }
+                        // Fallback to vitrine data
+                        if (!anneAvatar && window.VITRINE_DATA && window.VITRINE_DATA.professeurs) {
+                            if (window.VITRINE_DATA.professeurs['Anne']) anneAvatar = window.VITRINE_DATA.professeurs['Anne'].avatar;
+                            else if (window.VITRINE_DATA.professeurs['Anne De Keyser']) anneAvatar = window.VITRINE_DATA.professeurs['Anne De Keyser'].avatar;
                         }
                         
                         if (anneAvatar) {
@@ -178,7 +196,7 @@ window.loadConversations = function() {
                             displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">A</div>`;
                         }
                         
-                        chatTitleParam = `${conv.title || 'Discussion'} (avec Anne)`;
+                        chatTitleParam = `${conv.title || 'Discussion'} (avec Anne De Keyser)`;
                     } else if (conv.targetGroup === 'all') {
                         displayTitle = 'Tous (Élèves et Profs)';
                         displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
@@ -204,7 +222,7 @@ window.loadConversations = function() {
                 const isAvatarString = typeof displayAvatar === 'string' && !displayAvatar.includes('<');
                 
                 item.innerHTML = `
-                    <div class="conv-avatar" style="${isAvatarString ? '' : 'overflow: hidden; background: none; padding: 0; display: flex; align-items: center; justify-content: center;'}">
+                    <div class="conv-avatar" style="${isAvatarString ? '' : 'overflow: hidden; background: none; padding: 0; display: flex; align-items: center; justify-content: center; border: none;'}">
                         ${displayAvatar}
                     </div>
                     <div class="conv-info">
