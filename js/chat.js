@@ -540,53 +540,68 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', () => { emojiPicker.style.display = 'none'; });
     }
 
+    // ---- Helper: Upload File/Photo ----
+    async function handleChatUpload(file, btnElement, originalIcon, inputElement) {
+        if (!file || !currentChatId) return;
+        const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+        if (!currentUser) return;
+
+        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+        if (file.size > MAX_SIZE) {
+            alert("Fichier trop volumineux (max 10 Mo).");
+            inputElement.value = '';
+            return;
+        }
+
+        btnElement.disabled = true;
+        const originalHtml = btnElement.innerHTML;
+        btnElement.textContent = '⏳';
+        try {
+            const path = `chat/${currentChatId}/${Date.now()}_${file.name}`;
+            const ref = storageRef(storage, path);
+            await uploadBytes(ref, file);
+            const url = await getDownloadURL(ref);
+
+            await addDoc(collection(db, 'conversations', currentChatId, 'messages'), {
+                text: '',
+                fileUrl: url,
+                fileName: file.name,
+                fileType: file.type,
+                senderId: currentUser.email,
+                senderName: currentUser.name || currentUser.email,
+                timestamp: serverTimestamp()
+            });
+            await updateDoc(doc(db, 'conversations', currentChatId), {
+                lastMessage: `${originalIcon} ${file.name}`,
+                lastMessageAt: serverTimestamp(),
+                archivedBy: []
+            });
+        } catch(e) {
+            console.error("Upload error:", e);
+            alert("Erreur lors de l'envoi.");
+        }
+        btnElement.disabled = false;
+        btnElement.innerHTML = originalHtml;
+        inputElement.value = '';
+    }
+
     // ---- Pièces jointes ----
     const btnAttach = document.getElementById('btn-attach');
     const fileInput = document.getElementById('chat-file-input');
     if (btnAttach && fileInput) {
         btnAttach.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', async () => {
-            const file = fileInput.files[0];
-            if (!file || !currentChatId) return;
-            const currentUser = window.AUTH ? window.AUTH.currentUser : null;
-            if (!currentUser) return;
+        fileInput.addEventListener('change', () => {
+            handleChatUpload(fileInput.files[0], btnAttach, '📎', fileInput);
+        });
+    }
 
-            const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-            if (file.size > MAX_SIZE) {
-                alert("Fichier trop volumineux (max 10 Mo).");
-                fileInput.value = '';
-                return;
-            }
-
-            btnAttach.disabled = true;
-            btnAttach.textContent = '⏳';
-            try {
-                const path = `chat/${currentChatId}/${Date.now()}_${file.name}`;
-                const ref = storageRef(storage, path);
-                await uploadBytes(ref, file);
-                const url = await getDownloadURL(ref);
-
-                await addDoc(collection(db, 'conversations', currentChatId, 'messages'), {
-                    text: '',
-                    fileUrl: url,
-                    fileName: file.name,
-                    fileType: file.type,
-                    senderId: currentUser.email,
-                    senderName: currentUser.name || currentUser.email,
-                    timestamp: serverTimestamp()
-                });
-                await updateDoc(doc(db, 'conversations', currentChatId), {
-                    lastMessage: `📎 ${file.name}`,
-                    lastMessageAt: serverTimestamp(),
-                    archivedBy: []
-                });
-            } catch(e) {
-                console.error("Upload error:", e);
-                alert("Erreur lors de l'envoi du fichier.");
-            }
-            btnAttach.disabled = false;
-            btnAttach.textContent = '📎';
-            fileInput.value = '';
+    // ---- Photos ----
+    const btnPhoto = document.getElementById('btn-photo');
+    const photoInput = document.getElementById('chat-photo-input');
+    if (btnPhoto && photoInput) {
+        btnPhoto.addEventListener('click', () => photoInput.click());
+        photoInput.addEventListener('change', () => {
+            handleChatUpload(photoInput.files[0], btnPhoto, '📷', photoInput);
         });
     }
 
