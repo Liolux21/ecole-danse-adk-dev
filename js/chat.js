@@ -79,7 +79,7 @@ window.loadConversations = function() {
 
             // En-tête du groupe
             const header = document.createElement('div');
-            header.style.cssText = 'padding: 0.5rem 1rem; font-size: 0.72rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; background: #f0f0f0; border-top: 1px solid var(--border); margin-top: 0.25rem;';
+            header.style.cssText = 'padding: 0.5rem 1rem; font-size: 0.65rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; background: #f0f0f0; border-top: 1px solid var(--border); padding: 4px 10px;';
             header.textContent = group.label;
             convListEl.appendChild(header);
 
@@ -129,7 +129,7 @@ window.loadConversations = function() {
                         });
                         
                         displayTitle = otherNames.join(', ');
-                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                         
                         if (otherAvatar) {
                             displayAvatar = `<img src="${otherAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
@@ -146,7 +146,7 @@ window.loadConversations = function() {
                             const course = window.DATA.courses.find(c => String(c.id) === String(courseId));
                             if (course) {
                                 displayTitle = course.name;
-                                displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                                displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                                 
                                 let profAvatar = course.avatar;
                                 if (!profAvatar && course.prof && window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs[course.prof]) {
@@ -166,15 +166,15 @@ window.loadConversations = function() {
                                 chatTitleParam = `${conv.title || 'Discussion'} (${course.name})`;
                             } else {
                                 displayTitle = 'Cours inconnu';
-                                displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                                displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                             }
                         } else {
                             displayTitle = 'Cours ' + courseId;
-                            displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                            displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                         }
                     } else if (conv.targetGroup === 'admin') {
                         displayTitle = 'Anne De Keyser';
-                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                         
                         let anneAvatar = null;
                         // Retrieve Anne's avatar from users list exactly like OTO
@@ -199,17 +199,17 @@ window.loadConversations = function() {
                         chatTitleParam = `${conv.title || 'Discussion'} (avec Anne De Keyser)`;
                     } else if (conv.targetGroup === 'all') {
                         displayTitle = 'Tous (Élèves et Profs)';
-                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                         displayAvatar = '📢';
                         chatTitleParam = `${conv.title || 'Discussion'} (Tous)`;
                     } else if (conv.targetGroup === 'all_students') {
                         displayTitle = 'Tous les élèves';
-                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                         displayAvatar = '🎓';
                         chatTitleParam = `${conv.title || 'Discussion'} (Tous les élèves)`;
                     } else if (conv.targetGroup === 'all_profs') {
                         displayTitle = 'Tous les profs';
-                        displaySubtitle = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                         displayAvatar = '👩‍🏫';
                         chatTitleParam = `${conv.title || 'Discussion'} (Tous les profs)`;
                     }
@@ -227,7 +227,7 @@ window.loadConversations = function() {
                     </div>
                     <div class="conv-info">
                         <div class="conv-top">
-                            <span class="conv-name" style="font-size: 0.95rem; font-weight: 600;">${displayTitle}</span>
+                            <span class="conv-name" style="font-size: 0.85rem; font-weight: 600;">${displayTitle}</span>
                             <span class="conv-time">${timeString}</span>
                         </div>
                         ${displaySubtitle}
