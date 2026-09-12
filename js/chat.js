@@ -17,7 +17,7 @@ window.loadConversations = function() {
     if (currentUser.role === 'admin') {
         q = query(collection(db, 'conversations'));
     } else {
-        let myGroups = ['all'];
+        var myGroups = ['all'];
         if (currentUser.role === 'prof') {
             myGroups.push('all_profs');
             if (currentUser.courseIds) {
