@@ -2470,7 +2470,13 @@ function renderChildData(child) {
   const mutStatus = child.mutuelle || 'masque';
   const mutClass = mutStatus === 'remis' ? 'pill-approved' : (mutStatus === 'en_cours' ? 'pill-pending' : 'pill-rejected');
   const mutLabel = mutStatus === 'remis' ? '✅ Remis' : (mutStatus === 'en_cours' ? '⏳ En cours' : '⚠️ En attente');
-  document.getElementById('parent-stat-mutuelle').innerHTML = (mutStatus === 'masque') ? '<span style="color:#aaa; font-size:0.85rem;">Masqué</span>' : `<span class="status-pill ${mutClass}">${mutLabel}</span>`;
+  const mutEl = document.getElementById('parent-stat-mutuelle');
+  if (mutStatus === 'masque') {
+    if (mutEl && mutEl.parentElement) mutEl.parentElement.style.display = 'none';
+  } else {
+    if (mutEl && mutEl.parentElement) mutEl.parentElement.style.display = 'flex';
+    mutEl.innerHTML = `<span class="status-pill ${mutClass}">${mutLabel}</span>`;
+  }
 
   const list = document.getElementById('parent-attendance-list');
   if (att.length === 0) {
@@ -2697,11 +2703,11 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
 
     // Boutons d'action
     let actionButtons = `<div style="display:flex; gap:0.5rem; margin-top:0.8rem;">`;
-    const isTeacher = user && (user.role === 'admin' || user.realRole === 'admin' || (c.prof && c.prof.includes(user.name)));
+    const isTeacher = user && (user.role === 'admin' || user.realRole === 'admin' || (user.role === 'prof' && c.prof && (c.prof.includes(user.name) || c.prof.includes(user.firstname))));
     if (isTeacher) {
       actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.id}">⚙️ Modifier cours</button>`;
     }
-    if (user && user.role === 'parent' && studentId) {
+    if (user && (user.role === 'parent' || user.role === 'eleve' || user.role === 'student') && studentId) {
       actionButtons += `<button class="btn btn-outline btn-sm btn-absent" data-course-id="${c.id}" data-student-id="${studentId}">📅 Présence</button>`;
     }
     actionButtons += `<button class="btn btn-outline btn-sm btn-msg" data-course-id="${c.id}">💬 Messages</button>`;
