@@ -98,6 +98,26 @@ window.loadConversations = function() {
                     }
                 }
 
+                let participantNames = '';
+                let chatTitleParam = conv.title || 'Discussion';
+                
+                if (!conv.isGroup && Array.isArray(conv.participants)) {
+                    const others = conv.participants.filter(p => p !== currentUser.email);
+                    if (others.length > 0) {
+                        const otherNames = others.map(email => {
+                            if (window.DATA) {
+                                const prof = (window.DATA.users || []).find(u => (u.email || u.id) === email);
+                                if (prof) return prof.name || `${prof.firstname || ''} ${prof.lastname || ''}`.trim() || email;
+                                const student = (window.DATA.students || []).find(s => (s.contactEmail || s.parentId) === email);
+                                if (student) return `${student.firstname || ''} ${student.lastname || ''}`.trim() || student.name || email;
+                            }
+                            return email;
+                        });
+                        participantNames = `<div style="font-size: 0.75rem; color: var(--primary); margin-top: -2px; margin-bottom: 2px;">👥 ${otherNames.join(', ')}</div>`;
+                        chatTitleParam += ` (avec ${otherNames.join(', ')})`;
+                    }
+                }
+
                 const item = document.createElement('div');
                 item.className = `conv-item ${isActive}`;
                 item.dataset.chatId = convId;
@@ -108,11 +128,12 @@ window.loadConversations = function() {
                             <span class="conv-name">${conv.title || 'Discussion'}</span>
                             <span class="conv-time">${timeString}</span>
                         </div>
+                        ${participantNames}
                         <p class="conv-preview">${conv.lastMessage || '...'}</p>
                     </div>
                 `;
 
-                item.addEventListener('click', () => window.switchChat(convId, conv.title || 'Discussion'));
+                item.addEventListener('click', () => window.switchChat(convId, chatTitleParam));
                 convListEl.appendChild(item);
             });
         });
