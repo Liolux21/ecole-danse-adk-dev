@@ -294,7 +294,6 @@ window.switchChat = function(chatId, chatTitle, isManageable = false) {
     if (btnManageChat) {
         btnManageChat.style.display = isManageable ? 'block' : 'none';
     }
-    }
 
     const messenger = document.getElementById('global-messenger-container');
     if (messenger) messenger.classList.add('chat-active');
