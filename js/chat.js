@@ -792,7 +792,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Just add the message to the existing conversation
                     await updateDoc(doc(db, 'conversations', existingConvId), {
                         lastMessage: firstMsg,
-                        lastMessageAt: serverTimestamp()
+                        lastMessageAt: serverTimestamp(),
+                        archivedBy: []
                     });
                     await addDoc(collection(db, 'conversations', existingConvId, 'messages'), {
                         text: firstMsg,
