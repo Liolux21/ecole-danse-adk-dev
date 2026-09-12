@@ -2474,7 +2474,7 @@ function renderChildData(child) {
   if (mutStatus === 'masque') {
     if (mutEl && mutEl.parentElement) mutEl.parentElement.style.display = 'none';
   } else {
-    if (mutEl && mutEl.parentElement) mutEl.parentElement.style.display = 'flex';
+    if (mutEl && mutEl.parentElement) mutEl.parentElement.style.display = '';
     mutEl.innerHTML = `<span class="status-pill ${mutClass}">${mutLabel}</span>`;
   }
 
