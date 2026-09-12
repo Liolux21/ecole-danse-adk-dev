@@ -589,7 +589,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAttach = document.getElementById('btn-attach');
     const fileInput = document.getElementById('chat-file-input');
     if (btnAttach && fileInput) {
-        btnAttach.addEventListener('click', () => fileInput.click());
+        btnAttach.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                // Sur mobile, le trombone est restreint aux documents pour éviter l'invite de l'appareil photo
+                fileInput.accept = ".pdf,.doc,.docx,.xls,.xlsx,.txt";
+            } else {
+                // Sur PC, le trombone accepte tout car on masque le bouton photo
+                fileInput.accept = "image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt";
+            }
+            fileInput.click();
+        });
         fileInput.addEventListener('change', () => {
             handleChatUpload(fileInput.files[0], btnAttach, '📎', fileInput);
         });
