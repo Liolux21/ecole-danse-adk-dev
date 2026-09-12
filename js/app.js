@@ -2627,7 +2627,7 @@ function renderWeeklyCalendar(courseIds, containerId) {
   courseIds.forEach(id => {
     const c = DATA.getCourseWithOverride(id);
     if (!c) return;
-    const slots = DATA.schedule.slots.filter(s => s.courseId === id);
+    const slots = DATA.schedule.slots.filter(s => String(s.courseId) === String(id));
     slots.forEach(slot => {
       calendarData[slot.day].push({ ...c, hour: slot.hour });
     });
