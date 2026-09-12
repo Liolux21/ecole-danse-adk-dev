@@ -285,7 +285,7 @@ window.switchChat = function(chatId, chatTitle, isManageable = false) {
     const btnArchiveChat = document.getElementById('btn-archive-chat');
     if (btnArchiveChat) {
         btnArchiveChat.style.display = 'block';
-        btnArchiveChat.innerHTML = showArchivedConversations ? '📂' : '🗃️';
+        btnArchiveChat.innerHTML = showArchivedConversations ?         '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 21 9 10 3 10 3 21"></polyline><rect x="1" y="3" width="22" height="5"></rect><polyline points="15 15 18 12 21 15"></polyline><line x1="18" y1="21" x2="18" y2="12"></line></svg>' :         '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>';
         btnArchiveChat.title = showArchivedConversations ? 'Désarchiver' : 'Archiver';
     }
     
@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnToggleArchived) {
         btnToggleArchived.addEventListener('click', () => {
             showArchivedConversations = !showArchivedConversations;
-            btnToggleArchived.innerHTML = showArchivedConversations ? '⬅️ Retour aux discussions' : '🗃️ Voir les archives';
+            btnToggleArchived.innerHTML = showArchivedConversations ?         '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:4px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour aux discussions' :         '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:4px;"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg> Voir les archives';
             window.loadConversations();
         });
     }
