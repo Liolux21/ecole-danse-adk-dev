@@ -1,4 +1,4 @@
-import { db, storage, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, where, serverTimestamp, storageRef, uploadBytes, getDownloadURL, arrayUnion, arrayRemove } from './firebase-config.js';
+import { db, storage, collection, addDoc, doc, getDocs, updateDoc, deleteDoc, onSnapshot, query, orderBy, where, or, serverTimestamp, storageRef, uploadBytes, getDownloadURL, arrayUnion, arrayRemove } from './firebase-config.js';
 
 let currentChatId = null;
 let unsubscribeMessages = null;
@@ -17,7 +17,40 @@ window.loadConversations = function() {
     if (currentUser.role === 'admin') {
         q = query(collection(db, 'conversations'));
     } else {
-        q = query(collection(db, 'conversations'), where('participants', 'array-contains', currentUser.email));
+        let myGroups = ['all'];
+        if (currentUser.role === 'prof') {
+            myGroups.push('all_profs');
+            if (currentUser.courseIds) {
+                currentUser.courseIds.forEach(cid => myGroups.push(`course_${cid}`));
+            }
+        } else if (currentUser.role === 'parent' || currentUser.role === 'student' || currentUser.role === 'élève') {
+            myGroups.push('all_students');
+            if (window.DATA && window.DATA.students) {
+                const children = window.DATA.students.filter(s => (currentUser.childrenIds || []).includes(s.id) || s.id === currentUser.id);
+                children.forEach(ch => {
+                    if (ch.courseIds) {
+                        ch.courseIds.forEach(cid => {
+                            const tg = `course_${cid}`;
+                            if (!myGroups.includes(tg)) myGroups.push(tg);
+                        });
+                    }
+                });
+            }
+        }
+
+        // We split myGroups into chunks of 10 if necessary, but typically a user is not in 30+ groups.
+        // For safety, we will just use up to 10 groups in the 'in' query.
+        // A better approach would be to fetch all groups and filter locally if there are many, 
+        // but 'or' with 'array-contains' and 'in' is perfect for this scope.
+        const limitedGroups = myGroups.slice(0, 30); 
+        
+        q = query(
+            collection(db, 'conversations'),
+            or(
+                where('participants', 'array-contains', currentUser.email),
+                where('targetGroup', 'in', limitedGroups)
+            )
+        );
     }
 
     onSnapshot(q, (snapshot) => {
@@ -98,10 +131,10 @@ window.loadConversations = function() {
                     }
                 }
 
-                let displayTitle = conv.title || 'Discussion';
+                let displayTitle = conv.customName || 'Discussion';
                 let displaySubtitle = '';
                 let displayAvatar = conv.isGroup ? '👥' : '👤';
-                let chatTitleParam = conv.title || 'Discussion';
+                let chatTitleParam = conv.customName || '';
                 
                 if (!conv.isGroup && Array.isArray(conv.participants)) {
                     const others = conv.participants.filter(p => p !== currentUser.email);
@@ -113,9 +146,6 @@ window.loadConversations = function() {
                                 if (prof) {
                                     if (prof.avatarUrl) otherAvatar = prof.avatarUrl;
                                     else if (prof.avatar && (prof.avatar.startsWith('http') || prof.avatar.startsWith('assets/'))) otherAvatar = prof.avatar;
-                                    else if (window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs[prof.name] && window.VITRINE_DATA.professeurs[prof.name].avatar) {
-                                        otherAvatar = window.VITRINE_DATA.professeurs[prof.name].avatar;
-                                    }
                                     return prof.name || `${prof.firstname || ''} ${prof.lastname || ''}`.trim() || email;
                                 }
                                 const student = (window.DATA.students || []).find(s => (s.contactEmail || s.parentId) === email);
@@ -128,16 +158,22 @@ window.loadConversations = function() {
                             return email;
                         });
                         
-                        displayTitle = otherNames.join(', ');
-                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        if (!conv.customName) {
+                            displayTitle = otherNames.join(', ');
+                        } else {
+                            displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">${otherNames.join(', ')}</div>`;
+                        }
                         
-                        if (otherAvatar) {
+                        // If it's a multi-person chat without a custom avatar, maybe show a group icon
+                        if (others.length > 1 && !conv.customName) {
+                            displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">👥</div>`;
+                        } else if (otherAvatar && others.length === 1) {
                             displayAvatar = `<img src="${otherAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                         } else {
                             displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">${displayTitle.charAt(0).toUpperCase()}</div>`;
                         }
                         
-                        chatTitleParam = `${conv.title || 'Discussion'} (avec ${displayTitle})`;
+                        chatTitleParam = displayTitle;
                     }
                 } else if (conv.isGroup && conv.targetGroup) {
                     if (conv.targetGroup.startsWith('course_')) {
@@ -145,8 +181,7 @@ window.loadConversations = function() {
                         if (window.DATA && window.DATA.courses) {
                             const course = window.DATA.courses.find(c => String(c.id) === String(courseId));
                             if (course) {
-                                displayTitle = course.name;
-                                displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                                displayTitle = conv.customName || course.name;
                                 
                                 let profAvatar = course.avatar;
                                 if (!profAvatar && course.prof && window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs[course.prof]) {
@@ -163,28 +198,21 @@ window.loadConversations = function() {
                                     displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">🎵</div>`;
                                 }
                                 
-                                chatTitleParam = `${conv.title || 'Discussion'} (${course.name})`;
+                                chatTitleParam = displayTitle;
                             } else {
                                 displayTitle = 'Cours inconnu';
-                                displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                             }
                         } else {
                             displayTitle = 'Cours ' + courseId;
-                            displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
                         }
                     } else if (conv.targetGroup === 'admin') {
-                        displayTitle = 'Anne De Keyser';
-                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displayTitle = conv.customName || 'Anne De Keyser';
                         
                         let anneAvatar = null;
-                        // Retrieve Anne's avatar from users list exactly like OTO
                         if (window.DATA && window.DATA.users) {
                             const anne = window.DATA.users.find(u => u.role === 'admin' || (u.name && u.name.includes('Anne')));
-                            if (anne) {
-                                anneAvatar = anne.avatarUrl || (anne.avatar && anne.avatar.startsWith('http') ? anne.avatar : null);
-                            }
+                            if (anne) anneAvatar = anne.avatarUrl || (anne.avatar && anne.avatar.startsWith('http') ? anne.avatar : null);
                         }
-                        // Fallback to vitrine data
                         if (!anneAvatar && window.VITRINE_DATA && window.VITRINE_DATA.professeurs) {
                             if (window.VITRINE_DATA.professeurs['Anne']) anneAvatar = window.VITRINE_DATA.professeurs['Anne'].avatar;
                             else if (window.VITRINE_DATA.professeurs['Anne De Keyser']) anneAvatar = window.VITRINE_DATA.professeurs['Anne De Keyser'].avatar;
@@ -195,25 +223,24 @@ window.loadConversations = function() {
                         } else {
                             displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">A</div>`;
                         }
-                        
-                        chatTitleParam = `${conv.title || 'Discussion'} (avec Anne De Keyser)`;
+                        chatTitleParam = displayTitle;
                     } else if (conv.targetGroup === 'all') {
-                        displayTitle = 'Tous (Élèves et Profs)';
-                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displayTitle = conv.customName || 'Tous (Élèves et Profs)';
                         displayAvatar = '📢';
-                        chatTitleParam = `${conv.title || 'Discussion'} (Tous)`;
+                        chatTitleParam = displayTitle;
                     } else if (conv.targetGroup === 'all_students') {
-                        displayTitle = 'Tous les élèves';
-                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displayTitle = conv.customName || 'Tous les élèves';
                         displayAvatar = '🎓';
-                        chatTitleParam = `${conv.title || 'Discussion'} (Tous les élèves)`;
+                        chatTitleParam = displayTitle;
                     } else if (conv.targetGroup === 'all_profs') {
-                        displayTitle = 'Tous les profs';
-                        displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">Sujet : ${conv.title || 'Discussion'}</div>`;
+                        displayTitle = conv.customName || 'Tous les profs';
                         displayAvatar = '👩‍🏫';
-                        chatTitleParam = `${conv.title || 'Discussion'} (Tous les profs)`;
+                        chatTitleParam = displayTitle;
                     }
                 }
+
+                // If chatTitleParam is missing fallback
+                if (!chatTitleParam) chatTitleParam = displayTitle;
 
                 const item = document.createElement('div');
                 item.className = `conv-item ${isActive}`;
@@ -235,7 +262,8 @@ window.loadConversations = function() {
                     </div>
                 `;
 
-                item.addEventListener('click', () => window.switchChat(convId, chatTitleParam));
+                item.addEventListener('click', () => window.switchChat(convId, chatTitleParam, !conv.isGroup));
+
                 convListEl.appendChild(item);
             });
         });
@@ -249,18 +277,23 @@ window.loadConversations = function() {
 // =============================================
 // SWITCH CHAT — avec nom complet + date
 // =============================================
-window.switchChat = function(chatId, chatTitle) {
+window.switchChat = function(chatId, chatTitle, isManageable = false) {
     if (currentChatId === chatId) return;
     currentChatId = chatId;
 
     document.getElementById('active-chat-title').textContent = chatTitle;
     
-    // Update archive button visibility and text
     const btnArchiveChat = document.getElementById('btn-archive-chat');
     if (btnArchiveChat) {
         btnArchiveChat.style.display = 'block';
-        btnArchiveChat.innerHTML = showArchivedConversations ? '⤴️' : '🗃️';
+        btnArchiveChat.innerHTML = showArchivedConversations ? '📂' : '🗃️';
         btnArchiveChat.title = showArchivedConversations ? 'Désarchiver' : 'Archiver';
+    }
+    
+    const btnManageChat = document.getElementById('btn-manage-chat');
+    if (btnManageChat) {
+        btnManageChat.style.display = isManageable ? 'block' : 'none';
+    }
     }
 
     const messenger = document.getElementById('global-messenger-container');
@@ -708,13 +741,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCreateChatConfirm = document.getElementById('btn-create-chat-confirm');
     if (btnCreateChatConfirm) {
         btnCreateChatConfirm.addEventListener('click', async () => {
-            const titleInput = document.getElementById('new-chat-title');
             const msgInput2 = document.getElementById('new-chat-first-msg');
-
-            const title = titleInput.value.trim();
             const firstMsg = msgInput2.value.trim();
             const currentUser = window.AUTH ? window.AUTH.currentUser : null;
-            if (!title || !firstMsg || !currentUser) return;
+            if (!firstMsg || !currentUser) return;
 
             // Validate target
             let target, participants, isGroup;
@@ -724,7 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 target = `oto_${selectedOtoUser.email}`;
-                participants = [currentUser.email, selectedOtoUser.email];
+                participants = [currentUser.email, selectedOtoUser.email].sort();
                 isGroup = false;
             } else {
                 const targetSelect = document.getElementById('new-chat-target');
@@ -738,26 +768,71 @@ document.addEventListener('DOMContentLoaded', () => {
             btnCreateChatConfirm.textContent = "Création...";
 
             try {
-                const newConvRef = await addDoc(collection(db, 'conversations'), {
-                    title: title,
-                    targetGroup: target,
-                    participants: participants,
-                    creatorId: currentUser.email,
-                    isGroup: isGroup,
-                    lastMessage: firstMsg,
-                    lastMessageAt: serverTimestamp()
-                });
+                // Check if conversation already exists
+                let existingConvId = null;
+                if (isGroup) {
+                    const qGroup = query(collection(db, 'conversations'), where('targetGroup', '==', target));
+                    const snap = await getDocs(qGroup);
+                    if (!snap.empty) {
+                        existingConvId = snap.docs[0].id;
+                    }
+                } else {
+                    // For OTO, we check participants
+                    const qOto = query(collection(db, 'conversations'), where('isGroup', '==', false), where('participants', 'array-contains', currentUser.email));
+                    const snap = await getDocs(qOto);
+                    snap.forEach(d => {
+                        const data = d.data();
+                        if (data.participants && data.participants.length === participants.length) {
+                            const sortedDataParticipants = [...data.participants].sort();
+                            if (sortedDataParticipants.join(',') === participants.join(',')) {
+                                existingConvId = d.id;
+                            }
+                        }
+                    });
+                }
 
-                await addDoc(collection(db, 'conversations', newConvRef.id, 'messages'), {
-                    text: firstMsg,
-                    senderId: currentUser.email,
-                    senderName: currentUser.name || currentUser.email,
-                    timestamp: serverTimestamp()
-                });
+                if (existingConvId) {
+                    // Just add the message to the existing conversation
+                    await updateDoc(doc(db, 'conversations', existingConvId), {
+                        lastMessage: firstMsg,
+                        lastMessageAt: serverTimestamp()
+                    });
+                    await addDoc(collection(db, 'conversations', existingConvId, 'messages'), {
+                        text: firstMsg,
+                        senderId: currentUser.email,
+                        senderName: currentUser.name || currentUser.email,
+                        timestamp: serverTimestamp()
+                    });
+                    
+                    if (window.closeModal) window.closeModal('modal-new-chat');
+                    msgInput2.value = '';
+                    
+                    // Open the chat
+                    setTimeout(() => window.switchChat(existingConvId, ''), 300);
+                } else {
+                    // Create new conversation
+                    const newConvRef = await addDoc(collection(db, 'conversations'), {
+                        targetGroup: target,
+                        participants: participants,
+                        creatorId: currentUser.email,
+                        isGroup: isGroup,
+                        lastMessage: firstMsg,
+                        lastMessageAt: serverTimestamp()
+                    });
 
-                if (window.closeModal) window.closeModal('modal-new-chat');
-                titleInput.value = '';
-                msgInput2.value = '';
+                    await addDoc(collection(db, 'conversations', newConvRef.id, 'messages'), {
+                        text: firstMsg,
+                        senderId: currentUser.email,
+                        senderName: currentUser.name || currentUser.email,
+                        timestamp: serverTimestamp()
+                    });
+
+                    if (window.closeModal) window.closeModal('modal-new-chat');
+                    msgInput2.value = '';
+                    
+                    // Open the chat
+                    setTimeout(() => window.switchChat(newConvRef.id, ''), 300);
+                }
                 selectedOtoUser = null;
                 window.switchChat(newConvRef.id, title);
             } catch(e) {
@@ -770,3 +845,145 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// =============================================
+// MANAGE CHAT LOGIC (RENAME / ADD PERSON)
+// =============================================
+
+window.openManageChat = function() {
+    if (!currentChatId) return;
+    
+    // Reset inputs
+    document.getElementById('manage-chat-title').value = '';
+    document.getElementById('manage-oto-search').value = '';
+    document.getElementById('manage-oto-results').style.display = 'none';
+    document.getElementById('manage-oto-selected').style.display = 'none';
+    window.selectedManageOtoUser = null;
+    
+    getDoc(doc(db, 'conversations', currentChatId)).then(snap => {
+        if (snap.exists()) {
+            const data = snap.data();
+            if (data.customName) {
+                document.getElementById('manage-chat-title').value = data.customName;
+            }
+        }
+    });
+
+    if (window.openModal) window.openModal('modal-manage-chat');
+};
+
+const btnManageChat = document.getElementById('btn-manage-chat');
+if (btnManageChat) {
+    btnManageChat.addEventListener('click', window.openManageChat);
+}
+
+const btnUpdateChatTitle = document.getElementById('btn-update-chat-title');
+if (btnUpdateChatTitle) {
+    btnUpdateChatTitle.addEventListener('click', async () => {
+        if (!currentChatId) return;
+        const newTitle = document.getElementById('manage-chat-title').value.trim();
+        
+        btnUpdateChatTitle.disabled = true;
+        btnUpdateChatTitle.textContent = 'Enregistrement...';
+        try {
+            await updateDoc(doc(db, 'conversations', currentChatId), {
+                customName: newTitle
+            });
+            if (window.closeModal) window.closeModal('modal-manage-chat');
+        } catch(e) {
+            console.error(e);
+            alert("Erreur lors de la modification");
+        }
+        btnUpdateChatTitle.disabled = false;
+        btnUpdateChatTitle.textContent = 'Enregistrer le nom';
+    });
+}
+
+const manageOtoSearch = document.getElementById('manage-oto-search');
+if (manageOtoSearch) {
+    manageOtoSearch.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        const resEl = document.getElementById('manage-oto-results');
+        resEl.innerHTML = '';
+        if (val.length < 2) {
+            resEl.style.display = 'none';
+            return;
+        }
+        
+        let matches = [];
+        if (window.DATA) {
+            if (window.DATA.users) {
+                window.DATA.users.forEach(u => {
+                    const searchStr = `${u.name||''} ${u.firstname||''} ${u.lastname||''} ${u.email||''}`.toLowerCase();
+                    if (searchStr.includes(val)) matches.push({...u, _type:'prof'});
+                });
+            }
+            if (window.DATA.students) {
+                window.DATA.students.forEach(s => {
+                    const searchStr = `${s.name||''} ${s.firstname||''} ${s.lastname||''} ${s.contactEmail||''}`.toLowerCase();
+                    if (searchStr.includes(val)) matches.push({...s, _type:'student'});
+                });
+            }
+        }
+        
+        if (matches.length > 0) {
+            resEl.style.display = 'block';
+            matches.forEach(m => {
+                const div = document.createElement('div');
+                div.style.padding = '8px 12px';
+                div.style.cursor = 'pointer';
+                div.style.borderBottom = '1px solid #eee';
+                
+                const mName = m.name || `${m.firstname||''} ${m.lastname||''}`.trim();
+                const mEmail = m.email || m.contactEmail || m.parentId;
+                
+                div.innerHTML = `<strong>${mName}</strong> <span style="font-size:0.8rem;color:#666;">(${m._type === 'prof' ? 'Prof/Admin' : 'Élève'})</span>`;
+                
+                div.addEventListener('click', () => {
+                    window.selectedManageOtoUser = { name: mName, email: mEmail };
+                    const sel = document.getElementById('manage-oto-selected');
+                    sel.innerHTML = `Sélectionné : ${mName} (${mEmail})`;
+                    sel.style.display = 'block';
+                    resEl.style.display = 'none';
+                    e.target.value = '';
+                });
+                resEl.appendChild(div);
+            });
+        } else {
+            resEl.style.display = 'none';
+        }
+    });
+}
+
+const btnAddPersonChat = document.getElementById('btn-add-person-chat');
+if (btnAddPersonChat) {
+    btnAddPersonChat.addEventListener('click', async () => {
+        if (!currentChatId || !window.selectedManageOtoUser || !window.selectedManageOtoUser.email) return;
+        
+        btnAddPersonChat.disabled = true;
+        btnAddPersonChat.textContent = 'Ajout...';
+        try {
+            await updateDoc(doc(db, 'conversations', currentChatId), {
+                participants: arrayUnion(window.selectedManageOtoUser.email)
+            });
+            
+            const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+            await addDoc(collection(db, 'conversations', currentChatId, 'messages'), {
+                text: `${currentUser ? (currentUser.name || currentUser.firstname) : 'Quelqu\'un'} a ajouté ${window.selectedManageOtoUser.name} à la discussion.`,
+                senderId: 'system',
+                senderName: 'Système',
+                timestamp: serverTimestamp()
+            });
+            
+            window.selectedManageOtoUser = null;
+            document.getElementById('manage-oto-selected').style.display = 'none';
+            alert('Personne ajoutée avec succès !');
+            if (window.closeModal) window.closeModal('modal-manage-chat');
+        } catch(e) {
+            console.error(e);
+            alert("Erreur lors de l'ajout");
+        }
+        btnAddPersonChat.disabled = false;
+        btnAddPersonChat.textContent = 'Ajouter cette personne';
+    });
+}

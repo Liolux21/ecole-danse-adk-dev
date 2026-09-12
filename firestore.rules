@@ -46,7 +46,7 @@ service cloud.firestore {
       allow read: if isAuthenticated() && (
         isAdmin() || 
         isProf() || 
-        (isParent() && String(studentId) in getUserData().childrenIds)
+        (isParent() && string(studentId) in getUserData().childrenIds)
       );
       // L'Admin gère les élèves, mais le Prof a besoin d'écrire pour noter les absences
       allow write: if isAdmin() || isProf();
@@ -91,29 +91,53 @@ service cloud.firestore {
 
     // =========================================================
     // MESSAGERIE / CHAT
+        // =========================================================
+    // MESSAGERIE / CHAT
     // =========================================================
     match /conversations/{conversationId} {
       
-      // Fonction pour vérifier si l'utilisateur est dans la conversation
       function isConvParticipant() {
         return isAuthenticated() && (request.auth.token.email in resource.data.participants);
       }
       
-      allow read: if isConvParticipant() || isAdmin();
+      function isAllowedGroup() {
+        let tg = resource.data.targetGroup;
+        return isAuthenticated() && resource.data.isGroup == true && (
+          (tg == 'all') || 
+          (tg == 'all_students') || 
+          (tg == 'all_profs' && (isProf() || isAdmin())) ||
+          (tg.matches('course_.*'))
+        );
+      }
+      
+      allow read: if isConvParticipant() || isAdmin() || isAllowedGroup();
       allow create: if isAuthenticated(); 
-      allow update: if isConvParticipant() || isAdmin();
+      allow update: if isConvParticipant() || isAdmin() || isAllowedGroup();
 
       // SOUS-COLLECTION MESSAGES
       match /messages/{messageId} {
       
-        // Fonction spécifique pour lire les participants dans le document parent
+        function getParentConv() {
+          return get(/databases/$(database)/documents/conversations/$(conversationId)).data;
+        }
+        
         function isParentConvParticipant() {
-          return isAuthenticated() && (request.auth.token.email in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants);
+          return isAuthenticated() && (request.auth.token.email in getParentConv().participants);
+        }
+        
+        function isParentAllowedGroup() {
+          let parentData = getParentConv();
+          let tg = parentData.targetGroup;
+          return isAuthenticated() && parentData.isGroup == true && (
+            (tg == 'all') || 
+            (tg == 'all_students') || 
+            (tg == 'all_profs' && (isProf() || isAdmin())) ||
+            (tg.matches('course_.*'))
+          );
         }
       
-        // Lecture, Ajout et Suppression
-        allow read: if isParentConvParticipant() || isAdmin();
-        allow create: if (isParentConvParticipant() || isAdmin()) && request.resource.data.senderId == request.auth.token.email;
+        allow read: if isParentConvParticipant() || isAdmin() || isParentAllowedGroup();
+        allow create: if (isParentConvParticipant() || isAdmin() || isParentAllowedGroup()) && request.resource.data.senderId == request.auth.token.email;
         allow delete: if isAdmin() || resource.data.senderId == request.auth.token.email;
       }
     }
