@@ -2846,6 +2846,29 @@ document.getElementById('absence-form')?.addEventListener('submit', (e) => {
     if (status !== 'absent' || document.getElementById('absence-status').value !== 'excuse') {
       alert('Vos indications ont été sauvegardées.');
     }
+      (async () => {
+         try {
+           const firebase = await import('./firebase-config.js');
+           const course = DATA.getCourseWithOverride(cid);
+           const child = DATA.getStudentById(sid);
+           if (course && child) {
+             const statLabel = status === 'present' ? 'Présent(e)' : (status === 'excuse' ? 'Excusé(e)' : 'Absent(e)');
+             const title = status === 'present' ? `Signalement de présence : ${child.firstname}` : `Signalement d'absence : ${child.firstname}`;
+             const annData = {
+               title: title,
+               content: `${child.firstname} a été signalé(e) ${statLabel.toLowerCase()} pour le cours "${course.name}" du ${dateStr}.`,
+               target: "prof_course_" + cid,
+               timestamp: Date.now(),
+               authorId: window.AUTH.currentUser.id
+             };
+             DATA.announcements.push({...annData, id: 'temp_' + Date.now()});
+             await firebase.addDoc(firebase.collection(firebase.db, "announcements"), annData);
+           }
+         } catch(e) {
+           console.error("Error sending absence notif:", e);
+         }
+      })();
+
     document.getElementById('modal-absence').classList.remove('open');
     // Refresh the view if looking at a student
     if (AUTH.currentUser.role === 'parent') {
@@ -3623,7 +3646,11 @@ function renderAdminAnnonces() {
     if (ann.target.startsWith('course_')) {
       const cid = ann.target.replace('course_', '');
       const c = DATA.getCourseById(cid);
-      targetLabel = c ? `Cours: ${c.name}` : `Cours supprimé`;
+      targetLabel = c ? `Cours: ${c.name}
+      if (ann.target.startsWith('prof_course_') && role === 'prof') {
+        const cid = ann.target.replace('prof_course_', '');
+        if (userCourseIds.includes(String(cid))) return true;
+      }` : `Cours supprimé`;
     }
 
     return `
@@ -3678,6 +3705,10 @@ function renderUserAnnonces(role) {
       const cid = ann.target.replace('course_', '');
       if (userCourseIds.includes(String(cid))) return true;
     }
+      if (ann.target.startsWith('prof_course_') && role === 'prof') {
+        const cid = ann.target.replace('prof_course_', '');
+        if (userCourseIds.includes(String(cid))) return true;
+      }
     return false;
   });
 
