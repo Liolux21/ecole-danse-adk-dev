@@ -4262,3 +4262,58 @@ window.migrateCourses2026 = async function() {
   }
 };
 
+
+window.migrateProfs2026 = async function() {
+  const btn = document.getElementById('btn-migrate-profs');
+  if(!confirm("Êtes-vous sûr de vouloir créer les professeurs manquants ?")) return;
+  
+  try {
+    btn.textContent = "Création en cours...";
+    btn.disabled = true;
+    
+    const firebase = await import('./firebase-config.js');
+    
+    const profNames = [
+      'Janis Romain', 'Jeanne Lefèvre', 'Loreen Poncelet', 'Maeva Delgoffe', 'Margaux Hubert',
+      'Maurine Baudon', 'Pauline Gérard', 'Zoé Lambert', 'Jade Nélis', 'Daisy Theunissen',
+      'Corentin Milosevic', 'Charlotte Varoquaux', 'Andrew Schmitz', 'Clémentine Mamdy', 'Lili Maury',
+      'Florence', 'Adam'
+    ];
+    
+    let createdCount = 0;
+    
+    for (let fullName of profNames) {
+      // Check if exists
+      const exists = window.DATA.users.find(u => u.role === 'prof' && (u.name === fullName || (u.firstname && u.name.includes(u.firstname))));
+      if (!exists) {
+        const parts = fullName.split(' ');
+        const firstname = parts[0];
+        const lastname = parts.slice(1).join(' ');
+        const dummyEmail = `${firstname.toLowerCase().replace(/é|è|ê/g, 'e')}@adk.local`;
+        
+        const profData = {
+          role: 'prof',
+          firstname: firstname,
+          lastname: lastname,
+          name: fullName,
+          dob: '',
+          email: dummyEmail,
+          phone: '',
+          hasTutor: false,
+          avatar: '👨‍🏫'
+        };
+        
+        await firebase.setDoc(firebase.doc(firebase.collection(firebase.db, "users"), dummyEmail), profData);
+        createdCount++;
+      }
+    }
+    
+    alert(`${createdCount} professeurs ont été créés avec succès. Veuillez rafraîchir la page.`);
+    location.reload();
+  } catch(e) {
+    console.error(e);
+    alert("Erreur: " + e.message);
+    btn.textContent = "Erreur. Réessayez.";
+    btn.disabled = false;
+  }
+};
