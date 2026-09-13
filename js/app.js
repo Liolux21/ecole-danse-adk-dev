@@ -4398,7 +4398,7 @@ window.migrateProfs2026 = async function() {
       'Janis Romain', 'Jeanne Lefèvre', 'Loreen Poncelet', 'Maeva Delgoffe', 'Margaux Hubert',
       'Maurine Baudon', 'Pauline Gérard', 'Zoé Lambert', 'Jade Nélis', 'Daisy Theunissen',
       'Corentin Milosevic', 'Charlotte Varoquaux', 'Andrew Schmitz', 'Clémentine Mamdy', 'Lili Maury',
-      'Florence', 'Adam'
+      'Florence Leyens', 'Adam Binoua'
     ];
     
     let createdCount = 0;
@@ -4567,25 +4567,36 @@ window.migrateStudents2026 = async function() {
 // Fix prof names in Firestore (one-time migration)
 window.fixProfNames = async function() {
   const firebase = await import('./firebase-config.js');
-  const updates = [
-    { oldName: 'Florence', newName: 'Florence Leyens', email: 'florence@adk.local' },
-    { oldName: 'Adam',     newName: 'Adam Binoua',    email: 'adam@adk.local' }
-  ];
+  
+  // Search all users and fix any that still have old single-name values
+  const usersSnap = await firebase.getDocs(firebase.collection(firebase.db, 'users'));
   let fixed = 0;
-  for (const u of updates) {
-    const docRef = firebase.doc(firebase.db, 'users', u.email);
-    const snap   = await firebase.getDoc(firebase.db ? docRef : docRef);
-    try {
-      const existing = await firebase.getDoc(docRef);
-      if (existing.exists()) {
-        await firebase.updateDoc(docRef, { name: u.newName });
-        fixed++;
-      } else {
-        console.warn('Compte introuvable:', u.email);
-      }
-    } catch(e) {
-      console.error('Error updating', u.email, e);
+  let details = [];
+  
+  for (const d of usersSnap.docs) {
+    const data = d.data();
+    if (data.name === 'Florence' || data.firstname === 'Florence') {
+      await firebase.updateDoc(firebase.doc(firebase.db, 'users', d.id), {
+        name: 'Florence Leyens',
+        firstname: 'Florence',
+        lastname: 'Leyens'
+      });
+      fixed++;
+      details.push('Florence -> Florence Leyens (id: ' + d.id + ')');
+    } else if (data.name === 'Adam' || data.firstname === 'Adam') {
+      await firebase.updateDoc(firebase.doc(firebase.db, 'users', d.id), {
+        name: 'Adam Binoua',
+        firstname: 'Adam',
+        lastname: 'Binoua'
+      });
+      fixed++;
+      details.push('Adam -> Adam Binoua (id: ' + d.id + ')');
     }
   }
-  alert('✅ ' + fixed + '/2 comptes professeurs mis à jour dans Firebase !');
+  
+  if (fixed === 0) {
+    alert('ℹ️ Aucun compte à corriger trouvé.\n\nLes comptes ont peut-être déjà été mis à jour, ou n\'ont pas encore été créés.\nUtilisez d\'abord "Créer les profs manquants".');
+  } else {
+    alert('✅ ' + fixed + ' compte(s) mis à jour !\n\n' + details.join('\n'));
+  }
 };
