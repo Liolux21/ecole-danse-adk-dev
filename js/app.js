@@ -1162,7 +1162,7 @@ async function adminApprove(id) {
           {
             to_email: emailKey,
             to_name: ins.parentName,
-            temp_password: tempPassword,
+            temp_temp_password: tempPassword,
             login_link: window.location.href.split('?')[0]
           }
         );
@@ -1504,7 +1504,7 @@ window.saveProf = async function() {
           const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: targetId, password: tempPassword, returnSecureToken: false })
+            body: JSON.stringify({ email: targetId, temp_password: tempPassword, returnSecureToken: false })
           });
           const data = await response.json();
           if (data.error && data.error.message !== 'EMAIL_EXISTS') throw new Error(data.error.message);
@@ -1539,7 +1539,7 @@ window.saveProf = async function() {
           {
             to_email: targetId,
             to_name: fullName,
-            password: tempPassword,
+            temp_password: tempPassword,
             portal_url: window.location.origin
           }
         );
@@ -3647,7 +3647,7 @@ window.submitAddStudent = async function() {
           const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password: tempPassword, returnSecureToken: false })
+            body: JSON.stringify({ email, temp_password: tempPassword, returnSecureToken: false })
           });
           const data = await response.json();
           if (data.error) throw new Error(data.error.message);
@@ -3682,7 +3682,7 @@ window.submitAddStudent = async function() {
           {
             to_email: email,
             to_name: `${prenom} ${nom}`,
-            temp_password: tempPassword,
+            temp_temp_password: tempPassword,
             login_link: "https://liolux21.github.io/ecole-danse-adk-dev/portail.html"
           }
         );
