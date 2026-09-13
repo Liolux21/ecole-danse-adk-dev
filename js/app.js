@@ -3646,11 +3646,12 @@ function renderAdminAnnonces() {
     if (ann.target.startsWith('course_')) {
       const cid = ann.target.replace('course_', '');
       const c = DATA.getCourseById(cid);
-      targetLabel = c ? `Cours: ${c.name}
-      if (ann.target.startsWith('prof_course_') && role === 'prof') {
-        const cid = ann.target.replace('prof_course_', '');
-        if (userCourseIds.includes(String(cid))) return true;
-      }` : `Cours supprimé`;
+      targetLabel = c ? `Cours: ${c.name}` : `Cours supprimé`;
+    }
+    if (ann.target.startsWith('prof_course_')) {
+      const cid = ann.target.replace('prof_course_', '');
+      const c = DATA.getCourseById(cid);
+      targetLabel = c ? `Prof du cours: ${c.name}` : `Prof du cours supprimé`;
     }
 
     return `
