@@ -4328,3 +4328,45 @@ window.migrateProfs2026 = async function() {
   }
 };
 
+
+window.resetNotificationsAndMessages = async function() {
+  const btn = document.getElementById('btn-reset-data');
+  if(!confirm("ÊTES-VOUS ABSOLUMENT SÛR de vouloir supprimer toutes les notifications et tous les messages ? Cette action est irréversible.")) return;
+  if(!confirm("Confirmation finale : Tout effacer ?")) return;
+  
+  try {
+    btn.textContent = "Effacement en cours...";
+    btn.disabled = true;
+    
+    const firebase = await import('./firebase-config.js');
+    
+    // 1. Delete Announcements
+    const annSnap = await firebase.getDocs(firebase.collection(firebase.db, "announcements"));
+    for (let d of annSnap.docs) {
+      await firebase.deleteDoc(firebase.doc(firebase.db, "announcements", d.id));
+    }
+    
+    // 2. Delete Conversations (which also hides the messages)
+    const convSnap = await firebase.getDocs(firebase.collection(firebase.db, "conversations"));
+    for (let d of convSnap.docs) {
+      // Technically we should delete subcollections but deleting the main doc makes it invisible to queries
+      // We will do both for cleanliness
+      const msgSnap = await firebase.getDocs(firebase.collection(firebase.db, "conversations", d.id, "messages"));
+      for (let m of msgSnap.docs) {
+        await firebase.deleteDoc(firebase.doc(firebase.db, "conversations", d.id, "messages", m.id));
+      }
+      await firebase.deleteDoc(firebase.doc(firebase.db, "conversations", d.id));
+    }
+    
+    // Clear local data
+    window.DATA.announcements = [];
+    
+    alert("Les notifications et la messagerie ont été remises à zéro avec succès.");
+    location.reload();
+  } catch(e) {
+    console.error(e);
+    alert("Erreur: " + e.message);
+    btn.textContent = "Erreur. Réessayez.";
+    btn.disabled = false;
+  }
+};
