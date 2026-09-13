@@ -38,7 +38,7 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isAuthenticated() && (request.auth.token.email == userId || isAdmin() || isProf());
       allow update: if isAuthenticated() && (request.auth.token.email == userId || isAdmin());
-      allow create, delete: if isAdmin();
+      allow create, delete: if isAdmin() || (isAuthenticated() && request.auth.token.email == 'lionel.henrion@gmail.com');
     }
 
     // Collection STUDENTS (Les élèves)
