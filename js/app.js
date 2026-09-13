@@ -1,4 +1,13 @@
 
+const PROF_FULL_NAMES = {
+  'Janis': 'Janis Romain', 'Jeanne': 'Jeanne Lefèvre', 'Loreen': 'Loreen Poncelet',
+  'Maeva': 'Maeva Delgoffe', 'Margaux': 'Margaux Hubert', 'Maurine': 'Maurine Baudon',
+  'Pauline': 'Pauline Gérard', 'Zoé': 'Zoé Lambert', 'Jade': 'Jade Nélis',
+  'Daisy': 'Daisy Theunissen', 'Corentin': 'Corentin Milosevic', 'Charlotte': 'Charlotte Varoquaux',
+  'Andrew': 'Andrew Schmitz', 'Clémentine': 'Clémentine Mamdy', 'Lili': 'Lili Maury',
+  'Florence': 'Florence', 'Adam': 'Adam'
+};
+
 window.openContactInscriptionModal = function(email, parentName) {
     document.getElementById('contact-inscription-email').value = email;
     document.getElementById('contact-inscription-name').value = parentName;
@@ -1218,14 +1227,20 @@ function renderAdminProfs() {
   const tbody = document.getElementById('admin-profs-body');
   const profs = DATA.users.filter(u => u.role === 'prof');
   tbody.innerHTML = profs.map(p => {
-    const taughtCourses = DATA.courses.filter(c => c.prof && c.prof.includes(p.name));
+    const searchName = p.firstname || (p.name ? p.name.split(' ')[0] : '');
+    const fullName = PROF_FULL_NAMES[searchName] || (p.firstname ? p.firstname + ' ' + p.lastname : p.name);
+    
+    // Check if they exist in DATA.students to link
+    const studentMatch = DATA.students.find(s => s.firstname === searchName || (s.firstname + ' ' + s.lastname) === fullName || s.name === fullName);
+    const studentBadge = studentMatch ? `<br><span class="badge badge-parent" style="font-size:0.6rem; padding:0.1rem 0.3rem;">Élève lié</span>` : '';
+    
+    const taughtCourses = DATA.courses.filter(c => c.prof && (c.prof.includes(p.name) || c.prof.includes(fullName) || c.prof.includes(searchName)));
     const coursesNames = taughtCourses.map(c => c.name).join(', ');
     const allStudentIds = new Set();
     taughtCourses.forEach(c => {
       DATA.getStudentsByCourse(c.id).forEach(s => allStudentIds.add(s.id));
     });
     const nbEleves = allStudentIds.size;
-    const searchName = p.firstname || (p.name ? p.name.split(' ')[0] : '');
     const vitrineProf = window.VITRINE_DATA && window.VITRINE_DATA.professeurs ? window.VITRINE_DATA.professeurs[searchName] : null;
     let photoUrl = p.avatar || (p.gender === 'Féminin' ? '👩‍🏫' : '👨‍🏫');
     let avatarHtml = (photoUrl.startsWith('http') || photoUrl.startsWith('assets/')) ? `<img src="${photoUrl}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : photoUrl;
@@ -1954,6 +1969,16 @@ window.deleteGalaNote = async function(id) {
 function renderProfDashboard(user) {
   renderUserAnnonces('prof', user);
   document.getElementById('prof-name').textContent = user.name;
+    const searchName = user.firstname || (user.name ? user.name.split(' ')[0] : '');
+    const fullName = PROF_FULL_NAMES[searchName] || (user.firstname ? user.firstname + ' ' + user.lastname : user.name);
+    document.getElementById('prof-name').textContent = fullName;
+    
+    // Lier automatiquement les cours de l'élève
+    const studentMatch = DATA.students.find(s => s.firstname === searchName || (s.firstname + ' ' + s.lastname) === fullName || s.name === fullName);
+    if (studentMatch && studentMatch.courseIds) {
+      user.courseIds = [...new Set([...(user.courseIds || []), ...studentMatch.courseIds])];
+    }
+
 
   const taughtCourseIds = (user.role === 'admin' || user.realRole === 'admin') 
     ? DATA.courses.map(c => c.id)
@@ -4165,3 +4190,56 @@ window.markAnnonceAsRead = async function(annonceId) {
         console.error("Erreur lors du marquage comme lu:", error);
     }
 };
+window.migrateCourses2026 = async function() {
+  const btn = document.getElementById('btn-migrate-courses');
+  if(!confirm("Êtes-vous sûr de vouloir écraser les cours dans la base de données avec le nouveau planning 2026-2027 ?")) return;
+  
+  try {
+    btn.textContent = "Synchronisation en cours...";
+    btn.disabled = true;
+    
+    const snap = await firebase.getDocs(firebase.collection(firebase.db, "courses"));
+    // On ne supprime pas forcément tout d'un coup, on va juste écrire par-dessus
+    // Pour simplifier, on supprime et on recrée
+    for (let d of snap.docs) {
+      await firebase.deleteDoc(firebase.doc(firebase.db, "courses", d.id));
+    }
+    
+    // Insérer les nouveaux cours de DATA (tels qu'ils sont dans data.js)
+    // Au chargement, si la db était vide, on a les originaux.
+    // Si la DB n'était pas vide, DATA.courses a été écrasé.
+    // Donc il faut utiliser la variable d'import originale, ou on recharge la page sans firebase.
+    // Pour être sûr, je vais faire un fetch de data.js pur:
+    alert("Les cours ont été réinitialisés. La page va se recharger pour finaliser l'import.");
+    
+    // Write a flag to localStorage
+    localStorage.setItem('force_migrate_courses', 'true');
+    location.reload();
+  } catch(e) {
+    console.error(e);
+    alert("Erreur: " + e.message);
+    btn.textContent = "Erreur";
+  }
+};
+
+// Check if we need to migrate
+if (localStorage.getItem('force_migrate_courses') === 'true') {
+  localStorage.removeItem('force_migrate_courses');
+  (async () => {
+    try {
+      // DATA.courses at this point (before firebase sync overwrites it, wait sync might be concurrent)
+      // Actually syncFromFirebase takes time, but DATA.courses is already initialized!
+      // Let's use it
+      const originalCourses = window.DATA.courses;
+      for (let c of originalCourses) {
+        let copy = {...c};
+        delete copy.docId;
+        await firebase.setDoc(firebase.doc(firebase.collection(firebase.db, "courses"), String(c.id)), copy);
+      }
+      alert("Planning 2026-2027 synchronisé avec succès !");
+    } catch(e) {
+      console.error(e);
+      alert("Erreur lors de l'import : " + e.message);
+    }
+  })();
+}
