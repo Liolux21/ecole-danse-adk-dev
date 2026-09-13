@@ -3577,6 +3577,8 @@ window.openAddStudentModal = function(studentId = null) {
     document.getElementById('add-student-tutor-lastname').value = student.tutorLastname || '';
     document.getElementById('add-student-tutor-phone').value = student.tutorPhone || '';
     document.getElementById('add-student-email').value = student.contactEmail || '';
+    const email2Input = document.getElementById('add-student-email2');
+    if (email2Input) email2Input.value = student.contactEmail2 || '';
     
     if (container) {
         const checkboxes = container.querySelectorAll('.course-checkbox');
@@ -3614,6 +3616,9 @@ window.submitAddStudent = async function() {
       const tutorLastname = document.getElementById('add-student-tutor-lastname').value;
       const tutorPhone = document.getElementById('add-student-tutor-phone').value;
     const email = document.getElementById('add-student-email').value.toLowerCase().trim();
+    const email2Input = document.getElementById('add-student-email2');
+    const email2 = email2Input ? email2Input.value.toLowerCase().trim() : "";
+    
     const checkboxes = document.querySelectorAll('#add-student-courses .course-checkbox:checked');
       const selectedCourses = Array.from(checkboxes).map(chk => chk.value);
 
@@ -3627,6 +3632,7 @@ window.submitAddStudent = async function() {
         tutorLastname: tutorLastname,
         tutorPhone: tutorPhone,
       contactEmail: email,
+      contactEmail2: email2,
       courseIds: selectedCourses
     };
     if (isNew) {
@@ -3636,9 +3642,9 @@ window.submitAddStudent = async function() {
     
     await setDoc(doc(db, "students", targetId), studentData, { merge: true });
 
-    let tempPassword = null;
-    if (isNew) {
-      const userRef = doc(db, "users", email);
+    const manageParentAccount = async (parentEmail, parentName) => {
+      if (!parentEmail) return;
+      const userRef = doc(db, "users", parentEmail);
       const userSnap = await getDoc(userRef);
 
       if (userSnap.exists()) {
@@ -3648,29 +3654,56 @@ window.submitAddStudent = async function() {
           await setDoc(userRef, { childrenIds: [...children, targetId] }, { merge: true });
         }
       } else {
-        tempPassword = Math.random().toString(36).slice(-8);
+        let tempPassword = Math.random().toString(36).slice(-8);
+        let createdAuth = true;
         try {
-          // Utilisation de l'API REST pour éviter la déconnexion automatique
           const apiKey = "AIzaSyBPOPRg9AxDqojhkskOIRO-4AHxvLICP7Q"; // Key from firebase-config.js
           const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password: tempPassword, returnSecureToken: false })
+            body: JSON.stringify({ email: parentEmail, password: tempPassword, returnSecureToken: false })
           });
           const data = await response.json();
-          if (data.error) throw new Error(data.error.message);
+          if (data.error) {
+             if (data.error.message === 'EMAIL_EXISTS') { createdAuth = false; }
+             else throw new Error(data.error.message);
+          }
         } catch(e) {
           console.warn("L'utilisateur existe peut-être déjà dans Auth, mais pas dans Firestore.", e);
         }
         
         await setDoc(userRef, {
-          id: email,
-          email: email,
-          name: `${prenom} ${nom} (Parent)`,
+          id: parentEmail,
+          email: parentEmail,
+          name: `${parentName} (Parent)`,
           role: "parent",
           childrenIds: [targetId]
         });
+        
+        if (createdAuth) {
+          try {
+            await emailjs.send(
+              "service_ADK",
+              "template_ADK_Compte",
+              {
+                to_email: parentEmail,
+                to_name: parentName,
+                temp_password: tempPassword,
+                login_link: "https://liolux21.github.io/ecole-danse-adk-dev/portail.html"
+              }
+            );
+            showToast(`✉️ Email envoyé à ${parentEmail} avec succès !`, 'success');
+          } catch (emailError) {
+            console.error("Erreur EmailJS:", emailError);
+          }
+        }
       }
+    };
+
+    // On check/crée les DEUX parents s'ils sont renseignés (même en mode "modification" si un parent 2 est ajouté par après)
+    await manageParentAccount(email, `${tutorFirstname || prenom} ${tutorLastname || nom}`);
+    if (email2) {
+      await manageParentAccount(email2, `Parent 2 - ${prenom} ${nom}`);
     }
 
     await DATA.syncFromFirebase();
@@ -3681,28 +3714,6 @@ window.submitAddStudent = async function() {
     closeModal('modal-add-student');
     document.getElementById('form-add-student').reset();
     showToast(isNew ? '✅ Élève ajouté avec succès' : '✅ Élève modifié avec succès', 'success');
-
-    if (isNew && tempPassword) {
-      try {
-        await emailjs.send(
-          "service_ADK",
-          "template_ADK_Compte",
-          {
-            to_email: email,
-            to_name: `${prenom} ${nom}`,
-            temp_password: tempPassword,
-            login_link: "https://liolux21.github.io/ecole-danse-adk-dev/portail.html"
-          }
-        );
-        showToast('✉️ Email envoyé au parent avec succès !', 'success');
-      } catch (emailError) {
-        console.error("Erreur EmailJS:", emailError);
-        alert(`⚠️ Le compte a été créé mais l'email n'a pas pu être envoyé.
-Mot de passe temporaire: ${tempPassword}
-
-(N'oublie pas de configurer EmailJS !)`);
-      }
-    }
 
   } catch(err) {
     console.error(err);

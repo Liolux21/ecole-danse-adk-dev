@@ -173,6 +173,7 @@ export const DATA = {
         return (s.parentId === user.id) ||
                (s.parentId && s.parentId.toLowerCase() === userEmail) ||
                (s.contactEmail && s.contactEmail.toLowerCase() === userEmail) ||
+               (s.contactEmail2 && s.contactEmail2.toLowerCase() === userEmail) ||
                (user.childrenIds && user.childrenIds.includes(String(s.id)));
       });
     },
