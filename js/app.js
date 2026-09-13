@@ -1506,7 +1506,7 @@ window.saveProf = async function() {
           const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: targetId, temp_password: tempPassword, returnSecureToken: false })
+            body: JSON.stringify({ email: targetId, password: tempPassword, returnSecureToken: false })
           });
           const data = await response.json();
           if (data.error && data.error.message !== 'EMAIL_EXISTS') throw new Error(data.error.message);
@@ -3649,7 +3649,7 @@ window.submitAddStudent = async function() {
           const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, temp_password: tempPassword, returnSecureToken: false })
+            body: JSON.stringify({ email, password: tempPassword, returnSecureToken: false })
           });
           const data = await response.json();
           if (data.error) throw new Error(data.error.message);
