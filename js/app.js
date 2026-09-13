@@ -4614,3 +4614,31 @@ window.fixProfNames = async function() {
     alert('✅ ' + fixed + ' compte(s) mis à jour !\n\n' + details.join('\n'));
   }
 };
+
+
+window.deleteAllStudents2026 = async function() {
+  const btn = document.getElementById('btn-delete-all-students');
+  if(!confirm('⚠️ ÊTES-VOUS SÛR DE VOULOIR SUPPRIMER TOUS LES ÉLÈVES ? Cette action effacera toute la collection students.')) return;
+  if(!confirm('Dernier avertissement : TOUS les élèves vont être supprimés. Continuer ?')) return;
+  
+  try {
+    btn.textContent = 'Suppression en cours...';
+    btn.disabled = true;
+    const firebase = await import('./firebase-config.js');
+    const snap = await firebase.getDocs(firebase.collection(firebase.db, 'students'));
+    
+    // Delete in batches or sequentially
+    for(let docSnap of snap.docs) {
+      await firebase.deleteDoc(firebase.doc(firebase.db, 'students', docSnap.id));
+    }
+    
+    window.DATA.students = [];
+    alert('🗑 ' + snap.docs.length + ' élèves ont été supprimés de la base de données avec succès.');
+    location.reload();
+  } catch(e) {
+    console.error(e);
+    alert('Erreur : ' + e.message);
+    btn.textContent = 'Erreur. Réessayez.';
+    btn.disabled = false;
+  }
+};
