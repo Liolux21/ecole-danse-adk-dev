@@ -183,9 +183,24 @@ function createCourseCard(course) {
     compagnie:    'Compagnie',
     special:      'Spécial',
   };
-  const img = course.image
-    ? `<img src="${course.image}" alt="${course.name}" class="course-img" loading="lazy">`
-    : `<div class="course-img-placeholder" style="background:linear-gradient(135deg,#1a1a1a,#242424)">${course.emoji}</div>`;
+  let img = '';
+  if (course.image) {
+    img = `<img src="${course.image}" alt="${course.name}" class="course-img" loading="lazy">`;
+  } else {
+    let typeLabel = '';
+    if (course.eventType === 'pro') typeLabel = 'ADK Pro';
+    else if (course.eventType === 'stage') typeLabel = 'ADK Stage';
+    else if (course.eventType === 'show') typeLabel = 'ADK Show';
+    
+    if (typeLabel) {
+      img = `<div class="course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center;">
+        <img src="img/apple-touch-icon.png" style="width:50px; height:50px; object-fit:contain; margin-bottom:10px;" alt="ADK">
+        <strong style="font-size:1.1rem; color:var(--gold); font-family:'Playfair Display', serif;">${typeLabel}</strong>
+      </div>`;
+    } else {
+      img = `<div class="course-img-placeholder" style="background:linear-gradient(135deg,#1a1a1a,#242424)">${course.emoji || '💃'}</div>`;
+    }
+  }
     const lieuName = DATA.locations.find(l => l.id === course.lieu)?.name || formatLieu(course.lieu);
     const lieuBadge = lieuName ? `<span style="font-size:0.7rem;color:var(--gold);margin-left:0.5rem;">📍 ${lieuName}</span>` : '';
   card.innerHTML = `${img}<div class="course-body"><div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem;"><span class="course-tag tag-${course.style}">${labels[course.style] || course.style}</span>${lieuBadge}${course.biweekly ? '<span style="font-size:0.65rem;color:var(--text-muted);border:1px solid var(--glass-border);padding:0.1rem 0.5rem;border-radius:50px;">1 sem/2</span>' : ''}</div><h3 class="course-name">${course.name}</h3><p class="course-desc">${course.desc}</p><div class="course-meta"><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${course.schedule}</span><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${course.ages}</span><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>${course.levels}</span><span class="course-meta-item" style="color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${course.prof}</span></div></div>`;
@@ -2827,8 +2842,24 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
     actionButtons += `<button class="btn btn-outline btn-sm btn-msg" data-course-id="${c.id}">💬 Messages</button>`;
     actionButtons += `</div>`;
 
+    let imgHtml = '';
+    if (c.image && c.image !== 'undefined') {
+      imgHtml = `<img src="${c.image}" class="portal-course-img" alt="${c.name}">`;
+    } else {
+      let typeLabel = 'ADK';
+      if (c.eventType === 'pro') typeLabel = 'ADK Pro';
+      else if (c.eventType === 'stage') typeLabel = 'ADK Stage';
+      else if (c.eventType === 'show') typeLabel = 'ADK Show';
+      else typeLabel = c.style ? c.style.toUpperCase() : 'ADK';
+      
+      imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center; overflow:hidden;">
+        <img src="img/apple-touch-icon.png" style="width:30px; height:30px; object-fit:contain; margin-bottom:4px;" alt="ADK">
+        <strong style="font-size:0.65rem; color:var(--gold); font-family:'Playfair Display', serif; line-height:1; padding: 0 2px;">${typeLabel}</strong>
+      </div>`;
+    }
+
     return `<div class="portal-course-card" style="${isCancelled ? 'opacity:0.7;' : ''}">
-      <img src="${c.image}" class="portal-course-img" alt="${c.name}">
+      ${imgHtml}
       <div class="portal-course-info" style="flex:1;">
         <div class="portal-course-title" style="display:flex; justify-content:space-between; align-items:center;">
           <span style="${titleStyle}">${c.name}</span>
