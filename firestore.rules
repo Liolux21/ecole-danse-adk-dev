@@ -103,6 +103,7 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated(); 
       allow update: if isConvParticipant() || isAdmin() || (isAuthenticated() && resource.data.isGroup == true);
+      allow delete: if isAdmin();
 
       // SOUS-COLLECTION MESSAGES
       match /messages/{messageId} {
