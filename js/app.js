@@ -2514,6 +2514,7 @@ window.renderProfEleves = function(user) {
 function renderParentDashboard(user) {
   renderUserAnnonces('parent', user);
   document.getElementById('parent-name').textContent = user.name;
+  if (typeof window.renderGalaTables === 'function') window.renderGalaTables(user);
 
   const children = DATA.getChildrenByParent(user);
   const childTabs = document.getElementById('child-tabs');
