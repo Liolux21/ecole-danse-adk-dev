@@ -1490,10 +1490,10 @@
   </div>
 
   <script src="js/vitrine-data.js?v=3"></script>
-  <script type="module" src="js/data.js?v=56"></script>
+  <script type="module" src="js/data.js?v=68"></script>
   <script type="module" src="js/auth.js?v=66"></script>
   <script type="module" src="js/chat.js?v=51"></script>
-  <script type="module" src="js/app.js?v=67"></script>
+  <script type="module" src="js/app.js?v=68"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
@@ -1564,6 +1564,22 @@
       </div>
     </div>
   </div>
+
+
+  <!-- ==================== SERVICE WORKER REGISTRATION (FCM Push) ==================== -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+          .then(function (registration) {
+            console.log('[SW] Service Worker enregistré avec succès, scope:', registration.scope);
+          })
+          .catch(function (err) {
+            console.error('[SW] Erreur d\'enregistrement du Service Worker:', err);
+          });
+      });
+    }
+  </script>
 
 </body>
 </html>

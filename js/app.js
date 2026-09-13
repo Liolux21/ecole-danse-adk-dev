@@ -5,7 +5,7 @@ const PROF_FULL_NAMES = {
   'Pauline': 'Pauline Gérard', 'Zoé': 'Zoé Lambert', 'Jade': 'Jade Nélis',
   'Daisy': 'Daisy Theunissen', 'Corentin': 'Corentin Milosevic', 'Charlotte': 'Charlotte Varoquaux',
   'Andrew': 'Andrew Schmitz', 'Clémentine': 'Clémentine Mamdy', 'Lili': 'Lili Maury',
-  'Florence': 'Florence', 'Adam': 'Adam'
+  'Florence': 'Florence Leyens', 'Adam': 'Adam Binoua'
 };
 
 window.openContactInscriptionModal = function(email, parentName) {
@@ -771,13 +771,60 @@ function showPortalDashboard(user) {
   if (user.role === 'prof')   renderProfDashboard(user);
   if (user.role === 'parent') renderParentDashboard(user);
 
-  // Demander la permission pour les notifications Push (non-bloquant)
-  setTimeout(() => {
+  // Gestion des notifications Push
+  // Sur iOS, requestPermission() DOIT être déclenché par un geste utilisateur explicite.
+  // Un setTimeout perd le contexte "user gesture" → on affiche un bouton discret.
+  initPushNotificationPrompt();
+}
+
+function initPushNotificationPrompt() {
+  // Si la permission est déjà accordée, enregistrer silencieusement le token
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
     if (window.AUTH && window.AUTH.requestPushNotificationPermission) {
       window.AUTH.requestPushNotificationPermission();
     }
-  }, 2000); // Délai de 2s pour ne pas bloquer le rendu visuel
+    return;
+  }
+
+  // Si refusé définitivement, ne pas afficher le bouton
+  if (typeof Notification !== 'undefined' && Notification.permission === 'denied') {
+    return;
+  }
+
+  // Sinon (permission 'default'), afficher un bandeau discret
+  const existingBanner = document.getElementById('push-permission-banner');
+  if (existingBanner) return; // déjà affiché
+
+  const banner = document.createElement('div');
+  banner.id = 'push-permission-banner';
+  banner.style.cssText = `
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: #1a1a2e; color: #fff; border-radius: 12px;
+    padding: 0.8rem 1.2rem; display: flex; align-items: center; gap: 0.8rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 9999;
+    font-size: 0.85rem; max-width: 90vw; border: 1px solid rgba(255,100,100,0.4);
+  `;
+  banner.innerHTML = `
+    <span>🔔</span>
+    <span>Activer les notifications pour ne rien manquer</span>
+    <button id="btn-enable-push" style="background:#e63946;color:#fff;border:none;border-radius:8px;padding:0.4rem 0.8rem;cursor:pointer;font-size:0.8rem;white-space:nowrap;">Activer</button>
+    <button id="btn-dismiss-push" style="background:transparent;color:#aaa;border:none;cursor:pointer;font-size:1.1rem;line-height:1;" title="Fermer">✕</button>
+  `;
+  document.body.appendChild(banner);
+
+  document.getElementById('btn-enable-push').addEventListener('click', function () {
+    // Ce clic est un vrai geste utilisateur → requestPermission() fonctionnera sur iOS
+    if (window.AUTH && window.AUTH.requestPushNotificationPermission) {
+      window.AUTH.requestPushNotificationPermission();
+    }
+    banner.remove();
+  });
+
+  document.getElementById('btn-dismiss-push').addEventListener('click', function () {
+    banner.remove();
+  });
 }
+
 
 // ---- TABS ----
 function initTabs(tabsContainerId, contentIds) {
