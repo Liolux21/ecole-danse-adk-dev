@@ -627,6 +627,8 @@ function showPortalDashboard(user) {
 
   // Handle Role Switching (Prof <-> Parent, Admin <-> Prof)
   const isGodMode = user.email && user.email.toLowerCase() === 'lionel.henrion@gmail.com';
+  const godModeSettings = document.getElementById('god-mode-settings');
+  if(godModeSettings) godModeSettings.style.display = isGodMode ? 'block' : 'none';
   
   if (isGodMode) {
     const logoutBtnId = user.role === 'admin' ? 'admin-logout' : (user.role === 'prof' ? 'prof-logout' : 'parent-logout');
