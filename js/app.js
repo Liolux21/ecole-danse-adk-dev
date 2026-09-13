@@ -1787,7 +1787,7 @@ window.renderGalaTables = function(userCtx) {
          parentRepetsContainer.innerHTML = parentRepets.map(r => {
            const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
            return `
-             <div class="stat-card" style="margin-bottom:1rem; border-left:4px solid var(--primary);">
+             <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
                <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">${r.date} à ${r.time}</h4>
                <p style="margin:0 0 0.2rem 0;"><strong>Cours concerné :</strong> ${courseName}</p>
                <p style="margin:0 0 0.2rem 0;"><strong>Lieu :</strong> ${formatLieu(r.lieu)}</p>
@@ -1811,7 +1811,7 @@ window.renderGalaTables = function(userCtx) {
           parentInfos.forEach(i => {
              const c = DATA.getCourseById(i.course);
              html += `
-               <div class="stat-card" style="margin-bottom:1rem; border-left:4px solid var(--gold);">
+               <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid var(--gold); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
                  <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">Tableau : ${i.theme} (${c?.name})</h4>
                  <p style="margin:0 0 0.2rem 0;"><strong>Tenue prévue :</strong> ${i.tenue || 'Non définie'}</p>
                  <p style="margin:0; color:var(--text-light); font-size:0.9rem;">Musique : ${i.music || '-'}</p>
@@ -1821,7 +1821,7 @@ window.renderGalaTables = function(userCtx) {
           parentTenues.forEach(t => {
              const c = DATA.getCourseById(t.course);
              html += `
-               <div class="stat-card" style="margin-bottom:1rem; border-left:4px solid #3498db;">
+               <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid #3498db; border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
                  <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">Tenue demandée (${c?.name})</h4>
                  <p style="margin:0; white-space:pre-wrap;">${t.desc}</p>
                </div>
