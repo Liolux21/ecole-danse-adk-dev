@@ -4198,6 +4198,7 @@ window.migrateCourses2026 = async function() {
     btn.textContent = "Synchronisation en cours...";
     btn.disabled = true;
     
+    const firebase = await import('./firebase-config.js');
     const snap = await firebase.getDocs(firebase.collection(firebase.db, "courses"));
     // On ne supprime pas forcément tout d'un coup, on va juste écrire par-dessus
     // Pour simplifier, on supprime et on recrée
@@ -4230,6 +4231,7 @@ if (localStorage.getItem('force_migrate_courses') === 'true') {
       // DATA.courses at this point (before firebase sync overwrites it, wait sync might be concurrent)
       // Actually syncFromFirebase takes time, but DATA.courses is already initialized!
       // Let's use it
+      const firebase = await import('./firebase-config.js');
       const originalCourses = window.DATA.courses;
       for (let c of originalCourses) {
         let copy = {...c};
