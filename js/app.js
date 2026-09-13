@@ -1473,14 +1473,21 @@ window.saveProf = async function() {
 
     const firebase = await import('./firebase-config.js');
 
-    const targetId = id ? id : email;
+    let targetId = id ? id : email;
+    let oldDummyDoc = false;
+
+    // Si on édite un compte dummy (@adk.local) avec un vrai email
+    if (id && id.includes('@adk.local') && email !== id && !email.includes('@adk.local')) {
+      oldDummyDoc = true;
+      targetId = email; // On utilise le nouvel email comme ID
+    }
     
     let isNewUser = false;
     let tempPassword = null;
     const userRef = firebase.doc(firebase.db, 'users', targetId);
     
-    // Check existing user to preserve roles or create auth
-    if (!id) {
+    // On crée l'auth pour un nouveau prof ou un prof dummy migré
+    if (!id || oldDummyDoc) {
       const userSnap = await firebase.getDoc(userRef);
       if (userSnap.exists()) {
         const existingRole = userSnap.data().role;
@@ -1509,6 +1516,11 @@ window.saveProf = async function() {
 
     // Update in Firebase users collection
     await firebase.setDoc(userRef, profData, { merge: true });
+
+    if (oldDummyDoc) {
+      await firebase.deleteDoc(firebase.doc(firebase.db, 'users', id));
+      DATA.users = DATA.users.filter(u => u.id !== id);
+    }
 
     // Update local DATA
     let prof = DATA.users.find(u => u.id === targetId);
