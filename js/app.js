@@ -4513,7 +4513,7 @@ window.resetNotificationsAndMessages = async function() {
 // =============================================
 window.migrateStudents2026 = async function() {
   const btn = document.getElementById('btn-migrate-students');
-  if (!confirm("Importer les 358 fiches élèves 2026-2027 ?\n\nAucun email ne sera envoyé. Cette opération peut prendre 1-2 minutes.")) return;
+  if (!confirm(`Importer les ${STUDENTS.length} fiches élèves 2026-2027 ?\n\nAucun email ne sera envoyé. Cette opération peut prendre 1-2 minutes.`)) return;
 
   btn.textContent = "Importation en cours...";
   btn.disabled = true;
