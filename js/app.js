@@ -4512,16 +4512,7 @@ window.resetNotificationsAndMessages = async function() {
 // IMPORT ÉLÈVES 2026-2027 (sans envoi d'email)
 // =============================================
 window.migrateStudents2026 = async function() {
-  const btn = document.getElementById('btn-migrate-students');
-  if (!confirm(`Importer les ${STUDENTS.length} fiches élèves 2026-2027 ?\n\nAucun email ne sera envoyé. Cette opération peut prendre 1-2 minutes.`)) return;
-
-  btn.textContent = "Importation en cours...";
-  btn.disabled = true;
-
-  try {
-    const firebase = await import('./firebase-config.js');
-    
-    const STUDENTS = [
+  const STUDENTS = [
   {
     "dob": "11/10/2009",
     "courseIds": [
@@ -12354,6 +12345,16 @@ window.migrateStudents2026 = async function() {
     "avatar": "https://i.pravatar.cc/150?u=voitovych.23"
   }
 ];
+  const btn = document.getElementById('btn-migrate-students');
+  if (!confirm(`Importer les ${STUDENTS.length} fiches élèves 2026-2027 ?\n\nAucun email ne sera envoyé. Cette opération peut prendre 1-2 minutes.`)) return;
+
+  btn.textContent = "Importation en cours...";
+  btn.disabled = true;
+
+  try {
+    const firebase = await import('./firebase-config.js');
+    
+    
     
     let created = 0;
     let skipped = 0;
