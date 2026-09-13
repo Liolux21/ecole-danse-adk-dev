@@ -4282,14 +4282,24 @@ window.migrateProfs2026 = async function() {
     
     let createdCount = 0;
     
+    // Fetch all users directly from DB to be absolutely sure
+    const usersSnap = await firebase.getDocs(firebase.collection(firebase.db, "users"));
+    const allDbUsers = [];
+    usersSnap.forEach(d => allDbUsers.push(d.data()));
+    
     for (let fullName of profNames) {
-      // Check if exists
-      const exists = window.DATA.users.find(u => u.role === 'prof' && (u.name === fullName || (u.firstname && u.name.includes(u.firstname))));
+      // Check if a prof with this exact name already exists in DB
+      const exists = allDbUsers.find(u => u.role === 'prof' && u.name === fullName);
+      
       if (!exists) {
         const parts = fullName.split(' ');
         const firstname = parts[0];
         const lastname = parts.slice(1).join(' ');
-        const dummyEmail = `${firstname.toLowerCase().replace(/é|è|ê/g, 'e')}@adk.local`;
+        
+        // Remove accents safely for email
+        const cleanFirstName = firstname.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const cleanLastName = lastname.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, '');
+        const dummyEmail = `${cleanFirstName}${cleanLastName ? '.' + cleanLastName : ''}@adk.local`;
         
         const profData = {
           role: 'prof',
@@ -4317,3 +4327,4 @@ window.migrateProfs2026 = async function() {
     btn.disabled = false;
   }
 };
+
