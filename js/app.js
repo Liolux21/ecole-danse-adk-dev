@@ -1162,7 +1162,7 @@ async function adminApprove(id) {
           {
             to_email: emailKey,
             to_name: ins.parentName,
-            temp_temp_password: tempPassword,
+            temp_password: tempPassword,
             login_link: window.location.href.split('?')[0]
           }
         );
@@ -1534,13 +1534,13 @@ window.saveProf = async function() {
     if (isNewUser && tempPassword) {
       try {
         await emailjs.send(
-          'service_adk',
-          'template_adk_welcome',
+          "service_ADK",
+          "template_ADK_Compte",
           {
             to_email: targetId,
             to_name: fullName,
             temp_password: tempPassword,
-            portal_url: window.location.origin
+            login_link: "https://liolux21.github.io/ecole-danse-adk-dev/portail.html"
           }
         );
       } catch(e) {
@@ -3682,7 +3682,7 @@ window.submitAddStudent = async function() {
           {
             to_email: email,
             to_name: `${prenom} ${nom}`,
-            temp_temp_password: tempPassword,
+            temp_password: tempPassword,
             login_link: "https://liolux21.github.io/ecole-danse-adk-dev/portail.html"
           }
         );
