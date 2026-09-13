@@ -188,9 +188,9 @@ function createCourseCard(course) {
     img = `<img src="${course.image}" alt="${course.name}" class="course-img" loading="lazy">`;
   } else {
     let typeLabel = '';
-    if (course.eventType === 'pro') typeLabel = 'img/adk_pro.png?v=2';
-    else if (course.eventType === 'stage') typeLabel = 'img/adk_stage.png?v=2';
-    else if (course.eventType === 'show') typeLabel = 'img/adk_show.png?v=2';
+    if (course.eventType === 'pro') typeLabel = 'img/adk_pro.png?v=3';
+    else if (course.eventType === 'stage') typeLabel = 'img/adk_stage.png?v=3';
+    else if (course.eventType === 'show') typeLabel = 'img/adk_show.png?v=3';
     
     if (typeLabel) {
       img = `<img src="${typeLabel}" alt="${course.name}" class="course-img" loading="lazy">`;
@@ -2844,9 +2844,9 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
       imgHtml = `<img src="${c.image}" class="portal-course-img" alt="${c.name}">`;
     } else {
       let fallbackSrc = '';
-      if (c.eventType === 'pro') fallbackSrc = 'img/adk_pro.png?v=2';
-      else if (c.eventType === 'stage') fallbackSrc = 'img/adk_stage.png?v=2';
-      else if (c.eventType === 'show') fallbackSrc = 'img/adk_show.png?v=2';
+      if (c.eventType === 'pro') fallbackSrc = 'img/adk_pro.png?v=3';
+      else if (c.eventType === 'stage') fallbackSrc = 'img/adk_stage.png?v=3';
+      else if (c.eventType === 'show') fallbackSrc = 'img/adk_show.png?v=3';
       
       if (fallbackSrc) {
           imgHtml = `<img src="${fallbackSrc}" class="portal-course-img" alt="${c.name}">`;
