@@ -23,7 +23,7 @@ window.loadConversations = function() {
             if (currentUser.courseIds) {
                 currentUser.courseIds.forEach(cid => myGroups.push(`course_${cid}`));
             }
-        } else if (currentUser.role === 'parent' || currentUser.role === 'student' || currentUser.role === 'élève') {
+        } else if (currentUser.role === 'parent' || currentUser.role === 'student' || currentUser.role === 'élève' || currentUser.role === 'eleve') {
             myGroups.push('all_students');
             if (window.DATA && window.DATA.students) {
                 const children = window.DATA.students.filter(s => (currentUser.childrenIds || []).includes(s.id) || s.id === currentUser.id);
