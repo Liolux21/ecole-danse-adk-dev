@@ -188,15 +188,12 @@ function createCourseCard(course) {
     img = `<img src="${course.image}" alt="${course.name}" class="course-img" loading="lazy">`;
   } else {
     let typeLabel = '';
-    if (course.eventType === 'pro') typeLabel = 'ADK Pro';
-    else if (course.eventType === 'stage') typeLabel = 'ADK Stage';
-    else if (course.eventType === 'show') typeLabel = 'ADK Show';
+    if (course.eventType === 'pro') typeLabel = 'img/adk_pro.png';
+    else if (course.eventType === 'stage') typeLabel = 'img/adk_stage.png';
+    else if (course.eventType === 'show') typeLabel = 'img/adk_show.png';
     
     if (typeLabel) {
-      img = `<div class="course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center;">
-        <img src="img/apple-touch-icon.png" style="width:50px; height:50px; object-fit:contain; margin-bottom:10px;" alt="ADK">
-        <strong style="font-size:1.1rem; color:var(--gold); font-family:'Playfair Display', serif;">${typeLabel}</strong>
-      </div>`;
+      img = `<img src="${typeLabel}" alt="${course.name}" class="course-img" loading="lazy">`;
     } else {
       img = `<div class="course-img-placeholder" style="background:linear-gradient(135deg,#1a1a1a,#242424)">${course.emoji || '💃'}</div>`;
     }
@@ -1787,7 +1784,7 @@ window.renderGalaTables = function(userCtx) {
          parentRepetsContainer.innerHTML = parentRepets.map(r => {
            const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
            return `
-             <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
+             <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
                <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">${r.date} à ${r.time}</h4>
                <p style="margin:0 0 0.2rem 0;"><strong>Cours concerné :</strong> ${courseName}</p>
                <p style="margin:0 0 0.2rem 0;"><strong>Lieu :</strong> ${formatLieu(r.lieu)}</p>
@@ -1811,7 +1808,7 @@ window.renderGalaTables = function(userCtx) {
           parentInfos.forEach(i => {
              const c = DATA.getCourseById(i.course);
              html += `
-               <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid var(--gold); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
+               <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
                  <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">Tableau : ${i.theme} (${c?.name})</h4>
                  <p style="margin:0 0 0.2rem 0;"><strong>Tenue prévue :</strong> ${i.tenue || 'Non définie'}</p>
                  <p style="margin:0; color:var(--text-light); font-size:0.9rem;">Musique : ${i.music || '-'}</p>
@@ -1821,7 +1818,7 @@ window.renderGalaTables = function(userCtx) {
           parentTenues.forEach(t => {
              const c = DATA.getCourseById(t.course);
              html += `
-               <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid #3498db; border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
+               <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
                  <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">Tenue demandée (${c?.name})</h4>
                  <p style="margin:0; white-space:pre-wrap;">${t.desc}</p>
                </div>
@@ -2846,16 +2843,20 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
     if (c.image && c.image !== 'undefined') {
       imgHtml = `<img src="${c.image}" class="portal-course-img" alt="${c.name}">`;
     } else {
-      let typeLabel = 'ADK';
-      if (c.eventType === 'pro') typeLabel = 'ADK Pro';
-      else if (c.eventType === 'stage') typeLabel = 'ADK Stage';
-      else if (c.eventType === 'show') typeLabel = 'ADK Show';
-      else typeLabel = c.style ? c.style.toUpperCase() : 'ADK';
+      let fallbackSrc = '';
+      if (c.eventType === 'pro') fallbackSrc = 'img/adk_pro.png';
+      else if (c.eventType === 'stage') fallbackSrc = 'img/adk_stage.png';
+      else if (c.eventType === 'show') fallbackSrc = 'img/adk_show.png';
       
-      imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center; overflow:hidden;">
-        <img src="img/apple-touch-icon.png" style="width:30px; height:30px; object-fit:contain; margin-bottom:4px;" alt="ADK">
-        <strong style="font-size:0.65rem; color:var(--gold); font-family:'Playfair Display', serif; line-height:1; padding: 0 2px;">${typeLabel}</strong>
-      </div>`;
+      if (fallbackSrc) {
+          imgHtml = `<img src="${fallbackSrc}" class="portal-course-img" alt="${c.name}">`;
+      } else {
+          let typeLabel = c.style ? c.style.toUpperCase() : 'ADK';
+          imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center; overflow:hidden;">
+            <img src="img/apple-touch-icon.png" style="width:30px; height:30px; object-fit:contain; margin-bottom:4px;" alt="ADK">
+            <strong style="font-size:0.65rem; color:var(--gold); font-family:'Playfair Display', serif; line-height:1; padding: 0 2px;">${typeLabel}</strong>
+          </div>`;
+      }
     }
 
     return `<div class="portal-course-card" style="${isCancelled ? 'opacity:0.7;' : ''}">
