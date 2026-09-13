@@ -201,12 +201,19 @@ function createCourseCard(course) {
     else if (course.eventType === 'stage') typeLabel = 'img/adk_stage.png?v=3';
     else if (course.eventType === 'show') typeLabel = 'img/adk_show.png?v=3';
     
-    if (typeLabel) {
+        if (typeLabel) {
       img = `<img src="${typeLabel}" alt="${course.name}" class="course-img" loading="lazy">`;
     } else {
-      img = `<div class="course-img-placeholder" style="background:linear-gradient(135deg,#1a1a1a,#242424)">${course.emoji || '💃'}</div>`;
+      let vitrineImg = null;
+      if (window.VITRINE_DATA && window.VITRINE_DATA.cours && window.VITRINE_DATA.cours[course.style]) {
+        vitrineImg = window.VITRINE_DATA.cours[course.style].avatar;
+      }
+      if (vitrineImg) {
+        img = `<img src="${vitrineImg}" alt="${course.name}" class="course-img" style="object-fit: cover;" loading="lazy">`;
+      } else {
+        img = `<div class="course-img-placeholder" style="background:linear-gradient(135deg,#1a1a1a,#242424)">${course.emoji || '💃'}</div>`;
+      }
     }
-  }
     const lieuName = DATA.locations.find(l => l.id === course.lieu)?.name || formatLieu(course.lieu);
     const lieuBadge = lieuName ? `<span style="font-size:0.7rem;color:var(--gold);margin-left:0.5rem;">📍 ${lieuName}</span>` : '';
   card.innerHTML = `${img}<div class="course-body"><div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem;"><span class="course-tag tag-${course.style}">${labels[course.style] || course.style}</span>${lieuBadge}${course.biweekly ? '<span style="font-size:0.65rem;color:var(--text-muted);border:1px solid var(--glass-border);padding:0.1rem 0.5rem;border-radius:50px;">1 sem/2</span>' : ''}</div><h3 class="course-name">${course.name}</h3><p class="course-desc">${course.desc}</p><div class="course-meta"><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${course.schedule}</span><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${course.ages}</span><span class="course-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>${course.levels}</span><span class="course-meta-item" style="color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${course.prof}</span></div></div>`;
