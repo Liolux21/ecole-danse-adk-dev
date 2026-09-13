@@ -1827,7 +1827,7 @@ window.deleteGalaNote = async function(id) {
 // DASHBOARD PROF
 // =============================================
 function renderProfDashboard(user) {
-  renderUserAnnonces('prof');
+  renderUserAnnonces('prof', user);
   document.getElementById('prof-name').textContent = user.name;
 
   const taughtCourseIds = (user.role === 'admin' || user.realRole === 'admin') 
@@ -2399,7 +2399,7 @@ window.renderProfEleves = function(user) {
 // DASHBOARD PARENT
 // =============================================
 function renderParentDashboard(user) {
-  renderUserAnnonces('parent');
+  renderUserAnnonces('parent', user);
   document.getElementById('parent-name').textContent = user.name;
 
   const children = DATA.getChildrenByParent(user);
@@ -3666,7 +3666,7 @@ function renderAdminAnnonces() {
 }
 
 
-function renderUserAnnonces(role) {
+function renderUserAnnonces(role, userCtx) {
   const containerId = role === 'parent' ? 'parent-announcements-list' : 'prof-announcements-list';
   const wrapperId = role === 'parent' ? 'parent-announcements-container' : 'prof-announcements-container';
   const fullContainerId = role === 'parent' ? 'parent-notifications-full-list' : 'prof-notifications-full-list';
@@ -3679,7 +3679,7 @@ function renderUserAnnonces(role) {
   
   if (!container || !wrapper || !fullContainer) return;
 
-  const currentUser = window.AUTH.currentUser;
+  const currentUser = userCtx || window.AUTH.currentUser;
   const readAnnouncements = currentUser.readAnnouncements || [];
 
   // Determine user's course IDs
@@ -3694,8 +3694,12 @@ function renderUserAnnonces(role) {
       }
     });
   } else if (role === 'prof') {
-    userCourseIds = (currentUser.courseIds || []).map(String);
-  }
+      if (currentUser.realRole === 'admin') {
+         userCourseIds = DATA.courses.map(c => String(c.id));
+      } else {
+         userCourseIds = DATA.courses.filter(c => c.prof && (c.prof.includes(currentUser.name) || (currentUser.firstname && c.prof.includes(currentUser.firstname)))).map(c => String(c.id));
+      }
+    }
 
   // Filter announcements aimed at this user
   const visibleAnnouncements = (DATA.announcements || []).filter(ann => {
