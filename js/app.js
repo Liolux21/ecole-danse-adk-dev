@@ -1509,7 +1509,13 @@ window.saveProf = async function() {
             body: JSON.stringify({ email: targetId, password: tempPassword, returnSecureToken: false })
           });
           const data = await response.json();
-          if (data.error && data.error.message !== 'EMAIL_EXISTS') throw new Error(data.error.message);
+          if (data.error) {
+            if (data.error.message === 'EMAIL_EXISTS') {
+              isNewUser = false; // Le compte existe déjà, on n'envoie pas de nouveau mot de passe
+            } else {
+              throw new Error(data.error.message);
+            }
+          }
         } catch(e) {
           console.warn("L'utilisateur existe peut-être déjà dans Auth, mais pas dans Firestore.", e);
         }
