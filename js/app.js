@@ -547,8 +547,8 @@ async function initPortal() {
   // Formulaire de connexion
   portalForm.addEventListener('submit', async e => {
     e.preventDefault();
-    const email = document.getElementById('portal-email').value;
-    const password = document.getElementById('portal-password').value;
+    const email = document.getElementById('portal-email').value.trim();
+    const password = document.getElementById('portal-password').value.trim();
     const btn = document.getElementById('portal-submit-btn');
     btn.textContent = 'Connexion...';
     btn.disabled = true;
