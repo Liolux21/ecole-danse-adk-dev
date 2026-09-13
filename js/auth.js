@@ -44,7 +44,13 @@ const AUTH = {
               this.currentUser = { ...docSnap.data(), id: docSnap.id, uid: user.uid };
             } else {
               console.warn("Utilisateur authentifié mais pas trouvé dans Firestore.");
-              if (user.email && user.email.toLowerCase() === 'lionel.henrion@gmail.com') { const adminData = { email: user.email, name: 'Lionel Henrion', role: 'admin' }; await setDoc(docRef, adminData); this.currentUser = { ...adminData, id: user.email, uid: user.uid }; } else { this.currentUser = { email: user.email, role: 'eleve' }; // Fallback }
+              if (user.email && user.email.toLowerCase() === 'lionel.henrion@gmail.com') {
+                const adminData = { email: user.email, name: 'Lionel Henrion', role: 'admin' };
+                await setDoc(docRef, adminData);
+                this.currentUser = { ...adminData, id: user.email, uid: user.uid };
+              } else {
+                this.currentUser = { email: user.email, role: 'eleve' };
+              }
             }
           } catch(e) {
             console.error("Erreur de récupération profil Firestore", e);
