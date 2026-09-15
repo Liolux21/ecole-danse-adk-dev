@@ -1213,9 +1213,19 @@ function renderAdminEleves() {
   }
 
   const filterValue = filterSelect ? filterSelect.value : 'all';
-  const filteredStudents = filterValue === 'all' 
+  const searchInput = document.getElementById('admin-eleves-search');
+  const searchVal = searchInput ? searchInput.value.toLowerCase() : '';
+
+  let filteredStudents = filterValue === 'all' 
     ? DATA.students 
     : DATA.students.filter(s => s.courseIds && (s.courseIds.includes(filterValue) || s.courseIds.includes(Number(filterValue))));
+
+  if (searchVal) {
+    filteredStudents = filteredStudents.filter(s => 
+      (s.firstname + ' ' + s.lastname).toLowerCase().includes(searchVal) ||
+      (s.contactEmail || '').toLowerCase().includes(searchVal)
+    );
+  }
 
   tbody.innerHTML = filteredStudents.map(s => {
     const courses = s.courseIds.map(id => DATA.getCourseById(id)?.name || '').filter(Boolean).join(', ');
@@ -2577,6 +2587,8 @@ window.renderProfEleves = function(user) {
     }
 
     const selectedCourseId = filterSelect ? filterSelect.value : 'all';
+    const searchInput = document.getElementById('prof-eleves-search');
+    const searchVal = searchInput ? searchInput.value.toLowerCase() : '';
     
     let courseIdsToFetch = selectedCourseId === 'all' 
         ? taughtCourseIds 
@@ -2584,7 +2596,12 @@ window.renderProfEleves = function(user) {
 
     const rows = [];
     courseIdsToFetch.forEach(cid => {
-        const studentsInCourse = DATA.getStudentsByCourse(cid);
+        let studentsInCourse = DATA.getStudentsByCourse(cid);
+        if (searchVal) {
+            studentsInCourse = studentsInCourse.filter(s => 
+                (s.firstname + ' ' + s.lastname).toLowerCase().includes(searchVal)
+            );
+        }
         const course = DATA.getCourseById(cid);
         if (!course) return;
 

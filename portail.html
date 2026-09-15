@@ -569,7 +569,10 @@
           <div class="data-table-wrapper">
             <div class="data-table-header" style="display:flex; justify-content:space-between; align-items:center;">
               <span class="data-table-title" id="prof-eleves-title">Mes élèves</span>
-              <select id="prof-eleves-filter" class="form-input" style="width:auto; padding:0.3rem 0.5rem;"></select>
+              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="prof-eleves-search" class="form-input" placeholder="🔍 Rechercher..." onkeyup="renderProfEleves()" style="min-width: 150px; padding:0.3rem 0.5rem;">
+                <select id="prof-eleves-filter" class="form-input" style="width:auto; padding:0.3rem 0.5rem;"></select>
+              </div>
             </div>
             <div style="overflow-x: auto;">
               <div id="prof-eleves-body" style="display: flex; flex-direction: column; gap: 1rem; width: 100%; margin-top: 1rem;"></div>
@@ -1506,7 +1509,7 @@
   <script type="module" src="js/data.js?v=82"></script>
   <script type="module" src="js/auth.js?v=66"></script>
   <script type="module" src="js/chat.js?v=51"></script>
-  <script type="module" src="js/app.js?v=84"></script>
+  <script type="module" src="js/app.js?v=85"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
