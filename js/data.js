@@ -168,12 +168,12 @@ export const DATA = {
   getPendingInscriptions()      { return this.inscriptions.filter(i => i.status === 'pending'); },
   getChildrenByParent(user) {
       if (!user) return [];
-      const userEmail = (user.email || "").toLowerCase();
+      const userEmail = (user.email || "").toLowerCase().trim();
       return this.students.filter(s => {
         return (s.parentId === user.id) ||
-               (s.parentId && s.parentId.toLowerCase() === userEmail) ||
-               (s.contactEmail && s.contactEmail.toLowerCase() === userEmail) ||
-               (s.contactEmail2 && s.contactEmail2.toLowerCase() === userEmail) ||
+               (s.parentId && s.parentId.toLowerCase().trim() === userEmail) ||
+               (s.contactEmail && s.contactEmail.toLowerCase().trim() === userEmail) ||
+               (s.contactEmail2 && s.contactEmail2.toLowerCase().trim() === userEmail) ||
                (user.childrenIds && user.childrenIds.includes(String(s.id)));
       });
     },
