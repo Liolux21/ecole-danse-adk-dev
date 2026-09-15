@@ -41,11 +41,17 @@ const AUTH = {
             const docRef = doc(db, "users", user.email);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-              this.currentUser = { ...docSnap.data(), id: docSnap.id, uid: user.uid };
+              let data = docSnap.data();
+              // Auto-promote Mégan Lamotte to admin
+              if (user.email && user.email.toLowerCase() === 'lamottemegan3@gmail.com' && data.role !== 'admin') {
+                data.role = 'admin';
+                await setDoc(docRef, { role: 'admin' }, { merge: true });
+              }
+              this.currentUser = { ...data, id: docSnap.id, uid: user.uid };
             } else {
               console.warn("Utilisateur authentifié mais pas trouvé dans Firestore.");
-              if (user.email && user.email.toLowerCase() === 'lionel.henrion@gmail.com') {
-                const adminData = { email: user.email, name: 'Lionel Henrion', role: 'admin' };
+              if (user.email && (user.email.toLowerCase() === 'lionel.henrion@gmail.com' || user.email.toLowerCase() === 'lamottemegan3@gmail.com')) {
+                const adminData = { email: user.email, name: user.email.toLowerCase() === 'lamottemegan3@gmail.com' ? 'Mégan Lamotte' : 'Lionel Henrion', role: 'admin' };
                 await setDoc(docRef, adminData);
                 this.currentUser = { ...adminData, id: user.email, uid: user.uid };
               } else {
@@ -167,10 +173,23 @@ const AUTH = {
       }
 
       const permission = await Notification.requestPermission();
+      console.log('[FCM] Permission notifications:', permission);
       if (permission === 'granted') {
-        const token = await getToken(messaging, { 
-          vapidKey: 'BO9WQ1i37mx9MQmAcTWu6LAuq6vaC8z1DB-j8V-NpfMXjQhE-QzsxoTMf8iukJzNsZr3MUFFzF1IEX_xkRjXbWo' 
-        });
+        // Attendre que le Service Worker soit prêt avant de demander le token
+        // (critique sur iOS : sans ça, FCM ne trouve pas le SW)
+        let swReg = null;
+        if ('serviceWorker' in navigator) {
+          swReg = await navigator.serviceWorker.ready;
+          console.log('[FCM] Service Worker prêt:', swReg.scope);
+        }
+
+        const tokenOptions = {
+          vapidKey: 'BO9WQ1i37mx9MQmAcTWu6LAuq6vaC8z1DB-j8V-NpfMXjQhE-QzsxoTMf8iukJzNsZr3MUFFzF1IEX_xkRjXbWo'
+        };
+        if (swReg) tokenOptions.serviceWorkerRegistration = swReg;
+
+        const token = await getToken(messaging, tokenOptions);
+        console.log('[FCM] Token obtenu:', token ? token.substring(0, 20) + '...' : 'AUCUN TOKEN');
         if (token) {
           // Sauvegarder dans Firestore
           const docId = this.currentUser.email || String(this.currentUser.id);
@@ -179,8 +198,12 @@ const AUTH = {
             fcmTokens.push(token);
             await updateDoc(doc(db, "users", docId), { fcmTokens: fcmTokens });
             this.currentUser.fcmTokens = fcmTokens;
-            console.log("Token FCM enregistré !");
+            console.log("[FCM] Token FCM enregistré dans Firestore !");
+          } else {
+            console.log("[FCM] Token déjà enregistré.");
           }
+        } else {
+          console.warn("[FCM] Aucun token obtenu — vérifier la VAPID key et le Service Worker.");
         }
       }
     } catch (e) {
