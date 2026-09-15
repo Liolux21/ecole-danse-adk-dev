@@ -27,16 +27,19 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification?.title || payload.data?.title || 'Nouvelle annonce ADK';
   const notificationBody  = payload.notification?.body  || payload.data?.body  || payload.data?.content || '';
 
-  // Tag unique basé sur le contenu — empêche les doublons si le push arrive deux fois
-  const uniqueTag = payload.data?.annonceId
-    || payload.data?.conversationId
-    || (notificationTitle + '_' + Date.now());
+  // On utilise le tag défini côté serveur (webpush.notification.tag dans Cloud Functions).
+  // Le SDK Firebase affiche déjà automatiquement la notification via ce tag.
+  // Notre showNotification avec le MÊME tag remplace la notification existante → 0 doublon.
+  const tag = payload.notification?.tag
+           || payload.data?.annonceId && `annonce-${payload.data.annonceId}`
+           || payload.data?.conversationId && `chat-${payload.data.conversationId}`
+           || 'adk-notif';
 
   const notificationOptions = {
     body: notificationBody,
     icon: '/img/apple-touch-icon.png',
     badge: '/img/favicon.ico',
-    tag: uniqueTag,
+    tag: tag,
     renotify: false,
     data: payload.data || {}
   };

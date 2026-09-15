@@ -109,6 +109,14 @@ exports.onAnnouncementCreated = onDocumentCreated("announcements/{annonceId}", a
         data: {
           annonceId: event.params.annonceId
         },
+        // webpush.notification.tag force le même tag côté navigateur/SW
+        // → si le SDK affiche automatiquement ET notre onBackgroundMessage affiche,
+        //   le second remplace le premier (tag identique) → 0 doublon
+        webpush: {
+          notification: {
+            tag: `annonce-${event.params.annonceId}`
+          }
+        },
         tokens: tokens
       };
 
@@ -237,6 +245,11 @@ exports.onMessageCreated = onDocumentCreated("conversations/{conversationId}/mes
       data: {
         type: "chat",
         conversationId: event.params.conversationId
+      },
+      webpush: {
+        notification: {
+          tag: `chat-${event.params.conversationId}`
+        }
       },
       tokens: tokens
     };
