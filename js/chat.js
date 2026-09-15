@@ -53,13 +53,15 @@ window.loadConversations = function() {
             const data = docSnap.data();
             
             // Client side filter
-            if (currentUser.role !== 'admin') {
-                if (!data.isGroup) {
-                    if (!data.participants || !data.participants.includes(currentUser.email)) return;
-                } else {
-                    if (!myGroups.includes(data.targetGroup) && (!data.participants || !data.participants.includes(currentUser.email))) return;
-                }
+            // Admins can see all group/broadcast conversations, but NOT private 1-to-1 conversations they aren't part of
+            if (!data.isGroup) {
+                // OTO: everyone (including admin) can only see conversations they are a participant of
+                if (!data.participants || !data.participants.includes(currentUser.email)) return;
+            } else if (currentUser.role !== 'admin') {
+                // Group: non-admin must be in their groups or explicitly added as participant
+                if (!myGroups.includes(data.targetGroup) && (!data.participants || !data.participants.includes(currentUser.email))) return;
             }
+            // Group + admin: no filter, they can see all group/broadcast conversations
             
             allConvs.push({ id: docSnap.id, data: data });
         });
