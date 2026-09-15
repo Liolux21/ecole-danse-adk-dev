@@ -738,8 +738,8 @@ function showPortalDashboard(user) {
         profToAdminBtn.remove();
       }
 
-      const userEmail = (user.email || "").toLowerCase();
-      const hasStudents = DATA.students.some(s => (s.parentId || "").toLowerCase() === userEmail || (s.contactEmail || "").toLowerCase() === userEmail);
+      const children = DATA.getChildrenByParent(user);
+      const hasStudents = children.length > 0;
       let switchBtn = document.getElementById('prof-switch-btn');
       if (hasStudents && user.realRole !== 'admin') {
         if (!switchBtn) {

@@ -178,7 +178,11 @@ export const DATA = {
             if (s.lastname === 'Varoquaux' && s.firstname === 'Camille') return true;
         }
         
-        return (s.parentId === user.id) ||
+        const profNameMatch = (user.name && s.firstname && s.lastname) ? 
+            (user.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '') === (s.firstname + ' ' + s.lastname).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')) : false;
+
+        return profNameMatch || 
+               (s.parentId === user.id) ||
                (s.parentId && s.parentId.toLowerCase().trim() === userEmail) ||
                (s.contactEmail && s.contactEmail.toLowerCase().trim() === userEmail) ||
                (s.contactEmail2 && s.contactEmail2.toLowerCase().trim() === userEmail) ||
