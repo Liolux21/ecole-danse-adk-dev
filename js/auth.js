@@ -208,6 +208,16 @@ const AUTH = {
         };
         if (swReg) tokenOptions.serviceWorkerRegistration = swReg;
 
+        // Supprimer l'ancien token avant d'en générer un nouveau
+        // pour s'assurer que le token est bien lié à la registration SW actuelle
+        const { deleteToken } = await import('./firebase-config.js');
+        try {
+          await deleteToken(messaging);
+          console.log('[FCM] Ancien token supprimé, régénération...');
+        } catch(e) {
+          console.log('[FCM] Pas d\'ancien token à supprimer.');
+        }
+
         const token = await getToken(messaging, tokenOptions);
         console.log('[FCM] Token obtenu:', token ? token.substring(0, 20) + '...' : 'AUCUN TOKEN');
         if (token) {
