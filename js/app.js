@@ -3578,7 +3578,14 @@ window.renderChatHistory = renderChatHistory;
 window.openAddStudentModal = function(studentId = null) {
   const container = document.getElementById('add-student-courses');
     if (container) {
-      container.innerHTML = DATA.courses.map(c => `
+      // Sort courses by style then by name
+      const sortedCourses = [...DATA.courses].sort((a, b) => {
+        const styleA = (a.style || '').toLowerCase();
+        const styleB = (b.style || '').toLowerCase();
+        if (styleA !== styleB) return styleA.localeCompare(styleB);
+        return (a.name || a.title || '').localeCompare(b.name || b.title || '');
+      });
+      container.innerHTML = sortedCourses.map(c => `
         <label style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; font-size:0.9rem; cursor:pointer;">
           <input type="checkbox" class="course-checkbox" value="${c.id}">
           ${c.name || c.title} <span style="color:gray; font-size:0.8rem;">(${c.category || c.level || ''})</span>
@@ -3600,8 +3607,9 @@ window.openAddStudentModal = function(studentId = null) {
     
     if (container) {
         const checkboxes = container.querySelectorAll('.course-checkbox');
+        const studentCourseIds = (student.courseIds || []).map(String);
         checkboxes.forEach(chk => {
-          chk.checked = (student.courseIds || []).includes(chk.value);
+          chk.checked = studentCourseIds.includes(String(chk.value));
         });
       }
     
@@ -12366,30 +12374,20 @@ window.migrateStudents2026 = async function() {
 
     for (let i = 0; i < STUDENTS.length; i += BATCH_SIZE) {
       const batch = STUDENTS.slice(i, i + BATCH_SIZE);
-      btn.textContent = `Importation... ${i}/${STUDENTS.length}`;
+      btn.textContent = `Mise à jour... ${i}/${STUDENTS.length}`;
       
       await Promise.all(batch.map(async (s) => {
         try {
           const docRef = firebase.doc(firebase.db, "students", s.id);
           const existing = await firebase.getDoc(docRef);
+          
+          await firebase.setDoc(docRef, s, { merge: true });
+
           if (existing.exists()) {
             skipped++;
-            return;
+          } else {
+            created++;
           }
-          
-          await firebase.setDoc(docRef, {
-            firstname: s.firstname,
-            lastname: s.lastname,
-            dob: s.dob,
-            contactEmail: s.contactEmail,
-            parentId: s.parentId,
-            courseIds: s.courseIds,
-            cotisation: s.cotisation,
-            mutuelle: s.mutuelle,
-            absences: s.absences,
-            avatar: s.avatar
-          });
-          created++;
         } catch (err) {
           console.error("Error importing student", s.id, err);
           errors++;
@@ -12402,7 +12400,7 @@ window.migrateStudents2026 = async function() {
     const snap = await firebase.getDocs(firebase.collection(firebase.db, "students"));
     snap.forEach(d => window.DATA.students.push({ id: d.id, ...d.data() }));
     
-    alert(`✅ Import terminé !\n\n✔ ${created} fiches créées\n⏭ ${skipped} fiches déjà existantes\n❌ ${errors} erreurs\n\nAucun email n'a été envoyé.`);
+    alert(`✅ Import / Mise à jour terminé !\n\n✔ ${created} fiches créées\n⏭ ${skipped} fiches mises à jour avec succès\n❌ ${errors} erreurs\n\nAucun email n'a été envoyé.`);
     window.renderAdminEleves();
   } catch(e) {
     console.error(e);
