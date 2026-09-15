@@ -242,8 +242,17 @@ window.loadConversations = function() {
                 if (!chatTitleParam) chatTitleParam = displayTitle;
 
                 const item = document.createElement('div');
-                item.className = `conv-item ${isActive}`;
+                const isUnread = Array.isArray(conv.readBy) && !conv.readBy.includes(currentUser.email);
+                
+                item.className = `conv-item ${isActive} ${isUnread ? 'unread' : ''}`;
                 item.dataset.chatId = convId;
+                
+                if (isUnread) {
+                    item.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+                    item.style.borderLeft = '3px solid var(--gold)';
+                } else {
+                    item.style.borderLeft = '3px solid transparent';
+                }
                 
                 const isAvatarString = typeof displayAvatar === 'string' && !displayAvatar.includes('<');
                 
@@ -253,12 +262,13 @@ window.loadConversations = function() {
                     </div>
                     <div class="conv-info">
                         <div class="conv-top">
-                            <span class="conv-name" style="font-size: 0.85rem; font-weight: 600;">${displayTitle}</span>
-                            <span class="conv-time">${timeString}</span>
+                            <span class="conv-name" style="font-size: 0.85rem; font-weight: ${isUnread ? '800' : '600'}; color: ${isUnread ? 'var(--gold)' : 'inherit'}">${displayTitle}</span>
+                            <span class="conv-time" style="color: ${isUnread ? 'var(--gold)' : 'inherit'}">${timeString}</span>
                         </div>
                         ${displaySubtitle}
-                        <p class="conv-preview">${conv.lastMessage || '...'}</p>
+                        <p class="conv-preview" style="font-weight: ${isUnread ? '600' : '400'}; color: ${isUnread ? 'inherit' : 'var(--text-light)'}">${conv.lastMessage || '...'}</p>
                     </div>
+                    ${isUnread ? '<div style="width:10px;height:10px;border-radius:50%;background:var(--gold);margin-left:auto;align-self:center;"></div>' : ''}
                 `;
 
                 item.addEventListener('click', () => window.switchChat(convId, chatTitleParam, !conv.isGroup));
@@ -281,6 +291,16 @@ window.switchChat = function(chatId, chatTitle, isManageable = false) {
     currentChatId = chatId;
 
     document.getElementById('active-chat-title').textContent = chatTitle;
+    
+    // Mark as read
+    const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+    if (currentUser && currentUser.email) {
+        import('./firebase-config.js').then(firebase => {
+            firebase.updateDoc(firebase.doc(firebase.db, 'conversations', chatId), {
+                readBy: firebase.arrayUnion(currentUser.email)
+            }).catch(e => console.log('Read status update failed:', e));
+        });
+    }
     
     const btnArchiveChat = document.getElementById('btn-archive-chat');
     if (btnArchiveChat) {
@@ -494,7 +514,8 @@ document.addEventListener('DOMContentLoaded', () => {
             await updateDoc(doc(db, 'conversations', currentChatId), {
                 lastMessage: text,
                 lastMessageAt: serverTimestamp(),
-                archivedBy: []
+                archivedBy: [],
+                readBy: [currentUser.email]
             });
             msgInput.value = '';
             msgInput.style.height = 'auto'; // Reset height
@@ -817,7 +838,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     await updateDoc(doc(db, 'conversations', existingConvId), {
                         lastMessage: firstMsg,
                         lastMessageAt: serverTimestamp(),
-                        archivedBy: []
+                        archivedBy: [],
+                        readBy: [currentUser.email]
                     });
                     await addDoc(collection(db, 'conversations', existingConvId, 'messages'), {
                         text: firstMsg,
@@ -839,7 +861,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         creatorId: currentUser.email,
                         isGroup: isGroup,
                         lastMessage: firstMsg,
-                        lastMessageAt: serverTimestamp()
+                        lastMessageAt: serverTimestamp(),
+                        readBy: [currentUser.email]
                     });
 
                     await addDoc(collection(db, 'conversations', newConvRef.id, 'messages'), {
