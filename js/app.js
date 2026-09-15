@@ -1,4 +1,24 @@
 
+window.calculateAge = function(dob) {
+    if (!dob) return '?';
+    let dobVal = dob;
+    if (dob.includes('/')) {
+        const parts = dob.split('/');
+        if (parts.length === 3) {
+            dobVal = parts[2].trim() + '-' + parts[1].trim() + '-' + parts[0].trim();
+        }
+    }
+    const birthDate = new Date(dobVal);
+    if (isNaN(birthDate.getTime())) return '?';
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+};
+
 const PROF_FULL_NAMES = {
   'Janis': 'Janis Romain', 'Jeanne': 'Jeanne Lefèvre', 'Loreen': 'Loreen Poncelet',
   'Maeva': 'Maeva Delgoffe', 'Margaux': 'Margaux Hubert', 'Maurine': 'Maurine Baudon',
@@ -1255,7 +1275,7 @@ function renderAdminEleves() {
     return `
       <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">(${s.age} ans)</span></h4>
+          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">( ans)</span></h4>
         </div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📚 Cours suivis :</strong> ${courses || '-'}</div>
         <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: rgba(0,0,0,0.02); padding: 0.8rem; border-radius: var(--radius);">
@@ -2459,7 +2479,7 @@ function renderAppelList(courseId) {
       item.innerHTML = `
         <div>
           <div class="appel-student-name">${s.firstname} ${s.lastname}</div>
-          <div class="appel-student-info">${s.age} ans</div>
+          <div class="appel-student-info"> ans</div>
         </div>
         <div class="appel-btns">
           <button class="appel-btn appel-btn-p ${status === 'present' ? 'selected' : ''}" data-status="present" title="Présent(e)">✔️ Présent</button>
@@ -2662,7 +2682,7 @@ window.renderProfEleves = function(user) {
       return `
         <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">(${s.age} ans)</span></h4>
+            <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">( ans)</span></h4>
             <div style="color:${color}; font-weight:700; font-size: 0.9rem;">Présence: ${r.rate}%</div>
           </div>
           <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>Cours suivi :</strong> ${r.course.name}</div>
