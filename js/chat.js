@@ -3,6 +3,79 @@ import { db, storage, collection, addDoc, doc, getDoc, getDocs, updateDoc, delet
 let currentChatId = null;
 let unsubscribeMessages = null;
 let showArchivedConversations = false;
+let unsubscribeChatBadge = null;
+
+// =============================================
+// CHAT BADGE — bulle en temps réel sur l'onglet
+// =============================================
+window.startChatBadgeWatcher = function() {
+    const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+    if (!currentUser || !currentUser.email) return;
+
+    // Determine badge element id based on role
+    const role = currentUser.role;
+    const badgeId = role === 'admin' ? 'admin-chat-badge'
+                  : role === 'prof'  ? 'prof-chat-badge'
+                  : 'parent-chat-badge';
+
+    if (unsubscribeChatBadge) { unsubscribeChatBadge(); unsubscribeChatBadge = null; }
+
+    const q = query(collection(db, 'conversations'));
+    unsubscribeChatBadge = onSnapshot(q, (snapshot) => {
+        let unreadCount = 0;
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            // Apply same visibility rules as loadConversations
+            if (!data.isGroup) {
+                if (!data.participants || !data.participants.includes(currentUser.email)) return;
+            } else if (role !== 'admin') {
+                // Build myGroups on the fly
+                const myGroups = ['all'];
+                if (role === 'prof') {
+                    myGroups.push('all_profs');
+                    (currentUser.courseIds || []).forEach(cid => myGroups.push(`course_${cid}`));
+                } else {
+                    myGroups.push('all_students');
+                    if (window.DATA) {
+                        const children = window.DATA.getChildrenByParent(currentUser);
+                        children.forEach(ch => (ch.courseIds || []).forEach(cid => myGroups.push(`course_${cid}`)));
+                    }
+                }
+                if (!myGroups.includes(data.targetGroup) && (!data.participants || !data.participants.includes(currentUser.email))) return;
+            }
+
+            // Skip archived
+            if (Array.isArray(data.archivedBy) && data.archivedBy.includes(currentUser.email)) return;
+
+            // Check unread
+            if (Array.isArray(data.readBy) && !data.readBy.includes(currentUser.email)) {
+                unreadCount++;
+            }
+        });
+
+        const badge = document.getElementById(badgeId);
+        if (badge) {
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    });
+};
+
+// Hide badge when user clicks the Messagerie tab
+document.addEventListener('click', function(e) {
+    const tab = e.target.closest('[data-tab$="-messagerie"], [data-tab="admin-messagerie"]');
+    if (tab) {
+        ['admin-chat-badge', 'prof-chat-badge', 'parent-chat-badge'].forEach(id => {
+            const b = document.getElementById(id);
+            if (b) b.style.display = 'none';
+        });
+    }
+});
+
 
 // =============================================
 // LOAD CONVERSATIONS — groupés par catégorie

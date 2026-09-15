@@ -195,7 +195,7 @@
           <button class="dash-tab" data-tab="admin-settings">⚙️ Paramètres</button>
           <button class="dash-tab" data-tab="admin-gala">🩰 Gala</button>
           <button class="dash-tab" data-tab="admin-annonces">📢 Annonces</button>
-            <button class="dash-tab" data-tab="admin-messagerie">💬 Messagerie</button>
+            <button class="dash-tab" data-tab="admin-messagerie">💬 Messagerie <span id="admin-chat-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
         </div>
 
         <!-- Tab: Messagerie --><div class="tab-content" id="tab-admin-messagerie"></div>
@@ -502,7 +502,7 @@
           <button class="dash-tab" data-tab="mes-eleves">👥 Mes élèves</button>
           <button class="dash-tab" data-tab="mes-heures">⏱️ Mes heures</button>
           <button class="dash-tab" data-tab="prof-gala">🎭 Gala</button>
-          <button class="dash-tab" data-tab="prof-messagerie">💬 Messagerie</button>
+          <button class="dash-tab" data-tab="prof-messagerie">💬 Messagerie <span id="prof-chat-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
             <button class="dash-tab" data-tab="prof-notifications">🔔 Notifications <span id="prof-notif-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
         </div>
           <!-- ANNONCES PROF -->
@@ -661,7 +661,7 @@
 <div class="dash-tabs" id="parent-tabs">
           <button class="dash-tab active" data-tab="parent-planning">🗓️ Mon Planning</button>
           <button class="dash-tab" data-tab="parent-gala">🎭 Gala</button>
-          <button class="dash-tab" data-tab="parent-messagerie">💬 Messagerie</button>
+          <button class="dash-tab" data-tab="parent-messagerie">💬 Messagerie <span id="parent-chat-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
             <button class="dash-tab" data-tab="parent-notifications">🔔 Notifications <span id="parent-notif-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
         </div>
           <!-- ANNONCES PARENT -->
@@ -1518,8 +1518,8 @@
   <script src="js/vitrine-data.js?v=3"></script>
   <script type="module" src="js/data.js?v=100"></script>
   <script type="module" src="js/auth.js?v=103"></script>
-  <script type="module" src="js/chat.js?v=53"></script>
-  <script type="module" src="js/app.js?v=101"></script>
+  <script type="module" src="js/chat.js?v=54"></script>
+  <script type="module" src="js/app.js?v=102"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {

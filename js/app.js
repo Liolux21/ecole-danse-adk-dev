@@ -797,6 +797,8 @@ function showPortalDashboard(user) {
   // Sur iOS, requestPermission() DOIT être déclenché par un geste utilisateur explicite.
   // Un setTimeout perd le contexte "user gesture" → on affiche un bouton discret.
   initPushNotificationPrompt();
+  // Start real-time chat badge watcher
+  if (window.startChatBadgeWatcher) window.startChatBadgeWatcher();
 }
 
 function initPushNotificationPrompt() {
