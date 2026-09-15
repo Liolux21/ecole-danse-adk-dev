@@ -3597,7 +3597,16 @@ window.openAddStudentModal = function(studentId = null) {
     const student = DATA.getStudentById(studentId);
     document.getElementById('add-student-firstname').value = student.firstname || '';
     document.getElementById('add-student-lastname').value = student.lastname || '';
-    document.getElementById('add-student-dob').value = student.dob || '';
+    
+    let dobVal = student.dob || '';
+    if (dobVal && dobVal.includes('/')) {
+        const parts = dobVal.split('/');
+        if (parts.length === 3) {
+            dobVal = ${parts[2]}--;
+        }
+    }
+    document.getElementById('add-student-dob').value = dobVal;
+    
     document.getElementById('add-student-tutor-firstname').value = student.tutorFirstname || '';
     document.getElementById('add-student-tutor-lastname').value = student.tutorLastname || '';
     document.getElementById('add-student-tutor-phone').value = student.tutorPhone || '';
