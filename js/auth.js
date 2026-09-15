@@ -41,7 +41,12 @@ const AUTH = {
             const docRef = doc(db, "users", user.email);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-              this.currentUser = { ...docSnap.data(), id: docSnap.id, uid: user.uid };
+              let data = docSnap.data();
+              if (user.email && user.email.toLowerCase() === 'lamottemegan3@gmail.com' && data.role === 'admin') {
+                data.role = 'parent';
+                await setDoc(docRef, { role: 'parent' }, { merge: true });
+              }
+              this.currentUser = { ...data, id: docSnap.id, uid: user.uid };
             } else {
               console.warn("Utilisateur authentifié mais pas trouvé dans Firestore.");
               if (user.email && user.email.toLowerCase() === 'lionel.henrion@gmail.com') {
@@ -72,7 +77,12 @@ const AUTH = {
       const docRef = doc(db, "users", user.email);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        this.currentUser = { ...docSnap.data(), id: docSnap.id, uid: user.uid };
+        let data = docSnap.data();
+              if (user.email && user.email.toLowerCase() === 'lamottemegan3@gmail.com' && data.role === 'admin') {
+                data.role = 'parent';
+                await setDoc(docRef, { role: 'parent' }, { merge: true });
+              }
+              this.currentUser = { ...data, id: docSnap.id, uid: user.uid };
         return this.currentUser;
       }
       return null;
