@@ -1548,7 +1548,7 @@ window.saveProf = async function() {
             to_email: targetId,
             to_name: fullName,
             temp_password: tempPassword,
-            login_link: "https://liolux21.github.io/ecole-danse-adk-dev/portail.html"
+            login_link: "https://annedkdanse.be/portail/"
           }
         );
       } catch(e) {
@@ -3689,7 +3689,7 @@ window.submitAddStudent = async function() {
                 to_email: parentEmail,
                 to_name: parentName,
                 temp_password: tempPassword,
-                login_link: "https://liolux21.github.io/ecole-danse-adk-dev/portail.html"
+                login_link: "https://annedkdanse.be/portail/"
               }
             );
             showToast(`✉️ Email envoyé à ${parentEmail} avec succès !`, 'success');
