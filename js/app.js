@@ -3598,11 +3598,14 @@ window.openAddStudentModal = function(studentId = null) {
     document.getElementById('add-student-firstname').value = student.firstname || '';
     document.getElementById('add-student-lastname').value = student.lastname || '';
     
-    let dobVal = student.dob || '';
+    let dobVal = student.dob ? student.dob.trim() : '';
     if (dobVal && dobVal.includes('/')) {
         const parts = dobVal.split('/');
         if (parts.length === 3) {
-            dobVal = `${parts[2]}-${parts[1]}-${parts[0]}`;
+            const y = parts[2].trim();
+            const m = parts[1].trim().padStart(2, '0');
+            const d = parts[0].trim().padStart(2, '0');
+            dobVal = y + '-' + m + '-' + d;
         }
     }
     document.getElementById('add-student-dob').value = dobVal;

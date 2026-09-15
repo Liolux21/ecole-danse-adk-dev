@@ -169,7 +169,15 @@ export const DATA = {
   getChildrenByParent(user) {
       if (!user) return [];
       const userEmail = (user.email || "").toLowerCase().trim();
+      
       return this.students.filter(s => {
+        // HACK SPECIAL POUR MEGAN LAMOTTE
+        if (userEmail === 'lamottemegan3@gmail.com') {
+            if (s.lastname === 'Henrion' && s.firstname === 'Coline') return true;
+            if (s.lastname === 'Varoquaux' && s.firstname === 'Charlotte') return true;
+            if (s.lastname === 'Varoquaux' && s.firstname === 'Camille') return true;
+        }
+        
         return (s.parentId === user.id) ||
                (s.parentId && s.parentId.toLowerCase().trim() === userEmail) ||
                (s.contactEmail && s.contactEmail.toLowerCase().trim() === userEmail) ||
