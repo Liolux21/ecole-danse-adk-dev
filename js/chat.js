@@ -26,7 +26,7 @@ window.loadConversations = function() {
         } else if (currentUser.role === 'parent' || currentUser.role === 'student' || currentUser.role === 'élève' || currentUser.role === 'eleve') {
             myGroups.push('all_students');
             if (window.DATA && window.DATA.students) {
-                const children = window.DATA.students.filter(s => (currentUser.childrenIds || []).includes(s.id) || s.id === currentUser.id);
+                const children = window.DATA.getChildrenByParent(currentUser);
                 children.forEach(ch => {
                     if (ch.courseIds) {
                         ch.courseIds.forEach(cid => {

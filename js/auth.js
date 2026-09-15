@@ -41,17 +41,11 @@ const AUTH = {
             const docRef = doc(db, "users", user.email);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-              let data = docSnap.data();
-              // Auto-promote Mégan Lamotte to admin
-              if (user.email && user.email.toLowerCase() === 'lamottemegan3@gmail.com' && data.role !== 'admin') {
-                data.role = 'admin';
-                await setDoc(docRef, { role: 'admin' }, { merge: true });
-              }
-              this.currentUser = { ...data, id: docSnap.id, uid: user.uid };
+              this.currentUser = { ...docSnap.data(), id: docSnap.id, uid: user.uid };
             } else {
               console.warn("Utilisateur authentifié mais pas trouvé dans Firestore.");
-              if (user.email && (user.email.toLowerCase() === 'lionel.henrion@gmail.com' || user.email.toLowerCase() === 'lamottemegan3@gmail.com')) {
-                const adminData = { email: user.email, name: user.email.toLowerCase() === 'lamottemegan3@gmail.com' ? 'Mégan Lamotte' : 'Lionel Henrion', role: 'admin' };
+              if (user.email && user.email.toLowerCase() === 'lionel.henrion@gmail.com') {
+                const adminData = { email: user.email, name: 'Lionel Henrion', role: 'admin' };
                 await setDoc(docRef, adminData);
                 this.currentUser = { ...adminData, id: user.email, uid: user.uid };
               } else {

@@ -1912,7 +1912,7 @@ window.renderGalaTables = function(userCtx) {
     if (user.realRole === 'admin' || user.role === 'admin') {
        parentCourseIds = DATA.courses.map(c => String(c.id));
     } else {
-       const children = DATA.students.filter(s => (user.childrenIds || []).includes(s.id));
+       const children = DATA.getChildrenByParent(user);
        children.forEach(ch => {
          if (ch.courseIds) {
            ch.courseIds.forEach(cid => {
@@ -3998,7 +3998,7 @@ function renderUserAnnonces(role, userCtx) {
   // Determine user's course IDs
   let userCourseIds = [];
   if (role === 'parent') {
-    const children = DATA.students.filter(s => (currentUser.childrenIds || []).includes(s.id));
+    const children = DATA.getChildrenByParent(currentUser);
     children.forEach(ch => {
       if (ch.courseIds) {
         ch.courseIds.forEach(cid => {
