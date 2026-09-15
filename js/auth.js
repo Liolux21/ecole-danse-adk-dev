@@ -1,4 +1,4 @@
-import { auth, db, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, doc, getDoc, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setDoc, updateDoc, deleteDoc, firebaseConfig, createUserWithEmailAndPassword } from './firebase-config.js';
+import { auth, db, storage, storageRef, uploadBytes, getDownloadURL, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, doc, getDoc, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setDoc, updateDoc, deleteDoc, firebaseConfig, createUserWithEmailAndPassword } from './firebase-config.js';
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -145,7 +145,23 @@ const AUTH = {
       const updates = {};
       if (newEmail !== this.currentUser.email) updates.email = newEmail;
       if (newTelephone !== undefined) updates.telephone = newTelephone;
-      if (newAvatarBase64 !== undefined) updates.avatarUrl = newAvatarBase64;
+      
+      if (newAvatarBase64 && newAvatarBase64.startsWith('data:image')) {
+        try {
+          const response = await fetch(newAvatarBase64);
+          const blob = await response.blob();
+          const ext = newAvatarBase64.split(';')[0].split('/')[1] || 'jpg';
+          const fileRef = storageRef(storage, `avatars/${this.currentUser.email}_${Date.now()}.${ext}`);
+          await uploadBytes(fileRef, blob);
+          const downloadUrl = await getDownloadURL(fileRef);
+          updates.avatarUrl = downloadUrl;
+        } catch (uploadErr) {
+          console.error("Erreur upload avatar Storage :", uploadErr);
+          throw new Error("Erreur lors de l'upload de l'image de profil. " + uploadErr.message);
+        }
+      } else if (newAvatarBase64 !== undefined) {
+         updates.avatarUrl = newAvatarBase64;
+      }
       
       // Si l'email a changé, il faut théoriquement déplacer le document puisque l'ID = email
       if (newEmail !== this.currentUser.email) {
