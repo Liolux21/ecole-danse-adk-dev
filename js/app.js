@@ -1366,7 +1366,7 @@ function renderAdminProfs() {
     const fullName = PROF_FULL_NAMES[searchName] || (p.firstname ? p.firstname + ' ' + p.lastname : p.name);
     
     // Check if they exist in DATA.students to link
-    const studentMatch = DATA.students.find(s => s.firstname === searchName || (s.firstname + ' ' + s.lastname) === fullName || s.name === fullName);
+    const studentMatch = DATA.students.find(s => (s.firstname + ' ' + s.lastname).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') === fullName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
     const studentBadge = studentMatch ? `<br><span class="badge badge-parent" style="font-size:0.6rem; padding:0.1rem 0.3rem;">Élève lié</span>` : '';
     
     const taughtCourses = DATA.courses.filter(c => c.prof && (c.prof.includes(p.name) || c.prof.includes(fullName) || c.prof.includes(searchName)));
@@ -2127,7 +2127,7 @@ function renderProfDashboard(user) {
     document.getElementById('prof-name').textContent = fullName;
     
     // Lier automatiquement les cours de l'élève
-    const studentMatch = DATA.students.find(s => s.firstname === searchName || (s.firstname + ' ' + s.lastname) === fullName || s.name === fullName);
+    const studentMatch = DATA.students.find(s => (s.firstname + ' ' + s.lastname).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') === fullName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
     if (studentMatch && studentMatch.courseIds) {
       user.courseIds = [...new Set([...(user.courseIds || []), ...studentMatch.courseIds])];
     }
