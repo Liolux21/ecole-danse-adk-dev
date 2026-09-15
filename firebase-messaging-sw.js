@@ -17,56 +17,31 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 // Gestion des messages en arrière-plan (app fermée / en background)
+// Note: sur iOS PWA, le SDK FCM N'affiche PAS automatiquement la notification
+// même si payload.notification est présent — on doit toujours appeler showNotification.
+// Pour éviter les doublons, on utilise un "tag" unique : le navigateur remplacera
+// automatiquement une notification existante avec le même tag au lieu d'en créer une nouvelle.
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Message reçu en background:', payload);
 
-  // Si le backend envoie un bloc "notification", le SDK Firebase affiche automatiquement 
-  // la notification. On sort immédiatement pour éviter de l'afficher en double.
-  if (payload.notification) {
-    return;
-  }
+  const notificationTitle = payload.notification?.title || payload.data?.title || 'Nouvelle annonce ADK';
+  const notificationBody  = payload.notification?.body  || payload.data?.body  || payload.data?.content || '';
 
-  const notificationTitle = payload.data?.title || 'Nouvelle annonce ADK';
+  // Tag unique basé sur le contenu — empêche les doublons si le push arrive deux fois
+  const uniqueTag = payload.data?.annonceId
+    || payload.data?.conversationId
+    || (notificationTitle + '_' + Date.now());
+
   const notificationOptions = {
-    body: payload.data?.body || payload.data?.content || '',
+    body: notificationBody,
     icon: '/img/apple-touch-icon.png',
     badge: '/img/favicon.ico',
-    tag: payload.data?.annonceId || 'adk-notif',
+    tag: uniqueTag,
     renotify: false,
     data: payload.data || {}
   };
 
   return self.registration.showNotification(notificationTitle, notificationOptions);
-});
-
-// Fallback : listener push natif pour les cas où FCM SDK ne traite pas le message
-// (notamment certaines versions de Safari/iOS WebKit)
-self.addEventListener('push', function (event) {
-  // Si le SDK FCM a déjà traité le message, ne pas doubler
-  if (!event.data) return;
-
-  let data = {};
-  try {
-    data = event.data.json();
-  } catch (e) {
-    data = { notification: { title: 'ADK App', body: event.data.text() } };
-  }
-
-  // Si c'est un payload FCM standard avec notification, le SDK le gère déjà.
-  // Ce fallback gère uniquement les payloads data-only.
-  const hasNotificationField = data.notification?.title;
-  if (hasNotificationField) return; // Le SDK FCM s'en charge
-
-  const title = data.data?.title || data.notification?.title || 'Nouvelle annonce ADK';
-  const options = {
-    body: data.data?.body || data.notification?.body || '',
-    icon: '/img/apple-touch-icon.png',
-    badge: '/img/favicon.ico',
-    tag: data.data?.annonceId || 'adk-notif',
-    data: data.data || {}
-  };
-
-  event.waitUntil(self.registration.showNotification(title, options));
 });
 
 // Gestion du clic sur la notification (ouvre l'app)
