@@ -24,8 +24,15 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Message reçu en background:', payload);
 
-  const notificationTitle = payload.notification?.title || payload.data?.title || 'Nouvelle annonce ADK';
-  const notificationBody  = payload.notification?.body  || payload.data?.body  || payload.data?.content || '';
+  // Si le payload contient un bloc "notification", le SDK Firebase et iOS 
+  // gèrent l'affichage nativement. On s'arrête ici pour éviter le doublon.
+  if (payload.notification) {
+    console.log('[firebase-messaging-sw.js] Notification gérée nativement, on ignore le traitement manuel.');
+    return;
+  }
+
+  const notificationTitle = payload.data?.title || 'Nouvelle annonce ADK';
+  const notificationBody  = payload.data?.body  || payload.data?.content || '';
 
   // On utilise le tag défini côté serveur (webpush.notification.tag dans Cloud Functions).
   // Le SDK Firebase affiche déjà automatiquement la notification via ce tag.
