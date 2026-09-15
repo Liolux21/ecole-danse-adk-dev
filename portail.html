@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>École de Danse ADK — Une famille, une passion, une histoire, une vie</title>
   <meta name="description" content="L'École de Danse ADK propose des cours de danse classique, contemporaine, jazz et hip-hop pour tous les âges. Inscrivez vos enfants dès maintenant à Ixelles.">
   <meta name="keywords" content="école de danse, ADK, danse classique, contemporain, jazz, hip-hop, Ixelles, Belgique">
@@ -117,7 +117,14 @@
       .dash-header-actions > button:last-child { grid-column: 2; grid-row: 1; }
       .dash-switch-btn { grid-column: 1; grid-row: 2; justify-self: flex-start; }
     }
-  </style>
+  
+    /* Prevent iOS auto-zoom on inputs */
+    @media screen and (max-width: 768px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+    </style>
 
   <!-- ==================== ESPACE ADK — PORTAIL ==================== -->
   <section id="parents" class="vitrine-section" style="min-height: calc(100vh - 80px - 250px); display: flex; flex-direction: column; justify-content: flex-start; padding-top: 1rem; margin-top: 0;">
