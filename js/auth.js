@@ -211,16 +211,21 @@ const AUTH = {
         const token = await getToken(messaging, tokenOptions);
         console.log('[FCM] Token obtenu:', token ? token.substring(0, 20) + '...' : 'AUCUN TOKEN');
         if (token) {
-          // Sauvegarder dans Firestore
+          // Toujours relire les tokens depuis Firestore pour éviter les doublons
+          // (la copie locale peut être périmée si l'utilisateur a plusieurs onglets/appareils)
+          const { getDoc } = await import('./firebase-config.js');
           const docId = this.currentUser.email || String(this.currentUser.id);
-          const fcmTokens = this.currentUser.fcmTokens || [];
-          if (!fcmTokens.includes(token)) {
-            fcmTokens.push(token);
-            await updateDoc(doc(db, "users", docId), { fcmTokens: fcmTokens });
-            this.currentUser.fcmTokens = fcmTokens;
+          const freshDoc = await getDoc(doc(db, "users", docId));
+          const freshTokens = (freshDoc.exists() ? freshDoc.data().fcmTokens : null) || [];
+
+          if (!freshTokens.includes(token)) {
+            freshTokens.push(token);
+            await updateDoc(doc(db, "users", docId), { fcmTokens: freshTokens });
+            this.currentUser.fcmTokens = freshTokens;
             console.log("[FCM] Token FCM enregistré dans Firestore !");
           } else {
-            console.log("[FCM] Token déjà enregistré.");
+            console.log("[FCM] Token déjà enregistré — aucun doublon ajouté.");
+            this.currentUser.fcmTokens = freshTokens;
           }
         } else {
           console.warn("[FCM] Aucun token obtenu — vérifier la VAPID key et le Service Worker.");
