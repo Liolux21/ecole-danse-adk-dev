@@ -184,65 +184,75 @@ const AUTH = {
 
   async requestPushNotificationPermission() {
     if (!this.currentUser) return;
+    const toast = window.showToast || ((m) => console.log(m));
     try {
-      const { getMessagingInstance, getToken, updateDoc, doc, db } = await import('./firebase-config.js');
+      // Un seul import consolidé
+      const { getMessagingInstance, getToken, deleteToken, getDoc, updateDoc, doc, db } = await import('./firebase-config.js');
       const messaging = await getMessagingInstance();
       if (!messaging) {
+        toast('⚠️ Notifications non supportées sur cet appareil');
         console.warn("Push notifications not supported on this device.");
-        return; // Non supporté
+        return;
       }
 
       const permission = await Notification.requestPermission();
       console.log('[FCM] Permission notifications:', permission);
-      if (permission === 'granted') {
-        // Attendre que le Service Worker soit prêt avant de demander le token
-        // (critique sur iOS : sans ça, FCM ne trouve pas le SW)
-        let swReg = null;
-        if ('serviceWorker' in navigator) {
-          swReg = await navigator.serviceWorker.ready;
-          console.log('[FCM] Service Worker prêt:', swReg.scope);
-        }
+      if (permission !== 'granted') {
+        toast('⚠️ Permission notifications refusée');
+        return;
+      }
 
-        const tokenOptions = {
-          vapidKey: 'BO9WQ1i37mx9MQmAcTWu6LAuq6vaC8z1DB-j8V-NpfMXjQhE-QzsxoTMf8iukJzNsZr3MUFFzF1IEX_xkRjXbWo'
-        };
-        if (swReg) tokenOptions.serviceWorkerRegistration = swReg;
+      toast('🔄 Initialisation des notifications...');
 
-        // Supprimer l'ancien token avant d'en générer un nouveau
-        // pour s'assurer que le token est bien lié à la registration SW actuelle
-        const { deleteToken } = await import('./firebase-config.js');
-        try {
-          await deleteToken(messaging);
-          console.log('[FCM] Ancien token supprimé, régénération...');
-        } catch(e) {
-          console.log('[FCM] Pas d\'ancien token à supprimer.');
-        }
+      // Attendre que le Service Worker soit prêt
+      let swReg = null;
+      if ('serviceWorker' in navigator) {
+        swReg = await navigator.serviceWorker.ready;
+        console.log('[FCM] Service Worker prêt:', swReg.scope);
+      }
 
-        const token = await getToken(messaging, tokenOptions);
-        console.log('[FCM] Token obtenu:', token ? token.substring(0, 20) + '...' : 'AUCUN TOKEN');
-        if (token) {
-          // Toujours relire les tokens depuis Firestore pour éviter les doublons
-          // (la copie locale peut être périmée si l'utilisateur a plusieurs onglets/appareils)
-          const { getDoc } = await import('./firebase-config.js');
-          const docId = this.currentUser.email || String(this.currentUser.id);
-          const freshDoc = await getDoc(doc(db, "users", docId));
-          const freshTokens = (freshDoc.exists() ? freshDoc.data().fcmTokens : null) || [];
+      const tokenOptions = {
+        vapidKey: 'BO9WQ1i37mx9MQmAcTWu6LAuq6vaC8z1DB-j8V-NpfMXjQhE-QzsxoTMf8iukJzNsZr3MUFFzF1IEX_xkRjXbWo'
+      };
+      if (swReg) tokenOptions.serviceWorkerRegistration = swReg;
 
-          if (!freshTokens.includes(token)) {
-            freshTokens.push(token);
-            await updateDoc(doc(db, "users", docId), { fcmTokens: freshTokens });
-            this.currentUser.fcmTokens = freshTokens;
-            console.log("[FCM] Token FCM enregistré dans Firestore !");
-          } else {
-            console.log("[FCM] Token déjà enregistré — aucun doublon ajouté.");
-            this.currentUser.fcmTokens = freshTokens;
-          }
-        } else {
-          console.warn("[FCM] Aucun token obtenu — vérifier la VAPID key et le Service Worker.");
-        }
+      // Supprimer l'ancien token pour s'assurer que le nouveau est lié au bon SW
+      try {
+        await deleteToken(messaging);
+        console.log('[FCM] Ancien token supprimé, régénération...');
+      } catch(e) {
+        console.log('[FCM] Pas d\'ancien token à supprimer:', e.message);
+      }
+
+      const token = await getToken(messaging, tokenOptions);
+      console.log('[FCM] Token obtenu:', token ? token.substring(0, 20) + '...' : 'AUCUN TOKEN');
+
+      if (!token) {
+        toast('❌ Échec: aucun token FCM obtenu');
+        console.warn("[FCM] Aucun token obtenu — vérifier la VAPID key et le Service Worker.");
+        return;
+      }
+
+      // Relire Firestore pour éviter les doublons
+      const docId = this.currentUser.email || String(this.currentUser.id);
+      const freshDoc = await getDoc(doc(db, "users", docId));
+      const freshTokens = (freshDoc.exists() ? freshDoc.data().fcmTokens : null) || [];
+
+      if (!freshTokens.includes(token)) {
+        freshTokens.push(token);
+        await updateDoc(doc(db, "users", docId), { fcmTokens: freshTokens });
+        this.currentUser.fcmTokens = freshTokens;
+        toast('✅ Notifications activées !');
+        console.log("[FCM] Token FCM enregistré dans Firestore !");
+      } else {
+        console.log("[FCM] Token déjà enregistré — aucun doublon ajouté.");
+        this.currentUser.fcmTokens = freshTokens;
+        toast('✅ Notifications déjà actives');
       }
     } catch (e) {
+      toast('❌ Erreur notifications: ' + e.message);
       console.error("Erreur FCM permission:", e);
+
     }
   },
 
