@@ -1599,6 +1599,7 @@
         navigator.serviceWorker.register('./firebase-messaging-sw.js')
           .then(function (registration) {
             console.log('[SW] Service Worker enregistré avec succès, scope:', registration.scope);
+            registration.update();
           })
           .catch(function (err) {
             console.error('[SW] Erreur d\'enregistrement du Service Worker:', err);
