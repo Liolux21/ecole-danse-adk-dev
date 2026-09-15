@@ -44,6 +44,17 @@ exports.onAnnouncementCreated = onDocumentCreated("announcements/{annonceId}", a
             tokens.push(...user.fcmTokens);
           }
         });
+      } else if (target.startsWith("prof_course_")) {
+        const courseId = target.replace("prof_course_", "");
+        
+        // 1. Trouver les profs de ce cours
+        const profsSnap = await db.collection("users").where("role", "==", "prof").get();
+        profsSnap.forEach(doc => {
+          const u = doc.data();
+          if (u.courseIds && (u.courseIds.includes(courseId) || u.courseIds.includes(Number(courseId)))) {
+            if (u.fcmTokens) tokens.push(...u.fcmTokens);
+          }
+        });
       } else if (target.startsWith("course_")) {
         const courseId = target.replace("course_", "");
         
@@ -239,50 +250,3 @@ exports.onMessageCreated = onDocumentCreated("conversations/{conversationId}/mes
   return null;
 });
 
-exports.onStudentUpdated = onDocumentUpdated("students/{studentId}", async (event) => {
-  const before = event.data.before.data();
-  const after = event.data.after.data();
-  if (!before || !after) return null;
-
-  const absencesBefore = before.absences || [];
-  const absencesAfter = after.absences || [];
-
-  if (absencesAfter.length > absencesBefore.length) {
-    try {
-      const studentId = event.params.studentId;
-      const studentName = after.firstname || after.name || "Votre enfant";
-      
-      const db = admin.firestore();
-      let tokens = [];
-      const parentsSnap = await db.collection("users").where("role", "==", "parent").get();
-      
-      parentsSnap.forEach(doc => {
-        const u = doc.data();
-        if (u.childrenIds && u.childrenIds.some(cid => String(cid) === studentId)) {
-          if (u.fcmTokens) tokens.push(...u.fcmTokens);
-        }
-      });
-
-      tokens = [...new Set(tokens)];
-      if (tokens.length === 0) return null;
-
-      const payload = {
-        notification: {
-          title: "Nouvelle absence signalée",
-          body: `Une absence a été encodée pour ${studentName}.`
-        },
-        data: {
-          type: "absence",
-          studentId: studentId
-        },
-        tokens: tokens
-      };
-
-      await admin.messaging().sendEachForMulticast(payload);
-      console.log(`[Absence Push] Envoyé à ${tokens.length} appareils.`);
-    } catch(e) {
-      console.error("Erreur Push Absence:", e);
-    }
-  }
-  return null;
-});
