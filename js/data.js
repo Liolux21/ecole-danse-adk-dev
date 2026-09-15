@@ -168,7 +168,7 @@ export const DATA = {
   getPendingInscriptions()      { return this.inscriptions.filter(i => i.status === 'pending'); },
   getChildrenByParent(user) {
       if (!user) return [];
-      const userEmail = (user.email || "").toLowerCase().trim();
+      const userEmail = (user.email || user.id || "").toLowerCase().trim();
       
       return this.students.filter(s => {
         // HACK SPECIAL POUR MEGAN LAMOTTE
