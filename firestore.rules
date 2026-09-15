@@ -36,18 +36,14 @@ service cloud.firestore {
 
     // Collection USERS (Profs, Parents, Admins)
     match /users/{userId} {
-      allow read: if isAuthenticated() && (request.auth.token.email == userId || isAdmin() || isProf());
+      allow read: if isAuthenticated();
       allow update: if isAuthenticated() && (request.auth.token.email == userId || isAdmin());
       allow create, delete: if isAdmin() || (isAuthenticated() && request.auth.token.email == 'lionel.henrion@gmail.com');
     }
 
     // Collection STUDENTS (Les élèves)
     match /students/{studentId} {
-      allow read: if isAuthenticated() && (
-        isAdmin() || 
-        isProf() || 
-        (isParent() && string(studentId) in getUserData().childrenIds)
-      );
+      allow read: if isAuthenticated();
       // L'Admin gère les élèves, mais le Prof a besoin d'écrire pour noter les absences
       allow write: if isAdmin() || isProf();
     }
