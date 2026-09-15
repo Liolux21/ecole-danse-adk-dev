@@ -2710,7 +2710,7 @@ window.renderProfEleves = function(user) {
 // =============================================
 function renderParentDashboard(user) {
   renderUserAnnonces('parent', user);
-  document.getElementById('parent-name').textContent = user.name;
+  document.getElementById('parent-name').textContent = (user.name || 'Parent') + ' [' + (user.email || 'Email introuvable') + ']';
   if (typeof window.renderGalaTables === 'function') window.renderGalaTables(user);
 
   const children = DATA.getChildrenByParent(user);

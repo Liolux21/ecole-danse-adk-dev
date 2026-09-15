@@ -172,7 +172,7 @@ export const DATA = {
       
       return this.students.filter(s => {
         // HACK SPECIAL POUR MEGAN LAMOTTE
-        if (userEmail === 'lamottemegan3@gmail.com') {
+        if (userEmail === 'lamottemegan3@gmail.com' || userEmail === 'lamottemegan@gmail.com' || userEmail.includes('lamotte')) {
             if (s.lastname === 'Henrion' && s.firstname === 'Coline') return true;
             if (s.lastname === 'Varoquaux' && s.firstname === 'Charlotte') return true;
             if (s.lastname === 'Varoquaux' && s.firstname === 'Camille') return true;
