@@ -293,18 +293,35 @@ export const DATA = {
   // ---- FIREBASE SYNC ----
   async syncFromFirebase() {
     try {
-      // 1. Fetch Users
-      const usersSnap = await getDocs(collection(db, "users"));
-      this.users = [];
-      usersSnap.forEach(doc => {
-        this.users.push({ docId: doc.id, id: doc.id, ...doc.data() });
-      });
+      const startTime = performance.now();
+      console.log("Démarrage de la synchronisation Firebase...");
 
-      // 2. Fetch Students
-      try {
-        const studentsSnap = await getDocs(collection(db, "students"));
+      // Lancement de toutes les requêtes en parallèle
+      const promises = [
+        getDocs(collection(db, "users")),
+        getDocs(collection(db, "students")),
+        getDocs(collection(db, "courses")),
+        getDocs(collection(db, "inscriptions")),
+        getDocs(collection(db, "attendance")),
+        getDocs(collection(db, "prof_hours")),
+        getDocs(collection(db, "announcements")),
+        getDocs(collection(db, "settings"))
+      ];
+
+      const results = await Promise.allSettled(promises);
+
+      // 1. Users
+      if (results[0].status === 'fulfilled') {
+        this.users = [];
+        results[0].value.forEach(doc => this.users.push({ docId: doc.id, id: doc.id, ...doc.data() }));
+      } else {
+        throw new Error("Erreur critique: impossible de charger les utilisateurs");
+      }
+
+      // 2. Students
+      if (results[1].status === 'fulfilled') {
         this.students = [];
-        studentsSnap.forEach(doc => {
+        results[1].value.forEach(doc => {
           let sData = doc.data();
           if (sData.courses && !sData.courseIds) {
             sData.courseIds = sData.courses;
@@ -313,89 +330,71 @@ export const DATA = {
           sData.courseIds = sData.courseIds || [];
           this.students.push({ docId: doc.id, id: doc.id, ...sData });
         });
-      } catch(e) {
-        console.warn("students read error:", e);
+      } else {
+        console.warn("students read error:", results[1].reason);
       }
-      // 3. Fetch Courses
-      try {
-        const coursesSnap = await getDocs(collection(db, "courses"));
+
+      // 3. Courses
+      if (results[2].status === 'fulfilled') {
         this.courses = [];
-        coursesSnap.forEach(doc => {
-          this.courses.push({ docId: doc.id, id: doc.id, ...doc.data() });
-        });
-      } catch(e) {
-        console.warn("courses read error:", e);
+        results[2].value.forEach(doc => this.courses.push({ docId: doc.id, id: doc.id, ...doc.data() }));
+      } else {
+        console.warn("courses read error:", results[2].reason);
       }
 
-      // 4. Fetch Inscriptions
-      try {
-        const inscSnap = await getDocs(collection(db, "inscriptions"));
+      // 4. Inscriptions
+      if (results[3].status === 'fulfilled') {
         this.inscriptions = [];
-        inscSnap.forEach(doc => {
-          this.inscriptions.push({ docId: doc.id, id: doc.id, ...doc.data() });
-        });
-      } catch (e) {
-        console.warn("inscriptions read error:", e);
+        results[3].value.forEach(doc => this.inscriptions.push({ docId: doc.id, id: doc.id, ...doc.data() }));
+      } else {
+        console.warn("inscriptions read error:", results[3].reason);
       }
 
-
-      
-      
-      
-      // Fetch Attendance
-      try {
-        const attSnap = await getDocs(collection(db, "attendance"));
+      // 5. Attendance
+      if (results[4].status === 'fulfilled') {
         this.attendance = [];
-        attSnap.forEach(doc => {
-          this.attendance.push({ id: doc.id, ...doc.data() });
-        });
-      } catch (e) {
-        console.warn("attendance collection missing or error: ", e);
+        results[4].value.forEach(doc => this.attendance.push({ id: doc.id, ...doc.data() }));
+      } else {
+        console.warn("attendance read error:", results[4].reason);
       }
-      
-      // 5b. Fetch Prof Hours
-      try {
-        const phSnap = await getDocs(collection(db, "prof_hours"));
+
+      // 6. Prof Hours
+      if (results[5].status === 'fulfilled') {
         this.prof_hours = [];
-        phSnap.forEach(doc => {
-          this.prof_hours.push({ id: doc.id, ...doc.data() });
-        });
-      } catch (e) {
-        console.warn("prof_hours collection missing or error: ", e);
+        results[5].value.forEach(doc => this.prof_hours.push({ id: doc.id, ...doc.data() }));
+      } else {
+        console.warn("prof_hours read error:", results[5].reason);
       }
 
-      // 6. Fetch Announcements
-      try {
-        const annSnap = await getDocs(collection(db, "announcements"));
+      // 7. Announcements
+      if (results[6].status === 'fulfilled') {
         this.announcements = [];
-        annSnap.forEach(doc => {
-          this.announcements.push({ id: doc.id, ...doc.data() });
-        });
-        
-        try {
-          const settingsSnap = await getDocs(collection(db, "settings"));
-          settingsSnap.forEach(doc => {
-            if (doc.id === 'general') {
-              this.settings = doc.data();
-              if (!this.settings.holidays) this.settings.holidays = [];
-            }
-          if (doc.id === 'gala') {
-                const galaData = doc.data();
-                this.galaRepets = galaData.repets || [];
-                this.galaInfos = galaData.infos || [];
-                this.galaNotes = galaData.notes || [];
-              }
-            });
-        } catch(e) {
-          console.warn("Settings fetch failed", e);
-        }
-        // Sort by timestamp desc
+        results[6].value.forEach(doc => this.announcements.push({ id: doc.id, ...doc.data() }));
         this.announcements.sort((a, b) => b.timestamp - a.timestamp);
-      } catch (err) {
-        console.error("Error fetching announcements", err);
+      } else {
+        console.warn("announcements read error:", results[6].reason);
       }
 
-      console.log("Données Firebase synchronisées avec succès !", { 
+      // 8. Settings
+      if (results[7].status === 'fulfilled') {
+        results[7].value.forEach(doc => {
+          if (doc.id === 'general') {
+            this.settings = doc.data();
+            if (!this.settings.holidays) this.settings.holidays = [];
+          }
+          if (doc.id === 'gala') {
+            const galaData = doc.data();
+            this.galaRepets = galaData.repets || [];
+            this.galaInfos = galaData.infos || [];
+            this.galaNotes = galaData.notes || [];
+          }
+        });
+      } else {
+        console.warn("settings read error:", results[7].reason);
+      }
+
+      const endTime = performance.now();
+      console.log(`Données Firebase synchronisées avec succès en ${Math.round(endTime - startTime)}ms !`, { 
         users: this.users.length, 
         students: this.students.length, 
         courses: this.courses.length 
