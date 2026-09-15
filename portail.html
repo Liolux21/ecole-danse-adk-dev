@@ -218,10 +218,13 @@
           <div class="data-table-wrapper">
             <div class="data-table-header" style="justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
               <span class="data-table-title">👦 Liste des élèves</span>
-              <select id="admin-eleves-filter" class="form-input" style="width: auto; min-width: 250px;" onchange="renderAdminEleves()">
-                <option value="all">Tous les élèves</option>
-                <!-- Rempli dynamiquement en JS -->
-              </select>
+              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="admin-eleves-search" class="form-input" placeholder="🔍 Rechercher..." onkeyup="renderAdminEleves()" style="min-width: 150px;">
+                <select id="admin-eleves-filter" class="form-input" style="width: auto; min-width: 200px;" onchange="renderAdminEleves()">
+                  <option value="all">Tous les élèves</option>
+                  <!-- Rempli dynamiquement en JS -->
+                </select>
+              </div>
             </div>
             <div style="overflow-x: auto;">
               <div id="admin-eleves-body" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;"></div>
@@ -1509,7 +1512,7 @@
   <script type="module" src="js/data.js?v=82"></script>
   <script type="module" src="js/auth.js?v=66"></script>
   <script type="module" src="js/chat.js?v=51"></script>
-  <script type="module" src="js/app.js?v=85"></script>
+  <script type="module" src="js/app.js?v=86"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
