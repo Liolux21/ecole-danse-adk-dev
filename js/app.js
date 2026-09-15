@@ -3602,7 +3602,7 @@ window.openAddStudentModal = function(studentId = null) {
     if (dobVal && dobVal.includes('/')) {
         const parts = dobVal.split('/');
         if (parts.length === 3) {
-            dobVal = ${parts[2]}--;
+            dobVal = `${parts[2]}-${parts[1]}-${parts[0]}`;
         }
     }
     document.getElementById('add-student-dob').value = dobVal;
