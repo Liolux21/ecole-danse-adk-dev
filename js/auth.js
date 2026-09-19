@@ -129,7 +129,14 @@ const AUTH = {
       if (newEmail !== user.email || newPassword) {
         if (!currentPassword) throw new Error("Le mot de passe actuel est requis pour changer l'email ou le mot de passe.");
         const credential = EmailAuthProvider.credential(user.email, currentPassword);
-        await reauthenticateWithCredential(user, credential);
+        try {
+          await reauthenticateWithCredential(user, credential);
+        } catch (error) {
+          if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+            throw new Error("Le mot de passe actuel est incorrect. Veuillez vérifier votre saisie.");
+          }
+          throw error;
+        }
       }
 
       // 1. Mettre à jour Firebase Auth
