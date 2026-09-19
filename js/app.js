@@ -1245,9 +1245,20 @@ function renderAdminEleves() {
   if (searchVal) {
     filteredStudents = filteredStudents.filter(s => 
       (s.firstname + ' ' + s.lastname).toLowerCase().includes(searchVal) ||
+      (s.lastname + ' ' + s.firstname).toLowerCase().includes(searchVal) ||
       (s.contactEmail || '').toLowerCase().includes(searchVal)
     );
   }
+
+  // Trier par nom de famille, puis prénom
+  filteredStudents.sort((a, b) => {
+    const nameA = (a.lastname || '').toLowerCase();
+    const nameB = (b.lastname || '').toLowerCase();
+    if (nameA === nameB) {
+      return (a.firstname || '').toLowerCase().localeCompare((b.firstname || '').toLowerCase());
+    }
+    return nameA.localeCompare(nameB);
+  });
 
   tbody.innerHTML = filteredStudents.map(s => {
     const courses = s.courseIds.map(id => DATA.getCourseById(id)?.name || '').filter(Boolean).join(', ');
@@ -1277,7 +1288,7 @@ function renderAdminEleves() {
     return `
       <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">(${window.calculateAge(s.dob)} ans)</span></h4>
+          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${(s.lastname || '').toUpperCase()} ${s.firstname || ''} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">(${window.calculateAge(s.dob)} ans)</span></h4>
         </div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📚 Cours suivis :</strong> ${courses || '-'}</div>
         <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: rgba(0,0,0,0.02); padding: 0.8rem; border-radius: var(--radius);">
@@ -2466,6 +2477,17 @@ function renderAppelList(courseId) {
     list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👤</div><p>Aucun élève dans ce cours</p></div>';
     return;
   }
+
+  // Trier par nom de famille, puis prénom
+  students.sort((a, b) => {
+    const nameA = (a.lastname || '').toLowerCase();
+    const nameB = (b.lastname || '').toLowerCase();
+    if (nameA === nameB) {
+      return (a.firstname || '').toLowerCase().localeCompare((b.firstname || '').toLowerCase());
+    }
+    return nameA.localeCompare(nameB);
+  });
+
   list.innerHTML = '';
   
   const courseAttendance = DATA.attendance ? DATA.attendance.filter(a => String(a.courseId).trim() === String(courseId).trim() && String(a.date).trim() === dateStr.trim()) : [];
@@ -2480,7 +2502,7 @@ function renderAppelList(courseId) {
 
       item.innerHTML = `
         <div>
-          <div class="appel-student-name">${s.firstname} ${s.lastname}</div>
+          <div class="appel-student-name">${(s.lastname || '').toUpperCase()} ${s.firstname || ''}</div>
           <div class="appel-student-info">${window.calculateAge(s.dob)} ans</div>
         </div>
         <div class="appel-btns">
@@ -2640,8 +2662,15 @@ window.renderProfEleves = function(user) {
         });
     });
 
-    // Sort alphabetically by firstname
-    rows.sort((a,b) => (a.student.firstname || '').localeCompare(b.student.firstname || ''));
+    // Sort alphabetically by lastname
+    rows.sort((a,b) => {
+      const nameA = (a.student.lastname || '').toLowerCase();
+      const nameB = (b.student.lastname || '').toLowerCase();
+      if (nameA === nameB) {
+        return (a.student.firstname || '').toLowerCase().localeCompare((b.student.firstname || '').toLowerCase());
+      }
+      return nameA.localeCompare(nameB);
+    });
 
     if (rows.length === 0) {
         if (tbody) tbody.innerHTML = '<div style="text-align:center; color: var(--text-muted);">Aucun élève trouvé.</div>';
@@ -2684,7 +2713,7 @@ window.renderProfEleves = function(user) {
       return `
         <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">(${window.calculateAge(s.dob)} ans)</span></h4>
+            <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${(s.lastname || '').toUpperCase()} ${s.firstname || ''} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">(${window.calculateAge(s.dob)} ans)</span></h4>
             <div style="color:${color}; font-weight:700; font-size: 0.9rem;">Présence: ${r.rate}%</div>
           </div>
           <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>Cours suivi :</strong> ${r.course.name}</div>
