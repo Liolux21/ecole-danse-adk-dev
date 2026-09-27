@@ -3630,12 +3630,7 @@ window.openAddStudentModal = function(studentId = null) {
   const container = document.getElementById('add-student-courses');
     if (container) {
       // Sort courses by style then by name
-      const sortedCourses = [...DATA.courses].sort((a, b) => {
-        const styleA = (a.style || '').toLowerCase();
-        const styleB = (b.style || '').toLowerCase();
-        if (styleA !== styleB) return styleA.localeCompare(styleB);
-        return (a.name || a.title || '').localeCompare(b.name || b.title || '');
-      });
+      const sortedCourses = DATA.courses;
       container.innerHTML = sortedCourses.map(c => `
         <label style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; font-size:0.9rem; cursor:pointer;">
           <input type="checkbox" class="course-checkbox" value="${c.id}">

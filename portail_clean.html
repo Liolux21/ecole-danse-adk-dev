@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>École de Danse ADK — Une famille, une passion, une histoire, une vie</title>
   <meta name="description" content="L'École de Danse ADK propose des cours de danse classique, contemporaine, jazz et hip-hop pour tous les âges. Inscrivez vos enfants dès maintenant à Ixelles.">
   <meta name="keywords" content="école de danse, ADK, danse classique, contemporain, jazz, hip-hop, Ixelles, Belgique">
@@ -19,13 +19,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ADK App">
-  <link rel="stylesheet" href="css/style.css?v=207">
+  <link rel="stylesheet" href="css/style.css?v=205">
   <script>
     window.addEventListener('error', function(e) {
-      console.error("JS Error: " + e.message + " at " + e.filename + ":" + e.lineno);
+      alert("JS Error: " + e.message + " at " + e.filename + ":" + e.lineno);
     });
     window.addEventListener('unhandledrejection', function(e) {
-      console.error("Unhandled Promise Rejection: ", e.reason);
+      alert("Unhandled Promise Rejection: " + e.reason);
     });
   </script>
   
@@ -59,7 +59,6 @@
     #parents { min-height: calc(100vh - 80px - 250px); display: flex; flex-direction: column; }
   
       /* MESSENGER APP */
-      @media (min-width: 769px) { #btn-photo { display: none !important; } }
       .messenger-app {
         display: flex; height: 75vh; min-height: 500px;
         background: var(--dark-2); border-radius: var(--radius);
@@ -117,14 +116,7 @@
       .dash-header-actions > button:last-child { grid-column: 2; grid-row: 1; }
       .dash-switch-btn { grid-column: 1; grid-row: 2; justify-self: flex-start; }
     }
-  
-    /* Prevent iOS auto-zoom on inputs */
-    @media screen and (max-width: 768px) {
-      input, select, textarea {
-        font-size: 16px !important;
-      }
-    }
-    </style>
+  </style>
 
   <!-- ==================== ESPACE ADK — PORTAIL ==================== -->
   <section id="parents" class="vitrine-section" style="min-height: calc(100vh - 80px - 250px); display: flex; flex-direction: column; justify-content: flex-start; padding-top: 1rem; margin-top: 0;">
@@ -195,7 +187,7 @@
           <button class="dash-tab" data-tab="admin-settings">⚙️ Paramètres</button>
           <button class="dash-tab" data-tab="admin-gala">🩰 Gala</button>
           <button class="dash-tab" data-tab="admin-annonces">📢 Annonces</button>
-            <button class="dash-tab" data-tab="admin-messagerie">💬 Messagerie <span id="admin-chat-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
+            <button class="dash-tab" data-tab="admin-messagerie">💬 Messagerie</button>
         </div>
 
         <!-- Tab: Messagerie --><div class="tab-content" id="tab-admin-messagerie"></div>
@@ -225,13 +217,10 @@
           <div class="data-table-wrapper">
             <div class="data-table-header" style="justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
               <span class="data-table-title">👦 Liste des élèves</span>
-              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <input type="text" id="admin-eleves-search" class="form-input" placeholder="🔍 Rechercher..." onkeyup="renderAdminEleves()" style="min-width: 150px;">
-                <select id="admin-eleves-filter" class="form-input" style="width: auto; min-width: 200px;" onchange="renderAdminEleves()">
-                  <option value="all">Tous les élèves</option>
-                  <!-- Rempli dynamiquement en JS -->
-                </select>
-              </div>
+              <select id="admin-eleves-filter" class="form-input" style="width: auto; min-width: 250px;" onchange="renderAdminEleves()">
+                <option value="all">Tous les élèves</option>
+                <!-- Rempli dynamiquement en JS -->
+              </select>
             </div>
             <div style="overflow-x: auto;">
               <div id="admin-eleves-body" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;"></div>
@@ -333,33 +322,7 @@
             <h3>Paramètres de la Saison & Congés</h3>
           </div>
           <div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 1.5rem;">
-<div id="god-mode-settings" style="display: none;">
-            <div style="margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee;">
-<h4 style="color: #9C5858; margin-bottom: 1rem;">Mise à jour du Planning & Professeurs 26-27</h4>
-<p style="font-size: 0.9rem; margin-bottom: 1rem;">1. Cliquez ici pour synchroniser le nouveau planning vers la base de données. Attention: Cela écrasera la liste des cours actuelle.</p>
-<button class="btn btn-primary" onclick="window.migrateCourses2026()" id="btn-migrate-courses" style="margin-bottom: 1rem;">Synchroniser le planning</button>
-
-<p style="font-size: 0.9rem; margin-bottom: 1rem;">2. Cliquez ici pour générer automatiquement les comptes Professeurs manquants dans la base de données.</p>
-<button class="btn btn-primary" onclick="window.migrateProfs2026()" id="btn-migrate-profs">Créer les profs manquants</button>
-  <hr style="border:none;border-top:1px solid #eee;margin: 1.5rem 0;">
-  <h4 style="color: #9C5858; margin-bottom: 1rem;">Import Élèves 2026-2027</h4>
-  <p style="font-size: 0.9rem; margin-bottom: 1rem;">3. Cliquez ici pour importer les fiches élèves depuis le dernier export. <strong>Aucun email ne sera envoyé.</strong> Les fiches déjà existantes seront ignorées.</p>
-  <button class="btn btn-primary" onclick="window.migrateStudents2026()" id="btn-migrate-students">📋 Importer les élèves 2026-2027</button>
-  <hr style="border:none;border-top:1px solid #eee;margin: 1.5rem 0;">
-  <h4 style="color: #9C5858; margin-bottom: 1rem;">Correction des noms Professeurs</h4>
-  <p style="font-size: 0.9rem; margin-bottom: 1rem;">4. Corrige les noms <strong>Florence → Florence Leyens</strong> et <strong>Adam → Adam Binoua</strong> dans Firebase.</p>
-  <button class="btn btn-outline" onclick="window.fixProfNames()" id="btn-fix-prof-names">🔧 Corriger les noms Florence & Adam</button>
-</div>
-<div style="background: #ffffff; padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 1.5rem; border-left: 4px solid #e74c3c;">
-<h4 style="color: #e74c3c; margin-bottom: 1rem;">Zone Dangereuse : Remise à Zéro</h4>
-<p style="font-size: 0.9rem; margin-bottom: 1rem;">Cliquez ici pour effacer toutes les annonces/notifications et toutes les conversations de la messagerie.</p>
-<button class="btn btn-primary" style="background-color: #e74c3c; border-color: #e74c3c;" onclick="window.resetNotificationsAndMessages()" id="btn-reset-data">Tout remettre à zéro (Notifications & Messagerie)</button>
-<br><br>
-<p style="font-size: 0.9rem; margin-bottom: 1rem;">Cliquez ici pour effacer <strong>TOUS LES ÉLÈVES</strong> de la base de données. Attention, cette action est irréversible.</p>
-<button class="btn btn-primary" style="background-color: #800000; border-color: #800000;" onclick="window.deleteAllStudents2026()" id="btn-delete-all-students">🗑 EFFACER TOUS LES ÉLÈVES</button>
-</div>
-</div>
-<h4 style="color: #9C5858; margin-bottom: 1rem;">Saison actuelle <span id="season-display" style="font-size: 0.9rem; font-weight: normal; color: var(--text-muted); margin-left: 1rem;"></span></h4>
+            <h4 style="color: #9C5858; margin-bottom: 1rem;">Saison actuelle <span id="season-display" style="font-size: 0.9rem; font-weight: normal; color: var(--text-muted); margin-left: 1rem;"></span></h4>
             <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
               <div class="form-group" style="flex: 1; min-width: 200px;">
                 <label class="form-label">Date de début</label>
@@ -502,7 +465,7 @@
           <button class="dash-tab" data-tab="mes-eleves">👥 Mes élèves</button>
           <button class="dash-tab" data-tab="mes-heures">⏱️ Mes heures</button>
           <button class="dash-tab" data-tab="prof-gala">🎭 Gala</button>
-          <button class="dash-tab" data-tab="prof-messagerie">💬 Messagerie <span id="prof-chat-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
+          <button class="dash-tab" data-tab="prof-messagerie">💬 Messagerie</button>
             <button class="dash-tab" data-tab="prof-notifications">🔔 Notifications <span id="prof-notif-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
         </div>
           <!-- ANNONCES PROF -->
@@ -579,10 +542,7 @@
           <div class="data-table-wrapper">
             <div class="data-table-header" style="display:flex; justify-content:space-between; align-items:center;">
               <span class="data-table-title" id="prof-eleves-title">Mes élèves</span>
-              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <input type="text" id="prof-eleves-search" class="form-input" placeholder="🔍 Rechercher..." onkeyup="renderProfEleves()" style="min-width: 150px; padding:0.3rem 0.5rem;">
-                <select id="prof-eleves-filter" class="form-input" style="width:auto; padding:0.3rem 0.5rem;"></select>
-              </div>
+              <select id="prof-eleves-filter" class="form-input" style="width:auto; padding:0.3rem 0.5rem;"></select>
             </div>
             <div style="overflow-x: auto;">
               <div id="prof-eleves-body" style="display: flex; flex-direction: column; gap: 1rem; width: 100%; margin-top: 1rem;"></div>
@@ -661,7 +621,7 @@
 <div class="dash-tabs" id="parent-tabs">
           <button class="dash-tab active" data-tab="parent-planning">🗓️ Mon Planning</button>
           <button class="dash-tab" data-tab="parent-gala">🎭 Gala</button>
-          <button class="dash-tab" data-tab="parent-messagerie">💬 Messagerie <span id="parent-chat-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
+          <button class="dash-tab" data-tab="parent-messagerie">💬 Messagerie</button>
             <button class="dash-tab" data-tab="parent-notifications">🔔 Notifications <span id="parent-notif-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
         </div>
           <!-- ANNONCES PARENT -->
@@ -713,7 +673,6 @@
         </div>
 
                   <!-- Tab: Parent Notifications -->
-          <!-- Tab: Messagerie --><div class="tab-content" id="tab-parent-messagerie"></div>
           <div class="tab-content" id="tab-parent-notifications">
             <div class="parent-section-header" style="color: #9C5858;">🔔 Centre de Notifications</div>
             <div id="parent-notifications-full-list" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;"></div>
@@ -906,12 +865,8 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">Email Parent 1 (Tuteur principal)</label>
+              <label class="form-label">Email du tuteur</label>
               <input type="email" id="add-student-email" class="form-input" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Email Parent 2 (Optionnel)</label>
-              <input type="email" id="add-student-email2" class="form-input">
             </div>
             <div class="form-group">
               <label class="form-label">Téléphone tuteur</label>
@@ -1303,8 +1258,8 @@
         <div class="form-group">
           <label class="form-label">Type de discussion</label>
           <div style="display:flex; gap:0.5rem;">
-            <button type="button" id="chat-type-group" class="btn btn-primary btn-sm" style="flex:1;" onclick="window.setChatType('group')">📢 Canal Officiel</button>
-            <button type="button" id="chat-type-oto" class="btn btn-outline btn-sm" style="flex:1;" onclick="window.setChatType('oto')">👤 Privé</button>
+            <button type="button" id="chat-type-group" class="btn btn-primary btn-sm" style="flex:1;" onclick="window.setChatType('group')">📢 Groupe / Canal</button>
+            <button type="button" id="chat-type-oto" class="btn btn-outline btn-sm" style="flex:1;" onclick="window.setChatType('oto')">💬 One to One</button>
           </div>
         </div>
 
@@ -1505,10 +1460,8 @@
         <div style="display: flex; gap: 0.2rem; margin-bottom: 0.2rem;">
           <button id="btn-emoji" title="Emojis" style="background:none;border:none;font-size:1.3rem;cursor:pointer;padding:0.2rem 0.4rem;border-radius:8px;flex-shrink:0;" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'">😊</button>
           <button id="btn-attach" title="Joindre un fichier" style="background:none;border:none;cursor:pointer;padding:0.2rem 0.4rem;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text-color);" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button>
-          <button id="btn-photo" title="Prendre/Choisir une photo" style="background:none;border:none;cursor:pointer;padding:0.2rem 0.4rem;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text-color);" onmouseenter="this.style.background='#f0f0f0'" onmouseleave="this.style.background='none'"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></button>
         </div>
         <input type="file" id="chat-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none;">
-        <input type="file" id="chat-photo-input" accept="image/*" style="display:none;">
         <textarea id="msg-input" class="form-input" placeholder="Écrivez votre message..." rows="1" style="flex: 1; border-radius: 20px; resize: none; overflow-y: auto; max-height: 120px; padding: 0.6rem 1rem; font-family: inherit; line-height: 1.4; min-width: 150px;"></textarea>
         <button id="btn-send-msg" class="btn btn-primary" style="border-radius: 20px; padding: 0.5rem 1.5rem; flex-shrink:0; margin-bottom: 0.1rem;">Envoyer</button>
       </div>
@@ -1516,10 +1469,10 @@
   </div>
 
   <script src="js/vitrine-data.js?v=3"></script>
-  <script type="module" src="js/data.js?v=38682"></script>
-  <script type="module" src="js/auth.js?v=106"></script>
-  <script type="module" src="js/chat.js?v=54"></script>
-  <script type="module" src="js/app.js?v=38682"></script>
+  <script type="module" src="js/data.js?v=25889"></script>
+  <script type="module" src="js/auth.js?v=24"></script>
+  <script type="module" src="js/chat.js?v=36"></script>
+  <script type="module" src="js/app.js?v=25889"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
@@ -1543,13 +1496,13 @@
   </script>
 
   <!-- Modal: Détail Heures -->
-  <div class="vitrine-modal" id="modal-hours-detail">
-    <div class="vitrine-modal-content">
-      <div class="vitrine-modal-header">
+  <div class="vitrine-modal-overlay" id="modal-hours-detail">
+    <div class="vitrine-modal">
+      <button class="vitrine-modal-close" onclick="closeModal('modal-hours-detail')">&times;</button>
+      <div class="vitrine-modal-content">
         <h4 class="vitrine-modal-title" id="hours-detail-title">Détail des prestations</h4>
-        <button class="vitrine-modal-close" onclick="closeModal('modal-hours-detail')">&times;</button>
-      </div>
-      <div style="max-height: 300px; overflow-y: auto; margin-top: 1rem;" id="hours-detail-list">
+        <div style="max-height: 300px; overflow-y: auto; margin-top: 1rem;" id="hours-detail-list">
+        </div>
       </div>
     </div>
   </div>
@@ -1590,25 +1543,6 @@
       </div>
     </div>
   </div>
-
-
-  <!-- ==================== SERVICE WORKER REGISTRATION (FCM Push) ==================== -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./firebase-messaging-sw.js')
-          .then(function (registration) {
-            console.log('[SW] Service Worker enregistré avec succès, scope:', registration.scope);
-            // Ne PAS forcer registration.update() ici — cela crée une nouvelle registration
-            // qui invalide le token FCM lié à l'ancienne registration.
-            // Le navigateur vérifie automatiquement les mises à jour du SW à chaque chargement.
-          })
-          .catch(function (err) {
-            console.error('[SW] Erreur d\'enregistrement du Service Worker:', err);
-          });
-      });
-    }
-  </script>
 
 </body>
 </html>

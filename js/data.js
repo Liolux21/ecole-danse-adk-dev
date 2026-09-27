@@ -59,10 +59,10 @@ export const DATA = {
     { id: 22, style: 'hiphop', name: 'HIPHOP 1', ages: '6-8 ans', levels: 'Tous niveaux', prof: 'Maurine Baudon', lieu: 'adk', schedule: 'Samedi 9h00 - 10h00', biweekly: false, eventType: 'regulier', emoji: '🧢' },
     { id: 23, style: 'hiphop', name: 'HIPHOP 3', ages: '11-13 ans', levels: 'Tous niveaux', prof: 'Maurine Baudon', lieu: 'adk', schedule: 'Samedi 10h00 - 11h00', biweekly: false, eventType: 'regulier', emoji: '🧢' },
     { id: 24, style: 'hiphop', name: 'HIPHOP 6', ages: 'dès 14 ans', levels: 'Avancé', prof: 'Maurine Baudon', lieu: 'adk', schedule: 'Samedi 11h00 - 12h00', biweekly: false, eventType: 'regulier', emoji: '🔥' },
-    { id: 25, style: 'compagnie', name: 'COMPAGNIE MOOVE', ages: 'Compagnie', levels: 'Compagnie', prof: 'Maurine Baudon', lieu: 'adk', schedule: 'Samedi 12h00 - 13h30 (1 sem/2)', biweekly: true, eventType: 'pro', emoji: '🏆' },
-    { id: 26, style: 'compagnie', name: 'COMPAGNIE UNITY', ages: 'Compagnie', levels: 'Compagnie', prof: 'Maurine Baudon', lieu: 'adk', schedule: 'Samedi 12h00 - 13h30 (1 sem/2)', biweekly: true, eventType: 'pro', emoji: '🏆' },
+    { id: 25, style: 'compagnie', name: 'ADK MOOVE', ages: 'Compagnie', levels: 'Compagnie', prof: 'Maurine Baudon', lieu: 'adk', schedule: 'Samedi 12h00 - 13h30 (1 sem/2)', biweekly: true, eventType: 'pro', emoji: '🏆' },
+    { id: 26, style: 'compagnie', name: 'ADK UNITY', ages: 'Compagnie', levels: 'Compagnie', prof: 'Maurine Baudon', lieu: 'adk', schedule: 'Samedi 12h00 - 13h30 (1 sem/2)', biweekly: true, eventType: 'pro', emoji: '🏆' },
     { id: 27, style: 'hiphop', name: 'HIPHOP 5', ages: 'dès 14 ans', levels: 'Interm./Avancé', prof: 'Zoé Lambert', lieu: 'adk', schedule: 'Samedi 14h00 - 15h30 (1 sem/2)', biweekly: true, eventType: 'regulier', emoji: '🧢' },
-    { id: 28, style: 'compagnie', name: 'COMPAGNIE TEAM', ages: 'Contemporain', levels: 'Compagnie', prof: 'Janis Romain', lieu: 'adk', schedule: 'Samedi 14h00 - 16h00 (1 sem/2)', biweekly: true, eventType: 'pro', emoji: '🏆' },
+    { id: 28, style: 'compagnie', name: 'ADK TEAM', ages: 'Contemporain', levels: 'Compagnie', prof: 'Janis Romain', lieu: 'adk', schedule: 'Samedi 14h00 - 16h00 (1 sem/2)', biweekly: true, eventType: 'pro', emoji: '🏆' },
     { id: 29, style: 'compagnie', name: 'ATELIER CHORÉ GIRLY', ages: 'dès 13 ans', levels: 'Interm./Avancé', prof: 'Corentin Milosevic', lieu: 'adk', schedule: 'Dimanche 9h00 - 10h30 (1 sem/2)', biweekly: true, eventType: 'stage', emoji: '✨' },
     { id: 30, style: 'compagnie', name: 'ATELIER PRO CONTEMPORAIN', ages: 'dès 13 ans', levels: 'Interm./Avancé', prof: 'Corentin Milosevic', lieu: 'adk', schedule: 'Dimanche 10h30 - 12h00 (1 sem/2)', biweekly: true, eventType: 'pro', emoji: '🌟' },
     { id: 31, style: 'special', name: 'POLE DANSE', ages: 'Adultes', levels: 'Tous niveaux', prof: 'Florence Leyens', lieu: 'flore', schedule: 'Jeudi 19h30 - 21h00 (1 sem/2)', biweekly: true, eventType: 'regulier', emoji: '💃' },
@@ -104,10 +104,10 @@ export const DATA = {
       { day: 5, hour: '09h00', course: 'HIPHOP 1', style: 'hiphop', courseId: 22, lieu: 'ADK' },
       { day: 5, hour: '10h00', course: 'HIPHOP 3', style: 'hiphop', courseId: 23, lieu: 'ADK' },
       { day: 5, hour: '11h00', course: 'HIPHOP 6', style: 'hiphop', courseId: 24, lieu: 'ADK' },
-      { day: 5, hour: '12h00', course: 'COMPAGNIE MOOVE', style: 'compagnie', courseId: 25, lieu: 'ADK' },
-      { day: 5, hour: '12h00', course: 'COMPAGNIE UNITY', style: 'compagnie', courseId: 26, lieu: 'ADK' },
+      { day: 5, hour: '12h00', course: 'ADK MOOVE', style: 'compagnie', courseId: 25, lieu: 'ADK' },
+      { day: 5, hour: '12h00', course: 'ADK UNITY', style: 'compagnie', courseId: 26, lieu: 'ADK' },
       { day: 5, hour: '14h00', course: 'HIPHOP 5', style: 'hiphop', courseId: 27, lieu: 'ADK' },
-      { day: 5, hour: '14h00', course: 'COMPAGNIE TEAM', style: 'compagnie', courseId: 28, lieu: 'ADK' },
+      { day: 5, hour: '14h00', course: 'ADK TEAM', style: 'compagnie', courseId: 28, lieu: 'ADK' },
       { day: 6, hour: '09h00', course: 'ATELIER CHORÉ GIRLY', style: 'compagnie', courseId: 29, lieu: 'ADK' },
       { day: 6, hour: '10h30', course: 'ATELIER PRO CONTEMPORAIN', style: 'compagnie', courseId: 30, lieu: 'ADK' },
       { day: 3, hour: '19h30', course: 'POLE DANSE', style: 'special', courseId: 31, lieu: 'flore' },
@@ -160,6 +160,17 @@ export const DATA = {
   nextEvent: { name: "Gala de Fin d'Année 2027", date: new Date("2027-05-29T19:00:00") },
 
   // ---- HELPERS ----
+
+  sortCourses() {
+    const order = [12, 11, 5, 6, 4, 10, 7, 21, 2, 3, 38, 30, 28, 22, 20, 23, 1, 27, 24, 25, 26, 19, 18, 34, 35, 36, 17, 13, 8, 16, 37, 14, 39, 29, 9, 15, 32, 33, 31];
+    this.courses.sort((a, b) => {
+      let ia = order.indexOf(parseInt(a.id));
+      let ib = order.indexOf(parseInt(b.id));
+      if (ia === -1) ia = 999;
+      if (ib === -1) ib = 999;
+      return ia - ib;
+    });
+  },
   getCourseById(id)             { return this.courses.find(c => String(c.id) === String(id)); },
   getStudentById(id)            { return this.students.find(s => String(s.id) === String(id)); },
   getUserById(id)               { return this.users.find(u => String(u.id) === String(id)); },
@@ -337,7 +348,14 @@ export const DATA = {
       // 3. Courses
       if (results[2].status === 'fulfilled') {
         this.courses = [];
-        results[2].value.forEach(doc => this.courses.push({ docId: doc.id, id: doc.id, ...doc.data() }));
+        results[2].value.forEach(doc => {
+            let c = { docId: doc.id, id: doc.id, ...doc.data() };
+            if (c.name === 'COMPAGNIE MOOVE') c.name = 'ADK MOOVE';
+            if (c.name === 'COMPAGNIE UNITY') c.name = 'ADK UNITY';
+            if (c.name === 'COMPAGNIE TEAM') c.name = 'ADK TEAM';
+            this.courses.push(c);
+          });
+        this.sortCourses();
       } else {
         console.warn("courses read error:", results[2].reason);
       }
@@ -409,3 +427,5 @@ export const DATA = {
 
 DATA.loadState();
 window.DATA = DATA;
+
+DATA.sortCourses();
