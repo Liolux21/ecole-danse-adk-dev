@@ -21,7 +21,7 @@
   <meta name="apple-mobile-web-app-title" content="ADK App">
   <!-- Quill CSS -->
   <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=639266382245671290">
+  <link rel="stylesheet" href="css/style.css?v=639266385036700326">
   <script>
     window.addEventListener('error', function(e) {
       console.error("JS Error: " + e.message + " at " + e.filename + ":" + e.lineno);
@@ -1257,6 +1257,28 @@
               <input type="tel" id="prof-phone" class="form-input">
             </div>
 
+            <!-- ADRESSE PROF -->
+            <div style="display: flex; gap: 1rem;">
+              <div class="form-group" style="flex: 2;">
+                <label class="form-label">Rue</label>
+                <input type="text" id="prof-address" class="form-input">
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label class="form-label">Numéro</label>
+                <input type="text" id="prof-address-number" class="form-input">
+              </div>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+              <div class="form-group" style="flex: 1;">
+                <label class="form-label">Code Postal</label>
+                <input type="text" id="prof-postal-code" class="form-input">
+              </div>
+              <div class="form-group" style="flex: 2;">
+                <label class="form-label">Ville</label>
+                <input type="text" id="prof-city" class="form-input">
+              </div>
+            </div>
+
             <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1rem;">
               <input type="checkbox" id="prof-has-tutor" onchange="document.getElementById('prof-tutor-section').style.display = this.checked ? 'block' : 'none';" style="width: 18px; height: 18px; cursor: pointer;">
               <label for="prof-has-tutor" style="font-weight: 500; cursor: pointer;">Ce professeur a un tuteur (mineur)</label>
@@ -1630,11 +1652,11 @@
 
   <!-- Quill JS -->
   <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-  <script src="js/vitrine-data.js?v=639266382245671290"></script>
-  <script type="module" src="js/data.js?v=639266382245671290"></script>
-  <script type="module" src="js/auth.js?v=639266382245671290"></script>
-  <script type="module" src="js/chat.js?v=639266382245671290"></script>
-  <script type="module" src="js/app.js?v=639266382245671290"></script>
+  <script src="js/vitrine-data.js?v=639266385036700326"></script>
+  <script type="module" src="js/data.js?v=639266385036700326"></script>
+  <script type="module" src="js/auth.js?v=639266385036700326"></script>
+  <script type="module" src="js/chat.js?v=639266385036700326"></script>
+  <script type="module" src="js/app.js?v=639266385036700326"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
@@ -1727,6 +1749,7 @@
 
 </body>
 </html>
+
 
 
 

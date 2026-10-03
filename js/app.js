@@ -1443,6 +1443,11 @@ window.openAddProfModal = function(id = null) {
       document.getElementById('prof-email').value = p.email || p.id;
       document.getElementById('prof-phone').value = p.phone || '';
       
+      document.getElementById('prof-address').value = p.address || '';
+      document.getElementById('prof-address-number').value = p.addressNumber || '';
+      document.getElementById('prof-postal-code').value = p.postalCode || '';
+      document.getElementById('prof-city').value = p.city || '';
+      
       if (p.tutorFirstname || p.tutorLastname) {
         document.getElementById('prof-has-tutor').checked = true;
         document.getElementById('prof-tutor-section').style.display = 'block';
@@ -1485,6 +1490,11 @@ window.saveProf = async function() {
     email = email.toLowerCase().trim();
     const phone = document.getElementById('prof-phone').value;
     
+    const address = document.getElementById('prof-address').value;
+    const addressNumber = document.getElementById('prof-address-number').value;
+    const postalCode = document.getElementById('prof-postal-code').value;
+    const city = document.getElementById('prof-city').value;
+    
     const hasTutor = document.getElementById('prof-has-tutor').checked;
     const tutorFirstname = document.getElementById('prof-tutor-firstname').value;
     const tutorLastname = document.getElementById('prof-tutor-lastname').value;
@@ -1510,6 +1520,10 @@ window.saveProf = async function() {
       dob,
       email,
       phone,
+      address,
+      addressNumber,
+      postalCode,
+      city,
       hasTutor,
       tutorFirstname: hasTutor ? tutorFirstname : '',
       tutorLastname: hasTutor ? tutorLastname : '',
