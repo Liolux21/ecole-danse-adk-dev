@@ -19,7 +19,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ADK App">
-  <link rel="stylesheet" href="css/style.css?v=639266369459578757">
+  <link rel="stylesheet" href="css/style.css?v=639266372662145364">
   <script>
     window.addEventListener('error', function(e) {
       console.error("JS Error: " + e.message + " at " + e.filename + ":" + e.lineno);
@@ -1297,9 +1297,15 @@
             <label class="form-label">Date</label>
             <input type="date" id="gala-rep-date" class="form-input" required>
           </div>
-          <div class="form-group">
-            <label class="form-label">Heure</label>
-            <input type="time" id="gala-rep-time" class="form-input" required>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Heure de début</label>
+              <input type="time" id="gala-rep-time" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Heure de fin</label>
+              <input type="time" id="gala-rep-time-end" class="form-input">
+            </div>
           </div>
           <div class="form-group">
             <label class="form-label">Élèves concernés</label>
@@ -1310,13 +1316,17 @@
           </div>
           <div class="form-group">
             <label class="form-label">Lieu</label>
-            <select id="gala-rep-lieu" class="form-input" required>
+            <select id="gala-rep-lieu" class="form-input" required onchange="document.getElementById('gala-rep-lieu-autre-container').style.display = this.value === 'Autre' ? 'block' : 'none';">
                 <option value="ADK">Studio ADK</option>
                 <option value="ROX">ROX</option>
                 <option value="Centre Sportif Florenville">Centre Sportif Florenville</option>
                 <option value="Centre Sportif Jamoigne">Centre Sportif Jamoigne</option>
                 <option value="Autre">Autre</option>
-              </select>
+            </select>
+          </div>
+          <div class="form-group" id="gala-rep-lieu-autre-container" style="display:none;">
+            <label class="form-label">Précisez le lieu</label>
+            <input type="text" id="gala-rep-lieu-autre" class="form-input" placeholder="Ex: Salle des fêtes">
           </div>
           <div class="form-group" style="display:flex; gap:0.5rem; align-items:center;">
             <input type="checkbox" id="gala-rep-tenue" style="width:18px;height:18px;">
@@ -1601,11 +1611,11 @@
     </div>
   </div>
 
-  <script src="js/vitrine-data.js?v=639266369459578757"></script>
-  <script type="module" src="js/data.js?v=639266369459578757"></script>
-  <script type="module" src="js/auth.js?v=639266369459578757"></script>
-  <script type="module" src="js/chat.js?v=639266369459578757"></script>
-  <script type="module" src="js/app.js?v=639266369459578757"></script>
+  <script src="js/vitrine-data.js?v=639266372662145364"></script>
+  <script type="module" src="js/data.js?v=639266372662145364"></script>
+  <script type="module" src="js/auth.js?v=639266372662145364"></script>
+  <script type="module" src="js/chat.js?v=639266372662145364"></script>
+  <script type="module" src="js/app.js?v=639266372662145364"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
@@ -1698,5 +1708,6 @@
 
 </body>
 </html>
+
 
 

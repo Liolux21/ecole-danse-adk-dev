@@ -1848,7 +1848,7 @@ window.renderGalaTables = function(userCtx) {
     : DATA.galaRepets.map(r => {
         const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
         return `<tr>
-          <td>${r.date} à ${r.time}</td>
+          <td>${r.date} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
           <td>${courseName}</td>
           <td>${formatLieu(r.lieu)}</td>
           <td>${r.tenue ? 'Oui' : 'Non'}</td>
@@ -1909,7 +1909,7 @@ window.renderGalaTables = function(userCtx) {
       : profRepets.map(r => {
           const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
           return `<tr>
-            <td>${r.date} à ${r.time}</td>
+            <td>${r.date} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
             <td>${courseName}</td>
             <td>${formatLieu(r.lieu)}</td>
             <td>${r.tenue ? 'Oui' : 'Non'}</td>
@@ -1968,7 +1968,7 @@ window.renderGalaTables = function(userCtx) {
            const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
            return `
              <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
-               <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">${r.date} à ${r.time}</h4>
+               <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">${r.date} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</h4>
                <p style="margin:0 0 0.2rem 0;"><strong>Cours concerné :</strong> ${courseName}</p>
                <p style="margin:0 0 0.2rem 0;"><strong>Lieu :</strong> ${formatLieu(r.lieu)}</p>
                <p style="margin:0; color:var(--text-light); font-size:0.9rem;">${r.msg || 'Pas de message supplémentaire.'}</p>
@@ -2018,12 +2018,18 @@ window.initGalaRepModal = function() {
   select.innerHTML = '<option value="all">Tous les élèves</option>' + DATA.courses.map(c => `<option value="${c.id}">${c.name} (${formatLieu(c.lieu)})</option>`).join('');
 };
 window.saveGalaRep = async function() {
+  let selectedLieu = document.getElementById('gala-rep-lieu').value;
+  if (selectedLieu === 'Autre') {
+    const autreLieu = document.getElementById('gala-rep-lieu-autre').value.trim();
+    if (autreLieu) selectedLieu = autreLieu;
+  }
   DATA.galaRepets.push({
     id: 'rep_' + Date.now(),
     date: document.getElementById('gala-rep-date').value,
     time: document.getElementById('gala-rep-time').value,
+    timeEnd: document.getElementById('gala-rep-time-end').value || '',
     course: document.getElementById('gala-rep-course').value,
-    lieu: document.getElementById('gala-rep-lieu').value,
+    lieu: selectedLieu,
     tenue: document.getElementById('gala-rep-tenue').checked,
     msg: document.getElementById('gala-rep-msg').value
   });
