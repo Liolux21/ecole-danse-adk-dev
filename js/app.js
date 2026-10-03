@@ -1403,6 +1403,7 @@ function renderAdminProfs() {
               <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #f5e6e6; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; overflow: hidden;">${avatarHtml}</div>
               <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</h4>
             </div>
+            <button class="btn btn-outline btn-sm" onclick="window.viewProfProfile('${p.id}')">👀 Profil</button>
         </div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>💃 Cours enseignés :</strong> ${coursesNames || '-'}</div>
         
@@ -1655,6 +1656,87 @@ window.deleteProf = async function(id) {
       }
     }
   };
+
+window.viewProfProfile = function(profId) {
+  const p = DATA.users.find(u => u.id === profId);
+  if (!p) return;
+
+  const searchName = p.firstname || (p.name ? p.name.split(' ')[0] : '');
+  const fullName = PROF_FULL_NAMES[searchName] || (p.firstname ? p.firstname + ' ' + p.lastname : p.name);
+
+  // User infos
+  const infosHtml = `
+    <div style="background:#f4f4f4; padding:1rem; border-radius:8px;">
+      <h5 style="margin-top:0; color:var(--primary);">Informations personnelles</h5>
+      <p style="margin:0 0 0.5rem 0;"><strong>Nom :</strong> ${fullName}</p>
+      <p style="margin:0 0 0.5rem 0;"><strong>Email :</strong> <a href="mailto:${p.email}">${p.email || '-'}</a></p>
+      <p style="margin:0 0 0.5rem 0;"><strong>Téléphone :</strong> <a href="tel:${p.phone}">${p.phone || '-'}</a></p>
+      <p style="margin:0 0 0.5rem 0;"><strong>Adresse :</strong> ${p.address || '-'} ${p.postalCode || ''} ${p.city || ''}</p>
+      <p style="margin:0;"><strong>Date de naissance :</strong> ${p.birthdate ? p.birthdate.split('-').reverse().join('/') : '-'}</p>
+    </div>
+  `;
+
+  // Cours prestés
+  const taughtCourses = DATA.courses.filter(c => c.prof && (c.prof.includes(p.name) || c.prof.includes(fullName) || c.prof.includes(searchName)));
+  const coursesHtml = taughtCourses.length === 0 ? '<p>Aucun cours régulier attribué.</p>' : `
+    <ul style="margin:0; padding-left:1.5rem;">
+      ${taughtCourses.map(c => `<li>${c.name} (${formatLieu(c.lieu)}) - ${c.day} à ${c.time}</li>`).join('')}
+    </ul>
+  `;
+
+  // Détail des heures
+  const profHours = (DATA.prof_hours || []).filter(r => r.profId === p.id);
+  const hoursByMonth = {};
+  let totalHours = 0;
+  profHours.forEach(r => {
+    if (!r.date) return;
+    const parts = r.date.split('/');
+    if (parts.length === 3) {
+      const monthKey = `${parts[1]}/${parts[2]}`;
+      if (!hoursByMonth[monthKey]) hoursByMonth[monthKey] = { hours: 0, details: [] };
+      hoursByMonth[monthKey].hours += r.hours || 0;
+      hoursByMonth[monthKey].details.push(r);
+      totalHours += r.hours || 0;
+    }
+  });
+
+  const sortedMonths = Object.keys(hoursByMonth).sort((a,b) => {
+    const [ma, ya] = a.split('/');
+    const [mb, yb] = b.split('/');
+    if (ya !== yb) return yb - ya;
+    return mb - ma;
+  });
+
+  const hoursHtml = sortedMonths.length === 0 ? '<p>Aucune heure encodée pour le moment.</p>' : `
+    <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem;">
+      ${sortedMonths.map(m => {
+        return `
+          <div style="margin-bottom: 0.5rem;">
+            <strong>Mois : ${m}</strong> &mdash; ${hoursByMonth[m].hours}h total
+            <ul style="margin: 0.2rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+              ${hoursByMonth[m].details.map(d => `<li>${d.date} : ${d.hours}h - ${d.course} (${d.type})</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }).join('')}
+    </div>
+    <p style="margin-top:0.5rem; font-weight:bold;">Total général : ${totalHours} heures</p>
+  `;
+
+  document.getElementById('prof-view-content').innerHTML = `
+    ${infosHtml}
+    <div style="margin-top:0.5rem;">
+      <h5 style="color:var(--primary); margin-bottom:0.5rem;">Cours prestés</h5>
+      ${coursesHtml}
+    </div>
+    <div style="margin-top:0.5rem;">
+      <h5 style="color:var(--primary); margin-bottom:0.5rem;">Détail des heures</h5>
+      ${hoursHtml}
+    </div>
+  `;
+
+  openModal('modal-prof-view');
+};
 
 window.renderAdminCourses = function() {
   const tbody = document.getElementById('admin-courses-tbody');
