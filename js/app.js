@@ -2165,7 +2165,7 @@ function renderProfDashboard(user) {
       
       const option = document.createElement('option');
       option.value = cid;
-      option.textContent = `${c.emoji} ${c.name}${notif}`;
+      option.textContent = `${c.name}${notif}`;
       if (cid === selectedCourseId) option.selected = true;
       courseSelector.appendChild(option);
     });
@@ -3659,6 +3659,10 @@ window.openAddStudentModal = function(studentId = null) {
     document.getElementById('add-student-tutor-firstname').value = student.tutorFirstname || '';
     document.getElementById('add-student-tutor-lastname').value = student.tutorLastname || '';
     document.getElementById('add-student-tutor-phone').value = student.tutorPhone || '';
+    document.getElementById('add-student-street').value = student.street || '';
+    document.getElementById('add-student-street-number').value = student.streetNumber || '';
+    document.getElementById('add-student-postal-code').value = student.postalCode || '';
+    document.getElementById('add-student-city').value = student.city || '';
     document.getElementById('add-student-email').value = student.contactEmail || '';
     const email2Input = document.getElementById('add-student-email2');
     if (email2Input) email2Input.value = student.contactEmail2 || '';
@@ -3699,6 +3703,10 @@ window.submitAddStudent = async function() {
       const tutorFirstname = document.getElementById('add-student-tutor-firstname').value;
       const tutorLastname = document.getElementById('add-student-tutor-lastname').value;
       const tutorPhone = document.getElementById('add-student-tutor-phone').value;
+      const street = document.getElementById('add-student-street').value;
+      const streetNumber = document.getElementById('add-student-street-number').value;
+      const postalCode = document.getElementById('add-student-postal-code').value;
+      const city = document.getElementById('add-student-city').value;
     const email = document.getElementById('add-student-email').value.toLowerCase().trim();
     const email2Input = document.getElementById('add-student-email2');
     const email2 = email2Input ? email2Input.value.toLowerCase().trim() : "";
@@ -3715,6 +3723,10 @@ window.submitAddStudent = async function() {
         tutorFirstname: tutorFirstname,
         tutorLastname: tutorLastname,
         tutorPhone: tutorPhone,
+        street: street,
+        streetNumber: streetNumber,
+        postalCode: postalCode,
+        city: city,
       contactEmail: email,
       contactEmail2: email2,
       courseIds: selectedCourses
