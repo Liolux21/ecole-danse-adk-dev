@@ -998,7 +998,7 @@
               
               <!-- Section pour Cours Régulier -->
               <div id="admin-course-regular-section">
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
                       <label class="form-label">Jour de la semaine</label>
                       <select id="admin-course-day" class="form-input">
@@ -1012,8 +1012,21 @@
                       </select>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Heure (ex: 17h30)</label>
+                      <label class="form-label">Heure début</label>
                       <input type="time" id="admin-course-time" class="form-input">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Heure fin</label>
+                      <input type="time" id="admin-course-time-end" class="form-input">
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                      <input type="checkbox" id="admin-course-biweekly" onchange="document.getElementById('admin-course-biweekly-start-container').style.display = this.checked ? 'block' : 'none';"> 1sem/2
+                    </label>
+                    <div id="admin-course-biweekly-start-container" style="display: none;">
+                      <label class="form-label" style="display:inline-block; margin-right: 0.5rem; margin-bottom:0;">Date du 1er cours :</label>
+                      <input type="date" id="admin-course-biweekly-start" class="form-input" style="width:auto; display:inline-block;">
                     </div>
                   </div>
               </div>

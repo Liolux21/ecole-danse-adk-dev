@@ -3244,6 +3244,35 @@ document.getElementById('absence-form')?.addEventListener('submit', (e) => {
 function isDateValid(date, course) {
     if (course && course.isPriority) return true;
     updateSeasonDisplay();
+    
+    if (course && course.biweekly && course.biweeklyStart) {
+        const startParts = course.biweeklyStart.split('-');
+        if (startParts.length === 3) {
+            const startDateObj = new Date(startParts[0], startParts[1] - 1, startParts[2]);
+            const targetDateObj = new Date(date);
+            
+            // Align both to the Monday of their respective weeks
+            const getMonday = (d) => {
+                const nd = new Date(d);
+                const day = nd.getDay();
+                const diff = nd.getDate() - day + (day === 0 ? -6 : 1);
+                nd.setDate(diff);
+                nd.setHours(0,0,0,0);
+                return nd;
+            };
+            
+            const startMonday = getMonday(startDateObj);
+            const targetMonday = getMonday(targetDateObj);
+            
+            const msInDay = 1000 * 60 * 60 * 24;
+            const daysBetween = Math.round((targetMonday - startMonday) / msInDay);
+            const weeksBetween = Math.round(daysBetween / 7);
+            
+            if (weeksBetween % 2 !== 0) {
+                return false;
+            }
+        }
+    }
     if (DATA.settings && DATA.settings.season) {
         if (DATA.settings.season.start) {
             const s = new Date(DATA.settings.season.start);
@@ -3311,6 +3340,33 @@ function calculateNextCourses(children) {
          targetDateObj = new Date(now);
          targetDateObj.setDate(now.getDate() + diffDays);
          targetDateObj.setHours(Math.floor(targetHourMin/60), targetHourMin%60, 0, 0);
+
+         if (c.biweekly && c.biweeklyStart) {
+            const startParts = c.biweeklyStart.split('-');
+            if (startParts.length === 3) {
+                const startDateObj = new Date(startParts[0], startParts[1] - 1, startParts[2]);
+                
+                const getMonday = (d) => {
+                    const nd = new Date(d);
+                    const day = nd.getDay();
+                    const diff = nd.getDate() - day + (day === 0 ? -6 : 1);
+                    nd.setDate(diff);
+                    nd.setHours(0,0,0,0);
+                    return nd;
+                };
+                
+                const startMonday = getMonday(startDateObj);
+                const targetMonday = getMonday(targetDateObj);
+                
+                const msInDay = 1000 * 60 * 60 * 24;
+                const daysBetween = Math.round((targetMonday - startMonday) / msInDay);
+                const weeksBetween = Math.round(daysBetween / 7);
+                
+                if (weeksBetween % 2 !== 0) {
+                    targetDateObj.setDate(targetDateObj.getDate() + 7);
+                }
+            }
+         }
       }
       
       const diffMs = targetDateObj.getTime() - now.getTime();
@@ -3825,19 +3881,49 @@ window.openAddCourseModal = function(courseId = null) {
 
       if (course.eventType === 'regulier' || !course.eventType) {
         let schedule = course.schedule || '';
+        let day = 'Lundi';
+        let startTime = '';
+        let endTime = '';
+        
         let parts = schedule.split(' ');
         if(parts.length >= 2) {
-            document.getElementById('admin-course-day').value = parts[0];
-            document.getElementById('admin-course-time').value = parts[1].replace('h', ':');
-        } else {
-            document.getElementById('admin-course-day').value = 'Lundi';
-            document.getElementById('admin-course-time').value = '';
+            day = parts[0];
+            startTime = parts[1].replace('h', ':');
         }
+        if(schedule.includes('à')) {
+            endTime = schedule.split('à')[1].trim().replace('h', ':');
+        } else if(parts.length >= 4 && (parts[2] === '-' || parts[2] === 'à')) {
+            endTime = parts[3].replace('h', ':');
+        } else if(schedule.includes('-') && !schedule.includes('/')) {
+            let tParts = schedule.split('-');
+            if(tParts.length > 1) {
+               endTime = tParts[1].trim().replace('h', ':');
+            }
+        }
+        
+        document.getElementById('admin-course-day').value = day;
+        document.getElementById('admin-course-time').value = startTime;
+        if (document.getElementById('admin-course-time-end')) {
+           document.getElementById('admin-course-time-end').value = endTime;
+        }
+        if (document.getElementById('admin-course-biweekly')) {
+           document.getElementById('admin-course-biweekly').checked = !!course.biweekly;
+           document.getElementById('admin-course-biweekly-start-container').style.display = course.biweekly ? 'block' : 'none';
+           document.getElementById('admin-course-biweekly-start').value = course.biweeklyStart || '';
+        }
+
         document.getElementById('admin-course-start-date').value = '';
         document.getElementById('admin-course-end-date').value = '';
       } else {
         document.getElementById('admin-course-day').value = 'Lundi';
         document.getElementById('admin-course-time').value = '';
+        if (document.getElementById('admin-course-time-end')) document.getElementById('admin-course-time-end').value = '';
+        if (document.getElementById('admin-course-biweekly')) {
+           document.getElementById('admin-course-biweekly').checked = false;
+           document.getElementById('admin-course-biweekly-start-container').style.display = 'none';
+           document.getElementById('admin-course-biweekly-start').value = '';
+        }
+        
         document.getElementById('admin-course-start-date').value = '';
         document.getElementById('admin-course-end-date').value = '';
         document.getElementById('admin-course-event-start-time').value = '';
@@ -3874,6 +3960,9 @@ window.openAddCourseModal = function(courseId = null) {
     const form = document.getElementById('form-admin-course');
     if (form) form.reset();
     document.getElementById('admin-course-id').value = '';
+    if (document.getElementById('admin-course-biweekly-start-container')) {
+       document.getElementById('admin-course-biweekly-start-container').style.display = 'none';
+    }
     
     if (profsContainer) {
         profsContainer.innerHTML = profs.map(p => {
@@ -3904,10 +3993,29 @@ window.submitAdminCourse = async function() {
     
     let eventType = document.getElementById('admin-course-type') ? document.getElementById('admin-course-type').value : 'regulier';
     let scheduleStr = '';
+    let biweekly = false;
+    let biweeklyStart = '';
+    
     if (eventType === 'regulier') {
         let day = document.getElementById('admin-course-day').value;
         let time = document.getElementById('admin-course-time').value.replace(':', 'h');
-        scheduleStr = `${day} ${time}`;
+        let timeEndEl = document.getElementById('admin-course-time-end');
+        let timeEnd = timeEndEl ? timeEndEl.value.replace(':', 'h') : '';
+        
+        if (timeEnd) {
+           scheduleStr = `${day} ${time} à ${timeEnd}`;
+        } else {
+           scheduleStr = `${day} ${time}`;
+        }
+        
+        let bwEl = document.getElementById('admin-course-biweekly');
+        if (bwEl && bwEl.checked) {
+           biweekly = true;
+           biweeklyStart = document.getElementById('admin-course-biweekly-start').value || '';
+           if (!scheduleStr.includes('(1 sem/2)')) {
+               scheduleStr += ' (1 sem/2)';
+           }
+        }
     } else {
         let sd = document.getElementById('admin-course-start-date').value;
         let ed = document.getElementById('admin-course-end-date').value;
@@ -3955,6 +4063,11 @@ window.submitAdminCourse = async function() {
       style: document.getElementById('admin-course-style') ? document.getElementById('admin-course-style').value : 'classique',
       lieu: "ADK"
     };
+    
+    if (eventType === 'regulier') {
+      courseData.biweekly = biweekly;
+      if (biweeklyStart) courseData.biweeklyStart = biweeklyStart;
+    }
 
     const firebase = await import('./firebase-config.js');
     
