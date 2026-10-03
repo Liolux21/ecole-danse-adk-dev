@@ -2135,7 +2135,12 @@ window.editGalaNote = function(id) {
   document.getElementById('gala-note-id').value = note.id;
   document.getElementById('gala-note-date').value = note.date;
   document.getElementById('gala-note-pv').value = note.pv;
-  window.quillGalaNote.root.innerHTML = note.pv || '';
+  
+  let content = note.pv || '';
+  if (content && !content.includes('<p>') && !content.includes('<br>') && !content.includes('<strong>')) {
+    content = content.replace(/\n/g, '<br>');
+  }
+  window.quillGalaNote.root.innerHTML = content;
 
   const div = document.getElementById('gala-note-presence');
   const profs = DATA.users.filter(u => u.role === 'prof');
@@ -4661,7 +4666,12 @@ window.viewGalaNote = function(id) {
   
   document.getElementById('note-view-date').textContent = formatDateFR(note.date);
   document.getElementById('note-view-presents').textContent = note.presents.join(', ') || 'Aucun';
-  document.getElementById('note-view-content').innerHTML = note.pv;
+  
+  let content = note.pv || '';
+  if (content && !content.includes('<p>') && !content.includes('<br>') && !content.includes('<strong>')) {
+    content = content.replace(/\n/g, '<br>');
+  }
+  document.getElementById('note-view-content').innerHTML = content;
   openModal('modal-gala-note-view');
 };
 
