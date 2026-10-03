@@ -1,0 +1,35 @@
+322: const courseSelectContainer = document.querySelector('.custom-select-container');
+532: const container = document.getElementById(targetId);
+533: if (container) {
+534: const btn = container.querySelector(`[data-tab="${e.target.value}"]`);
+574: const container = document.getElementById(tabsContainerId);
+575: if (!container) return;
+576: container.querySelectorAll('.dash-tab, .btn-tab').forEach((tab, i) => {
+578: container.querySelectorAll('.dash-tab, .btn-tab').forEach(t => t.classList.remove('active'));
+1293: function renderWeeklyCalendar(courseIds, containerId) {
+1294: const container = document.getElementById(containerId);
+1295: if (!container) return;
+1314: container.innerHTML = '';
+1333: container.innerHTML = html;
+1337: function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', user = null, studentId = null) {
+1338: const container = document.getElementById(containerId);
+1339: if (!container) return;
+1342: container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🗓️</div><p>${emptyMsg}</p></div>`;
+1348: container.innerHTML = courses.map(c => {
+1408: container.querySelectorAll('.btn-manage').forEach(btn => {
+1411: container.querySelectorAll('.btn-absent').forEach(btn => {
+1414: container.querySelectorAll('.btn-msg').forEach(btn => {
+1791: const container = document.getElementById('add-student-courses');
+1792: if (container) {
+1793: container.innerHTML = DATA.courses.map(c => `
+1808: if (container) {
+1809: const checkboxes = container.querySelectorAll('.course-checkbox');
+2129: const container = document.getElementById('admin-annonces-list');
+2130: if (!container) return;
+2133: container.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted); border:1px dashed var(--border); border-radius:8px;">Aucune annonce publiée.</div>`;
+2137: container.innerHTML = DATA.announcements.map(ann => {
+2161: const containerId = role === 'parent' ? 'parent-announcements-list' : 'prof-announcements-list';
+2162: const wrapperId = role === 'parent' ? 'parent-announcements-container' : 'prof-announcements-container';
+2166: const container = document.getElementById(containerId);
+2171: if (!container || !wrapper || !fullContainer) return;
+2220: container.innerHTML = unreadAnnouncements.map(ann => {

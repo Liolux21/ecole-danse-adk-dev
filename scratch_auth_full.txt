@@ -1,0 +1,25 @@
+        if (user) {
+          try {
+            // Dans notre modèle de migration, on a utilisé l'email comme ID de document pour plus de facilité
+            // ou on peut faire une query pour trouver l'utilisateur par email.
+            // Vu qu'on a mis l'email comme ID dans migrate.html :
+            const docRef = doc(db, "users", user.email);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              this.currentUser = { ...docSnap.data(), id: docSnap.id, uid: user.uid };
+            } else {
+              console.warn("Utilisateur authentifié mais pas trouvé dans Firestore.");
+              if (user.email && user.email.toLowerCase() === 'lionel.henrion@gmail.com') {
+                const adminData = { email: user.email, name: 'Lionel Henrion', role: 'admin' };
+                await setDoc(docRef, adminData);
+                this.currentUser = { ...adminData, id: user.email, uid: user.uid };
+              } else {
+                this.currentUser = { email: user.email, role: 'eleve' };
+              }
+            }
+          } catch(e) {
+            console.error("Erreur de récupération profil Firestore", e);
+            this.currentUser = null;
+          }
+        } else {
+          this.currentUser = null;

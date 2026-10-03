@@ -1,0 +1,130 @@
+        q = query(collection(db, 'conversations'));
+    }
+
+    onSnapshot(q, (snapshot) => {
+        convListEl.innerHTML = '';
+        if (snapshot.empty) {
+            convListEl.innerHTML = '<div style="padding: 1rem; color: var(--text-light); text-align: center;">Aucune conversation</div>';
+            return;
+        }
+
+        let allConvs = [];
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            
+            // Client side filter
+            if (currentUser.role !== 'admin') {
+                if (!data.isGroup) {
+                    if (!data.participants || !data.participants.includes(currentUser.email)) return;
+                } else {
+                    if (!myGroups.includes(data.targetGroup) && (!data.participants || !data.participants.includes(currentUser.email))) return;
+                }
+            }
+            
+            allConvs.push({ id: docSnap.id, data: data });
+        });
+
+        // Sort locally to avoid Firebase composite index requirements
+        allConvs.sort((a, b) => {
+            const tA = a.data.lastMessageAt && typeof a.data.lastMessageAt.toMillis === 'function' ? a.data.lastMessageAt.toMillis() : 0;
+            const tB = b.data.lastMessageAt && typeof b.data.lastMessageAt.toMillis === 'function' ? b.data.lastMessageAt.toMillis() : 0;
+            return tB - tA;
+        });
+
+        // Regrouper les conversations par catégorie
+        const groups = {
+            admin: { label: '🛡️ Administration ADK', convs: [] },
+            cours: { label: '🎵 Canal Cours', convs: [] },
+            onetoone: { label: '💬 Canal One to One', convs: [] },
+        };
+
+        let hasAnyConv = false;
+
+        allConvs.forEach(convObj => {
+            const conv = convObj.data;
+            const convId = convObj.id;
+            
+            // Check archive status
+            const isArchived = Array.isArray(conv.archivedBy) && conv.archivedBy.includes(currentUser.email);
+            if (isArchived !== showArchivedConversations) return;
+
+            hasAnyConv = true;
+            const tg = conv.targetGroup || '';
+
+            if (tg === 'admin' || tg === 'all' || tg === 'all_profs' || tg === 'all_students') {
+                groups.admin.convs.push({ id: convId, data: conv });
+            } else if (tg.startsWith('course_')) {
+                groups.cours.convs.push({ id: convId, data: conv });
+            } else {
+                groups.onetoone.convs.push({ id: convId, data: conv });
+            }
+        });
+
+        if (!hasAnyConv) {
+            convListEl.innerHTML = `<div style="padding: 1rem; color: var(--text-light); text-align: center;">Aucune conversation ${showArchivedConversations ? 'archivée' : ''}</div>`;
+            return;
+        }
+
+        // Rendre chaque groupe
+        Object.values(groups).forEach(group => {
+            if (group.convs.length === 0) return;
+
+            // En-tête du groupe
+            const header = document.createElement('div');
+            header.style.cssText = 'padding: 0.5rem 1rem; font-size: 0.65rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; background: #f0f0f0; border-top: 1px solid var(--border); padding: 4px 10px;';
+            header.textContent = group.label;
+            convListEl.appendChild(header);
+
+            group.convs.forEach(({ id: convId, data: conv }) => {
+                const isActive = convId === currentChatId ? 'active' : '';
+
+                let timeString = '';
+                if (conv.lastMessageAt) {
+                    const date = conv.lastMessageAt.toDate();
+                    const today = new Date();
+                    const isToday = date.toDateString() === today.toDateString();
+                    if (isToday) {
+                        timeString = date.toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' });
+                    } else {
+                        timeString = date.toLocaleDateString('fr-BE', { day: '2-digit', month: '2-digit' });
+                    }
+                }
+
+                let displayTitle = conv.customName || 'Discussion';
+                let displaySubtitle = '';
+                let displayAvatar = conv.isGroup ? '👥' : '👤';
+                let chatTitleParam = conv.customName || '';
+                
+                if (!conv.isGroup && Array.isArray(conv.participants)) {
+                    const others = conv.participants.filter(p => p !== currentUser.email);
+                    if (others.length > 0) {
+                        let otherAvatar = null;
+                        const otherNames = others.map(email => {
+                            if (window.DATA) {
+                                const prof = (window.DATA.users || []).find(u => (u.email || u.id) === email);
+                                if (prof) {
+                                    if (prof.avatarUrl) otherAvatar = prof.avatarUrl;
+                                    else if (prof.avatar && (prof.avatar.startsWith('http') || prof.avatar.startsWith('assets/'))) otherAvatar = prof.avatar;
+                                    return prof.name || `${prof.firstname || ''} ${prof.lastname || ''}`.trim() || email;
+                                }
+                                const student = (window.DATA.students || []).find(s => (s.contactEmail || s.parentId) === email);
+                                if (student) {
+                                    if (student.avatarUrl) otherAvatar = student.avatarUrl;
+                                    else if (student.avatar && student.avatar.startsWith('http')) otherAvatar = student.avatar;
+                                    return `${student.firstname || ''} ${student.lastname || ''}`.trim() || student.name || email;
+                                }
+                            }
+                            return email;
+                        });
+                        
+                        if (!conv.customName) {
+                            displayTitle = otherNames.join(', ');
+                        } else {
+                            displaySubtitle = `<div style="font-size: 0.7rem; color: var(--primary); margin-top: -2px; margin-bottom: 0px;">${otherNames.join(', ')}</div>`;
+                        }
+                        
+                        // If it's a multi-person chat without a custom avatar, maybe show a group icon
+                        if (others.length > 1 && !conv.customName) {
+                            displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">👥</div>`;
+                        } else if (otherAvatar && others.length === 1) {
+                            displayAvatar = `<img src="${otherAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;

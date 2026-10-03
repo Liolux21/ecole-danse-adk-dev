@@ -1,0 +1,25 @@
+    }
+  },
+
+  // ---- FIREBASE SYNC ----
+  async syncFromFirebase() {
+    try {
+      // 1. Fetch Users
+      const usersSnap = await getDocs(collection(db, "users"));
+      this.users = [];
+      usersSnap.forEach(doc => {
+        this.users.push({ docId: doc.id, id: doc.id, ...doc.data() });
+      });
+
+      // 2. Fetch Students
+      try {
+        const studentsSnap = await getDocs(collection(db, "students"));
+        this.students = [];
+        studentsSnap.forEach(doc => {
+          let sData = doc.data();
+          if (sData.courses && !sData.courseIds) {
+            sData.courseIds = sData.courses;
+            delete sData.courses;
+          }
+          sData.courseIds = sData.courseIds || [];
+          this.students.push({ docId: doc.id, id: doc.id, ...sData });

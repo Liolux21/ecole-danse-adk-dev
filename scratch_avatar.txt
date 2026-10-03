@@ -1,0 +1,45 @@
+        if (height > MAX_SIZE) {
+          width *= MAX_SIZE / height;
+          height = MAX_SIZE;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const base64 = canvas.toDataURL('image/jpeg', 0.8);
+      
+      const preview = document.getElementById('profile-avatar-preview');
+      preview.style.backgroundImage = 'url(' + base64 + ')';
+      preview.style.backgroundSize = 'cover';
+      preview.style.backgroundPosition = 'center';
+      preview.innerText = '';
+      document.getElementById('profile-avatar-base64').value = base64;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const formProfile = document.getElementById('form-profile');
+  if (formProfile) {
+    formProfile.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('profile-email').value.trim();
+      const phone = document.getElementById('profile-telephone').value.trim();
+      const newPw = document.getElementById('profile-new-password').value;
+      const currentPw = document.getElementById('profile-current-password').value;
+      const avatarBase64 = document.getElementById('profile-avatar-base64').value;
+      const errBox = document.getElementById('profile-error');
+      const btn = document.getElementById('btn-save-profile');
+
+      errBox.style.display = 'none';
+      btn.innerText = 'Enregistrement...';
+      btn.disabled = true;
+
+      try {
+        await AUTH.updateUserProfile(currentPw, email, newPw, phone, avatarBase64);
+        

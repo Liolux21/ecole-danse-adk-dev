@@ -1,0 +1,20 @@
+function renderParentDashboard(user) {
+  renderUserAnnonces('parent', user);
+  document.getElementById('parent-name').textContent = user.name;
+  if (typeof window.renderGalaTables === 'function') window.renderGalaTables(user);
+
+  const children = DATA.getChildrenByParent(user);
+  const childTabs = document.getElementById('child-tabs');
+  childTabs.innerHTML = '';
+
+  if (children.length === 0) {
+    document.getElementById('parent-attendance-list').innerHTML = '<div class="empty-state"><div class="empty-state-icon">🩰</div><p>Aucun enfant associé à ce compte</p></div>';
+    return;
+  }
+
+  // Notification Prochains cours
+  const nextCoursesData = calculateNextCourses(children);
+  nextCoursesData.sort((a, b) => a.diffMins - b.diffMins);
+  const banner = document.getElementById('parent-next-course-banner');
+  const bannerContent = document.getElementById('parent-next-course-content');
+  if (nextCoursesData.length > 0 && banner && bannerContent) {

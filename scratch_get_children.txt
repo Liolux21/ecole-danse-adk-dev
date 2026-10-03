@@ -1,0 +1,15 @@
+      const userEmail = (user.email || user.id || "").toLowerCase().trim();
+      
+      return this.students.filter(s => {
+        // HACK SPECIAL POUR MEGAN LAMOTTE
+        if (userEmail === 'lamottemegan3@gmail.com' || userEmail === 'lamottemegan@gmail.com' || userEmail.includes('lamotte')) {
+            if (s.lastname === 'Henrion' && s.firstname === 'Coline') return true;
+            if (s.lastname === 'Varoquaux' && s.firstname === 'Charlotte') return true;
+            if (s.lastname === 'Varoquaux' && s.firstname === 'Camille') return true;
+        }
+        
+        return (s.parentId === user.id) ||
+               (s.parentId && s.parentId.toLowerCase().trim() === userEmail) ||
+               (s.contactEmail && s.contactEmail.toLowerCase().trim() === userEmail) ||
+               (s.contactEmail2 && s.contactEmail2.toLowerCase().trim() === userEmail) ||
+               (user.childrenIds && user.childrenIds.includes(String(s.id)));

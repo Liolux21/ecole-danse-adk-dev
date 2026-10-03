@@ -1,0 +1,15 @@
+import re
+
+def bump_cache():
+    with open('portail.html', 'r', encoding='utf-8') as f:
+        portail = f.read()
+
+    portail = re.sub(r'css/style\.css\?v=\d+', 'css/style.css?v=206', portail)
+    portail = re.sub(r'js/app\.js\?v=\d+', 'js/app.js?v=42', portail)
+    
+    with open('portail.html', 'w', encoding='utf-8') as f:
+        f.write(portail)
+        
+    print("Bumped cache")
+
+bump_cache()

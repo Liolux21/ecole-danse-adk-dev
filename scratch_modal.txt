@@ -1,0 +1,11 @@
+            <div class="form-group">
+              <label class="form-label">Email du tuteur</label>
+              <input type="email" id="add-student-email" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Téléphone tuteur</label>
+              <input type="tel" id="add-student-tutor-phone" class="form-input" required>
+            </div>
+          <div class="form-group">
+            <label class="form-label">Cours</label>
+            <div id="add-student-courses" style="max-height: 150px; overflow-y: auto; padding: 1rem; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; background: #f9f9f9;">

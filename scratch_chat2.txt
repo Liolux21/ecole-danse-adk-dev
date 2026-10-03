@@ -1,0 +1,80 @@
+                        } else {
+                            displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">${displayTitle.charAt(0).toUpperCase()}</div>`;
+                        }
+                        
+                        chatTitleParam = displayTitle;
+                    }
+                } else if (conv.isGroup && conv.targetGroup) {
+                    if (conv.targetGroup.startsWith('course_')) {
+                        const courseId = conv.targetGroup.replace('course_', '');
+                        if (window.DATA && window.DATA.courses) {
+                            const course = window.DATA.courses.find(c => String(c.id) === String(courseId));
+                            if (course) {
+                                displayTitle = conv.customName || course.name;
+                                
+                                let profAvatar = course.avatar;
+                                if (!profAvatar && course.prof && window.VITRINE_DATA && window.VITRINE_DATA.professeurs && window.VITRINE_DATA.professeurs[course.prof]) {
+                                    profAvatar = window.VITRINE_DATA.professeurs[course.prof].avatar;
+                                }
+                                if (!profAvatar && course.prof && window.DATA && window.DATA.users) {
+                                    const profUser = window.DATA.users.find(u => u.name === course.prof || u.email === course.prof);
+                                    if (profUser) profAvatar = profUser.avatarUrl || profUser.avatar;
+                                }
+                                
+                                if (profAvatar) {
+                                    displayAvatar = `<img src="${profAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                                } else {
+                                    displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">🎵</div>`;
+                                }
+                                
+                                chatTitleParam = displayTitle;
+                            } else {
+                                displayTitle = 'Cours inconnu';
+                            }
+                        } else {
+                            displayTitle = 'Cours ' + courseId;
+                        }
+                    } else if (conv.targetGroup === 'admin') {
+                        displayTitle = conv.customName || 'Anne De Keyser';
+                        
+                        let anneAvatar = null;
+                        if (window.DATA && window.DATA.users) {
+                            const anne = window.DATA.users.find(u => u.role === 'admin' || (u.name && u.name.includes('Anne')));
+                            if (anne) anneAvatar = anne.avatarUrl || (anne.avatar && anne.avatar.startsWith('http') ? anne.avatar : null);
+                        }
+                        if (!anneAvatar && window.VITRINE_DATA && window.VITRINE_DATA.professeurs) {
+                            if (window.VITRINE_DATA.professeurs['Anne']) anneAvatar = window.VITRINE_DATA.professeurs['Anne'].avatar;
+                            else if (window.VITRINE_DATA.professeurs['Anne De Keyser']) anneAvatar = window.VITRINE_DATA.professeurs['Anne De Keyser'].avatar;
+                        }
+                        
+                        if (anneAvatar) {
+                            displayAvatar = `<img src="${anneAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                        } else {
+                            displayAvatar = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5e6e6;color:var(--primary);border-radius:50%;font-weight:bold;font-size:1.2rem;">A</div>`;
+                        }
+                        chatTitleParam = displayTitle;
+                    } else if (conv.targetGroup === 'all') {
+                        displayTitle = conv.customName || 'Tous (Élèves et Profs)';
+                        displayAvatar = '📢';
+                        chatTitleParam = displayTitle;
+                    } else if (conv.targetGroup === 'all_students') {
+                        displayTitle = conv.customName || 'Tous les élèves';
+                        displayAvatar = '🎓';
+                        chatTitleParam = displayTitle;
+                    } else if (conv.targetGroup === 'all_profs') {
+                        displayTitle = conv.customName || 'Tous les profs';
+                        displayAvatar = '👩‍🏫';
+                        chatTitleParam = displayTitle;
+                    }
+                }
+
+                // If chatTitleParam is missing fallback
+                if (!chatTitleParam) chatTitleParam = displayTitle;
+
+                const item = document.createElement('div');
+                item.className = `conv-item ${isActive}`;
+                item.dataset.chatId = convId;
+                
+                const isAvatarString = typeof displayAvatar === 'string' && !displayAvatar.includes('<');
+                
+                item.innerHTML = `

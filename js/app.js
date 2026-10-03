@@ -447,7 +447,7 @@ function initInscription() {
       opt.innerHTML = `
         <input type="checkbox" ${selectedCourses.has(c.id) ? 'checked' : ''}>
         <div>
-          <div style="font-weight:600">${c.emoji} ${c.name}</div>
+          <div style="font-weight:600">${c.emoji} ${c.name} (${formatLieu(c.lieu)})</div>
           <span class="option-meta">${schedule} ${profStr ? '— ' + profStr : ''} — 📍 ${lieuStr}</span>
         </div>
       `;
@@ -473,7 +473,7 @@ function initInscription() {
         if(!c) return;
         const pill = document.createElement('div');
         pill.className = 'course-tag-pill';
-        pill.innerHTML = `<span>${c.emoji} ${c.name}</span> <span class="remove" data-id="${id}">×</span>`;
+        pill.innerHTML = `<span>${c.emoji} ${c.name} (${formatLieu(c.lieu)})</span> <span class="remove" data-id="${id}">×</span>`;
         courseSelectTags.appendChild(pill);
       });
     }
@@ -1680,7 +1680,7 @@ window.renderAdminCourses = function() {
     return `
       <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${c.emoji || '💃'} ${c.name}</h4>
+          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${c.emoji || '💃'} ${c.name} (${formatLieu(c.lieu)})</h4>
         </div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>👤 Professeur :</strong> ${c.prof}</div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📅 Horaire :</strong> ${c.schedule || "Non défini"}</div>
@@ -1859,12 +1859,13 @@ window.renderGalaTables = function(userCtx) {
   if (repBody) repBody.innerHTML = htmlRepAdmin;
 
   const htmlInfoAdmin = DATA.galaInfos.length === 0 
-    ? '<tr class="empty-state"><td colspan="5">Aucune info tableau.</td></tr>'
+    ? '<tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr>'
     : DATA.galaInfos.map(i => {
         const courseName = DATA.getCourseById(i.course)?.name || i.course;
         return `<tr>
           <td>${courseName}</td>
           <td>${i.theme}</td>
+          <td>${i.subtheme || '-'}</td>
           <td>${i.music || '-'}</td>
           <td>${i.tenue || '-'}</td>
           <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaInfo('${i.id}')">X</button></td>
@@ -1920,12 +1921,13 @@ window.renderGalaTables = function(userCtx) {
 
     const profInfos = DATA.galaInfos.filter(i => profCourseIds.includes(String(i.course)));
     const htmlInfoProf = profInfos.length === 0 
-      ? '<tr class="empty-state"><td colspan="5">Aucune info tableau.</td></tr>'
+      ? '<tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr>'
       : profInfos.map(i => {
           const courseName = DATA.getCourseById(i.course)?.name || i.course;
           return `<tr>
             <td>${courseName}</td>
             <td>${i.theme}</td>
+            <td>${i.subtheme || '-'}</td>
             <td>${i.music || '-'}</td>
             <td>${i.tenue || '-'}</td>
             <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaInfo('${i.id}')">X</button></td>
@@ -2013,7 +2015,7 @@ window.renderGalaTables = function(userCtx) {
 
 window.initGalaRepModal = function() {
   const select = document.getElementById('gala-rep-course');
-  select.innerHTML = '<option value="all">Tous les élèves</option>' + DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  select.innerHTML = '<option value="all">Tous les élèves</option>' + DATA.courses.map(c => `<option value="${c.id}">${c.name} (${formatLieu(c.lieu)})</option>`).join('');
 };
 window.saveGalaRep = async function() {
   DATA.galaRepets.push({
@@ -2037,7 +2039,7 @@ window.deleteGalaRep = async function(id) {
 
 window.initGalaTenueModal = function() {
   const select = document.getElementById('gala-tenue-course');
-  select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name} (${formatLieu(c.lieu)})</option>`).join('');
 };
 window.saveGalaTenue = function() {
   DATA.galaTenues.push({
@@ -2055,7 +2057,7 @@ window.deleteGalaTenue = function(id) {
 
 window.initGalaInfoModal = function() {
   const select = document.getElementById('gala-info-course');
-  select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  select.innerHTML = DATA.courses.map(c => `<option value="${c.id}">${c.name} (${formatLieu(c.lieu)})</option>`).join('');
   
   const selectTheme = document.getElementById('gala-info-theme');
   if (DATA.settings && DATA.settings.galaThemes) {
@@ -2063,12 +2065,17 @@ window.initGalaInfoModal = function() {
   } else {
     selectTheme.innerHTML = '';
   }
+  
+  document.getElementById('gala-info-subtheme').value = '';
+  document.getElementById('gala-info-music').value = '';
+  document.getElementById('gala-info-tenue').value = '';
 };
 window.saveGalaInfo = async function() {
   DATA.galaInfos.push({
     id: 'info_' + Date.now(),
     course: document.getElementById('gala-info-course').value,
     theme: document.getElementById('gala-info-theme').value,
+    subtheme: document.getElementById('gala-info-subtheme').value,
     music: document.getElementById('gala-info-music').value,
     tenue: document.getElementById('gala-info-tenue').value
   });
@@ -2165,7 +2172,7 @@ function renderProfDashboard(user) {
       
       const option = document.createElement('option');
       option.value = cid;
-      option.textContent = `${c.name}${notif}`;
+      option.textContent = `${c.name} (${formatLieu(c.lieu)})${notif}`;
       if (cid === selectedCourseId) option.selected = true;
       courseSelector.appendChild(option);
     });
@@ -2623,7 +2630,7 @@ window.renderProfEleves = function(user) {
         let opts = '<option value="all">Tous les élèves</option>';
         taughtCourseIds.forEach(cid => {
             const c = DATA.getCourseById(cid);
-            if (c) opts += `<option value="${c.id}">${c.name}</option>`;
+            if (c) opts += `<option value="${c.id}">${c.name} (${formatLieu(c.lieu)})</option>`;
         });
         filterSelect.innerHTML = opts;
         filterSelect.setAttribute('data-populated', 'true');
@@ -2988,9 +2995,9 @@ function renderWeeklyCalendar(courseIds, containerId) {
   const html = `<div class="compact-calendar">
     ${days.map((dayName, idx) => {
       const coursesHtml = calendarData[idx].map(c => `
-        <div class="cal-course-item" title="${c.name} - ${c.hour}">
+        <div class="cal-course-item" title="${c.name} (${formatLieu(c.lieu)}) - ${c.hour}">
           <span class="cal-time">${(c.hour || '').replace('h',':')}</span>
-          <span class="cal-name">${c.name}</span>
+          <span class="cal-name">${c.name} (${formatLieu(c.lieu)})</span>
         </div>
       `).join('');
       return `<div class="cal-day ${calendarData[idx].length > 0 ? 'has-courses' : ''}">
@@ -3057,7 +3064,7 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
 
     let imgHtml = '';
     if (c.image && c.image !== 'undefined') {
-      imgHtml = `<img src="${c.image}" class="portal-course-img" alt="${c.name}">`;
+      imgHtml = `<img src="${c.image}" class="portal-course-img" alt="${c.name} (${formatLieu(c.lieu)})">`;
     } else {
       let fallbackSrc = '';
       if (c.eventType === 'pro') fallbackSrc = 'img/adk_pro.png?v=3';
@@ -3065,7 +3072,7 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
       else if (c.eventType === 'show') fallbackSrc = 'img/adk_show.png?v=3';
       
       if (fallbackSrc) {
-          imgHtml = `<img src="${fallbackSrc}" class="portal-course-img" alt="${c.name}">`;
+          imgHtml = `<img src="${fallbackSrc}" class="portal-course-img" alt="${c.name} (${formatLieu(c.lieu)})">`;
       } else {
           let typeLabel = c.style ? c.style.toUpperCase() : 'ADK';
           imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center; overflow:hidden;">
@@ -3079,7 +3086,7 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
       ${imgHtml}
       <div class="portal-course-info" style="flex:1;">
         <div class="portal-course-title" style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="${titleStyle}">${c.name}</span>
+          <span style="${titleStyle}">${c.name} (${formatLieu(c.lieu)})</span>
           ${badge}
         </div>
         <div class="portal-course-meta">
@@ -3868,6 +3875,17 @@ window.openAddCourseModal = function(courseId = null) {
       if (typeEl) typeEl.value = course.eventType || 'regulier';
       const styleEl = document.getElementById('admin-course-style');
       if (styleEl) styleEl.value = course.style || 'classique';
+      const lieuEl = document.getElementById('admin-course-lieu');
+      if (lieuEl) {
+         let lcLieu = (course.lieu || 'ADK').toLowerCase();
+         // Match options precisely or gracefully
+         let found = Array.from(lieuEl.options).find(o => o.value.toLowerCase() === lcLieu);
+         if (found) {
+            lieuEl.value = found.value;
+         } else {
+            lieuEl.value = 'ADK';
+         }
+      }
       
       // Select profs
       let profsList = course.prof ? course.prof.split(', ') : [];
@@ -4051,6 +4069,8 @@ window.submitAdminCourse = async function() {
     const profCheckboxes = document.querySelectorAll('#admin-course-profs input[type="checkbox"]:checked');
     profCheckboxes.forEach(cb => profsList.push(cb.value));
 
+    const lieuVal = document.getElementById('admin-course-lieu') ? document.getElementById('admin-course-lieu').value : "ADK";
+
     const courseData = {
       id: id,
       name: document.getElementById('admin-course-name').value,
@@ -4061,12 +4081,130 @@ window.submitAdminCourse = async function() {
       isPriority: (eventType !== 'regulier'),
       category: "Nouveau",
       style: document.getElementById('admin-course-style') ? document.getElementById('admin-course-style').value : 'classique',
-      lieu: "ADK"
+      lieu: lieuVal
     };
     
     if (eventType === 'regulier') {
       courseData.biweekly = biweekly;
       if (biweeklyStart) courseData.biweeklyStart = biweeklyStart;
+    }
+
+    // CONFLICT CHECK
+    const checkOverlap = (newC, exC) => {
+        let nType = newC.eventType;
+        let eType = exC.eventType || 'regulier';
+
+        const parseT = (s) => {
+            if(!s) return null;
+            let p = s.split('h');
+            if(p.length<2) return null;
+            return parseInt(p[0])*60 + parseInt(p[1]||0);
+        };
+
+        let nStart, nEnd, nDay, nDateStart, nDateEnd;
+        if (nType === 'regulier') {
+            nDay = document.getElementById('admin-course-day').value;
+            nStart = parseT(document.getElementById('admin-course-time').value.replace(':', 'h'));
+            let endStr = document.getElementById('admin-course-time-end') ? document.getElementById('admin-course-time-end').value.replace(':', 'h') : '';
+            nEnd = endStr ? parseT(endStr) : (nStart ? nStart + 60 : null);
+        } else {
+            nDateStart = document.getElementById('admin-course-start-date').value; 
+            nDateEnd = document.getElementById('admin-course-end-date').value || nDateStart;
+            nStart = parseT(document.getElementById('admin-course-event-start-time').value.replace(':', 'h'));
+            let endStr = document.getElementById('admin-course-event-end-time').value.replace(':', 'h');
+            nEnd = endStr ? parseT(endStr) : (nStart ? nStart + 60 : null);
+        }
+
+        let eStart, eEnd, eDay, eDateStart, eDateEnd;
+        if (eType === 'regulier') {
+            eDay = exC.schedule ? exC.schedule.split(' ')[0] : '';
+            let sStr = exC.schedule ? exC.schedule.split(' ')[1] : '';
+            eStart = parseT(sStr);
+            eEnd = eStart ? eStart + 60 : null;
+            if (exC.schedule && exC.schedule.includes('à')) {
+                eEnd = parseT(exC.schedule.split('à')[1].trim());
+            } else if (exC.schedule && exC.schedule.includes('-') && !exC.schedule.includes('/')) {
+                let p = exC.schedule.split('-');
+                if(p.length>1) eEnd = parseT(p[1].trim());
+            }
+        } else {
+            if (exC.schedule) {
+                let sp = exC.schedule.split(' - ');
+                if (sp.length >= 1) {
+                    let p1 = sp[0].trim().split(' ');
+                    let d1 = p1[0].split('/');
+                    if(d1.length===3) eDateStart = `${d1[2]}-${d1[1]}-${d1[0]}`;
+                    if(p1.length>1) eStart = parseT(p1[1]);
+                }
+                if (sp.length >= 2) {
+                    let p2 = sp[1].trim().split(' ');
+                    p2.forEach(pt => {
+                        if(pt.includes('/')) {
+                            let d2 = pt.split('/');
+                            if(d2.length===3) eDateEnd = `${d2[2]}-${d2[1]}-${d2[0]}`;
+                        }
+                        if(pt.includes('h')) eEnd = parseT(pt);
+                    });
+                }
+                if(!eDateEnd) eDateEnd = eDateStart;
+                if(!eEnd && eStart) eEnd = eStart + 60;
+            }
+        }
+
+        if (nStart === null || nEnd === null || eStart === null || eEnd === null) return false;
+        if (nStart >= eEnd || nEnd <= eStart) return false;
+
+        if (nType === 'regulier' && eType === 'regulier') {
+            return nDay === eDay;
+        } else if (nType !== 'regulier' && eType !== 'regulier') {
+            if(!nDateStart || !eDateStart) return false;
+            let nds = new Date(nDateStart); let nde = new Date(nDateEnd);
+            let eds = new Date(eDateStart); let ede = new Date(eDateEnd);
+            nds.setHours(0,0,0,0); nde.setHours(23,59,59,999);
+            eds.setHours(0,0,0,0); ede.setHours(23,59,59,999);
+            if (nds > ede || nde < eds) return false;
+            return true;
+        } else {
+            let regDay = nType === 'regulier' ? nDay : eDay;
+            let evDateStart = nType === 'regulier' ? eDateStart : nDateStart;
+            let evDateEnd = nType === 'regulier' ? eDateEnd : nDateEnd;
+            if(!evDateStart) return false;
+            const daysMap = { 'Dimanche':0, 'Lundi':1, 'Mardi':2, 'Mercredi':3, 'Jeudi':4, 'Vendredi':5, 'Samedi':6 };
+            let tDay = daysMap[regDay];
+            if (tDay === undefined) return false;
+            
+            let dIter = new Date(evDateStart);
+            dIter.setHours(0,0,0,0);
+            let dEnd = new Date(evDateEnd);
+            dEnd.setHours(23,59,59,999);
+            while (dIter <= dEnd) {
+                if (dIter.getDay() === tDay) return true;
+                dIter.setDate(dIter.getDate()+1);
+            }
+            return false;
+        }
+    };
+
+    let hasConflict = false;
+    let conflictMsg = "";
+    for (const exC of DATA.courses) {
+        if (exC.id === courseData.id) continue;
+        if (exC.lieu !== courseData.lieu) continue;
+        if (exC.status === 'annule') continue;
+        
+        if (checkOverlap(courseData, exC)) {
+            hasConflict = true;
+            conflictMsg = `Le calendrier n'est pas libre. Conflit détecté avec le cours : ${exC.name} (${exC.schedule})`;
+            break;
+        }
+    }
+
+    if (hasConflict) {
+        if (window.showToast) window.showToast(conflictMsg, 'error');
+        else alert(conflictMsg);
+        btn.textContent = originalText;
+        btn.disabled = false;
+        return;
     }
 
     const firebase = await import('./firebase-config.js');
@@ -4142,12 +4280,12 @@ function renderAdminAnnonces() {
     if (ann.target.startsWith('course_')) {
       const cid = ann.target.replace('course_', '');
       const c = DATA.getCourseById(cid);
-      targetLabel = c ? `Cours: ${c.name}` : `Cours supprimé`;
+      targetLabel = c ? `Cours: ${c.name} (${formatLieu(c.lieu)})` : `Cours supprimé`;
     }
     if (ann.target.startsWith('prof_course_')) {
       const cid = ann.target.replace('prof_course_', '');
       const c = DATA.getCourseById(cid);
-      targetLabel = c ? `Prof du cours: ${c.name}` : `Prof du cours supprimé`;
+      targetLabel = c ? `Prof du cours: ${c.name} (${formatLieu(c.lieu)})` : `Prof du cours supprimé`;
     }
 
     return `

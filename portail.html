@@ -194,6 +194,7 @@
           <button class="dash-tab" data-tab="admin-cours">📅 Cours</button>
           <button class="dash-tab" data-tab="admin-settings">⚙️ Paramètres</button>
           <button class="dash-tab" data-tab="admin-gala">🩰 Gala</button>
+          <button class="dash-tab" data-tab="admin-rapports">📋 Réunions</button>
           <button class="dash-tab" data-tab="admin-annonces">📢 Annonces</button>
             <button class="dash-tab" data-tab="admin-messagerie">💬 Messagerie <span id="admin-chat-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
         </div>
@@ -437,12 +438,10 @@
           <select class="form-input gala-mobile-select" data-target="sub-admin-gala-tabs" style="display:none; margin-bottom:1rem; width:50%; cursor:pointer;">
             <option value="admin-gala-repets">📅 Répétitions</option>
                         <option value="admin-gala-infos">📝 Infos tableaux</option>
-            <option value="admin-gala-notes">📌 Notes réunions</option>
           </select>
           <div class="prof-planning-controls gala-desktop-tabs" id="sub-admin-gala-tabs">
           <button class="btn btn-outline btn-sm btn-tab active" data-tab="admin-gala-repets">📅 Répétitions</button>
                     <button class="btn btn-outline btn-sm btn-tab" data-tab="admin-gala-infos">📝 Infos tableaux</button>
-          <button class="btn btn-outline btn-sm btn-tab" data-tab="admin-gala-notes">📌 Notes réunions</button>
         </div>
           <div class="tab-content active" id="tab-admin-gala-repets">
             <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
@@ -462,21 +461,23 @@
             </div>
             <div class="data-table-wrapper" style="overflow-x: auto;">
               <table class="data-table">
-                <thead><tr><th>Cours</th><th>Thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
+                <thead><tr><th>Cours</th><th>Thème</th><th>Sous-thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
                 <tbody id="admin-gala-info-body"><tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr></tbody>
               </table>
             </div>
           </div>
-          <div class="tab-content" id="tab-admin-gala-notes">
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-              <button class="btn btn-primary" onclick="openModal('modal-gala-note'); initGalaNoteModal();">+ Nouveau rapport</button>
-            </div>
-            <div class="data-table-wrapper" style="overflow-x: auto;">
-              <table class="data-table">
-                <thead><tr><th>Date</th><th>Présents</th><th>Actions</th></tr></thead>
-                <tbody id="admin-gala-note-body"><tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr></tbody>
-              </table>
-            </div>
+        </div>
+
+        <!-- Tab: Admin Rapports -->
+        <div class="tab-content" id="tab-admin-rapports">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+            <button class="btn btn-primary" onclick="openModal('modal-gala-note'); initGalaNoteModal();">+ Nouveau rapport</button>
+          </div>
+          <div class="data-table-wrapper" style="overflow-x: auto;">
+            <table class="data-table">
+              <thead><tr><th>Date</th><th>Présents</th><th>Actions</th></tr></thead>
+              <tbody id="admin-gala-note-body"><tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -502,6 +503,7 @@
           <button class="dash-tab" data-tab="mes-eleves">👥 Mes élèves</button>
           <button class="dash-tab" data-tab="mes-heures">⏱️ Mes heures</button>
           <button class="dash-tab" data-tab="prof-gala">🎭 Gala</button>
+          <button class="dash-tab" data-tab="prof-rapports">📋 Réunions</button>
           <button class="dash-tab" data-tab="prof-messagerie">💬 Messagerie <span id="prof-chat-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
             <button class="dash-tab" data-tab="prof-notifications">🔔 Notifications <span id="prof-notif-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
         </div>
@@ -599,12 +601,10 @@
           <select class="form-input gala-mobile-select" data-target="sub-prof-gala-tabs" style="display:none; margin-bottom:1rem; width:50%; cursor:pointer;">
             <option value="prof-gala-repets">📅 Répétitions</option>
                         <option value="prof-gala-infos">📝 Infos tableaux</option>
-            <option value="prof-gala-notes">📌 Notes réunions</option>
           </select>
           <div class="prof-planning-controls gala-desktop-tabs" id="sub-prof-gala-tabs">
             <button class="btn btn-outline btn-sm btn-tab active" data-tab="prof-gala-repets">📅 Répétitions</button>
                         <button class="btn btn-outline btn-sm btn-tab" data-tab="prof-gala-infos">📝 Infos tableaux</button>
-            <button class="btn btn-outline btn-sm btn-tab" data-tab="prof-gala-notes">📌 Notes réunions</button>
           </div>
           <div class="tab-content active" id="tab-prof-gala-repets">
             <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
@@ -623,21 +623,23 @@
             </div>
             <div class="data-table-wrapper" style="overflow-x: auto;">
               <table class="data-table">
-                <thead><tr><th>Cours</th><th>Thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
-                <tbody id="prof-gala-info-body"><tr class="empty-state"><td colspan="5">Aucune info tableau.</td></tr></tbody>
+                <thead><tr><th>Cours</th><th>Thème</th><th>Sous-thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
+                <tbody id="prof-gala-info-body"><tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr></tbody>
               </table>
             </div>
           </div>
-          <div class="tab-content" id="tab-prof-gala-notes">
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-              <button class="btn btn-primary" onclick="openModal('modal-gala-note'); initGalaNoteModal();">+ Nouveau rapport</button>
-            </div>
-            <div class="data-table-wrapper" style="overflow-x: auto;">
-              <table class="data-table">
-                <thead><tr><th>Date</th><th>Présents</th><th>Actions</th></tr></thead>
-                <tbody id="prof-gala-note-body"><tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr></tbody>
-              </table>
-            </div>
+        </div>
+
+        <!-- Tab: Prof Rapports -->
+        <div class="tab-content" id="tab-prof-rapports">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+            <button class="btn btn-primary" onclick="openModal('modal-gala-note'); initGalaNoteModal();">+ Nouveau rapport</button>
+          </div>
+          <div class="data-table-wrapper" style="overflow-x: auto;">
+            <table class="data-table">
+              <thead><tr><th>Date</th><th>Présents</th><th>Actions</th></tr></thead>
+              <tbody id="prof-gala-note-body"><tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr></tbody>
+            </table>
           </div>
         </div>
 
@@ -987,6 +989,18 @@
                   <option value="pro">Cours Pro (Prioritaire)</option>
                   <option value="stage">Stage (Prioritaire)</option>
                   <option value="show">Show (Prioritaire)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Lieu</label>
+                <select id="admin-course-lieu" class="form-input" required>
+                  <option value="ADK">Studio ADK (Pin)</option>
+                  <option value="Rox">Le Rox (Rouvroy)</option>
+                  <option value="Bertrix">Complexe sportif de Bertrix</option>
+                  <option value="Izel">Centre Culturel d'Izel</option>
+                  <option value="Florenville">Centre Sportif Florenville</option>
+                  <option value="Jamoigne">Centre Sportif Jamoigne</option>
+                  <option value="Autre">Autre</option>
                 </select>
               </div>
               <div class="form-group">
@@ -1476,6 +1490,10 @@
           <div class="form-group">
             <label class="form-label">Thème</label>
             <select id="gala-info-theme" class="form-input" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sous-thème (Admin/Prof)</label>
+            <input type="text" id="gala-info-subtheme" class="form-input" placeholder="Ex: James Bond">
           </div>
           <div class="form-group">
             <label class="form-label">Musique</label>

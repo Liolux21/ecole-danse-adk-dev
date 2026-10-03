@@ -1,0 +1,20 @@
+    
+    return '<div style="margin-bottom:2rem;"><h4 style="margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:2px solid var(--primary-light); color:var(--primary); text-transform:capitalize;">' + monthName + ' <span style="float:right;">' + data.total + 'h</span></h4>' + itemsHtml + '</div>';
+  }).join('');
+};
+
+
+window.renderProfEleves = function(user) {
+    user = user || (window.AUTH && window.AUTH.currentUser);
+    if (!user) return;
+
+    const tbody = document.getElementById('prof-eleves-body');
+    const taughtCourseIds = (user.role === 'admin' || user.realRole === 'admin') 
+        ? DATA.courses.map(c => String(c.id))
+        : DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => String(c.id));
+    
+    // Populate the dropdown if not already populated
+    const filterSelect = document.getElementById('prof-eleves-filter');
+    if (filterSelect && filterSelect.getAttribute('data-populated') !== 'true') {
+        let opts = '<option value="all">Tous les élèves</option>';
+        taughtCourseIds.forEach(cid => {

@@ -1,0 +1,20 @@
+    "mutuelle": "en attente",
+    "cotisation": "en attente",
+    "coursesRaw": "Import Excel",
+    "absences": [],
+    "avatar": "https://i.pravatar.cc/150?u=kseniia.voitovych",
+    "courseIds": [
+      31
+    ]
+  }
+];
+  const btn = document.getElementById('btn-migrate-students');
+  if (!confirm(`Importer les ${STUDENTS.length} fiches élèves 2026-2027 ?\n\nAucun email ne sera envoyé. Cette opération peut prendre 1-2 minutes.`)) return;
+
+  btn.textContent = "Importation en cours...";
+  btn.disabled = true;
+
+  try {
+    const firebase = await import('./firebase-config.js');
+    
+    

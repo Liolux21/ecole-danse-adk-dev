@@ -1,0 +1,30 @@
+          parentSwitchBtn.className = 'btn btn-outline btn-sm dash-switch-btn';
+            parentSwitchBtn.style.fontSize = '0.7rem';
+            parentSwitchBtn.style.minWidth = '115px';
+            
+          parentSwitchBtn.innerHTML = user.realRole === 'prof' ? '🔄 Espace Prof' : '🔄 Espace Admin';
+          parentSwitchBtn.onclick = () => {
+            const originalUser = { ...user, role: user.realRole };
+            delete originalUser.realRole;
+            showPortalDashboard(originalUser);
+          };
+          const logoutBtn = document.getElementById('parent-logout');
+          if (logoutBtn && logoutBtn.parentNode) {
+            logoutBtn.parentNode.insertBefore(parentSwitchBtn, logoutBtn);
+          }
+        }
+      } else if (parentSwitchBtn) {
+        parentSwitchBtn.remove();
+      }
+    }
+  }
+
+  if (user.role === 'admin')  renderAdminDashboard(user);
+  if (user.role === 'prof')   renderProfDashboard(user);
+  if (user.role === 'parent') renderParentDashboard(user);
+
+  // Gestion des notifications Push
+  // Sur iOS, requestPermission() DOIT être déclenché par un geste utilisateur explicite.
+  // Un setTimeout perd le contexte "user gesture" → on affiche un bouton discret.
+  initPushNotificationPrompt();
+}

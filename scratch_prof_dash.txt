@@ -1,0 +1,13 @@
+    const fullName = PROF_FULL_NAMES[searchName] || (user.firstname ? user.firstname + ' ' + user.lastname : user.name);
+    document.getElementById('prof-name').textContent = fullName;
+    
+    // Lier automatiquement les cours de l'élève
+    const studentMatch = DATA.students.find(s => s.firstname === searchName || (s.firstname + ' ' + s.lastname) === fullName || s.name === fullName);
+    if (studentMatch && studentMatch.courseIds) {
+      user.courseIds = [...new Set([...(user.courseIds || []), ...studentMatch.courseIds])];
+    }
+
+
+  const taughtCourseIds = (user.role === 'admin' || user.realRole === 'admin') 
+    ? DATA.courses.map(c => c.id)
+    : DATA.courses.filter(c => c.prof && c.prof.includes(user.name)).map(c => c.id);

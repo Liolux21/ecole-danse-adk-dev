@@ -1,0 +1,3 @@
+1501: window.renderHolidays = function() {
+1548: renderHolidays();
+1562: renderHolidays();

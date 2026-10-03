@@ -1,0 +1,45 @@
+    type: document.getElementById('manage-course-type').value,
+    status: document.getElementById('manage-course-status').value,
+    hour: document.getElementById('manage-course-hour').value,
+    date: document.getElementById('manage-course-date').value,
+    lieu: document.getElementById('manage-course-lieu').value,
+    substituteId: document.getElementById('manage-course-sub').value || null,
+    message: document.getElementById('manage-course-msg').value
+  };
+
+  DATA.saveState();
+
+  try {
+    const firebase = await import('./firebase-config.js');
+    const course = DATA.getCourseById(id);
+    if (course) {
+      const overrides = DATA.courseOverrides[id];
+      const lieuFormate = window.formatLieu ? window.formatLieu(overrides.lieu) : overrides.lieu;
+      const notifHtml = `Le cours a été modifié.<br><strong>Statut:</strong> ${overrides.status}<br><strong>Date/Heure:</strong> ${overrides.date} ${overrides.hour}<br><strong>Lieu:</strong> ${lieuFormate}<br><strong>Message:</strong> ${overrides.message}`;
+      const annData = {
+        title: `⚠️ Changement : ${course.name}`,
+        content: notifHtml,
+        target: `course_${id}`,
+        timestamp: Date.now(),
+        authorId: AUTH.currentUser.id
+      };
+      DATA.announcements.push({...annData, id: 'temp_' + Date.now()});
+      await firebase.addDoc(firebase.collection(firebase.db, "announcements"), annData);
+      showToast('✅ Modifications enregistrées et notification envoyée');
+    }
+  } catch (err) {
+    console.error("Erreur notif:", err);
+    showToast('✅ Modifications enregistrées');
+  }
+
+  document.getElementById('modal-manage-course').classList.remove('open');
+  
+  // Refresh dashboard
+  if (AUTH.currentUser) showPortalDashboard(AUTH.currentUser);
+});
+
+// MESSAGES MODAL
+let currentChatCourseId = null;
+let currentChatUser = null;
+
+function openMessagesModal(courseId, user) {

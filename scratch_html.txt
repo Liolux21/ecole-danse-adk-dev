@@ -1,0 +1,45 @@
+    const cotDateSelect = `
+      <input type="date" value="${s.cotisationDate || ''}" onchange="updateCotisationDate('${s.id}', this.value)" style="padding:0.2rem 0.7rem; font-size:0.8rem; border-radius:50px; border:1px solid #ccc; box-sizing: border-box; min-width: 120px; outline:none;">
+    `;
+
+        const mutStatus = s.mutuelle || 'masque';
+    const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'en_cours' ? 'select-encours' : 'select-masque');
+    const mutSelect = `
+      <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem; background-color: ${mutStatus === 'masque' ? '#e0e0e0' : ''};">
+        <option value="masque" ${mutStatus === 'masque' ? 'selected' : ''}>Masqué</option>
+        <option value="en_cours" ${mutStatus === 'en_cours' ? 'selected' : ''}>🏃 En cours</option>
+        <option value="remis" ${mutStatus === 'remis' ? 'selected' : ''}>✅ Remis</option>
+      </select>
+    `;
+    
+    return `
+      <div style="background: #ffffff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4 style="margin: 0; color: #9C5858; font-size: 1.1rem; font-weight: bold;">${s.firstname} ${s.lastname} <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">(${s.age} ans)</span></h4>
+        </div>
+        <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📚 Cours suivis :</strong> ${courses || '-'}</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: rgba(0,0,0,0.02); padding: 0.8rem; border-radius: var(--radius);">
+          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 0 1 auto;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Cotisation</span>
+            ${cotSelect}
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 0 1 auto;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Date paiement</span>
+            ${cotDateSelect}
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 0 1 auto;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Mutuelle</span>
+            ${mutSelect}
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.2rem;">
+          <button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id}')">✏️ Modifier</button>
+          <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteStudent('${s.id}')">🗑️ Supprimer</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+  window.updateCotisation = async function(studentId, value) {
+    try {

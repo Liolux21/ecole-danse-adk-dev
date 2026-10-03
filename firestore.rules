@@ -54,6 +54,12 @@ service cloud.firestore {
       allow write: if isAdmin() || isProf();
     }
 
+    // Collection ATTENDANCE (Les présences des élèves)
+    match /attendance/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() || isProf();
+    }
+
     // Collection ANNOUNCEMENTS (Les notifications internes et push)
     match /announcements/{announcementId} {
       allow read: if isAuthenticated();

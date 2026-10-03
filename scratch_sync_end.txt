@@ -1,0 +1,40 @@
+      }
+
+      // 6. Fetch Announcements
+      try {
+        const annSnap = await getDocs(collection(db, "announcements"));
+        this.announcements = [];
+        annSnap.forEach(doc => {
+          this.announcements.push({ id: doc.id, ...doc.data() });
+        });
+        
+        try {
+          const settingsSnap = await getDocs(collection(db, "settings"));
+          settingsSnap.forEach(doc => {
+            if (doc.id === 'general') {
+              this.settings = doc.data();
+              if (!this.settings.holidays) this.settings.holidays = [];
+            }
+          if (doc.id === 'gala') {
+                const galaData = doc.data();
+                this.galaRepets = galaData.repets || [];
+                this.galaInfos = galaData.infos || [];
+                this.galaNotes = galaData.notes || [];
+              }
+            });
+        } catch(e) {
+          console.warn("Settings fetch failed", e);
+        }
+        // Sort by timestamp desc
+        this.announcements.sort((a, b) => b.timestamp - a.timestamp);
+      } catch (err) {
+        console.error("Error fetching announcements", err);
+      }
+
+      console.log("Données Firebase synchronisées avec succès !", { 
+        users: this.users.length, 
+        students: this.students.length, 
+        courses: this.courses.length 
+      });
+      return true;
+    } catch(err) {

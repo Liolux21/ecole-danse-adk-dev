@@ -1,0 +1,30 @@
+            const c = DATA.getCourseById(cid);
+            if (c) opts += `<option value="${c.id}">${c.name}</option>`;
+        });
+        filterSelect.innerHTML = opts;
+        filterSelect.setAttribute('data-populated', 'true');
+        filterSelect.addEventListener('change', () => window.renderProfEleves(user));
+    }
+
+    const selectedCourseId = filterSelect ? filterSelect.value : 'all';
+    
+    let courseIdsToFetch = selectedCourseId === 'all' 
+        ? taughtCourseIds 
+        : [String(selectedCourseId)];
+
+    const rows = [];
+    courseIdsToFetch.forEach(cid => {
+        const studentsInCourse = DATA.getStudentsByCourse(cid);
+        const course = DATA.getCourseById(cid);
+        if (!course) return;
+
+        studentsInCourse.forEach(s => {
+            const att = DATA.attendance ? DATA.attendance.filter(a => String(a.studentId) === String(s.id) && String(a.courseId) === String(cid)) : [];
+            const pres = att.filter(a => a.status === 'present').length;
+            const rate = att.length ? Math.round(pres / att.length * 100) : 100;
+            
+            rows.push({
+                student: s,
+                course: course,
+                rate: rate
+            });

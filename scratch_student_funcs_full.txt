@@ -1,0 +1,151 @@
+window.openAddStudentModal = function(studentId = null) {
+  const container = document.getElementById('add-student-courses');
+    if (container) {
+      container.innerHTML = DATA.courses.map(c => `
+        <label style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; font-size:0.9rem; cursor:pointer;">
+          <input type="checkbox" class="course-checkbox" value="${c.id}">
+          ${c.name || c.title} <span style="color:gray; font-size:0.8rem;">(${c.category || c.level || ''})</span>
+        </label>
+      `).join('');
+    }
+  
+  if (studentId) {
+    const student = DATA.getStudentById(studentId);
+    document.getElementById('add-student-firstname').value = student.firstname || '';
+    document.getElementById('add-student-lastname').value = student.lastname || '';
+    document.getElementById('add-student-dob').value = student.dob || '';
+    document.getElementById('add-student-tutor-firstname').value = student.tutorFirstname || '';
+    document.getElementById('add-student-tutor-lastname').value = student.tutorLastname || '';
+    document.getElementById('add-student-tutor-phone').value = student.tutorPhone || '';
+    document.getElementById('add-student-email').value = student.contactEmail || '';
+    
+    if (container) {
+        const checkboxes = container.querySelectorAll('.course-checkbox');
+        checkboxes.forEach(chk => {
+          chk.checked = (student.courseIds || []).includes(chk.value);
+        });
+      }
+    
+    document.getElementById('add-student-id').value = student.id;
+    document.querySelector('#modal-add-student .vitrine-modal-title').textContent = "Modifier l'élève";
+    document.querySelector('#form-add-student button[type="submit"]').textContent = "Sauvegarder";
+  } else {
+    document.getElementById('form-add-student').reset();
+    document.getElementById('add-student-id').value = '';
+    document.querySelector('#modal-add-student .vitrine-modal-title').textContent = "Ajouter un élève";
+    document.querySelector('#form-add-student button[type="submit"]').textContent = "Créer l'élève";
+  }
+  
+  document.getElementById('modal-add-student').classList.add('active');
+};
+
+window.submitAddStudent = async function() {
+  const btn = document.querySelector('#form-add-student button[type="submit"]');
+  const originalText = btn.textContent;
+  btn.textContent = "Sauvegarde...";
+  btn.disabled = true;
+
+  try {
+    const studentId = document.getElementById('add-student-id').value;
+    const isNew = !studentId;
+    const prenom = document.getElementById('add-student-firstname').value;
+    const nom = document.getElementById('add-student-lastname').value;
+    const dob = document.getElementById('add-student-dob').value;
+      const tutorFirstname = document.getElementById('add-student-tutor-firstname').value;
+      const tutorLastname = document.getElementById('add-student-tutor-lastname').value;
+      const tutorPhone = document.getElementById('add-student-tutor-phone').value;
+    const email = document.getElementById('add-student-email').value.toLowerCase().trim();
+    const checkboxes = document.querySelectorAll('#add-student-courses .course-checkbox:checked');
+      const selectedCourses = Array.from(checkboxes).map(chk => chk.value);
+
+    const targetId = isNew ? "stu_" + Date.now() : studentId;
+    const studentData = {
+      firstname: prenom,
+      lastname: nom,
+      dob: dob,
+        age: (dob ? (new Date().getFullYear() - new Date(dob).getFullYear() - ((new Date().getMonth() - new Date(dob).getMonth() < 0 || (new Date().getMonth() === new Date(dob).getMonth() && new Date().getDate() < new Date(dob).getDate())) ? 1 : 0)) : 0),
+        tutorFirstname: tutorFirstname,
+        tutorLastname: tutorLastname,
+        tutorPhone: tutorPhone,
+      contactEmail: email,
+      courseIds: selectedCourses
+    };
+    if (isNew) {
+      studentData.absences = [];
+      studentData.avatar = `https://i.pravatar.cc/150?u=${targetId}`;
+    }
+    
+    await setDoc(doc(db, "students", targetId), studentData, { merge: true });
+
+    let tempPassword = null;
+    if (isNew) {
+      const userRef = doc(db, "users", email);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const children = userData.childrenIds || [];
+        if (!children.includes(targetId)) {
+          await setDoc(userRef, { childrenIds: [...children, targetId] }, { merge: true });
+        }
+      } else {
+        tempPassword = Math.random().toString(36).slice(-8);
+        try {
+          // Utilisation de l'API REST pour éviter la déconnexion automatique
+          const apiKey = "AIzaSyBPOPRg9AxDqojhkskOIRO-4AHxvLICP7Q"; // Key from firebase-config.js
+          const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password: tempPassword, returnSecureToken: false })
+          });
+          const data = await response.json();
+          if (data.error) throw new Error(data.error.message);
+        } catch(e) {
+          console.warn("L'utilisateur existe peut-être déjà dans Auth, mais pas dans Firestore.", e);
+        }
+        
+        await setDoc(userRef, {
+          id: email,
+          email: email,
+          name: `${prenom} ${nom} (Parent)`,
+          role: "parent",
+          childrenIds: [targetId]
+        });
+      }
+    }
+
+    await DATA.syncFromFirebase();
+    if (AUTH.hasRole('admin')) {
+      showPortalDashboard(AUTH.currentUser);
+    }
+
+    closeModal('modal-add-student');
+    document.getElementById('form-add-student').reset();
+    showToast(isNew ? '✅ Élève ajouté avec succès' : '✅ Élève modifié avec succès', 'success');
+
+    if (isNew && tempPassword) {
+      try {
+        await emailjs.send(
+          "service_ADK",
+          "template_ADK_Compte",
+          {
+            to_email: email,
+            to_name: `${prenom} ${nom}`,
+            temp_password: tempPassword,
+            login_link: "https://liolux21.github.io/ecole-danse-adk-dev/portail.html"
+          }
+        );
+        showToast('✉️ Email envoyé au parent avec succès !', 'success');
+      } catch (emailError) {
+        console.error("Erreur EmailJS:", emailError);
+        alert(`⚠️ Le compte a été créé mais l'email n'a pas pu être envoyé.
+Mot de passe temporaire: ${tempPassword}
+
+(N'oublie pas de configurer EmailJS !)`);
+      }
+    }
+
+  } catch(err) {
+    console.error(err);
+    showToast('❌ Erreur lors de la sauvegarde', 'error');
+  } finally {

@@ -1,0 +1,20 @@
+
+const PROF_FULL_NAMES = {
+  'Janis': 'Janis Romain', 'Jeanne': 'Jeanne Lefèvre', 'Loreen': 'Loreen Poncelet',
+  'Maeva': 'Maeva Delgoffe', 'Margaux': 'Margaux Hubert', 'Maurine': 'Maurine Baudon',
+  'Pauline': 'Pauline Gérard', 'Zoé': 'Zoé Lambert', 'Jade': 'Jade Nélis',
+  'Daisy': 'Daisy Theunissen', 'Corentin': 'Corentin Milosevic', 'Charlotte': 'Charlotte Varoquaux',
+  'Andrew': 'Andrew Schmitz', 'Clémentine': 'Clémentine Mamdy', 'Lili': 'Lili Maury',
+  'Florence': 'Florence Leyens', 'Adam': 'Adam Binoua'
+};
+
+window.openContactInscriptionModal = function(email, parentName) {
+    document.getElementById('contact-inscription-email').value = email;
+    document.getElementById('contact-inscription-name').value = parentName;
+    document.getElementById('contact-inscription-message').value = '';
+    document.getElementById('modal-contact-inscription').classList.add('active');
+};
+
+window.sendContactInscription = async function() {
+    const email = document.getElementById('contact-inscription-email').value;
+    const name = document.getElementById('contact-inscription-name').value;

@@ -1,0 +1,25 @@
+
+function renderAdminEleves() {
+  const tbody = document.getElementById('admin-eleves-body');
+  const filterSelect = document.getElementById('admin-eleves-filter');
+  
+  if (filterSelect && filterSelect.options.length <= 1) {
+    DATA.courses.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name;
+      filterSelect.appendChild(opt);
+    });
+  }
+
+  const filterValue = filterSelect ? filterSelect.value : 'all';
+  const filteredStudents = filterValue === 'all' 
+    ? DATA.students 
+    : DATA.students.filter(s => s.courseIds && (s.courseIds.includes(filterValue) || s.courseIds.includes(Number(filterValue))));
+
+  tbody.innerHTML = filteredStudents.map(s => {
+    const courses = s.courseIds.map(id => DATA.getCourseById(id)?.name || '').filter(Boolean).join(', ');
+        const cotStatus = s.cotisation || 'en attente';
+    const cotClass = cotStatus === 'payee_cash' || cotStatus === 'payee_compte' ? 'select-remis' : 'select-attente';
+    const cotSelect = `
+      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding-right: 2.2rem; font-size: 0.85rem; background-color: ${cotStatus === 'en attente' ? '#ffeeba' : ''};">

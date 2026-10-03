@@ -1,0 +1,23 @@
+  portalForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('portal-email').value;
+    const password = document.getElementById('portal-password').value;
+    const btn = document.getElementById('portal-submit-btn');
+    btn.textContent = 'Connexion...';
+    btn.disabled = true;
+    
+    const user = await AUTH.login(email, password);
+    if (user) {
+      await DATA.syncFromFirebase();
+      showPortalDashboard(user);
+    } else {
+      showToast('❌ Email ou mot de passe incorrect', 'error');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg> Se connecter`;
+      btn.disabled = false;
+    }
+  });
+
+  // Déconnexions
+  ['admin', 'prof', 'parent'].forEach(role => {
+    document.getElementById(`${role}-logout`).addEventListener('click', () => {
+      AUTH.logout();

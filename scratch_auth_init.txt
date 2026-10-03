@@ -1,0 +1,15 @@
+            console.error("Erreur de récupération profil Firestore", e);
+            this.currentUser = null;
+          }
+        } else {
+          this.currentUser = null;
+        }
+        resolve(this.currentUser !== null);
+      });
+    });
+  },
+
+  async login(email, password) {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;

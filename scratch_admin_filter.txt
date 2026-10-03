@@ -1,0 +1,90 @@
+import { db, storage, collection, addDoc, doc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, orderBy, where, or, serverTimestamp, storageRef, uploadBytes, getDownloadURL, arrayUnion, arrayRemove } from './firebase-config.js';
+
+let currentChatId = null;
+let unsubscribeMessages = null;
+let showArchivedConversations = false;
+
+// =============================================
+// LOAD CONVERSATIONS — groupés par catégorie
+// =============================================
+window.loadConversations = function() {
+    const currentUser = window.AUTH ? window.AUTH.currentUser : null;
+    if (!currentUser) return;
+
+    const convListEl = document.getElementById('conversations-list');
+    
+    let q;
+    if (currentUser.role === 'admin') {
+        q = query(collection(db, 'conversations'));
+    } else {
+        var myGroups = ['all'];
+        if (currentUser.role === 'prof') {
+            myGroups.push('all_profs');
+            if (currentUser.courseIds) {
+                currentUser.courseIds.forEach(cid => myGroups.push(`course_${cid}`));
+            }
+        } else if (currentUser.role === 'parent' || currentUser.role === 'student' || currentUser.role === 'élève' || currentUser.role === 'eleve') {
+            myGroups.push('all_students');
+            if (window.DATA && window.DATA.students) {
+                const children = window.DATA.getChildrenByParent(currentUser);
+                children.forEach(ch => {
+                    if (ch.courseIds) {
+                        ch.courseIds.forEach(cid => {
+                            const tg = `course_${cid}`;
+                            if (!myGroups.includes(tg)) myGroups.push(tg);
+                        });
+                    }
+                });
+            }
+        }
+
+        q = query(collection(db, 'conversations'));
+    }
+
+    onSnapshot(q, (snapshot) => {
+        convListEl.innerHTML = '';
+        if (snapshot.empty) {
+            convListEl.innerHTML = '<div style="padding: 1rem; color: var(--text-light); text-align: center;">Aucune conversation</div>';
+            return;
+        }
+
+        let allConvs = [];
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            
+            // Client side filter
+            if (currentUser.role !== 'admin') {
+                if (!data.isGroup) {
+                    if (!data.participants || !data.participants.includes(currentUser.email)) return;
+                } else {
+                    if (!myGroups.includes(data.targetGroup) && (!data.participants || !data.participants.includes(currentUser.email))) return;
+                }
+            }
+            
+            allConvs.push({ id: docSnap.id, data: data });
+        });
+
+        // Sort locally to avoid Firebase composite index requirements
+        allConvs.sort((a, b) => {
+            const tA = a.data.lastMessageAt && typeof a.data.lastMessageAt.toMillis === 'function' ? a.data.lastMessageAt.toMillis() : 0;
+            const tB = b.data.lastMessageAt && typeof b.data.lastMessageAt.toMillis === 'function' ? b.data.lastMessageAt.toMillis() : 0;
+            return tB - tA;
+        });
+
+        // Regrouper les conversations par catégorie
+        const groups = {
+            admin: { label: '🛡️ Administration ADK', convs: [] },
+            cours: { label: '🎵 Canal Cours', convs: [] },
+            onetoone: { label: '💬 Canal One to One', convs: [] },
+        };
+
+        let hasAnyConv = false;
+
+        allConvs.forEach(convObj => {
+            const conv = convObj.data;
+            const convId = convObj.id;
+            
+            // Check archive status
+            const isArchived = Array.isArray(conv.archivedBy) && conv.archivedBy.includes(currentUser.email);
+            if (isArchived !== showArchivedConversations) return;
+

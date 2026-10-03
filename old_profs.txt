@@ -1,0 +1,28 @@
+function renderAdminProfs() {
+  const tbody = document.getElementById('admin-profs-body');
+  const profs = DATA.users.filter(u => u.role === 'prof');
+  tbody.innerHTML = profs.map(p => {
+    // 1. Reprendre les données du planning (DATA.courses)
+    const taughtCourses = DATA.courses.filter(c => c.prof === p.name);
+    const coursesNames = taughtCourses.map(c => c.name).join(', ');
+    
+    // Calculate total distinct students across these courses
+    const allStudentIds = new Set();
+    taughtCourses.forEach(c => {
+      DATA.getStudentsByCourse(c.id).forEach(s => allStudentIds.add(s.id));
+    });
+    const nbEleves = allStudentIds.size;
+    
+    return `
+      <tr>
+        <td><strong>${p.avatar || '🧑‍🏫'} ${p.name}</strong></td>
+        <td style="color:var(--text-muted);font-size:0.82rem">${coursesNames || '-'}</td>
+        <td>${nbEleves}</td>
+        <td style="display:flex;gap:0.5rem;">
+          <button class="btn btn-outline btn-sm" onclick="openAddProfModal('${p.id}')">Modifier</button>
+          <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="deleteProf('${p.id}')">X</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}

@@ -1,0 +1,71 @@
+function renderAdminEleves() {
+  const tbody = document.getElementById('admin-eleves-body');
+  const filterSelect = document.getElementById('admin-eleves-filter');
+  
+  // Populate filter dropdown if empty (except the "all" option)
+  if (filterSelect && filterSelect.options.length <= 1) {
+    DATA.courses.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name;
+      filterSelect.appendChild(opt);
+    });
+  }
+
+  // Get selected filter
+  const filterValue = filterSelect ? filterSelect.value : 'all';
+  
+  // Filter students
+  const filteredStudents = filterValue === 'all' 
+    ? DATA.students 
+    : DATA.students.filter(s => s.courseIds && (s.courseIds.includes(filterValue) || s.courseIds.includes(Number(filterValue))));
+
+  tbody.innerHTML = filteredStudents.map(s => {
+    const courses = s.courseIds.map(id => DATA.getCourseById(id)?.name || '').filter(Boolean).join(', ');
+    
+    // Cotisation
+    const isPayee = s.cotisation === 'payée' || s.cotisation === 'payee';
+    const cotClass = isPayee ? 'select-payee' : 'select-attente';
+    const cotSelect = `
+      <select class="status-select ${cotClass}" onchange="updateCotisation('${s.id}', this.value)" style="margin: 0; padding: 0.2rem; font-size: 0.85rem;">
+        <option value="attente" ${!isPayee ? 'selected' : ''}>⏳ En attente</option>
+        <option value="payée" ${isPayee ? 'selected' : ''}>✓ Payée</option>
+      </select>
+    `;
+    
+    // Mutuelle
+    const mutStatus = s.mutuelle || 'attente';
+    const mutClass = mutStatus === 'remis' ? 'select-remis' : (mutStatus === 'cours' ? 'select-encours' : 'select-attente');
+    const mutSelect = `
+      <select class="status-select ${mutClass}" onchange="updateMutuelle('${s.id}', this.value)" style="margin: 0; padding: 0.2rem; font-size: 0.85rem;">
+        <option value="attente" ${mutStatus === 'attente' ? 'selected' : ''}>⏳ En attente</option>
+        <option value="cours" ${mutStatus === 'cours' ? 'selected' : ''}>🔄 En cours</option>
+        <option value="remis" ${mutStatus === 'remis' ? 'selected' : ''}>✓ Remis</option>
+      </select>
+    `;
+    
+    return `
+      <tr>
+        <td><strong>${s.firstname} ${s.lastname}</strong></td>
+        <td>${s.age} ans</td>
+        <td style="color:var(--text-muted);font-size:0.82rem">${courses}</td>
+      </tr>
+      <tr style="border-bottom: 2px solid var(--border-color);">
+        <td colspan="3" style="padding-top: 0; padding-bottom: 1rem;">
+          <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; background: rgba(0,0,0,0.02); padding: 0.5rem; border-radius: var(--radius);">
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Cotisation:</span>
+              ${cotSelect}
+              <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-left: 1rem;">Mutuelle:</span>
+              ${mutSelect}
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id}')">Modifier</button>
+              <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="deleteStudent('${s.id}')">X</button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
