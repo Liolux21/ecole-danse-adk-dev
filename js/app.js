@@ -2096,25 +2096,56 @@ window.deleteGalaInfo = async function(id) {
 };
 
 window.initGalaNoteModal = function() {
+  if (!window.quillGalaNote) {
+    window.quillGalaNote = new Quill('#gala-note-quill', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'font': [] }, { 'size': [] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['clean']
+        ]
+      }
+    });
+    window.quillGalaNote.on('text-change', function() {
+      document.getElementById('gala-note-pv').value = window.quillGalaNote.root.innerHTML;
+    });
+  }
+
   document.getElementById('gala-note-id').value = '';
   document.getElementById('gala-note-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('gala-note-pv').value = '';
+  window.quillGalaNote.root.innerHTML = '';
+
   const div = document.getElementById('gala-note-presence');
   const profs = DATA.users.filter(u => u.role === 'prof');
   div.innerHTML = profs.map(p => `<div style="display:flex;gap:0.5rem;"><input type="checkbox" id="pres_${p.id}" value="${p.firstname ? p.firstname + ' ' + p.lastname : p.name}"><label for="pres_${p.id}">${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</label></div>`).join('');
 };
+
 window.editGalaNote = function(id) {
   const note = DATA.galaNotes.find(n => n.id === id);
   if (!note) return;
+  
+  if (!window.quillGalaNote) {
+    window.initGalaNoteModal();
+  }
+
   document.getElementById('gala-note-id').value = note.id;
   document.getElementById('gala-note-date').value = note.date;
   document.getElementById('gala-note-pv').value = note.pv;
+  window.quillGalaNote.root.innerHTML = note.pv || '';
+
   const div = document.getElementById('gala-note-presence');
   const profs = DATA.users.filter(u => u.role === 'prof');
-  div.innerHTML = profs.map(p => `<div style="display:flex;gap:0.5rem;"><input type="checkbox" id="pres_${p.id}" value="${p.firstname ? p.firstname + ' ' + p.lastname : p.name}" ${note.presents.includes(p.name) ? 'checked' : ''}><label for="pres_${p.id}">${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</label></div>`).join('');
+  div.innerHTML = profs.map(p => `<div style="display:flex;gap:0.5rem;"><input type="checkbox" id="pres_${p.id}" value="${p.firstname ? p.firstname + ' ' + p.lastname : p.name}" ${(note.presents || []).includes(p.firstname ? p.firstname + ' ' + p.lastname : p.name) ? 'checked' : ''}><label for="pres_${p.id}">${p.firstname ? p.firstname + ' ' + p.lastname : p.name}</label></div>`).join('');
   openModal('modal-gala-note');
 };
 window.saveGalaNote = async function() {
+  if (window.quillGalaNote) {
+    document.getElementById('gala-note-pv').value = window.quillGalaNote.root.innerHTML;
+  }
   const id = document.getElementById('gala-note-id').value;
   const date = document.getElementById('gala-note-date').value;
   const pv = document.getElementById('gala-note-pv').value;
@@ -4630,7 +4661,7 @@ window.viewGalaNote = function(id) {
   
   document.getElementById('note-view-date').textContent = formatDateFR(note.date);
   document.getElementById('note-view-presents').textContent = note.presents.join(', ') || 'Aucun';
-  document.getElementById('note-view-content').textContent = note.pv;
+  document.getElementById('note-view-content').innerHTML = note.pv;
   openModal('modal-gala-note-view');
 };
 
