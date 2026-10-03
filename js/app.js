@@ -1842,13 +1842,20 @@ window.saveGalaToFirebase = async function() {
 
 
 window.renderGalaTables = function(userCtx) {
+  const fmtDate = (d) => {
+    if(!d) return '';
+    const p = d.split('-');
+    if(p.length !== 3) return d;
+    return `${p[2]}/${p[1]}/${p[0]}`;
+  };
+
   // === ADMIN GALA ===
   const htmlRepAdmin = DATA.galaRepets.length === 0 
     ? '<tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr>'
     : DATA.galaRepets.map(r => {
         const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
         return `<tr>
-          <td>${r.date} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
+          <td>${fmtDate(r.date)} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
           <td>${courseName}</td>
           <td>${formatLieu(r.lieu)}</td>
           <td>${r.tenue ? 'Oui' : 'Non'}</td>
@@ -1878,7 +1885,7 @@ window.renderGalaTables = function(userCtx) {
     ? '<tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr>'
     : DATA.galaNotes.map(n => {
         return `<tr>
-          <td>${n.date}</td>
+          <td>${fmtDate(n.date)}</td>
           <td>${(n.presents || []).join(', ')}</td>
           <td style="display:flex;gap:0.5rem;">
             <button class="btn btn-outline btn-sm" onclick="viewGalaNote('${n.id}')">👀 Voir</button>
@@ -1909,7 +1916,7 @@ window.renderGalaTables = function(userCtx) {
       : profRepets.map(r => {
           const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
           return `<tr>
-            <td>${r.date} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
+            <td>${fmtDate(r.date)} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
             <td>${courseName}</td>
             <td>${formatLieu(r.lieu)}</td>
             <td>${r.tenue ? 'Oui' : 'Non'}</td>
@@ -1968,7 +1975,7 @@ window.renderGalaTables = function(userCtx) {
            const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
            return `
              <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
-               <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">${r.date} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</h4>
+               <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">${fmtDate(r.date)} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</h4>
                <p style="margin:0 0 0.2rem 0;"><strong>Cours concerné :</strong> ${courseName}</p>
                <p style="margin:0 0 0.2rem 0;"><strong>Lieu :</strong> ${formatLieu(r.lieu)}</p>
                <p style="margin:0; color:var(--text-light); font-size:0.9rem;">${r.msg || 'Pas de message supplémentaire.'}</p>
