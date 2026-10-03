@@ -4162,9 +4162,40 @@ window.openProfileModal = function() {
   
   document.getElementById('profile-email').value = user.email || '';
   document.getElementById('profile-telephone').value = user.telephone || '';
+  document.getElementById('profile-prenom').value = user.prenom || user.firstname || '';
+  document.getElementById('profile-nom').value = user.nom || user.lastname || '';
+  document.getElementById('profile-street').value = user.street || '';
+  document.getElementById('profile-street-number').value = user.streetNumber || '';
+  document.getElementById('profile-postal-code').value = user.postalCode || '';
+  document.getElementById('profile-city').value = user.city || '';
   document.getElementById('profile-new-password').value = '';
   document.getElementById('profile-current-password').value = '';
   document.getElementById('profile-error').style.display = 'none';
+
+  const childrenContainer = document.getElementById('profile-children-container');
+  if (childrenContainer) {
+    const children = DATA.getChildrenByParent(user);
+    if (children.length > 0) {
+      let html = `<hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-color);"><h5 style="margin-bottom: 1rem;">Enfants associés</h5>`;
+      children.forEach((child) => {
+        html += `
+          <div class="profile-child-row" data-child-id="${child.id}" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.5rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;">
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" style="font-size: 0.8rem;">Prénom enfant</label>
+              <input type="text" class="form-input child-firstname" value="${child.firstname || ''}" required>
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" style="font-size: 0.8rem;">Nom enfant</label>
+              <input type="text" class="form-input child-lastname" value="${child.lastname || ''}" required>
+            </div>
+          </div>
+        `;
+      });
+      childrenContainer.innerHTML = html;
+    } else {
+      childrenContainer.innerHTML = '';
+    }
+  }
 
   const preview = document.getElementById('profile-avatar-preview');
   if (user.avatarUrl) {
@@ -4233,6 +4264,23 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const email = document.getElementById('profile-email').value.trim();
       const phone = document.getElementById('profile-telephone').value.trim();
+      const prenom = document.getElementById('profile-prenom').value.trim();
+      const nom = document.getElementById('profile-nom').value.trim();
+      const street = document.getElementById('profile-street').value.trim();
+      const streetNumber = document.getElementById('profile-street-number').value.trim();
+      const postalCode = document.getElementById('profile-postal-code').value.trim();
+      const city = document.getElementById('profile-city').value.trim();
+
+      const childRows = document.querySelectorAll('.profile-child-row');
+      const childrenUpdates = [];
+      childRows.forEach(row => {
+        childrenUpdates.push({
+          id: row.getAttribute('data-child-id'),
+          firstname: row.querySelector('.child-firstname').value.trim(),
+          lastname: row.querySelector('.child-lastname').value.trim()
+        });
+      });
+
       const newPw = document.getElementById('profile-new-password').value;
       const currentPw = document.getElementById('profile-current-password').value;
       const avatarBase64 = document.getElementById('profile-avatar-base64').value;
@@ -4244,7 +4292,9 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = true;
 
       try {
-        await AUTH.updateUserProfile(currentPw, email, newPw, phone, avatarBase64);
+        await AUTH.updateUserProfile(currentPw, email, newPw, phone, avatarBase64, {
+          prenom, nom, street, streetNumber, postalCode, city
+        }, childrenUpdates);
         
         // Mettre à jour l'UI (Dashboard Header)
         const user = AUTH.currentUser;

@@ -120,7 +120,7 @@ const AUTH = {
       }
     },
 
-  async updateUserProfile(currentPassword, newEmail, newPassword, newTelephone, newAvatarBase64) {
+  async updateUserProfile(currentPassword, newEmail, newPassword, newTelephone, newAvatarBase64, extraData = {}, childrenUpdates = []) {
     try {
       const user = auth.currentUser;
       if (!user) throw new Error("Non authentifié");
@@ -153,6 +153,8 @@ const AUTH = {
       if (newEmail !== this.currentUser.email) updates.email = newEmail;
       if (newTelephone !== undefined) updates.telephone = newTelephone;
       
+      Object.assign(updates, extraData);
+      
       if (newAvatarBase64 && newAvatarBase64.startsWith('data:image')) {
         try {
           const response = await fetch(newAvatarBase64);
@@ -180,7 +182,27 @@ const AUTH = {
          await updateDoc(userRef, updates);
       }
 
-      // 3. Mettre à jour l'état local
+      // 3. Mettre à jour les enfants si besoin
+      if (childrenUpdates && childrenUpdates.length > 0) {
+        for (const childUpdate of childrenUpdates) {
+          if (childUpdate.id) {
+            const studentRef = doc(db, "students", childUpdate.id);
+            await updateDoc(studentRef, {
+              firstname: childUpdate.firstname,
+              lastname: childUpdate.lastname
+            });
+            if (window.DATA && window.DATA.students) {
+               const st = window.DATA.students.find(s => s.id === childUpdate.id);
+               if (st) {
+                 st.firstname = childUpdate.firstname;
+                 st.lastname = childUpdate.lastname;
+               }
+            }
+          }
+        }
+      }
+
+      // 4. Mettre à jour l'état local
       this.currentUser = { ...this.currentUser, ...updates };
       return true;
     } catch(e) {

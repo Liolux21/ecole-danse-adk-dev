@@ -1067,14 +1067,49 @@
             <input type="hidden" id="profile-avatar-base64">
           </div>
           
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="profile-prenom">Prénom</label>
+              <input type="text" id="profile-prenom" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profile-nom">Nom</label>
+              <input type="text" id="profile-nom" class="form-input">
+            </div>
+          </div>
+          
           <div class="form-group">
             <label class="form-label" for="profile-email">Adresse Email</label>
-            <input type="email" id="profile-email" class="form-input" required>
+            <input type="email" id="profile-email" class="form-input" readonly style="background-color: #f0f0f0; cursor: not-allowed;">
           </div>
           <div class="form-group">
             <label class="form-label" for="profile-telephone">Numéro de téléphone</label>
             <input type="tel" id="profile-telephone" class="form-input">
           </div>
+          
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="profile-street">Rue</label>
+              <input type="text" id="profile-street" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profile-street-number">Numéro</label>
+              <input type="text" id="profile-street-number" class="form-input">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="profile-postal-code">Code postal</label>
+              <input type="text" id="profile-postal-code" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profile-city">Ville</label>
+              <input type="text" id="profile-city" class="form-input">
+            </div>
+          </div>
+
+          <div id="profile-children-container"></div>
+
           <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-color);">
           <div class="form-group">
             <label class="form-label" for="profile-new-password">Nouveau mot de passe (laisser vide pour ne pas modifier)</label>
