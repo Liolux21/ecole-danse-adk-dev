@@ -211,7 +211,7 @@ const AUTH = {
     }
   },
 
-  async requestPushNotificationPermission() {
+  async requestPushNotificationPermission(silent = false) {
     if (!this.currentUser) return;
     const toast = window.showToast || ((m) => console.log(m));
     try {
@@ -219,7 +219,7 @@ const AUTH = {
       const { getMessagingInstance, getToken, deleteToken, getDoc, updateDoc, doc, db } = await import('./firebase-config.js');
       const messaging = await getMessagingInstance();
       if (!messaging) {
-        toast('⚠️ Notifications non supportées sur cet appareil');
+        if (!silent) toast('⚠️ Notifications non supportées sur cet appareil');
         console.warn("Push notifications not supported on this device.");
         return;
       }
@@ -227,11 +227,11 @@ const AUTH = {
       const permission = await Notification.requestPermission();
       console.log('[FCM] Permission notifications:', permission);
       if (permission !== 'granted') {
-        toast('⚠️ Permission notifications refusée');
+        if (!silent) toast('⚠️ Permission notifications refusée');
         return;
       }
 
-      toast('🔄 Initialisation des notifications...');
+      console.log('[FCM] Initialisation des notifications...');
 
       // Attendre que le Service Worker soit prêt
       let swReg = null;
@@ -271,14 +271,14 @@ const AUTH = {
         freshTokens.push(token);
         await updateDoc(doc(db, "users", docId), { fcmTokens: freshTokens });
         this.currentUser.fcmTokens = freshTokens;
-        toast('✅ Notifications activées !');
+        if (!silent) toast('✅ Notifications activées !');
         console.log("[FCM] Token FCM enregistré dans Firestore !");
       } else {
         console.log("[FCM] Token déjà enregistré — aucun doublon ajouté.");
         this.currentUser.fcmTokens = freshTokens;
       }
     } catch (e) {
-      toast('❌ Erreur notifications: ' + e.message);
+      if (!silent) toast('❌ Erreur notifications: ' + e.message);
       console.error("Erreur FCM permission:", e);
 
     }

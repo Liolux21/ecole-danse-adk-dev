@@ -805,7 +805,7 @@ function initPushNotificationPrompt() {
   // Si la permission est déjà accordée, enregistrer silencieusement le token
   if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
     if (window.AUTH && window.AUTH.requestPushNotificationPermission) {
-      window.AUTH.requestPushNotificationPermission();
+      window.AUTH.requestPushNotificationPermission(true);
     }
     return;
   }
