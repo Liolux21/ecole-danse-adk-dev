@@ -276,7 +276,6 @@ const AUTH = {
       } else {
         console.log("[FCM] Token déjà enregistré — aucun doublon ajouté.");
         this.currentUser.fcmTokens = freshTokens;
-        toast('✅ Notifications déjà actives');
       }
     } catch (e) {
       toast('❌ Erreur notifications: ' + e.message);
