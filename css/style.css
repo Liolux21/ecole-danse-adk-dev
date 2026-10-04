@@ -1292,7 +1292,7 @@ ul { list-style: none; }
   margin-top: 2rem;
 }
 .parent-section-header {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-size: 1.2rem;
   color: var(--gold);
   margin-bottom: 1rem;
@@ -1416,7 +1416,7 @@ ul { list-style: none; }
   gap: 0.3rem;
 }
 .portal-course-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-size: 1.1rem;
   color: var(--white);
 }

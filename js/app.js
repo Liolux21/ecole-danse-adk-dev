@@ -3222,7 +3222,7 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
           let typeLabel = c.style ? c.style.toUpperCase() : 'ADK';
           imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center; overflow:hidden;">
             <img src="img/apple-touch-icon.png" style="width:30px; height:30px; object-fit:contain; margin-bottom:4px;" alt="ADK">
-            <strong style="font-size:0.65rem; color:var(--gold); font-family:'Playfair Display', serif; line-height:1; padding: 0 2px;">${typeLabel}</strong>
+            <strong style="font-size:0.65rem; color:var(--gold); font-family:var(--font-display); line-height:1; padding: 0 2px;">${typeLabel}</strong>
           </div>`;
       }
     }
