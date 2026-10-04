@@ -13081,6 +13081,36 @@ window.sendParentAuthEmail = async function(studentId, event) {
   }
 };
 
-
-// Hack auto delete Eden
-setTimeout(async () => { if(window.AUTH && window.AUTH.currentUser && window.AUTH.currentUser.email === 'lionel.henrion@gmail.com') { try { const firebase = await import('./firebase-config.js'); const userRef = firebase.doc(firebase.db, 'users', 'lionel.henrion@gmail.com'); const userSnap = await firebase.getDoc(userRef); if(userSnap.exists()){ const userData = userSnap.data(); if(userData.childrenIds){ let foundEden = false; const newChildrenIds = [...userData.childrenIds]; for(let i = newChildrenIds.length - 1; i >= 0; i--){ const sid = newChildrenIds[i]; const sSnap = await firebase.getDoc(firebase.doc(firebase.db, 'students', sid)); if(sSnap.exists()){ const sData = sSnap.data(); if(sData.firstname?.toLowerCase() === 'eden' && sData.lastname?.toLowerCase() === 'hazard'){ newChildrenIds.splice(i, 1); foundEden = true; await firebase.deleteDoc(firebase.doc(firebase.db, 'students', sid)); } } } if(foundEden){ await firebase.updateDoc(userRef, { childrenIds: newChildrenIds }); window.showToast('? Eden Hazard a été supprimé !'); setTimeout(() => location.reload(), 3000); } } } } catch(e){} } }, 5000);
+// Hack auto delete Eden 3
+setTimeout(async () => {
+  if (window.AUTH && window.AUTH.currentUser && window.AUTH.currentUser.email === 'lionel.henrion@gmail.com') {
+    try {
+      const firebase = await import('./firebase-config.js');
+      const studentsSnap = await firebase.getDocs(firebase.collection(firebase.db, 'students'));
+      let found = false;
+      const userRef = firebase.doc(firebase.db, 'users', 'lionel.henrion@gmail.com');
+      const userSnap = await firebase.getDoc(userRef);
+      let userData = userSnap.exists() ? userSnap.data() : null;
+      let newChildrenIds = userData && userData.childrenIds ? [...userData.childrenIds] : [];
+      
+      studentsSnap.forEach(async (docSnap) => {
+        const d = docSnap.data();
+        if (d.firstname?.toLowerCase() === 'eden' && d.lastname?.toLowerCase() === 'hazard') {
+          // Delete from childrenIds
+          const idx = newChildrenIds.indexOf(docSnap.id);
+          if (idx !== -1) newChildrenIds.splice(idx, 1);
+          
+          await firebase.deleteDoc(firebase.doc(firebase.db, 'students', docSnap.id));
+          found = true;
+        }
+      });
+      if (found) {
+        if (userData) await firebase.updateDoc(userRef, { childrenIds: newChildrenIds });
+        window.showToast('âœ… Eden Hazard a Ã©tÃ© complÃ¨tement supprimÃ© !');
+        setTimeout(() => location.reload(), 3000);
+      }
+    } catch(e) {
+      console.error(e);
+    }
+  }
+}, 3000);
