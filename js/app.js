@@ -77,7 +77,7 @@ function getMonthName(m) {
   return months[m - 1] || '';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', => {
   try { initNavbar(); } catch(e) { console.error('Error in initNavbar:', e); }
   try { initParticles(); } catch(e) { console.error('Error in initParticles:', e); }
   try { initHero(); } catch(e) { console.error('Error in initHero:', e); }
@@ -113,7 +113,7 @@ function initNavbar() {
   const navbar = document.querySelector('.navbar');
   if (!navbar) return;
   const links = document.querySelectorAll('.nav-link[data-section]');
-  window.addEventListener('scroll', () => {
+  window.addEventListener('scroll', => {
     navbar.classList.toggle('scrolled', window.scrollY > 50);
     const sections = document.querySelectorAll('section[id]');
     let current = '';
@@ -133,7 +133,7 @@ function initMobileMenu() {
   const burger = document.querySelector('.nav-burger');
   const menu = document.querySelector('.mobile-menu');
   if (!burger || !menu) return;
-  burger.addEventListener('click', () => menu.classList.toggle('open'));
+  burger.addEventListener('click', => menu.classList.toggle('open'));
 }
 function closeMobileMenu() { 
   const menu = document.querySelector('.mobile-menu');
@@ -160,7 +160,7 @@ function initParticles() {
 function initHero() {
   const bg = document.querySelector('.hero-bg');
   if (!bg) return;
-  window.addEventListener('scroll', () => { bg.style.transform = `translateY(${window.scrollY * 0.4}px)`; }, { passive: true });
+  window.addEventListener('scroll', => { bg.style.transform = `translateY(${window.scrollY * 0.4}px)`; }, { passive: true });
   setTimeout(() => bg.classList.add('loaded'), 100);
   const { stats } = DATA.school;
   animateCounter('stat-eleves', stats.eleves);
@@ -189,7 +189,7 @@ function initCourses() {
   if (!grid) return;
   DATA.courses.forEach(c => grid.appendChild(createCourseCard(c)));
   filters.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', => {
       filters.forEach(f => f.classList.remove('active'));
       btn.classList.add('active');
       grid.querySelectorAll('.course-card').forEach(card => {
@@ -252,8 +252,8 @@ function initPlanning() {
   if (!grid || !weekLabel) return;
 
   // Navigation semaine
-  document.getElementById('plan-prev').addEventListener('click', () => { planningState.offset--; refreshPlanning(grid, weekLabel); });
-  document.getElementById('plan-next').addEventListener('click', () => { planningState.offset++; refreshPlanning(grid, weekLabel); });
+  document.getElementById('plan-prev').addEventListener('click', => { planningState.offset--; refreshPlanning(grid, weekLabel); });
+  document.getElementById('plan-next').addEventListener('click', => { planningState.offset++; refreshPlanning(grid, weekLabel); });
 
   // Filtres style
   document.getElementById('planning-style-filters').addEventListener('click', e => {
@@ -586,7 +586,7 @@ async function initPortal() {
 
   // Déconnexions
   ['admin', 'prof', 'parent'].forEach(role => {
-    document.getElementById(`${role}-logout`).addEventListener('click', () => {
+    document.getElementById(`${role}-logout`).addEventListener('click', => {
       AUTH.logout();
       document.getElementById('portal-login-wrapper').style.display = '';
       const subtitle = document.getElementById('portal-subtitle');
@@ -680,7 +680,7 @@ function showPortalDashboard(user) {
           btn.style.borderColor = '#e74c3c';
           btn.style.color = '#e74c3c';
           btn.innerHTML = r.label;
-          btn.onclick = () => {
+          btn.onclick = => {
             const newUser = { ...user, role: r.role, isGodMode: true };
             if (r.role !== 'admin') newUser.realRole = 'admin';
             else delete newUser.realRole;
@@ -704,7 +704,7 @@ function showPortalDashboard(user) {
           adminSwitchBtn.style.minWidth = '115px';
           
         adminSwitchBtn.innerHTML = '🔄 Espace Prof';
-        adminSwitchBtn.onclick = () => {
+        adminSwitchBtn.onclick = => {
           const profUser = { ...user, role: 'prof', realRole: 'admin' };
           showPortalDashboard(profUser);
         };
@@ -724,7 +724,7 @@ function showPortalDashboard(user) {
             profToAdminBtn.style.minWidth = '115px';
             
           profToAdminBtn.innerHTML = '🔄 Espace Admin';
-          profToAdminBtn.onclick = () => {
+          profToAdminBtn.onclick = => {
             const originalUser = { ...user, role: 'admin' };
             delete originalUser.realRole;
             showPortalDashboard(originalUser);
@@ -750,7 +750,7 @@ function showPortalDashboard(user) {
             switchBtn.style.minWidth = '115px';
             
           switchBtn.innerHTML = '🔄 Espace Élève';
-          switchBtn.onclick = () => {
+          switchBtn.onclick = => {
             const parentUser = { ...user, role: 'parent', realRole: 'prof' };
             showPortalDashboard(parentUser);
           };
@@ -773,7 +773,7 @@ function showPortalDashboard(user) {
             parentSwitchBtn.style.minWidth = '115px';
             
           parentSwitchBtn.innerHTML = user.realRole === 'prof' ? '🔄 Espace Prof' : '🔄 Espace Admin';
-          parentSwitchBtn.onclick = () => {
+          parentSwitchBtn.onclick = => {
             const originalUser = { ...user, role: user.realRole };
             delete originalUser.realRole;
             showPortalDashboard(originalUser);
@@ -836,7 +836,7 @@ function initPushNotificationPrompt() {
   `;
   document.body.appendChild(banner);
 
-  document.getElementById('btn-enable-push').addEventListener('click', function () {
+  document.getElementById('btn-enable-push').addEventListener('click', function {
     // Ce clic est un vrai geste utilisateur → requestPermission() fonctionnera sur iOS
     if (window.AUTH && window.AUTH.requestPushNotificationPermission) {
       window.AUTH.requestPushNotificationPermission();
@@ -844,7 +844,7 @@ function initPushNotificationPrompt() {
     banner.remove();
   });
 
-  document.getElementById('btn-dismiss-push').addEventListener('click', function () {
+  document.getElementById('btn-dismiss-push').addEventListener('click', function {
     banner.remove();
   });
 }
@@ -855,7 +855,7 @@ function initTabs(tabsContainerId, contentIds) {
   const container = document.getElementById(tabsContainerId);
   if (!container) return;
   container.querySelectorAll('.dash-tab, .btn-tab').forEach((tab, i) => {
-    tab.addEventListener('click', () => {
+    tab.addEventListener('click', => {
       container.querySelectorAll('.dash-tab, .btn-tab').forEach(t => t.classList.remove('active'));
       contentIds.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
         const hoursTab = document.getElementById('tab-admin-hours');
@@ -1039,7 +1039,7 @@ window.exportProfHours = function() {
   });
   
   if (monthRecords.length === 0) {
-    alert("Aucune donnée à exporter pour ce mois.");
+    alert("Aucune donnéeexporter pour ce mois.");
     return;
   }
   
@@ -1686,15 +1686,14 @@ window.viewProfProfile = function(profId) {
       <p style="margin:0 0 0.5rem 0;"><strong>Email :</strong> <a href="mailto:${p.email}">${p.email || '-'}</a></p>
       <p style="margin:0 0 0.5rem 0;"><strong>Téléphone :</strong> <a href="tel:${p.phone}">${p.phone || '-'}</a></p>
       <p style="margin:0 0 0.5rem 0;"><strong>Adresse :</strong> ${p.address || '-'} ${p.postalCode || ''} ${p.city || ''}</p>
-      <p style="margin:0;"><strong>Date de naissance :</strong> ${p.birthdate ? p.birthdate.split('-').reverse().join('/') : '-'}</p>
+      <p style="margin:0;"><strong>Date de naissance :</strong> ${p.dob ? p.dob.split('-').reverse().join('/') : '-'}</p>
     </div>
   `;
 
   // Cours prestés
   const taughtCourses = DATA.courses.filter(c => c.prof && (c.prof.includes(p.name) || c.prof.includes(fullName) || c.prof.includes(searchName)));
   const coursesHtml = taughtCourses.length === 0 ? '<p>Aucun cours régulier attribué.</p>' : `
-    <ul style="margin:0; padding-left:1.5rem;">
-      ${taughtCourses.map(c => `<li>${c.name} (${formatLieu(c.lieu)}) - ${c.day} à ${c.time}</li>`).join('')}
+        ${taughtCourses.map(c => `<li>${c.name} (${formatLieu(c.lieu)}) - ${c.schedule || 'Non défini'}</li>`).join('')}
     </ul>
   `;
 
@@ -1727,8 +1726,7 @@ window.viewProfProfile = function(profId) {
         return `
           <div style="margin-bottom: 0.5rem;">
             <strong>Mois : ${m}</strong> &mdash; ${hoursByMonth[m].hours}h total
-            <ul style="margin: 0.2rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-              ${hoursByMonth[m].details.map(d => `<li>${d.date} : ${d.hours}h - ${d.course} (${d.type})</li>`).join('')}
+                ${hoursByMonth[m].details.map(d => { const cName = DATA.getCourseById(d.courseId)?.name || d.courseId || 'Cours inconnu'; return `<li>${d.date} : ${d.hours}h - ${cName}</li>`; }).join('')}
             </ul>
           </div>
         `;
@@ -1951,7 +1949,7 @@ window.renderGalaTables = function(userCtx) {
     : DATA.galaRepets.map(r => {
         const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
         return `<tr>
-          <td>${fmtDate(r.date)} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
+          <td>${fmtDate(r.date)}${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
           <td>${courseName}</td>
           <td>${formatLieu(r.lieu)}</td>
           <td>${r.tenue ? 'Oui' : 'Non'}</td>
@@ -2012,7 +2010,7 @@ window.renderGalaTables = function(userCtx) {
       : profRepets.map(r => {
           const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
           return `<tr>
-            <td>${fmtDate(r.date)} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
+            <td>${fmtDate(r.date)}${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</td>
             <td>${courseName}</td>
             <td>${formatLieu(r.lieu)}</td>
             <td>${r.tenue ? 'Oui' : 'Non'}</td>
@@ -2071,7 +2069,7 @@ window.renderGalaTables = function(userCtx) {
            const courseName = r.course === 'all' ? 'Tous les élèves' : (DATA.getCourseById(r.course)?.name || r.course);
            return `
              <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
-               <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">${fmtDate(r.date)} à ${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</h4>
+               <h4 style="margin:0 0 0.5rem 0; color:var(--primary); font-size:1.1rem;">${fmtDate(r.date)}${r.time}${r.timeEnd ? ' - ' + r.timeEnd : ''}</h4>
                <p style="margin:0 0 0.2rem 0;"><strong>Cours concerné :</strong> ${courseName}</p>
                <p style="margin:0 0 0.2rem 0;"><strong>Lieu :</strong> ${formatLieu(r.lieu)}</p>
                <p style="margin:0; color:var(--text-light); font-size:0.9rem;">${r.msg || 'Pas de message supplémentaire.'}</p>
@@ -2368,7 +2366,7 @@ function renderProfDashboard(user) {
     });
   }
 
-  const applyPlanningFilters = () => {
+  const applyPlanningFilters = => {
     const isEnseignes = btnEnseignes.classList.contains('active');
     let baseCourseIds = isEnseignes ? taughtCourseIds : (user.courseIds || []);
     
@@ -2392,12 +2390,12 @@ function renderProfDashboard(user) {
   if (filterStyle) filterStyle.onchange = applyPlanningFilters;
   if (filterLieu) filterLieu.onchange = applyPlanningFilters;
 
-  btnEnseignes.onclick = () => {
+  btnEnseignes.onclick = => {
     btnEnseignes.classList.add('active');
     btnSuivis.classList.remove('active');
     applyPlanningFilters();
   };
-  btnSuivis.onclick = () => {
+  btnSuivis.onclick = => {
     btnSuivis.classList.add('active');
     btnEnseignes.classList.remove('active');
     applyPlanningFilters();
@@ -2407,7 +2405,7 @@ function renderProfDashboard(user) {
 
   const appelSaveBtn = document.getElementById('appel-save-btn');
   if (appelSaveBtn) {
-    appelSaveBtn.onclick = async () => {
+    appelSaveBtn.onclick = async => {
       const dInput = document.getElementById('appel-date');
       const date = dInput.value.split('-').reverse().join('/');
       document.querySelectorAll('.appel-item').forEach(item => {
@@ -2483,7 +2481,7 @@ function renderProfDashboard(user) {
     };
   }
   
-  document.getElementById('appel-date')?.addEventListener('change', () => {
+  document.getElementById('appel-date')?.addEventListener('change', => {
     if (typeof selectedCourseId !== 'undefined' && selectedCourseId) {
       renderAppelList(selectedCourseId);
     }
@@ -2663,7 +2661,7 @@ function renderAppelList(courseId) {
           <button class="appel-btn appel-btn-e ${status === 'excuse' ? 'selected' : ''}" data-status="excuse"  title="Excusé(e)">➖ Excusé</button>
         </div>`;
     item.querySelectorAll('.appel-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', => {
         item.querySelectorAll('.appel-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
       });
@@ -2779,7 +2777,7 @@ window.renderProfEleves = function(user) {
         });
         filterSelect.innerHTML = opts;
         filterSelect.setAttribute('data-populated', 'true');
-        filterSelect.addEventListener('change', () => window.renderProfEleves(user));
+        filterSelect.addEventListener('change', => window.renderProfEleves(user));
     }
 
     const selectedCourseId = filterSelect ? filterSelect.value : 'all';
@@ -2901,7 +2899,7 @@ function renderParentDashboard(user) {
   childTabs.innerHTML = '';
 
   if (children.length === 0) {
-    document.getElementById('parent-attendance-list').innerHTML = '<div class="empty-state"><div class="empty-state-icon">🩰</div><p>Aucun enfant associé à ce compte</p></div>';
+    document.getElementById('parent-attendance-list').innerHTML = '<div class="empty-state"><div class="empty-state-icon">🩰</div><p>Aucun enfant associéce compte</p></div>';
     return;
   }
 
@@ -2916,7 +2914,7 @@ function renderParentDashboard(user) {
     nextCoursesData.forEach((data, idx) => {
       const isLast = idx === nextCoursesData.length - 1;
       const margin = isLast ? '0' : '0.5rem';
-      html += `<div style="margin-bottom: ${margin};">Le prochain cours de <strong style="color: #9C5858;">${data.child.firstname}</strong> est <strong style="color: #9C5858;">${data.course.name}</strong>, ce ${data.dayStr.toLowerCase()} ${data.dateStrObj} à ${data.hourStr}.</div>`;
+      html += `<div style="margin-bottom: ${margin};">Le prochain cours de <strong style="color: #9C5858;">${data.child.firstname}</strong> est <strong style="color: #9C5858;">${data.course.name}</strong>, ce ${data.dayStr.toLowerCase()} ${data.dateStrObj}${data.hourStr}.</div>`;
     });
     bannerContent.innerHTML = html;
   } else if (banner) {
@@ -2927,7 +2925,7 @@ function renderParentDashboard(user) {
     const tab = document.createElement('button');
     tab.className = `dash-tab child-tab${i === 0 ? ' active' : ''}`;
     tab.textContent = `👧👦 ${child.firstname}`;
-    tab.addEventListener('click', () => {
+    tab.addEventListener('click', => {
       document.querySelectorAll('.child-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       renderChildData(child);
@@ -3041,7 +3039,7 @@ function initGalerie() {
     const el = document.createElement('div');
     el.className = 'gallery-item reveal';
     el.innerHTML = `<img src="${item.src}" alt="${item.alt}" class="gallery-img" loading="lazy"><div class="gallery-overlay">🔍</div>`;
-    el.addEventListener('click', () => {
+    el.addEventListener('click', => {
       document.getElementById('lightbox-img').src = item.src;
       document.getElementById('lightbox').classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -3184,8 +3182,8 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
       displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
     let displayHour = c.hour ? c.hour.replace(':', 'h') : '';
-    if (c.date && c.hour) scheduleText = `${displayDate} à ${displayHour}`;
-    else if (c.hour) scheduleText = `${scheduleText.split(' ')[0]} à ${displayHour}`;
+    if (c.date && c.hour) scheduleText = `${displayDate}${displayHour}`;
+    else if (c.hour) scheduleText = `${scheduleText.split(' ')[0]}${displayHour}`;
 
     const profName = c.substituteId ? DATA.getUserById(c.substituteId)?.name || c.prof : c.prof;
     const isSubstitute = !!c.substituteId;
@@ -3248,13 +3246,13 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
 
   // Attach event listeners
   container.querySelectorAll('.btn-manage').forEach(btn => {
-    btn.onclick = () => openManageCourseModal(btn.dataset.courseId);
+    btn.onclick = => openManageCourseModal(btn.dataset.courseId);
   });
   container.querySelectorAll('.btn-absent').forEach(btn => {
-    btn.onclick = () => openAbsenceModal(btn.dataset.courseId, btn.dataset.studentId);
+    btn.onclick = => openAbsenceModal(btn.dataset.courseId, btn.dataset.studentId);
   });
   container.querySelectorAll('.btn-msg').forEach(btn => {
-    btn.onclick = () => openMessagesModal(btn.dataset.courseId, user);
+    btn.onclick = => openMessagesModal(btn.dataset.courseId, user);
   });
 }
 
@@ -3318,7 +3316,7 @@ function openAbsenceModal(courseId, studentId) {
   document.getElementById('modal-absence').classList.add('open');
 }
 
-document.getElementById('close-absence')?.addEventListener('click', () => {
+document.getElementById('close-absence')?.addEventListener('click', => {
   document.getElementById('modal-absence').classList.remove('open');
 });
 
@@ -3360,7 +3358,7 @@ document.getElementById('absence-form')?.addEventListener('submit', (e) => {
     if (status !== 'absent' || document.getElementById('absence-status').value !== 'excuse') {
       alert('Vos indications ont été sauvegardées.');
     }
-      (async () => {
+      (async => {
          try {
            const firebase = await import('./firebase-config.js');
            const course = DATA.getCourseWithOverride(cid);
@@ -3583,7 +3581,7 @@ function openManageCourseModal(courseId) {
   document.getElementById('modal-manage-course').classList.add('open');
 }
 
-document.getElementById('close-manage-course')?.addEventListener('click', () => {
+document.getElementById('close-manage-course')?.addEventListener('click', => {
   document.getElementById('modal-manage-course').classList.remove('open');
 });
 
@@ -3661,7 +3659,7 @@ function openMessagesModal(courseId, user) {
   }, 50);
 }
 
-document.getElementById('close-messages')?.addEventListener('click', () => {
+document.getElementById('close-messages')?.addEventListener('click', => {
   document.getElementById('modal-messages').classList.remove('open');
 });
 
@@ -3804,7 +3802,7 @@ window.renderChatHistory = renderChatHistory;
     try {
       await AUTH.forceChangePassword(pwd1);
       document.getElementById('modal-force-password').classList.remove('active');
-      showToast("Mot de passe mis à jour avec succès !", "success");
+      showToast("Mot de passe misjour avec succès !", "success");
     } catch(e) {
       err.textContent = "Erreur lors du changement de mot de passe. Veuillez réessayer.";
       err.style.display = "block";
@@ -4166,7 +4164,7 @@ window.submitAdminCourse = async function() {
         let timeEnd = timeEndEl ? timeEndEl.value.replace(':', 'h') : '';
         
         if (timeEnd) {
-           scheduleStr = `${day} ${time} à ${timeEnd}`;
+           scheduleStr = `${day} ${time}${timeEnd}`;
         } else {
            scheduleStr = `${day} ${time}`;
         }
@@ -4652,7 +4650,7 @@ window.handleAvatarSelection = function(event) {
   reader.readAsDataURL(file);
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', => {
   const formProfile = document.getElementById('form-profile');
   if (formProfile) {
     formProfile.addEventListener('submit', async (e) => {
@@ -4692,7 +4690,7 @@ document.addEventListener('DOMContentLoaded', () => {
           prenom, nom, street, streetNumber, postalCode, city
         }, childrenUpdates);
         
-        // Mettre à jour l'UI (Dashboard Header)
+        // Mettrejour l'UI (Dashboard Header)
         const user = AUTH.currentUser;
         ['admin', 'prof', 'parent'].forEach(role => {
           const avatarEl = document.getElementById(role + '-avatar');
@@ -4706,10 +4704,10 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
-        alert("Profil mis à jour avec succès !");
+        alert("Profil misjour avec succès !");
         document.getElementById('modal-profile').classList.remove('active');
       } catch (err) {
-        errBox.innerText = err.message || "Erreur lors de la mise à jour.";
+        errBox.innerText = err.message || "Erreur lors de la misejour.";
         errBox.style.display = 'block';
       } finally {
         btn.innerText = 'Enregistrer';
@@ -4723,7 +4721,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.exportStudentsExcel = function() {
     if (!DATA.students || DATA.students.length === 0) {
-        alert("Aucun élève à exporter.");
+        alert("Aucun élèveexporter.");
         return;
     }
     
@@ -5024,7 +5022,7 @@ window.resetNotificationsAndMessages = async function() {
     // Clear local data
     window.DATA.announcements = [];
     
-    alert("Les notifications et la messagerie ont été remises à zéro avec succès.");
+    alert("Les notifications et la messagerie ont été remiseszéro avec succès.");
     location.reload();
   } catch(e) {
     console.error(e);
@@ -12895,7 +12893,7 @@ window.migrateStudents2026 = async function() {
 
     for (let i = 0; i < STUDENTS.length; i += BATCH_SIZE) {
       const batch = STUDENTS.slice(i, i + BATCH_SIZE);
-      btn.textContent = `Mise à jour... ${i}/${STUDENTS.length}`;
+      btn.textContent = `Misejour... ${i}/${STUDENTS.length}`;
       
       await Promise.all(batch.map(async (s) => {
         try {
@@ -12921,7 +12919,7 @@ window.migrateStudents2026 = async function() {
     const snap = await firebase.getDocs(firebase.collection(firebase.db, "students"));
     snap.forEach(d => window.DATA.students.push({ id: d.id, ...d.data() }));
     
-    alert(`✅ Import / Mise à jour terminé !\n\n✔ ${created} fiches créées\n⏭ ${skipped} fiches mises à jour avec succès\n❌ ${errors} erreurs\n\nAucun email n'a été envoyé.`);
+    alert(`✅ Import / Misejour terminé !\n\n✔ ${created} fiches créées\n⏭ ${skipped} fiches misesjour avec succès\n❌ ${errors} erreurs\n\nAucun email n'a été envoyé.`);
     window.renderAdminEleves();
   } catch(e) {
     console.error(e);
@@ -12964,9 +12962,9 @@ window.fixProfNames = async function() {
   }
   
   if (fixed === 0) {
-    alert('ℹ️ Aucun compte à corriger trouvé.\n\nLes comptes ont peut-être déjà été mis à jour, ou n\'ont pas encore été créés.\nUtilisez d\'abord "Créer les profs manquants".');
+    alert('ℹ️ Aucun comptecorriger trouvé.\n\nLes comptes ont peut-être déjà été misjour, ou n\'ont pas encore été créés.\nUtilisez d\'abord "Créer les profs manquants".');
   } else {
-    alert('✅ ' + fixed + ' compte(s) mis à jour !\n\n' + details.join('\n'));
+    alert('✅ ' + fixed + ' compte(s) misjour !\n\n' + details.join('\n'));
   }
 };
 
@@ -13056,10 +13054,10 @@ window.sendParentAuthEmail = async function(studentId, event) {
             temp_password: tempPassword,
             login_link: "https://annedkdanse.be/portail/"
           });
-          window.showToast(`✅ Email envoyé à ${parentEmail}`, 'success');
+          window.showToast(`✅ Email envoyé${parentEmail}`, 'success');
         } catch (emailError) {
           console.error("Erreur EmailJS:", emailError);
-          alert(`L'email n'a pas pu être envoyé à ${parentEmail}.\nMot de passe: ${tempPassword}`);
+          alert(`L'email n'a pas pu être envoyé${parentEmail}.\nMot de passe: ${tempPassword}`);
         }
       }
     };
