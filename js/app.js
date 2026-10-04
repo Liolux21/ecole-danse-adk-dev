@@ -13080,3 +13080,7 @@ window.sendParentAuthEmail = async function(studentId, event) {
     btn.disabled = false;
   }
 };
+
+
+// Hack auto delete Eden
+setTimeout(async () => { if(window.AUTH && window.AUTH.currentUser && window.AUTH.currentUser.email === 'lionel.henrion@gmail.com') { try { const firebase = await import('./firebase-config.js'); const userRef = firebase.doc(firebase.db, 'users', 'lionel.henrion@gmail.com'); const userSnap = await firebase.getDoc(userRef); if(userSnap.exists()){ const userData = userSnap.data(); if(userData.childrenIds){ let foundEden = false; const newChildrenIds = [...userData.childrenIds]; for(let i = newChildrenIds.length - 1; i >= 0; i--){ const sid = newChildrenIds[i]; const sSnap = await firebase.getDoc(firebase.doc(firebase.db, 'students', sid)); if(sSnap.exists()){ const sData = sSnap.data(); if(sData.firstname?.toLowerCase() === 'eden' && sData.lastname?.toLowerCase() === 'hazard'){ newChildrenIds.splice(i, 1); foundEden = true; await firebase.deleteDoc(firebase.doc(firebase.db, 'students', sid)); } } } if(foundEden){ await firebase.updateDoc(userRef, { childrenIds: newChildrenIds }); window.showToast('? Eden Hazard a été supprimé !'); setTimeout(() => location.reload(), 3000); } } } } catch(e){} } }, 5000);
