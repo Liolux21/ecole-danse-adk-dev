@@ -68,6 +68,148 @@ window.sendContactInscription = async function() {
 import { db, collection, addDoc, doc, setDoc, getDoc, deleteDoc } from './firebase-config.js';
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+
+window.renderProfMixedCalendar = function(items, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
+  const calendarData = [[], [], [], [], [], [], []];
+  
+  items.forEach(item => {
+    if (item.type === 'course') {
+      const c = DATA.getCourseWithOverride(item.data.id || item.data);
+      if (!c) return;
+      const slots = DATA.schedule.slots.filter(s => String(s.courseId) === String(c.id));
+      slots.forEach(slot => {
+        calendarData[slot.day].push({ ...c, hour: slot.hour, itemType: 'course' });
+      });
+    } else if (item.type === 'event' || item.type === 'rehearsal') {
+      let dateStr = item.type === 'event' ? item.data.dateDebut : item.data.date;
+      if (!dateStr) return;
+      let d = new Date(dateStr);
+      if (isNaN(d.getTime())) {
+          const parts = dateStr.split('/');
+          if (parts.length === 3) d = new Date(parts[2], parts[1]-1, parts[0]);
+      }
+      if (isNaN(d.getTime())) return;
+      let dayIndex = (d.getDay() + 6) % 7;
+      calendarData[dayIndex].push({ 
+         ...item.data, 
+         hour: item.type === 'event' ? item.data.timeDebut : item.data.timeDebut,
+         name: item.data.nom || (item.type === 'event' ? 'Évènement' : 'Répétition'),
+         lieu: item.type === 'event' ? (item.data.ville || 'ADK') : (item.data.lieu || 'ADK'),
+         itemType: item.type,
+         eventId: item.data.eventId
+      });
+    }
+  });
+  
+  calendarData.forEach(dayCourses => {
+    dayCourses.sort((a,b) => (a.hour || '').localeCompare(b.hour || ''));
+  });
+
+  if (items.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const html = `<div class="compact-calendar">
+    ${days.map((dayName, idx) => {
+      const coursesHtml = calendarData[idx].map(c => {
+        let color = 'var(--primary)';
+        let bg = 'rgba(44, 62, 80, 0.05)';
+        let dispName = c.name;
+        if (c.itemType === 'event') { 
+          color = 'var(--gold)'; 
+          bg = 'rgba(212, 175, 55, 0.1)'; 
+        }
+        if (c.itemType === 'rehearsal') { 
+          color = '#27ae60'; 
+          bg = 'rgba(39, 174, 96, 0.1)'; 
+          const ev = DATA.events ? DATA.events.find(x => x.id === c.eventId) : null;
+          dispName = ev ? `Répét. ${ev.nom}` : 'Répétition';
+        }
+        return `<div class="cal-course-item" style="border-left: 3px solid ${color}; background: ${bg};" title="${dispName} (${formatLieu(c.lieu)}) - ${c.hour}">
+          <span class="cal-time" style="color:${color}">${(c.hour || '').replace('h',':')}</span>
+          <span class="cal-name">${dispName} <br><small>${formatLieu(c.lieu)}</small></span>
+        </div>`;
+      }).join('');
+      return `<div class="cal-day ${calendarData[idx].length > 0 ? 'has-courses' : ''}">
+        <div class="cal-day-header">${dayName}</div>
+        <div class="cal-day-body">${coursesHtml}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+  
+  container.innerHTML = html;
+};
+
+window.renderProfMixedCards = function(items, containerId, emptyMsg) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  if (!items || items.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📅</div><p>${emptyMsg}</p></div>`;
+    return;
+  }
+  
+  container.innerHTML = items.map(item => {
+    if (item.type === 'course') {
+      const c = DATA.getCourseWithOverride(item.data.id || item.data);
+      if(!c) return '';
+      let scheduleText = c.schedule ? c.schedule.split('–')[0].trim() : '';
+      let displayHour = c.hour ? c.hour.replace(':', 'h') : '';
+      if (c.date && c.hour) scheduleText = `${c.date} à ${displayHour}`;
+      else if (c.hour) scheduleText = `${scheduleText.split(' ')[0]} à ${displayHour}`;
+      
+      return `
+      <div class="planning-card">
+        <div class="planning-card-header">
+          <h4 class="planning-card-title">${c.name}</h4>
+          <span class="role-badge" style="background:rgba(44, 62, 80, 0.1); color:var(--primary);">Cours</span>
+        </div>
+        <div class="planning-card-body">
+          <div class="planning-info-row">
+            <span>📅 ${scheduleText}</span>
+            <span>📍 ${formatLieu(c.lieu)}</span>
+          </div>
+        </div>
+      </div>`;
+    } else if (item.type === 'event') {
+      const e = item.data;
+      return `
+      <div class="planning-card" style="border-left: 4px solid var(--gold);">
+        <div class="planning-card-header">
+          <h4 class="planning-card-title">${e.nom || 'Évènement'}</h4>
+          <span class="role-badge" style="background:rgba(212, 175, 55, 0.1); color:var(--gold);">Évènement</span>
+        </div>
+        <div class="planning-card-body">
+          <div class="planning-info-row">
+            <span>📅 ${e.dateDebut || ''} à ${e.timeDebut || ''}</span>
+            <span>📍 ${e.ville || e.rue || 'Lieu non défini'}</span>
+          </div>
+        </div>
+      </div>`;
+    } else if (item.type === 'rehearsal') {
+      const r = item.data;
+      const ev = DATA.events ? DATA.events.find(x => x.id === r.eventId) : null;
+      const evName = ev ? ev.nom : 'Inconnu';
+      return `
+      <div class="planning-card" style="border-left: 4px solid #27ae60;">
+        <div class="planning-card-header">
+          <h4 class="planning-card-title">Répétition: ${evName}</h4>
+          <span class="role-badge" style="background:rgba(39, 174, 96, 0.1); color:#27ae60;">Répétition</span>
+        </div>
+        <div class="planning-card-body">
+          <div class="planning-info-row">
+            <span>📅 ${r.date || ''} de ${r.timeDebut || ''} à ${r.timeFin || ''}</span>
+            <span>📍 ${r.lieu || 'Lieu non défini'}</span>
+          </div>
+        </div>
+      </div>`;
+    }
+  }).join('');
+};
+
 // =============================================
 // ÉCOLE DE DANSE ADK — App v2 (3 rôles)
 // =============================================
@@ -2389,73 +2531,104 @@ function renderProfDashboard(user) {
   if (typeof window.renderGalaTables === 'function') window.renderGalaTables(user);
   
   // Onglet: Mon Planning
-  const btnEnseignes = document.getElementById('prof-planning-toggle-enseignes');
-  const btnSuivis = document.getElementById('prof-planning-toggle-suivis');
-  const filterStyle = document.getElementById('prof-planning-style');
-  const filterLieu = document.getElementById('prof-planning-lieu');
+  const btnTous = document.getElementById('prof-planning-toggle-tous');
+    const btnEnseignes = document.getElementById('prof-planning-toggle-enseignes');
+    const btnSuivis = document.getElementById('prof-planning-toggle-suivis');
+    const btnEvents = document.getElementById('prof-planning-toggle-events');
+    const btnReps = document.getElementById('prof-planning-toggle-reps');
+    const filterStyle = document.getElementById('prof-planning-style');
+    const filterLieu = document.getElementById('prof-planning-lieu');
+  
+    if (filterStyle && filterStyle.options.length === 1) {
+      const styles = [...new Set(DATA.courses.map(c => c.style ? c.style.toLowerCase() : '').filter(Boolean))];
+      styles.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+        filterStyle.appendChild(opt);
+      });
+    }
+    if (filterLieu && filterLieu.options.length === 1) {
+      const lieux = [...new Set(DATA.courses.map(c => c.lieu ? c.lieu.toLowerCase() : '').filter(Boolean))];
+      lieux.forEach(l => {
+        const opt = document.createElement('option');
+        opt.value = l;
+        if (l === 'adk') opt.textContent = 'Studio ADK';
+        else if (l === 'rox') opt.textContent = 'ROX';
+        else opt.textContent = l.charAt(0).toUpperCase() + l.slice(1);
+        filterLieu.appendChild(opt);
+      });
+    }
+  
+    const applyPlanningFilters = () => {
+      let activeTab = 'tous';
+      if (btnEnseignes && btnEnseignes.classList.contains('active')) activeTab = 'enseignes';
+      else if (btnSuivis && btnSuivis.classList.contains('active')) activeTab = 'suivis';
+      else if (btnEvents && btnEvents.classList.contains('active')) activeTab = 'events';
+      else if (btnReps && btnReps.classList.contains('active')) activeTab = 'reps';
 
-  // Populate filter dropdowns based on DATA.courses
-  if (filterStyle && filterStyle.options.length === 1) {
-    const styles = [...new Set(DATA.courses.map(c => c.style ? c.style.toLowerCase() : '').filter(Boolean))];
-    styles.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s;
-      opt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
-      filterStyle.appendChild(opt);
-    });
-  }
-  if (filterLieu && filterLieu.options.length === 1) {
-    const lieux = [...new Set(DATA.courses.map(c => c.lieu ? c.lieu.toLowerCase() : '').filter(Boolean))];
-    lieux.forEach(l => {
-      const opt = document.createElement('option');
-      opt.value = l;
-      if (l === 'adk') {
-        opt.textContent = 'Studio ADK';
-      } else if (l === 'rox') {
-        opt.textContent = 'ROX';
-      } else {
-        opt.textContent = l.charAt(0).toUpperCase() + l.slice(1);
+      let items = [];
+      const getCoursesAsItems = (ids) => ids.map(id => ({ type: 'course', data: id }));
+      
+      if (activeTab === 'tous' || activeTab === 'enseignes') {
+        items = items.concat(getCoursesAsItems(taughtCourseIds));
       }
-      filterLieu.appendChild(opt);
+      if (activeTab === 'tous' || activeTab === 'suivis') {
+        items = items.concat(getCoursesAsItems(user.courseIds || []));
+      }
+      if (activeTab === 'tous' || activeTab === 'events') {
+        if (DATA.events) items = items.concat(DATA.events.map(e => ({ type: 'event', data: e })));
+      }
+      if (activeTab === 'tous' || activeTab === 'reps') {
+        if (DATA.eventRehearsals) items = items.concat(DATA.eventRehearsals.map(r => ({ type: 'rehearsal', data: r })));
+      }
+
+      const uniqueItems = [];
+      const seen = new Set();
+      items.forEach(it => {
+        const key = it.type + '_' + (it.data.id || it.data);
+        if (!seen.has(key)) {
+          seen.add(key);
+          uniqueItems.push(it);
+        }
+      });
+      items = uniqueItems;
+
+      if (filterStyle && filterStyle.value !== 'all') {
+        items = items.filter(it => {
+          if (it.type !== 'course') return false;
+          const c = DATA.getCourseById(it.data.id || it.data);
+          return c && c.style && c.style.toLowerCase() === filterStyle.value;
+        });
+      }
+      if (filterLieu && filterLieu.value !== 'all') {
+        items = items.filter(it => {
+          let lieu = '';
+          if (it.type === 'course') {
+            const c = DATA.getCourseById(it.data.id || it.data);
+            if (c) lieu = c.lieu;
+          } else if (it.type === 'event') lieu = it.data.ville;
+          else if (it.type === 'rehearsal') lieu = it.data.lieu;
+          return lieu && lieu.toLowerCase().includes(filterLieu.value.toLowerCase());
+        });
+      }
+      
+      if (typeof window.renderProfMixedCards === 'function') window.renderProfMixedCards(items, 'prof-planning-list', 'Aucun élément à afficher.');
+      if (typeof window.renderProfMixedCalendar === 'function') window.renderProfMixedCalendar(items, 'prof-planning-calendar');
+    };
+  
+    if (filterStyle) filterStyle.onchange = applyPlanningFilters;
+    if (filterLieu) filterLieu.onchange = applyPlanningFilters;
+  
+    const btns = [btnTous, btnEnseignes, btnSuivis, btnEvents, btnReps].filter(Boolean);
+    btns.forEach(b => b.onclick = () => {
+      btns.forEach(bb => bb.classList.remove('active'));
+      b.classList.add('active');
+      applyPlanningFilters();
     });
-  }
-
-  const applyPlanningFilters = () => {
-    const isEnseignes = btnEnseignes.classList.contains('active');
-    let baseCourseIds = isEnseignes ? taughtCourseIds : (user.courseIds || []);
     
-    if (filterStyle && filterStyle.value !== 'all') {
-      baseCourseIds = baseCourseIds.filter(cid => {
-        const c = DATA.getCourseById(cid);
-        return c && c.style && c.style.toLowerCase() === filterStyle.value;
-      });
-    }
-    if (filterLieu && filterLieu.value !== 'all') {
-      baseCourseIds = baseCourseIds.filter(cid => {
-        const c = DATA.getCourseById(cid);
-        return c && c.lieu && c.lieu.toLowerCase() === filterLieu.value;
-      });
-    }
-    
-    renderPlanningCards(baseCourseIds, 'prof-planning-list', isEnseignes ? 'Aucun cours enseigné avec ces filtres.' : 'Aucun cours suivi avec ces filtres.', user);
-    renderWeeklyCalendar(baseCourseIds, 'prof-planning-calendar');
-  };
-
-  if (filterStyle) filterStyle.onchange = applyPlanningFilters;
-  if (filterLieu) filterLieu.onchange = applyPlanningFilters;
-
-  btnEnseignes.onclick = () => {
-    btnEnseignes.classList.add('active');
-    btnSuivis.classList.remove('active');
-    applyPlanningFilters();
-  };
-  btnSuivis.onclick = () => {
-    btnSuivis.classList.add('active');
-    btnEnseignes.classList.remove('active');
-    applyPlanningFilters();
-  };
-  // Init default view
-  btnEnseignes.click();
+    if (btnTous) btnTous.click();
+    else if (btnEnseignes) btnEnseignes.click();
 
   const appelSaveBtn = document.getElementById('appel-save-btn');
   if (appelSaveBtn) {
@@ -13441,3 +13614,62 @@ setTimeout(async () => {
     }
   }
 }, 3000);
+
+
+window.openEventRepModal = function() {
+  const select = document.getElementById('event-rep-event-id');
+  if (select) {
+    select.innerHTML = '<option value="">-- Sélectionner un évènement --</option>';
+    if (DATA.events) {
+      DATA.events.forEach(e => {
+        select.innerHTML += `<option value="${e.id}">${e.nom || 'Sans nom'}</option>`;
+      });
+    }
+  }
+  if (typeof openModal === 'function') openModal('modal-event-rep');
+};
+
+window.saveEventRep = async function() {
+  const eventId = document.getElementById('event-rep-event-id').value;
+  const dateStr = document.getElementById('event-rep-date').value; // Format: YYYY-MM-DD
+  const lieu = document.getElementById('event-rep-lieu').value.trim();
+  const timeDebut = document.getElementById('event-rep-debut').value;
+  const timeFin = document.getElementById('event-rep-fin').value;
+
+  if (!eventId || !dateStr || !timeDebut || !timeFin) {
+    return alert('Veuillez remplir les champs obligatoires (Évènement, Date, Heures).');
+  }
+  
+  // Format to DD/MM/YYYY
+  const parts = dateStr.split('-');
+  let formattedDate = dateStr;
+  if (parts.length === 3) formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+  const repData = {
+    eventId,
+    date: formattedDate,
+    lieu,
+    timeDebut,
+    timeFin,
+    timestamp: Date.now(),
+    authorId: window.AUTH.currentUser.email || window.AUTH.currentUser.name
+  };
+
+  try {
+    const { addDoc, collection, db } = await import('./firebase-config.js');
+    const docRef = await addDoc(collection(db, 'event_rehearsals'), repData);
+    repData.id = docRef.id;
+    if (!DATA.eventRehearsals) DATA.eventRehearsals = [];
+    DATA.eventRehearsals.push(repData);
+    
+    if (typeof closeModal === 'function') closeModal('modal-event-rep');
+    if (typeof showToast === 'function') showToast('Répétition créée avec succès');
+    if (typeof window.renderProfDashboard === 'function') window.renderProfDashboard(window.AUTH.currentUser);
+  } catch (err) {
+    console.error(err);
+    alert("Erreur lors de la création de la répétition.");
+  }
+};
+
+if (typeof window.openEventRepModal !== 'undefined') window.openEventRepModal = window.openEventRepModal;
+if (typeof window.saveEventRep !== 'undefined') window.saveEventRep = window.saveEventRep;

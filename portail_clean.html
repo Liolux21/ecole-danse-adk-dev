@@ -484,8 +484,11 @@
           <!-- Tab: Mon Planning -->
           <div class="tab-content active" id="tab-mon-planning">
             <div class="prof-planning-controls">
-              <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-enseignes">Cours enseignés</button>
-              <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
+              <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-tous">Tous</button>
+                <button class="btn btn-outline btn-sm" id="prof-planning-toggle-enseignes">Cours enseignés</button>
+                <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
+                <button class="btn btn-outline btn-sm" id="prof-planning-toggle-events">Évènements</button>
+                <button class="btn btn-outline btn-sm" id="prof-planning-toggle-reps">Répétitions</button>
             </div>
             
             <div id="prof-planning-filters" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: flex-start;">
@@ -564,7 +567,8 @@
           <!-- Tab: Prof Events -->
           <div class="tab-content" id="tab-prof-events">
             <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-              <button class="btn btn-primary" onclick="openModal('modal-create-event'); window.initEventModal();">+ Créer un nouvel évènement</button>
+              <button class="btn btn-primary" onclick="window.openEventRepModal()">+ Créer une répétition</button>
+                <button class="btn btn-primary" onclick="openModal('modal-create-event'); window.initEventModal();">+ Créer un nouvel évènement</button>
             </div>
             <div class="data-table-wrapper" style="overflow-x: auto;">
               <table class="data-table">
@@ -1543,6 +1547,47 @@
   </div>
 
   <script src="js/vitrine-data.js?v=3"></script>
+  
+  <!-- Modal Créer une répétition d'évènement -->
+  <div class="vitrine-modal" id="modal-event-rep">
+    <div class="vitrine-modal-content" style="max-width: 500px;">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title" style="color:var(--gold); font-family:var(--font-display);">Créer une répétition</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-event-rep')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        <div class="form-group">
+          <label class="form-label">Évènement</label>
+          <select id="event-rep-event-id" class="form-input"></select>
+        </div>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+          <div style="flex:1;">
+            <label class="form-label">Date</label>
+            <input type="date" id="event-rep-date" class="form-input">
+          </div>
+          <div style="flex:1;">
+            <label class="form-label">Lieu</label>
+            <input type="text" id="event-rep-lieu" class="form-input" placeholder="Lieu">
+          </div>
+        </div>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+          <div style="flex:1;">
+            <label class="form-label">Heure début</label>
+            <input type="time" id="event-rep-debut" class="form-input">
+          </div>
+          <div style="flex:1;">
+            <label class="form-label">Heure fin</label>
+            <input type="time" id="event-rep-fin" class="form-input">
+          </div>
+        </div>
+      </div>
+      <div class="vitrine-modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-event-rep')">Annuler</button>
+        <button class="btn btn-primary" onclick="window.saveEventRep()">Créer la répétition</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Créer un évènement -->
   <div class="vitrine-modal" id="modal-create-event">
     <div class="vitrine-modal-content">
@@ -1621,7 +1666,7 @@
   <script type="module" src="js/data.js?v=25889"></script>
   <script type="module" src="js/auth.js?v=639267197813822511"></script>
   <script type="module" src="js/chat.js?v=36"></script>
-  <script type="module" src="js/app.js?v=639267197813822527"></script>
+  <script type="module" src="js/app.js?v=639267197813822528"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
