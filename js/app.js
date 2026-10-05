@@ -1961,9 +1961,50 @@ window.renderGalaTables = function(userCtx) {
   const repBody = document.getElementById('admin-gala-rep-body');
   if (repBody) repBody.innerHTML = htmlRepAdmin;
 
-  const htmlInfoAdmin = DATA.galaInfos.length === 0 
+  // Sorting
+  let sortedInfos = [...DATA.galaInfos].sort((a, b) => {
+    let tA = (a.theme || '').toLowerCase();
+    let tB = (b.theme || '').toLowerCase();
+    if (tA < tB) return -1;
+    if (tA > tB) return 1;
+    return 0;
+  });
+
+  // Filtering
+  const filterInfos = (infos, role) => {
+    const themeEl = document.getElementById('filter-' + role + '-gala-info-theme');
+    const styleEl = document.getElementById('filter-' + role + '-gala-info-style');
+    const themeF = themeEl ? themeEl.value : '';
+    const styleF = styleEl ? styleEl.value : '';
+    return infos.filter(i => {
+      if (themeF && i.theme !== themeF) return false;
+      if (styleF) {
+        const c = DATA.getCourseById(i.course);
+        if (!c || !c.style || c.style.toLowerCase() !== styleF) return false;
+      }
+      return true;
+    });
+  };
+
+  // Populate filters
+  const popF = (id, arr, allText) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const currentVal = el.value;
+    el.innerHTML = '<option value="">' + allText + '</option>' + arr.map(x => '<option value="' + x + '"' + (x===currentVal?' selected':'') + '>' + x.charAt(0).toUpperCase() + x.slice(1) + '</option>').join('');
+  };
+  const stylesList = [...new Set(DATA.courses.map(c => c.style ? c.style.toLowerCase() : '').filter(Boolean))].sort();
+  const themesList = (DATA.settings && DATA.settings.galaThemes) ? DATA.settings.galaThemes : [];
+  popF('filter-admin-gala-info-theme', themesList, 'Tous les thèmes');
+  popF('filter-prof-gala-info-theme', themesList, 'Tous les thèmes');
+  popF('filter-admin-gala-info-style', stylesList, 'Tous les types de cours');
+  popF('filter-prof-gala-info-style', stylesList, 'Tous les types de cours');
+
+  const adminInfosRender = filterInfos(sortedInfos, 'admin');
+
+  const htmlInfoAdmin = adminInfosRender.length === 0 
     ? '<tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr>'
-    : DATA.galaInfos.map(i => {
+    : adminInfosRender.map(i => {
         const courseName = DATA.getCourseById(i.course)?.name || i.course;
         return `<tr>
           <td>${courseName}</td>
@@ -2022,7 +2063,7 @@ window.renderGalaTables = function(userCtx) {
     const profRepBody = document.getElementById('prof-gala-rep-body');
     if (profRepBody) profRepBody.innerHTML = htmlRepProf;
 
-    const profInfos = DATA.galaInfos;
+    const profInfos = filterInfos(sortedInfos, 'prof');
     const htmlInfoProf = profInfos.length === 0 
       ? '<tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr>'
       : profInfos.map(i => {

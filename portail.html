@@ -457,9 +457,15 @@
             </div>
           </div>
           <div class="tab-content" id="tab-admin-gala-infos">
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-              <button class="btn btn-primary" style="margin-right:0.5rem;" onclick="openModal('modal-gala-themes'); window.renderGalaThemes();">🎭 Gérer les thèmes</button>
+            <div style="display: flex; gap:1rem; margin-bottom: 1rem; flex-wrap:wrap; justify-content:space-between; align-items:center;">
+              <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <select class="form-input" id="filter-admin-gala-info-style" onchange="window.renderGalaTables()" style="min-width:150px;"></select>
+                <select class="form-input" id="filter-admin-gala-info-theme" onchange="window.renderGalaTables()" style="min-width:150px;"></select>
+              </div>
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="openModal('modal-gala-themes'); window.renderGalaThemes();">⚙️ Gérer les thèmes</button>
                 <button class="btn btn-primary" onclick="openModal('modal-gala-info'); initGalaInfoModal();">+ Ajouter une info tableau</button>
+              </div>
             </div>
             <div class="data-table-wrapper" style="overflow-x: auto;">
               <table class="data-table">
@@ -620,8 +626,12 @@
             </div>
           </div>
           <div class="tab-content" id="tab-prof-gala-infos">
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-                <button class="btn btn-primary" onclick="openModal('modal-gala-info'); initGalaInfoModal();">+ Ajouter une info tableau</button>
+            <div style="display: flex; gap:1rem; margin-bottom: 1rem; flex-wrap:wrap; justify-content:space-between; align-items:center;">
+              <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <select class="form-input" id="filter-prof-gala-info-style" onchange="window.renderGalaTables()" style="min-width:150px;"></select>
+                <select class="form-input" id="filter-prof-gala-info-theme" onchange="window.renderGalaTables()" style="min-width:150px;"></select>
+              </div>
+              <button class="btn btn-primary" onclick="openModal('modal-gala-info'); initGalaInfoModal();">+ Ajouter une info tableau</button>
             </div>
             <div class="data-table-wrapper" style="overflow-x: auto;">
               <table class="data-table">
@@ -1656,7 +1666,7 @@
   <script type="module" src="js/data.js?v=639267197813822509"></script>
   <script type="module" src="js/auth.js?v=639267197813822511"></script>
   <script type="module" src="js/chat.js?v=639267197813822509"></script>
-  <script type="module" src="js/app.js?v=639267197813822515"></script>
+  <script type="module" src="js/app.js?v=639267197813822516"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
