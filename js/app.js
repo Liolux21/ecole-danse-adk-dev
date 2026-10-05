@@ -3790,11 +3790,7 @@ window.initInscription = initInscription;
 window.initPortal = initPortal;
 window.showPortalDashboard = showPortalDashboard;
 window.initTabs = initTabs;
-window.renderProfEvents = renderProfEvents;
-window.initEventModal = initEventModal;
-window.toggleEventAllCourses = toggleEventAllCourses;
-window.saveEvent = saveEvent;
-window.deleteEvent = deleteEvent;
+
 
 // ==========================================
 // EVÈNEMENTS (Profs autorisés)
