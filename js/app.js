@@ -2006,7 +2006,7 @@ window.renderGalaTables = function(userCtx) {
        profCourseIds = DATA.courses.filter(c => c.prof && (c.prof.includes(user.name) || (user.firstname && c.prof.includes(user.firstname)))).map(c => String(c.id));
     }
 
-    const profRepets = DATA.galaRepets.filter(r => r.course === 'all' || profCourseIds.includes(String(r.course)));
+    const profRepets = DATA.galaRepets;
     const htmlRepProf = profRepets.length === 0 
       ? '<tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr>'
       : profRepets.map(r => {
@@ -2022,7 +2022,7 @@ window.renderGalaTables = function(userCtx) {
     const profRepBody = document.getElementById('prof-gala-rep-body');
     if (profRepBody) profRepBody.innerHTML = htmlRepProf;
 
-    const profInfos = DATA.galaInfos.filter(i => profCourseIds.includes(String(i.course)));
+    const profInfos = DATA.galaInfos;
     const htmlInfoProf = profInfos.length === 0 
       ? '<tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr>'
       : profInfos.map(i => {
