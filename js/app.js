@@ -3946,16 +3946,23 @@ window.renderCourseStudents = function(courseId) {
   countEl.textContent = enrolled.length;
   
   if (enrolled.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Aucun élève inscrit.</td></tr>';
-  } else {
-    tbody.innerHTML = enrolled.map(s => {
-      const name = `${s.firstname || ''} ${s.lastname || ''}`;
-      return `<tr>
-        <td>${name}</td>
-        <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="removeStudentFromCourse('${s.id}', '${courseId}')">Retirer</button></td>
-      </tr>`;
-    }).join('');
-  }
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Aucun élève inscrit.</td></tr>';
+    } else {
+      tbody.innerHTML = enrolled.map(s => {
+        const name = `${s.firstname || ''} ${s.lastname || ''}`;
+        
+        const courseAtt = DATA.getAttendanceByStudent(s.id).filter(a => String(a.courseId) === String(courseId));
+        const pres = courseAtt.filter(a => a.status === 'present').length;
+        const rate = courseAtt.length ? Math.round((pres / courseAtt.length) * 100) : 100;
+        const color = rate >= 80 ? '#90CC90' : rate >= 60 ? 'var(--gold)' : '#DC6464';
+        
+        return `<tr>
+          <td>${name}</td>
+          <td style="text-align:center; color:${color}; font-weight:bold;">${rate}%</td>
+          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="removeStudentFromCourse('${s.id}', '${courseId}')">Retirer</button></td>
+        </tr>`;
+      }).join('');
+    }
   
   // Reset search and populate the select list
   const searchInput = document.getElementById('course-student-search');
