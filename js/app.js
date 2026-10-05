@@ -2328,7 +2328,7 @@ window.deleteGalaNote = async function(id) {
 function renderProfDashboard(user) {
   const eventsTab = document.getElementById('prof-tab-events');
   if (eventsTab) {
-    const isAllowed = user.role === 'admin' || user.realRole === 'admin' || user.name === 'Margaux Hubert' || user.name === 'Maurine Baudon' || (user.firstname && (user.firstname === 'Margaux' || user.firstname === 'Maurine'));
+    const isAllowed = user.role === 'admin' || user.realRole === 'admin' || user.email === 'admin@adk.be' || user.name === 'Anne de Keyser' || user.name === 'Margaux Hubert' || user.name === 'Maurine Baudon' || (user.firstname && (user.firstname === 'Margaux' || user.firstname === 'Maurine' || user.firstname === 'Anne'));
     if (isAllowed) {
       eventsTab.style.display = 'inline-block';
       if (typeof window.renderProfEvents === 'function') window.renderProfEvents(user);
