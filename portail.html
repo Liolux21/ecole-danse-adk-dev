@@ -1696,7 +1696,7 @@
           </select>
         </div>
         
-        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--primary);">1) Personne de contact</h5>
+        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--gold); font-family:var(--font-display); font-size:1.1rem;">Personne de contact</h5>
         <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.5rem;">
           <input type="text" class="form-input" id="event-contact-nom" placeholder="Nom" style="flex:1;">
           <input type="text" class="form-input" id="event-contact-prenom" placeholder="Prénom" style="flex:1;">
@@ -1706,13 +1706,13 @@
           <input type="tel" class="form-input" id="event-contact-tel" placeholder="Numéro de téléphone" style="flex:1;">
         </div>
         
-        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--primary);">2) Informations de l'évènement</h5>
+        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--gold); font-family:var(--font-display); font-size:1.1rem;">Informations de l'évènement</h5>
         <div class="form-group">
           <label class="form-label">Nom de l'évènement</label>
           <input type="text" class="form-input" id="event-nom" placeholder="Nom de l'évènement">
         </div>
         
-        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--primary);">3) Adresse de l'évènement</h5>
+        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--gold); font-family:var(--font-display); font-size:1.1rem;">Adresse de l'évènement</h5>
         <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.5rem;">
           <input type="text" class="form-input" id="event-adresse-rue" placeholder="Rue" style="flex:2;">
           <input type="text" class="form-input" id="event-adresse-num" placeholder="Numéro" style="flex:1;">
@@ -1722,7 +1722,7 @@
           <input type="text" class="form-input" id="event-adresse-ville" placeholder="Ville" style="flex:2;">
         </div>
         
-        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--primary);">4) Horaire de l'évènement</h5>
+        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--gold); font-family:var(--font-display); font-size:1.1rem;">Horaire de l'évènement</h5>
         <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.5rem;">
           <div style="flex:1;">
             <label class="form-label">Début</label>
@@ -1740,13 +1740,8 @@
           </div>
         </div>
         
-        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--primary);">5) Cours concernés</h5>
+        <h5 style="margin-top:1.5rem; margin-bottom:0.5rem; color:var(--gold); font-family:var(--font-display); font-size:1.1rem;">Cours concernés</h5>
         <div class="form-group">
-          <div style="margin-bottom:0.5rem;">
-            <label style="display:flex; align-items:center; gap:0.5rem; font-weight:bold; cursor:pointer;">
-              <input type="checkbox" id="event-courses-all" onchange="window.toggleEventAllCourses()"> Tous les élèves
-            </label>
-          </div>
           <div id="event-courses-list" style="max-height:200px; overflow-y:auto; border:1px solid var(--border); padding:0.5rem; border-radius:var(--radius); display:flex; flex-direction:column; gap:0.3rem;">
             <!-- Rempli en JS -->
           </div>

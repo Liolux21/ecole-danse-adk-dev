@@ -3828,9 +3828,13 @@ window.renderProfEvents = function(user) {
 window.initEventModal = function() {
   const container = document.getElementById('event-courses-list');
   if (container) {
-    container.innerHTML = DATA.courses.map(c => 
+    let html = `<label style="display:flex; align-items:center; gap:0.5rem; font-weight:bold; cursor:pointer; padding-bottom:0.5rem; border-bottom:1px solid var(--border); margin-bottom:0.5rem;">
+      <input type="checkbox" id="event-courses-all" onchange="window.toggleEventAllCourses()"> Tous les élèves
+    </label>`;
+    html += DATA.courses.map(c => 
       `<label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;"><input type="checkbox" class="event-course-cb" value="${c.id}"> ${c.name} (${c.style || ''})</label>`
     ).join('');
+    container.innerHTML = html;
   }
   document.getElementById('event-type').value = 'Show';
   document.getElementById('event-nom').value = '';
