@@ -4032,25 +4032,25 @@ window.addStudentToCourse = async function() {
   }
 };
 
-window.renderAdminDashboard = renderAdminDashboard;
-window.renderAdminInscriptions = renderAdminInscriptions;
-window.adminApprove = adminApprove;
-window.adminReject = adminReject;
-window.renderAdminEleves = renderAdminEleves;
-window.renderAdminProfs = renderAdminProfs;
-window.renderProfDashboard = renderProfDashboard;
-window.populateAppelDates = populateAppelDates;
-window.renderAppelList = renderAppelList;
-window.renderProfEleves = renderProfEleves;
-window.renderParentDashboard = renderParentDashboard;
-window.renderChildData = renderChildData;
-window.initActualites = initActualites;
-window.initGalerie = initGalerie;
-window.closeLightbox = closeLightbox;
-window.initContact = initContact;
-window.initFooter = initFooter;
-window.initReveal = initReveal;
-window.showToast = showToast;
+if (typeof renderAdminDashboard !== 'undefined') window.renderAdminDashboard = renderAdminDashboard;
+if (typeof renderAdminInscriptions !== 'undefined') window.renderAdminInscriptions = renderAdminInscriptions;
+if (typeof adminApprove !== 'undefined') window.adminApprove = adminApprove;
+if (typeof adminReject !== 'undefined') window.adminReject = adminReject;
+if (typeof renderAdminEleves !== 'undefined') window.renderAdminEleves = renderAdminEleves;
+if (typeof renderAdminProfs !== 'undefined') window.renderAdminProfs = renderAdminProfs;
+if (typeof renderProfDashboard !== 'undefined') window.renderProfDashboard = renderProfDashboard;
+if (typeof populateAppelDates !== 'undefined') window.populateAppelDates = populateAppelDates;
+if (typeof renderAppelList !== 'undefined') window.renderAppelList = renderAppelList;
+if (typeof renderProfEleves !== 'undefined') window.renderProfEleves = renderProfEleves;
+if (typeof renderParentDashboard !== 'undefined') window.renderParentDashboard = renderParentDashboard;
+if (typeof renderChildData !== 'undefined') window.renderChildData = renderChildData;
+if (typeof initActualites !== 'undefined') window.initActualites = initActualites;
+if (typeof initGalerie !== 'undefined') window.initGalerie = initGalerie;
+if (typeof closeLightbox !== 'undefined') window.closeLightbox = closeLightbox;
+if (typeof initContact !== 'undefined') window.initContact = initContact;
+if (typeof initFooter !== 'undefined') window.initFooter = initFooter;
+if (typeof initReveal !== 'undefined') window.initReveal = initReveal;
+if (typeof showToast !== 'undefined') window.showToast = showToast;
 
 window.deleteStudent = async function(studentId) {
   if (!confirm("Êtes-vous sûr de vouloir supprimer cet élève définitivement ?")) return;
