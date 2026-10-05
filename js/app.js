@@ -603,7 +603,7 @@ async function initPortal() {
 
   // Tabs admin
   initTabs('admin-tabs', ['tab-inscriptions', 'tab-eleves', 'tab-profs', 'tab-admin-cours', 'tab-admin-settings', 'tab-admin-gala', 'tab-admin-rapports', 'tab-admin-annonces', 'tab-admin-messagerie']);
-  initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves', 'tab-mes-heures', 'tab-prof-gala', 'tab-prof-rapports', 'tab-prof-messagerie', 'tab-prof-notifications']);
+  initTabs('prof-tabs', ['tab-mon-planning', 'tab-appel', 'tab-mes-eleves', 'tab-mes-heures', 'tab-prof-gala', 'tab-prof-rapports', 'tab-prof-messagerie', 'tab-prof-notifications', 'tab-prof-events']);
   initTabs('parent-tabs', ['tab-parent-planning', 'tab-parent-gala', 'tab-parent-messagerie', 'tab-parent-notifications']);
   
   // Sub-tabs Gala
@@ -2326,6 +2326,16 @@ window.deleteGalaNote = async function(id) {
 // DASHBOARD PROF
 // =============================================
 function renderProfDashboard(user) {
+  const eventsTab = document.getElementById('prof-tab-events');
+  if (eventsTab) {
+    const isAllowed = user.role === 'admin' || user.realRole === 'admin' || user.name === 'Margaux Hubert' || user.name === 'Maurine Baudon' || (user.firstname && (user.firstname === 'Margaux' || user.firstname === 'Maurine'));
+    if (isAllowed) {
+      eventsTab.style.display = 'inline-block';
+      if (typeof window.renderProfEvents === 'function') window.renderProfEvents(user);
+    } else {
+      eventsTab.style.display = 'none';
+    }
+  }
   renderUserAnnonces('prof', user);
   document.getElementById('prof-name').textContent = user.name;
     const searchName = user.firstname || (user.name ? user.name.split(' ')[0] : '');
@@ -3779,6 +3789,126 @@ window.initInscription = initInscription;
 window.initPortal = initPortal;
 window.showPortalDashboard = showPortalDashboard;
 window.initTabs = initTabs;
+window.renderProfEvents = renderProfEvents;
+window.initEventModal = initEventModal;
+window.toggleEventAllCourses = toggleEventAllCourses;
+window.saveEvent = saveEvent;
+window.deleteEvent = deleteEvent;
+
+// ==========================================
+// EVÈNEMENTS (Profs autorisés)
+// ==========================================
+window.renderProfEvents = function(user) {
+  const tbody = document.getElementById('prof-events-list-body');
+  if (!tbody) return;
+  const events = DATA.events || [];
+  if (events.length === 0) {
+    tbody.innerHTML = '<tr class="empty-state"><td colspan="5">Aucun évènement.</td></tr>';
+    return;
+  }
+  
+  // Sort events by date
+  const sorted = [...events].sort((a, b) => new Date(a.dateDebut || 0) - new Date(b.dateDebut || 0));
+  
+  tbody.innerHTML = sorted.map(e => {
+    let dateStr = e.dateDebut || '-';
+    if (e.timeDebut) dateStr += ' ' + e.timeDebut;
+    const lieuStr = [e.rue, e.num, e.cp, e.ville].filter(Boolean).join(' ');
+    
+    return `<tr>
+      <td>${e.type || '-'}</td>
+      <td><strong>${e.nom || '-'}</strong></td>
+      <td>${dateStr}</td>
+      <td>${lieuStr || '-'}</td>
+      <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteEvent('${e.id}')">X</button></td>
+    </tr>`;
+  }).join('');
+};
+
+window.initEventModal = function() {
+  const container = document.getElementById('event-courses-list');
+  if (container) {
+    container.innerHTML = DATA.courses.map(c => 
+      `<label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;"><input type="checkbox" class="event-course-cb" value="${c.id}"> ${c.name} (${c.style || ''})</label>`
+    ).join('');
+  }
+  document.getElementById('event-type').value = 'Show';
+  document.getElementById('event-nom').value = '';
+  document.getElementById('event-contact-nom').value = '';
+  document.getElementById('event-contact-prenom').value = '';
+  document.getElementById('event-contact-email').value = '';
+  document.getElementById('event-contact-tel').value = '';
+  document.getElementById('event-adresse-rue').value = '';
+  document.getElementById('event-adresse-num').value = '';
+  document.getElementById('event-adresse-cp').value = '';
+  document.getElementById('event-adresse-ville').value = '';
+  document.getElementById('event-date-debut').value = '';
+  document.getElementById('event-time-debut').value = '';
+  document.getElementById('event-date-fin').value = '';
+  document.getElementById('event-time-fin').value = '';
+  const allCb = document.getElementById('event-courses-all');
+  if(allCb) allCb.checked = false;
+};
+
+window.toggleEventAllCourses = function() {
+  const isChecked = document.getElementById('event-courses-all').checked;
+  document.querySelectorAll('.event-course-cb').forEach(cb => cb.checked = isChecked);
+};
+
+window.saveEvent = async function() {
+  const type = document.getElementById('event-type').value;
+  const nom = document.getElementById('event-nom').value.trim();
+  if (!nom) return alert('Veuillez entrer le nom de l\'évènement.');
+  
+  const selectedCourses = Array.from(document.querySelectorAll('.event-course-cb:checked')).map(cb => cb.value);
+  
+  const eventData = {
+    type, nom,
+    contactNom: document.getElementById('event-contact-nom').value.trim(),
+    contactPrenom: document.getElementById('event-contact-prenom').value.trim(),
+    contactEmail: document.getElementById('event-contact-email').value.trim(),
+    contactTel: document.getElementById('event-contact-tel').value.trim(),
+    rue: document.getElementById('event-adresse-rue').value.trim(),
+    num: document.getElementById('event-adresse-num').value.trim(),
+    cp: document.getElementById('event-adresse-cp').value.trim(),
+    ville: document.getElementById('event-adresse-ville').value.trim(),
+    dateDebut: document.getElementById('event-date-debut').value,
+    timeDebut: document.getElementById('event-time-debut').value,
+    dateFin: document.getElementById('event-date-fin').value,
+    timeFin: document.getElementById('event-time-fin').value,
+    courses: selectedCourses,
+    authorId: window.AUTH.currentUser.email || window.AUTH.currentUser.name,
+    timestamp: Date.now()
+  };
+  
+  try {
+    const { addDoc, collection, db } = await import('./firebase-config.js');
+    const docRef = await addDoc(collection(db, 'events'), eventData);
+    eventData.id = docRef.id;
+    if(!DATA.events) DATA.events = [];
+    DATA.events.push(eventData);
+    
+    closeModal('modal-create-event');
+    if (typeof window.renderProfEvents === 'function') window.renderProfEvents(window.AUTH.currentUser);
+  } catch (err) {
+    console.error(err);
+    alert('Erreur lors de la création de l\'évènement.');
+  }
+};
+
+window.deleteEvent = async function(id) {
+  if(!confirm('Supprimer cet évènement ?')) return;
+  try {
+    const { doc, deleteDoc, db } = await import('./firebase-config.js');
+    await deleteDoc(doc(db, 'events', id));
+    DATA.events = DATA.events.filter(e => e.id !== id);
+    if (typeof window.renderProfEvents === 'function') window.renderProfEvents(window.AUTH.currentUser);
+  } catch (err) {
+    console.error(err);
+    alert('Erreur lors de la suppression.');
+  }
+};
+
 window.renderAdminDashboard = renderAdminDashboard;
 window.renderAdminInscriptions = renderAdminInscriptions;
 window.adminApprove = adminApprove;

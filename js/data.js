@@ -386,7 +386,8 @@ export const DATA = {
 
       // 7. Announcements
       if (results[6].status === 'fulfilled') {
-        this.announcements = [];
+        this.events = [];
+    this.announcements = [];
         results[6].value.forEach(doc => this.announcements.push({ id: doc.id, ...doc.data() }));
         this.announcements.sort((a, b) => b.timestamp - a.timestamp);
       } else {
@@ -417,6 +418,15 @@ export const DATA = {
         students: this.students.length, 
         courses: this.courses.length 
       });
+      // Events (Standalone)
+      try {
+        const evSnap = await getDocs(collection(db, "events"));
+        this.events = [];
+        evSnap.forEach(doc => this.events.push({ id: doc.id, ...doc.data() }));
+      } catch (e) {
+        console.warn("Erreur chargement events:", e);
+      }
+      
       return true;
     } catch(err) {
       console.error("Erreur de synchronisation Firebase:", err);
