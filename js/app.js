@@ -3938,8 +3938,8 @@ window.renderCourseStudents = function(courseId) {
   
   // Sort alphabetically
   enrolled.sort((a, b) => {
-    let nameA = (a.firstname + ' ' + a.lastname).toLowerCase();
-    let nameB = (b.firstname + ' ' + b.lastname).toLowerCase();
+    let nameA = ((a.lastname || "") + " " + (a.firstname || "")).toLowerCase();
+      let nameB = ((b.lastname || "") + " " + (b.firstname || "")).toLowerCase();
     return nameA.localeCompare(nameB);
   });
   
@@ -3949,7 +3949,7 @@ window.renderCourseStudents = function(courseId) {
       tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Aucun élève inscrit.</td></tr>';
     } else {
       tbody.innerHTML = enrolled.map(s => {
-        const name = `${s.firstname || ''} ${s.lastname || ''}`;
+        const name = `${(s.lastname || "").toUpperCase()} ${s.firstname || ""}`;
         
         const courseAtt = DATA.getAttendanceByStudent(s.id).filter(a => String(a.courseId) === String(courseId));
         const pres = courseAtt.filter(a => a.status === 'present').length;
@@ -3986,21 +3986,21 @@ window.filterCourseStudents = function() {
   
   if (search) {
     notEnrolled = notEnrolled.filter(s => {
-      const name = `${s.firstname || ''} ${s.lastname || ''}`.toLowerCase();
+      const name = `${s.lastname || ""} ${s.firstname || ""}`.toLowerCase();
       return name.includes(search);
     });
   }
   
   notEnrolled.sort((a, b) => {
-    let nameA = (a.firstname + ' ' + a.lastname).toLowerCase();
-    let nameB = (b.firstname + ' ' + b.lastname).toLowerCase();
+    let nameA = ((a.lastname || "") + " " + (a.firstname || "")).toLowerCase();
+      let nameB = ((b.lastname || "") + " " + (b.firstname || "")).toLowerCase();
     return nameA.localeCompare(nameB);
   });
   
   if (notEnrolled.length === 0) {
     select.innerHTML = '<option value="" disabled>Aucun élève trouvé</option>';
   } else {
-    select.innerHTML = notEnrolled.map(s => `<option value="${s.id}">${s.firstname || ''} ${s.lastname || ''}</option>`).join('');
+    select.innerHTML = notEnrolled.map(s => `<option value="${s.id}">${(s.lastname || "").toUpperCase()} ${s.firstname || ""}</option>`).join('');
   }
 };
 
