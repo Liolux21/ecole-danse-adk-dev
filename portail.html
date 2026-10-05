@@ -1676,6 +1676,50 @@
     </div>
   </div>
 
+  
+  <!-- Modal Liste des élèves d'un cours -->
+  <div class="vitrine-modal" id="modal-course-students">
+    <div class="vitrine-modal-content" style="max-width: 600px;">
+      <div class="vitrine-modal-header">
+        <h4 class="vitrine-modal-title" id="course-students-title" style="color:var(--gold); font-family:var(--font-display);">Élèves du cours</h4>
+        <button class="vitrine-modal-close" onclick="closeModal('modal-course-students')">&times;</button>
+      </div>
+      <div class="vitrine-modal-body">
+        
+        <!-- Ajouter un élève -->
+        <div style="background:#f9f9f9; padding:1rem; border-radius:var(--radius); margin-bottom:1.5rem; border:1px solid var(--border);">
+          <h5 style="margin-top:0; margin-bottom:0.8rem; color:var(--primary); font-size:1rem;">Ajouter un élève existant</h5>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <select class="form-input" id="course-add-student-select" style="flex:1;">
+              <!-- Rempli en JS -->
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="window.addStudentToCourse()">Ajouter</button>
+          </div>
+        </div>
+        
+        <!-- Liste des élèves -->
+        <h5 style="margin-top:0; margin-bottom:0.8rem; color:var(--text); font-size:1rem;">Élèves inscrits (<span id="course-students-count">0</span>)</h5>
+        <div class="data-table-wrapper" style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Élève</th>
+                <th style="width:100px;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="course-students-list">
+              <!-- Rempli en JS -->
+            </tbody>
+          </table>
+        </div>
+        
+      </div>
+      <div class="vitrine-modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-course-students')">Fermer</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Quill JS -->
   <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
   <script src="js/vitrine-data.js?v=639267197813822509"></script>
@@ -1757,7 +1801,7 @@
   <script type="module" src="js/data.js?v=639267197813822509"></script>
   <script type="module" src="js/auth.js?v=639267197813822511"></script>
   <script type="module" src="js/chat.js?v=639267197813822509"></script>
-  <script type="module" src="js/app.js?v=639267197813822521"></script>
+  <script type="module" src="js/app.js?v=639267197813822522"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {

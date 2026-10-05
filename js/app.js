@@ -1782,7 +1782,8 @@ window.renderAdminCourses = function() {
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📅 Horaire :</strong> ${c.schedule || "Non défini"}</div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>🎂 Âge :</strong> ${c.ages || "Non défini"}</div>
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.2rem;">
-          <button class="btn btn-outline btn-sm" onclick="openAddCourseModal('${c.id}')">✏️ Modifier</button>
+          <button class="btn btn-outline btn-sm" onclick="openCourseStudents('${c.id}')">👥 Élèves</button>
+            <button class="btn btn-outline btn-sm" onclick="openAddCourseModal('${c.id}')">✏️ Modifier</button>
           <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteCourse('${c.id}')">🗑️ Supprimer</button>
         </div>
       </div>
@@ -3910,6 +3911,128 @@ window.deleteEvent = async function(id) {
   } catch (err) {
     console.error(err);
     alert('Erreur lors de la suppression.');
+  }
+};
+
+
+// ==========================================
+// COURSE STUDENTS MANAGEMENT
+// ==========================================
+window.openCourseStudents = function(courseId) {
+  const course = DATA.getCourseById(courseId);
+  if (!course) return alert('Cours introuvable');
+  
+  document.getElementById('course-students-title').textContent = `Élèves du cours : ${course.name}`;
+  // Store the current course ID in the modal or button
+  document.getElementById('modal-course-students').dataset.courseId = courseId;
+  
+  window.renderCourseStudents(courseId);
+  openModal('modal-course-students');
+};
+
+window.renderCourseStudents = function(courseId) {
+  const tbody = document.getElementById('course-students-list');
+  const countEl = document.getElementById('course-students-count');
+  const select = document.getElementById('course-add-student-select');
+  
+  if (!tbody || !select) return;
+  
+  // Get enrolled students
+  let enrolled = DATA.getStudentsByCourse(courseId);
+  
+  // Sort alphabetically
+  enrolled.sort((a, b) => {
+    let nameA = (a.firstname + ' ' + a.lastname).toLowerCase();
+    let nameB = (b.firstname + ' ' + b.lastname).toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+  
+  countEl.textContent = enrolled.length;
+  
+  if (enrolled.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Aucun élève inscrit.</td></tr>';
+  } else {
+    tbody.innerHTML = enrolled.map(s => {
+      const name = `${s.firstname || ''} ${s.lastname || ''}`;
+      return `<tr>
+        <td>${name}</td>
+        <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="removeStudentFromCourse('${s.id}', '${courseId}')">Retirer</button></td>
+      </tr>`;
+    }).join('');
+  }
+  
+  // Populate the select list with NON-enrolled students
+  const enrolledIds = new Set(enrolled.map(s => s.id));
+  const notEnrolled = DATA.students.filter(s => !enrolledIds.has(s.id));
+  
+  notEnrolled.sort((a, b) => {
+    let nameA = (a.firstname + ' ' + a.lastname).toLowerCase();
+    let nameB = (b.firstname + ' ' + b.lastname).toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+  
+  select.innerHTML = '<option value="">-- Sélectionner un élève --</option>' + 
+    notEnrolled.map(s => `<option value="${s.id}">${s.firstname || ''} ${s.lastname || ''}</option>`).join('');
+};
+
+window.removeStudentFromCourse = async function(studentId, courseId) {
+  if (!confirm("Voulez-vous vraiment retirer cet élève de ce cours ?")) return;
+  
+  const student = DATA.students.find(s => s.id === studentId);
+  if (!student) return alert("Élève introuvable");
+  
+  try {
+    const { doc, updateDoc, db } = await import('./firebase-config.js');
+    
+    // Create a new array without the courseId
+    const newCourseIds = (student.courseIds || []).filter(id => String(id) !== String(courseId));
+    
+    await updateDoc(doc(db, 'students', studentId), { courseIds: newCourseIds });
+    
+    // Update local data
+    student.courseIds = newCourseIds;
+    
+    // Re-render
+    window.renderCourseStudents(courseId);
+    
+  } catch(err) {
+    console.error(err);
+    alert("Erreur lors du retrait de l'élève.");
+  }
+};
+
+window.addStudentToCourse = async function() {
+  const modal = document.getElementById('modal-course-students');
+  const courseId = modal.dataset.courseId;
+  const select = document.getElementById('course-add-student-select');
+  const studentId = select.value;
+  
+  if (!courseId) return;
+  if (!studentId) return alert("Veuillez sélectionner un élève.");
+  
+  const student = DATA.students.find(s => s.id === studentId);
+  if (!student) return alert("Élève introuvable");
+  
+  try {
+    const { doc, updateDoc, db } = await import('./firebase-config.js');
+    
+    // Create a new array with the courseId
+    const newCourseIds = [...(student.courseIds || [])];
+    if (!newCourseIds.includes(courseId)) {
+      newCourseIds.push(courseId);
+    }
+    
+    await updateDoc(doc(db, 'students', studentId), { courseIds: newCourseIds });
+    
+    // Update local data
+    student.courseIds = newCourseIds;
+    
+    // Re-render
+    window.renderCourseStudents(courseId);
+    
+  } catch(err) {
+    console.error(err);
+    alert("Erreur lors de l'ajout de l'élève.");
   }
 };
 
