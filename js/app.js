@@ -3957,9 +3957,32 @@ window.renderCourseStudents = function(courseId) {
     }).join('');
   }
   
-  // Populate the select list with NON-enrolled students
+  // Reset search and populate the select list
+  const searchInput = document.getElementById('course-student-search');
+  if (searchInput) searchInput.value = '';
+  window.filterCourseStudents();
+};
+
+
+window.filterCourseStudents = function() {
+  const modal = document.getElementById('modal-course-students');
+  const courseId = modal.dataset.courseId;
+  const select = document.getElementById('course-add-student-select');
+  const searchInput = document.getElementById('course-student-search');
+  
+  if (!select || !courseId) return;
+  const search = (searchInput ? searchInput.value : '').toLowerCase();
+  
+  let enrolled = DATA.getStudentsByCourse(courseId);
   const enrolledIds = new Set(enrolled.map(s => s.id));
-  const notEnrolled = DATA.students.filter(s => !enrolledIds.has(s.id));
+  let notEnrolled = DATA.students.filter(s => !enrolledIds.has(s.id));
+  
+  if (search) {
+    notEnrolled = notEnrolled.filter(s => {
+      const name = `${s.firstname || ''} ${s.lastname || ''}`.toLowerCase();
+      return name.includes(search);
+    });
+  }
   
   notEnrolled.sort((a, b) => {
     let nameA = (a.firstname + ' ' + a.lastname).toLowerCase();
@@ -3967,8 +3990,11 @@ window.renderCourseStudents = function(courseId) {
     return nameA.localeCompare(nameB);
   });
   
-  select.innerHTML = '<option value="">-- Sélectionner un élève --</option>' + 
-    notEnrolled.map(s => `<option value="${s.id}">${s.firstname || ''} ${s.lastname || ''}</option>`).join('');
+  if (notEnrolled.length === 0) {
+    select.innerHTML = '<option value="" disabled>Aucun élève trouvé</option>';
+  } else {
+    select.innerHTML = notEnrolled.map(s => `<option value="${s.id}">${s.firstname || ''} ${s.lastname || ''}</option>`).join('');
+  }
 };
 
 window.removeStudentFromCourse = async function(studentId, courseId) {
