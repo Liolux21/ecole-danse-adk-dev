@@ -771,6 +771,47 @@ async function initPortal() {
   await DATA.syncFromFirebase();
 
   // Si déjà connecté, afficher le bon dashboard
+  
+  // -- MIGRATION COURS AUTOMATIQUE --
+  if (AUTH.isAuthenticated() && (AUTH.currentUser.role === 'admin' || AUTH.currentUser.realRole === 'admin')) {
+    try {
+      const firebase = await import('./firebase-config.js');
+      let migratedCount = 0;
+      
+      const updates = [
+        { id: 9, rules: c => { if (c.style !== 'adultes') { c.style = 'adultes'; return true; } } },
+        { id: 15, rules: c => { if (c.style !== 'pomdance') { c.style = 'pomdance'; return true; } } },
+        { id: 31, rules: c => { if (c.style !== 'pole_danse') { c.style = 'pole_danse'; return true; } } },
+        { id: 32, rules: c => { if (c.style !== 'adultes') { c.style = 'adultes'; return true; } } },
+        { id: 33, rules: c => { if (c.style !== 'adultes') { c.style = 'adultes'; return true; } } },
+        { id: 29, rules: c => { if (c.style !== 'girly') { c.style = 'girly'; return true; } } },
+        { id: 30, rules: c => { if (c.style !== 'jazz_contemporain') { c.style = 'jazz_contemporain'; return true; } } },
+        { id: 14, rules: c => { if (c.style !== 'girly') { c.style = 'girly'; return true; } } },
+        { id: 36, rules: c => { if (c.name === 'HIPHOP' && c.lieu === 'rox') { c.name = 'ROX HIPHOP'; return true; } } },
+        { id: 37, rules: c => { if (c.name === 'RAGGA' && c.lieu === 'rox') { c.name = 'ROX RAGGA'; return true; } } },
+        { id: 38, rules: c => { if (c.name === 'CONTEMPORAIN / JAZZ' && c.lieu === 'rox') { c.name = 'ROX CONTEMPO'; return true; } } },
+        { id: 39, rules: c => { let u = false; if (c.name === 'GIRLY' && c.lieu === 'rox') { c.name = 'ROX GIRLY'; u = true; } if (c.style !== 'girly') { c.style = 'girly'; u = true; } return u; } }
+      ];
+
+      for (let c of DATA.courses) {
+        let updated = false;
+        let updateDef = updates.find(u => Number(u.id) === Number(c.id));
+        if (updateDef && updateDef.rules(c)) {
+           const targetDocId = (c.docId) ? c.docId : String(c.id);
+           await firebase.setDoc(firebase.doc(firebase.db, 'courses', targetDocId), { name: c.name, style: c.style }, { merge: true });
+           console.log("Migrated course", c.id, c.name, c.style);
+           migratedCount++;
+        }
+      }
+      if (migratedCount > 0) {
+        console.log("Migration des cours terminée :", migratedCount);
+        renderAdminCourses();
+      }
+    } catch(e) {
+      console.error("Migration error", e);
+    }
+  }
+
   if (AUTH.isAuthenticated()) {
     showPortalDashboard(AUTH.currentUser);
   }
