@@ -288,7 +288,10 @@
         <div class="tab-content" id="tab-admin-cours">
           <div class="dash-header">
             <h3>Gestion des Cours</h3>
-            <button class="btn btn-primary" onclick="openAddCourseModal()">+ Ajouter un cours</button>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-outline" onclick="exportCoursesExcel()">📥 Exporter Excel</button>
+              <button class="btn btn-primary" onclick="openAddCourseModal()">+ Ajouter un cours</button>
+            </div>
           </div>
           <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
               <select id="filter-course-type" class="form-input" style="width: 200px;" onchange="renderAdminCourses()">
@@ -1696,7 +1699,7 @@
   <script type="module" src="js/data.js?v=639267197813822800"></script>
   <script type="module" src="js/auth.js?v=639267197813822511"></script>
   <script type="module" src="js/chat.js?v=36"></script>
-  <script type="module" src="js/app.js?v=639267197813823523"></script>
+  <script type="module" src="js/app.js?v=639267197813823524"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {

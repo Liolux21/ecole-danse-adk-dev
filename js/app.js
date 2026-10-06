@@ -2014,6 +2014,52 @@ window.deleteCourse = async function(id) {
   }
 };
 
+window.exportCoursesExcel = function() {
+  if (!DATA || !DATA.courses || DATA.courses.length === 0) {
+    alert("Aucun cours à exporter.");
+    return;
+  }
+  
+  // Create CSV headers
+  let csvContent = "ID;Nom du cours;Catégorie/Style;Âges;Niveau;Professeur;Lieu;Horaire;Type\n";
+  
+  // Format each course
+  DATA.courses.forEach(c => {
+    const formatStr = (str) => {
+      if (!str) return "";
+      let s = String(str).replace(/"/g, '""');
+      return `"${s}"`;
+    };
+    
+    let cat = (c.style || "").replace('_', ' ');
+    cat = cat.charAt(0).toUpperCase() + cat.slice(1);
+    
+    const row = [
+      formatStr(c.id),
+      formatStr(c.name),
+      formatStr(cat),
+      formatStr(c.ages),
+      formatStr(c.levels),
+      formatStr(c.prof),
+      formatStr((c.lieu || "").toUpperCase()),
+      formatStr(c.schedule),
+      formatStr(c.eventType)
+    ];
+    csvContent += row.join(';') + "\n";
+  });
+  
+  // Add BOM for Excel UTF-8 compatibility
+  const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute("download", "Liste_des_cours_ADK.csv");
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 window.renderHolidays = function() {
     const list = document.getElementById('settings-holidays-list');
     if (!list) return;
