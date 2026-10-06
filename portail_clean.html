@@ -892,12 +892,12 @@
           <input type="hidden" id="add-student-id">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
-              <label class="form-label">Prénom</label>
-              <input type="text" id="add-student-firstname" class="form-input" required>
-            </div>
-            <div class="form-group">
               <label class="form-label">Nom</label>
               <input type="text" id="add-student-lastname" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Prénom</label>
+              <input type="text" id="add-student-firstname" class="form-input" required>
             </div>
           </div>
           <div class="form-group">
@@ -906,13 +906,13 @@
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
               <div class="form-group">
+                <label class="form-label">Nom tuteur</label>
+                <input type="text" id="add-student-tutor-lastname" class="form-input" required>
+              </div><div class="form-group">
                 <label class="form-label">Prénom tuteur</label>
                 <input type="text" id="add-student-tutor-firstname" class="form-input" required>
               </div>
-              <div class="form-group">
-                <label class="form-label">Nom tuteur</label>
-                <input type="text" id="add-student-tutor-lastname" class="form-input" required>
-              </div>
+              
             </div>
             <div class="form-group">
               <label class="form-label">Email du tuteur</label>
@@ -1141,12 +1141,12 @@
             <input type="hidden" id="prof-id">
             <div style="display: flex; gap: 1rem;">
               <div class="form-group" style="flex: 1;">
-                <label class="form-label">Prénom du professeur</label>
-                <input type="text" id="prof-firstname" class="form-input" required>
-              </div>
-              <div class="form-group" style="flex: 1;">
                 <label class="form-label">Nom du professeur</label>
                 <input type="text" id="prof-lastname" class="form-input" required>
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label class="form-label">Prénom du professeur</label>
+                <input type="text" id="prof-firstname" class="form-input" required>
               </div>
             </div>
             
@@ -1174,12 +1174,12 @@
               <h5 style="margin-top: 0; margin-bottom: 0.8rem; color: var(--primary);">Informations du tuteur</h5>
               <div style="display: flex; gap: 1rem;">
                 <div class="form-group" style="flex: 1;">
-                  <label class="form-label">Prénom du tuteur</label>
-                  <input type="text" id="prof-tutor-firstname" class="form-input">
-                </div>
-                <div class="form-group" style="flex: 1;">
                   <label class="form-label">Nom du tuteur</label>
                   <input type="text" id="prof-tutor-lastname" class="form-input">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                  <label class="form-label">Prénom du tuteur</label>
+                  <input type="text" id="prof-tutor-firstname" class="form-input">
                 </div>
               </div>
               <div class="form-group">
@@ -1696,7 +1696,7 @@
   <script type="module" src="js/data.js?v=639267197813822800"></script>
   <script type="module" src="js/auth.js?v=639267197813822511"></script>
   <script type="module" src="js/chat.js?v=36"></script>
-  <script type="module" src="js/app.js?v=639267197813823522"></script>
+  <script type="module" src="js/app.js?v=639267197813823523"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
