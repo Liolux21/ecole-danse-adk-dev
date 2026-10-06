@@ -419,13 +419,21 @@ export const DATA = {
         courses: this.courses.length 
       });
       // Events (Standalone)
-      try {
-        const evSnap = await getDocs(collection(db, "events"));
-        this.events = [];
-        evSnap.forEach(doc => this.events.push({ id: doc.id, ...doc.data() }));
-      } catch (e) {
-        console.warn("Erreur chargement events:", e);
-      }
+              try {
+          const evSnap = await getDocs(collection(db, "events"));
+          this.events = [];
+          evSnap.forEach(doc => this.events.push({ id: doc.id, ...doc.data() }));
+        } catch (e) {
+          console.warn("Erreur chargement events:", e);
+        }
+        
+        try {
+          const erSnap = await getDocs(collection(db, "event_rehearsals"));
+          this.eventRehearsals = [];
+          erSnap.forEach(doc => this.eventRehearsals.push({ id: doc.id, ...doc.data() }));
+        } catch (e) {
+          console.warn("Erreur chargement event_rehearsals:", e);
+        }
       
       return true;
     } catch(err) {
