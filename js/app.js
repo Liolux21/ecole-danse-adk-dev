@@ -4068,22 +4068,6 @@ window.initEventModal = function() {
     ).join('');
     container.innerHTML = html;
   }
-  document.getElementById('event-type').value = 'Show';
-  document.getElementById('event-nom').value = '';
-  document.getElementById('event-contact-nom').value = '';
-  document.getElementById('event-contact-prenom').value = '';
-  document.getElementById('event-contact-email').value = '';
-  document.getElementById('event-contact-tel').value = '';
-  document.getElementById('event-adresse-rue').value = '';
-  document.getElementById('event-adresse-num').value = '';
-  document.getElementById('event-adresse-cp').value = '';
-  document.getElementById('event-adresse-ville').value = '';
-  document.getElementById('event-date-debut').value = '';
-  document.getElementById('event-time-debut').value = '';
-  document.getElementById('event-date-fin').value = '';
-  document.getElementById('event-time-fin').value = '';
-  const allCb = document.getElementById('event-courses-all');
-  if(allCb) allCb.checked = false;
 };
 
 window.toggleEventAllCourses = function() {
@@ -4092,6 +4076,7 @@ window.toggleEventAllCourses = function() {
 };
 
 window.openEventModal = function(id = null) {
+    window.initEventModal();
     if (id) {
       const e = DATA.events.find(x => x.id === id);
       if (e) {
@@ -4130,7 +4115,6 @@ window.openEventModal = function(id = null) {
       const allCb = document.getElementById('event-courses-all');
       if (allCb) allCb.checked = false;
     }
-    window.initEventModal();
     if (typeof openModal === 'function') openModal('modal-create-event');
   };
 
@@ -13776,7 +13760,7 @@ window.openEventRepModal = function(id = null) {
       }
       document.getElementById('event-rep-date').value = dVal;
       
-      if (['Studio ADK', 'ROX'].includes(r.lieu)) {
+      if (['Studio ADK', 'ROX', 'Complexe Sportif Jamoigne', 'Complexe Sportif Florenville', 'Complexe Sportif Bertrix'].includes(r.lieu)) {
         if (selLieu) selLieu.value = r.lieu;
         if (autreLieu) { autreLieu.style.display = 'none'; autreLieu.value = ''; }
       } else {
