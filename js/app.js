@@ -13803,6 +13803,54 @@ window.saveEventRep = async function() {
   let formattedDate = dateStr;
   if (parts.length === 3) formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
 
+  
+  // Conflict Check
+  const rehearsalLieuMap = {
+    'Studio ADK': 'adk',
+    'ROX': 'rox',
+    'Complexe Sportif Jamoigne': 'chiny',
+    'Complexe Sportif Florenville': 'flore',
+    'Complexe Sportif Bertrix': 'bertrix'
+  };
+  
+  const mappedLieu = rehearsalLieuMap[lieu] || lieu;
+  
+  // parse rehearsal day and time
+  const rDay = new Date(dateStr).getDay();
+  const dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+  const rDayName = dayNames[rDay];
+  
+  const rStartMin = parseInt(timeDebut.split(':')[0]) * 60 + parseInt(timeDebut.split(':')[1]);
+  const rEndMin = parseInt(timeFin.split(':')[0]) * 60 + parseInt(timeFin.split(':')[1]);
+
+  let conflictCourse = null;
+  
+  if (mappedLieu !== 'Autre') {
+    for (const c of DATA.courses) {
+      if (c.lieu !== mappedLieu) continue;
+      if (!c.schedule) continue;
+      
+      const match = c.schedule.match(/(Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche)\s+(\d{1,2})h(\d{2})\s*-\s*(\d{1,2})h(\d{2})/i);
+      if (match) {
+        const cDayName = match[1];
+        if (cDayName.toLowerCase() !== rDayName.toLowerCase()) continue;
+        
+        const cStartMin = parseInt(match[2]) * 60 + parseInt(match[3]);
+        const cEndMin = parseInt(match[4]) * 60 + parseInt(match[5]);
+        
+        // Check overlap
+        if (rStartMin < cEndMin && rEndMin > cStartMin) {
+          conflictCourse = c;
+          break;
+        }
+      }
+    }
+  }
+
+  if (conflictCourse) {
+    return alert(`Impossible d\'ajouter cette répétition !\nLe cours "${conflictCourse.name}" a déjà lieu à cet horaire (${conflictCourse.schedule}) au lieu sélectionné.`);
+  }
+
   const repData = {
     eventId,
     date: formattedDate,
