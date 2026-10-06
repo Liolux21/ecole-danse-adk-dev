@@ -12,7 +12,7 @@ service cloud.firestore {
     }
 
     function getUserData() {
-      return get(/databases/\/documents/users/\).data;
+      return get(/databases/$(database)/documents/users/$(request.auth.token.email)).data;
     }
 
     function isAdmin() {
@@ -28,7 +28,7 @@ service cloud.firestore {
     }
 
     // ---------------------------------------------------------
-    // RÈGLES PAR COLLECTION
+    // REGLES PAR COLLECTION
     // ---------------------------------------------------------
 
     match /users/{userId} {
@@ -52,13 +52,14 @@ service cloud.firestore {
       allow write: if isAdmin() || isProf() || isParent();
     }
 
-        match /events/{eventId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && (get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'admin' || get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'prof');
+    match /events/{eventId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() || isProf();
     }
+    
     match /event_rehearsals/{repId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && (get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'admin' || get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'prof');
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() || isProf();
     }
 
     // Collection ANNOUNCEMENTS (Les notifications internes et push)
@@ -66,15 +67,6 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow create: if isAdmin() || isProf() || isParent();
       allow update, delete: if isAdmin() || (isProf() && resource.data.authorId == request.auth.token.email);
-    }
-
-        match /events/{eventId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && (get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'admin' || get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'prof');
-    }
-    match /event_rehearsals/{repId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && (get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'admin' || get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'prof');
     }
 
     match /courses/{courseId} {
@@ -109,7 +101,7 @@ service cloud.firestore {
 
       match /messages/{messageId} {
         function getParentConv() {
-          return get(/databases/\/documents/conversations/\).data;
+          return get(/databases/$(database)/documents/conversations/$(conversationId)).data;
         }
         function isParentConvParticipant() {
           return isAuthenticated() && (request.auth.token.email in getParentConv().participants);
