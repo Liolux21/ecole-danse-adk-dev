@@ -1588,7 +1588,12 @@
           </div>
           <div style="flex:1;">
             <label class="form-label">Lieu</label>
-            <input type="text" id="event-rep-lieu" class="form-input" placeholder="Lieu">
+            <select id="event-rep-lieu" class="form-input" onchange="window.toggleEventRepLieu()">
+              <option value="Studio ADK">Studio ADK</option>
+              <option value="ROX">ROX</option>
+              <option value="Autre">Autre...</option>
+            </select>
+            <input type="text" id="event-rep-lieu-autre" class="form-input" placeholder="Préciser le lieu" style="display:none; margin-top:0.5rem;">
           </div>
         </div>
         <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
@@ -1688,7 +1693,7 @@
   <script type="module" src="js/data.js?v=25889"></script>
   <script type="module" src="js/auth.js?v=639267197813822511"></script>
   <script type="module" src="js/chat.js?v=36"></script>
-  <script type="module" src="js/app.js?v=639267197813822699"></script>
+  <script type="module" src="js/app.js?v=639267197813822709"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {

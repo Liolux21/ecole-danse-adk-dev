@@ -86,12 +86,14 @@ window.renderProfMixedCalendar = function(items, containerId) {
     } else if (item.type === 'event' || item.type === 'rehearsal') {
       let dateStr = item.type === 'event' ? item.data.dateDebut : item.data.date;
       if (!dateStr) return;
-      let d = new Date(dateStr);
-      if (isNaN(d.getTime())) {
-          const parts = dateStr.split('/');
-          if (parts.length === 3) d = new Date(parts[2], parts[1]-1, parts[0]);
+      let d;
+      if (dateStr.includes('/')) {
+        const parts = dateStr.split('/');
+        if (parts.length === 3) d = new Date(parts[2], parts[1]-1, parts[0]);
+      } else {
+        d = new Date(dateStr);
       }
-      if (isNaN(d.getTime())) return;
+      if (!d || isNaN(d.getTime())) return;
       let dayIndex = (d.getDay() + 6) % 7;
       calendarData[dayIndex].push({ 
          ...item.data, 
@@ -3186,7 +3188,7 @@ function renderChildData(child) {
        if (!e.courses || e.courses.length === 0) return false;
        // if the event applies to all courses, or if there's an intersection
        if (e.courses.includes('all')) return true;
-       return e.courses.some(cId => cIds.includes(cId));
+       return e.courses.some(cId => cIds.some(cid2 => String(cid2) === String(cId)));
     });
     
     items = items.concat(relevantEvents.map(e => ({ type: 'event', data: e })));
@@ -13739,6 +13741,14 @@ setTimeout(async () => {
 }, 3000);
 
 
+window.toggleEventRepLieu = function() {
+  const sel = document.getElementById('event-rep-lieu');
+  const autre = document.getElementById('event-rep-lieu-autre');
+  if (sel && autre) {
+    autre.style.display = sel.value === 'Autre' ? 'block' : 'none';
+  }
+};
+
 window.openEventRepModal = function(id = null) {
   const select = document.getElementById('event-rep-event-id');
   if (select) {
@@ -13750,6 +13760,9 @@ window.openEventRepModal = function(id = null) {
     }
   }
   
+  const selLieu = document.getElementById('event-rep-lieu');
+  const autreLieu = document.getElementById('event-rep-lieu-autre');
+
   if (id) {
     const r = DATA.eventRehearsals.find(x => x.id === id);
     if (r) {
@@ -13762,7 +13775,15 @@ window.openEventRepModal = function(id = null) {
         if (p.length === 3) dVal = `${p[2]}-${p[1]}-${p[0]}`;
       }
       document.getElementById('event-rep-date').value = dVal;
-      document.getElementById('event-rep-lieu').value = r.lieu || '';
+      
+      if (['Studio ADK', 'ROX'].includes(r.lieu)) {
+        if (selLieu) selLieu.value = r.lieu;
+        if (autreLieu) { autreLieu.style.display = 'none'; autreLieu.value = ''; }
+      } else {
+        if (selLieu) selLieu.value = 'Autre';
+        if (autreLieu) { autreLieu.style.display = 'block'; autreLieu.value = r.lieu || ''; }
+      }
+
       document.getElementById('event-rep-debut').value = r.timeDebut || '';
       document.getElementById('event-rep-fin').value = r.timeFin || '';
     }
@@ -13770,7 +13791,8 @@ window.openEventRepModal = function(id = null) {
     document.getElementById('event-rep-id').value = '';
     if (select) select.value = '';
     document.getElementById('event-rep-date').value = '';
-    document.getElementById('event-rep-lieu').value = '';
+    if (selLieu) selLieu.value = 'Studio ADK';
+    if (autreLieu) { autreLieu.style.display = 'none'; autreLieu.value = ''; }
     document.getElementById('event-rep-debut').value = '';
     document.getElementById('event-rep-fin').value = '';
   }
@@ -13782,7 +13804,10 @@ window.saveEventRep = async function() {
   const id = document.getElementById('event-rep-id').value;
   const eventId = document.getElementById('event-rep-event-id').value;
   const dateStr = document.getElementById('event-rep-date').value;
-  const lieu = document.getElementById('event-rep-lieu').value.trim();
+  let lieu = document.getElementById('event-rep-lieu').value;
+  if (lieu === 'Autre') {
+    lieu = document.getElementById('event-rep-lieu-autre').value.trim();
+  }
   const timeDebut = document.getElementById('event-rep-debut').value;
   const timeFin = document.getElementById('event-rep-fin').value;
 
@@ -13823,7 +13848,7 @@ window.saveEventRep = async function() {
     if (typeof window.renderProfDashboard === 'function') window.renderProfDashboard(window.AUTH.currentUser);
   } catch (err) {
     console.error(err);
-    alert("Erreur lors de l\'enregistrement.");
+    alert('Erreur lors de l\'enregistrement.');
   }
 };
 
