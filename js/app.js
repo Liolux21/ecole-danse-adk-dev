@@ -1313,8 +1313,8 @@ function renderAdminInscriptions() {
       </div>
       ${ins.message ? `<div class="inscription-message">"${ins.message}"</div>` : ''}
       <div class="inscription-actions" id="actions-${ins.id}">
-        <button class="btn-approve" onclick="adminApprove('${ins.id}')" ${disabled}>✓ Accepter</button>
-        <button class="btn-reject"  onclick="adminReject('${ins.id}')"  ${disabled}>✗ Refuser</button>
+        <button class="btn-approve" onclick="adminApprove('${ins.id.replace(/'/g, "\\'")}')" ${disabled}>✓ Accepter</button>
+        <button class="btn-reject"  onclick="adminReject('${ins.id.replace(/'/g, "\\'")}')"  ${disabled}>✗ Refuser</button>
         <a href="mailto:${ins.email}" class="btn btn-outline btn-sm">✉️ Contacter</a>
       </div>`;
     list.appendChild(card);
@@ -1518,9 +1518,9 @@ function renderAdminEleves() {
           </div>
         </div>
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.2rem;">
-          <button class="btn btn-outline btn-sm" onclick="sendParentAuthEmail('${s.id}', event)">✉️ Envoyer accès</button>
-          <button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id}')">✏️ Modifier</button>
-          <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteStudent('${s.id}')">🗑️ Supprimer</button>
+          <button class="btn btn-outline btn-sm" onclick="sendParentAuthEmail('${s.id.replace(/'/g, "\\'")}', event)">✉️ Envoyer accès</button>
+          <button class="btn btn-outline btn-sm" onclick="openAddStudentModal('${s.id.replace(/'/g, "\\'")}')">✏️ Modifier</button>
+          <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteStudent('${s.id.replace(/'/g, "\\'")}')">🗑️ Supprimer</button>
         </div>
       </div>
     `;
@@ -1994,9 +1994,9 @@ window.renderAdminCourses = function() {
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>📅 Horaire :</strong> ${c.schedule || "Non défini"}</div>
         <div style="font-size: 0.9rem; color: var(--text-muted);"><strong>🎂 Âge :</strong> ${c.ages || "Non défini"}</div>
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.2rem;">
-          <button class="btn btn-outline btn-sm" onclick="openCourseStudents('${c.id}')">👥 Élèves</button>
-            <button class="btn btn-outline btn-sm" onclick="openAddCourseModal('${c.id}')">✏️ Modifier</button>
-          <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteCourse('${c.id}')">🗑️ Supprimer</button>
+          <button class="btn btn-outline btn-sm" onclick="openCourseStudents('${c.id.replace(/'/g, "\\'")}')">👥 Élèves</button>
+            <button class="btn btn-outline btn-sm" onclick="openAddCourseModal('${c.id.replace(/'/g, "\\'")}')">✏️ Modifier</button>
+          <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteCourse('${c.id.replace(/'/g, "\\'")}')">🗑️ Supprimer</button>
         </div>
       </div>
     `;
@@ -2168,7 +2168,7 @@ window.renderGalaTables = function(userCtx) {
           <td>${courseName}</td>
           <td>${formatLieu(r.lieu)}</td>
           <td>${r.tenue ? 'Oui' : 'Non'}</td>
-          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaRep('${r.id}')">X</button></td>
+          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaRep('${r.id.replace(/'/g, "\\'")}')">X</button></td>
         </tr>`;
       }).join('');
   const repBody = document.getElementById('admin-gala-rep-body');
@@ -2270,7 +2270,7 @@ window.renderGalaTables = function(userCtx) {
             <td>${courseName}</td>
             <td>${formatLieu(r.lieu)}</td>
             <td>${r.tenue ? 'Oui' : 'Non'}</td>
-            <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaRep('${r.id}')">X</button></td>
+            <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteGalaRep('${r.id.replace(/'/g, "\\'")}')">X</button></td>
           </tr>`;
         }).join('');
     const profRepBody = document.getElementById('prof-gala-rep-body');
@@ -4088,8 +4088,8 @@ window.renderProfEvents = function(user) {
           <td>${dateStr}</td>
           <td>${lieuStr || '-'}</td>
           <td>
-            <button class="btn btn-outline btn-sm" onclick="window.openEventModal('${e.id}')">✏️ Modifier</button>
-            <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="window.deleteEvent('${e.id}')">🗑️ Supprimer</button>
+            <button class="btn btn-outline btn-sm" onclick="window.openEventModal('${e.id.replace(/'/g, "\\'")}')">✏️ Modifier</button>
+            <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="window.deleteEvent('${e.id.replace(/'/g, "\\'")}')">🗑️ Supprimer</button>
           </td>
         </tr>`;
       }).join('');
@@ -4115,8 +4115,8 @@ window.renderProfEvents = function(user) {
           <td>${r.timeDebut || ''} - ${r.timeFin || ''}</td>
           <td>${r.lieu || '-'}</td>
           <td>
-            <button class="btn btn-outline btn-sm" onclick="window.openEventRepModal('${r.id}')">✏️ Modifier</button>
-            <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="window.deleteEventRep('${r.id}')">🗑️ Supprimer</button>
+            <button class="btn btn-outline btn-sm" onclick="window.openEventRepModal('${r.id.replace(/'/g, "\\'")}')">✏️ Modifier</button>
+            <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="window.deleteEventRep('${r.id.replace(/'/g, "\\'")}')">🗑️ Supprimer</button>
           </td>
         </tr>`;
       }).join('');
@@ -4308,7 +4308,7 @@ window.renderCourseStudents = function(courseId) {
         return `<tr>
           <td>${name}</td>
           <td style="text-align:center; color:${color}; font-weight:bold;">${rate}%</td>
-          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="removeStudentFromCourse('${s.id}', '${courseId}')">Retirer</button></td>
+          <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:0.2rem 0.5rem;" onclick="removeStudentFromCourse('${s.id.replace(/'/g, "\\'")}', '${courseId}')">Retirer</button></td>
         </tr>`;
       }).join('');
     }
