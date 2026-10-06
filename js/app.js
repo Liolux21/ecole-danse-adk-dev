@@ -146,7 +146,7 @@ window.renderProfMixedCalendar = function(items, containerId) {
   container.innerHTML = html;
 };
 
-window.renderProfMixedCards = function(items, containerId, emptyMsg) {
+window.renderProfMixedCards = function(items, containerId, emptyMsg, user = null, studentId = null) {
   const container = document.getElementById(containerId);
   if (!container) return;
   if (!items || items.length === 0) {
@@ -154,61 +154,128 @@ window.renderProfMixedCards = function(items, containerId, emptyMsg) {
     return;
   }
   
+  if (!user && window.AUTH) user = window.AUTH.currentUser;
+
   container.innerHTML = items.map(item => {
     if (item.type === 'course') {
       const c = DATA.getCourseWithOverride(item.data.id || item.data);
       if(!c) return '';
-      let scheduleText = c.schedule ? c.schedule.split('–')[0].trim() : '';
+      
+      const isCancelled = c.status === 'annule';
+      const isModified = c.status !== 'annule' && (c.date || c.hour || (c.originalLieu && c.lieu !== c.originalLieu));
+      const titleStyle = isCancelled ? 'text-decoration: line-through; color: var(--text-muted);' : '';
+      const badge = isCancelled ? `<span class="role-badge badge-admin" style="background:#DC646422;color:#DC6464;">Annulé</span>` 
+                  : isModified ? `<span class="role-badge badge-prof" style="background:var(--gold-22);color:var(--gold);">Modifié</span>` 
+                  : '';
+                  
+      let scheduleText = c.schedule ? c.schedule.split('(')[0].trim() : '';
+      let displayDate = c.date;
+      if (displayDate && displayDate.includes('-')) {
+        const parts = displayDate.split('-');
+        displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
       let displayHour = c.hour ? c.hour.replace(':', 'h') : '';
-      if (c.date && c.hour) scheduleText = `${c.date} à ${displayHour}`;
+      if (c.date && c.hour) scheduleText = `${displayDate} à ${displayHour}`;
       else if (c.hour) scheduleText = `${scheduleText.split(' ')[0]} à ${displayHour}`;
       
-      return `
-      <div class="planning-card">
-        <div class="planning-card-header">
-          <h4 class="planning-card-title">${c.name}</h4>
-          <span class="role-badge" style="background:rgba(44, 62, 80, 0.1); color:var(--primary);">Cours</span>
-        </div>
-        <div class="planning-card-body">
-          <div class="planning-info-row">
-            <span>📅 ${scheduleText}</span>
-            <span>📍 ${formatLieu(c.lieu)}</span>
+      const profName = c.substituteId ? DATA.getUserById(c.substituteId)?.name || c.prof : c.prof;
+      const isSubstitute = !!c.substituteId;
+      const substituteHtml = isSubstitute && user && user.role === 'parent' ? 
+        `<div style="font-size:0.8rem; color:var(--gold); margin-top:0.3rem;">Remplaçant(e) : ${profName} (${DATA.getUserById(c.substituteId)?.phone || 'Pas de tel'})</div>` : '';
+      const msgHtml = c.message && user && user.role === 'parent' ? 
+        `<div style="background:var(--dark); padding:0.5rem; border-radius:4px; font-size:0.85rem; margin-top:0.5rem; border-left:2px solid var(--gold);"><strong style="color:var(--gold)">Info Prof :</strong> ${c.message}</div>` : '';
+      
+      let actionButtons = `<div style="display:flex; gap:0.5rem; margin-top:0.8rem; flex-wrap:wrap;">`;
+      const isTeacher = user && !studentId && (user.role === 'admin' || user.realRole === 'admin' || (user.role === 'prof' && c.prof && (c.prof.includes(user.name) || c.prof.includes(user.firstname))));
+      if (isTeacher) actionButtons += `<button class="btn btn-outline btn-sm btn-manage" data-course-id="${c.id}">⚙️ MODIFIER COURS</button>`;
+      if (studentId) actionButtons += `<button class="btn btn-outline btn-sm btn-absent" data-course-id="${c.id}" data-student-id="${studentId}">📅 PRÉSENCE</button>`;
+      actionButtons += `<button class="btn btn-outline btn-sm btn-msg" data-course-id="${c.id}">💬 MESSAGES</button>`;
+      actionButtons += `</div>`;
+      
+      let imgHtml = '';
+      if (c.image && c.image !== 'undefined') {
+        imgHtml = `<img src="${c.image}" class="portal-course-img" alt="${c.name} (${formatLieu(c.lieu)})">`;
+      } else {
+        let fallbackSrc = '';
+        if (c.eventType === 'pro') fallbackSrc = 'img/adk_pro.png?v=3';
+        else if (c.eventType === 'stage') fallbackSrc = 'img/adk_stage.png?v=3';
+        else if (c.eventType === 'show') fallbackSrc = 'img/adk_show.png?v=3';
+        
+        if (fallbackSrc) {
+            imgHtml = `<img src="${fallbackSrc}" class="portal-course-img" alt="${c.name} (${formatLieu(c.lieu)})">`;
+        } else {
+            let typeLabel = c.style ? c.style.toUpperCase() : 'ADK';
+            imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center; overflow:hidden;">
+              <img src="img/apple-touch-icon.png" style="width:30px; height:30px; object-fit:contain; margin-bottom:4px;" alt="ADK">
+              <strong style="font-size:0.65rem; color:var(--gold); font-family:var(--font-display); line-height:1; padding: 0 2px;">${typeLabel}</strong>
+            </div>`;
+        }
+      }
+
+      return `<div class="portal-course-card" style="${isCancelled ? 'opacity:0.7;' : ''}">
+        ${imgHtml}
+        <div class="portal-course-info" style="flex:1;">
+          <div class="portal-course-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="${titleStyle}">${c.name} (${formatLieu(c.lieu)})</span>
+            ${badge}
           </div>
+          <div class="portal-course-meta">
+            <span style="${isCancelled ? 'text-decoration: line-through;' : ''}">📅 ${scheduleText}</span>
+            <span style="${isCancelled ? 'text-decoration: line-through;' : ''}">📍 ${formatLieu(c.lieu)}</span>
+            <span style="${isCancelled ? 'text-decoration: line-through;' : ''}">👨‍🏫 ${profName}</span>
+          </div>
+          ${substituteHtml}
+          ${msgHtml}
+          ${actionButtons}
         </div>
       </div>`;
+      
     } else if (item.type === 'event') {
       const e = item.data;
-      return `
-      <div class="planning-card" style="border-left: 4px solid var(--gold);">
-        <div class="planning-card-header">
-          <h4 class="planning-card-title">${e.nom || 'Évènement'}</h4>
-          <span class="role-badge" style="background:rgba(212, 175, 55, 0.1); color:var(--gold);">Évènement</span>
-        </div>
-        <div class="planning-card-body">
-          <div class="planning-info-row">
-            <span>📅 ${e.dateDebut || ''} à ${e.timeDebut || ''}</span>
-            <span>📍 ${e.ville || e.rue || 'Lieu non défini'}</span>
+      const imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--gold); color:#fff; text-align:center; overflow:hidden;">
+        <span style="font-size:2rem;">⭐</span>
+      </div>`;
+      
+      let scheduleText = `${e.dateDebut || ''} ${e.timeDebut ? 'à '+e.timeDebut : ''}`;
+      if (e.dateFin || e.timeFin) scheduleText += ` (fin ${e.dateFin || e.dateDebut} ${e.timeFin || ''})`;
+      
+      return `<div class="portal-course-card" style="border: 1px solid var(--gold); border-left: 4px solid var(--gold);">
+        ${imgHtml}
+        <div class="portal-course-info" style="flex:1;">
+          <div class="portal-course-title" style="display:flex; justify-content:space-between; align-items:center; color: var(--gold);">
+            <span>${e.nom || 'Évènement'} (${e.type || 'Évènement'})</span>
+          </div>
+          <div class="portal-course-meta">
+            <span>📅 ${scheduleText}</span>
+            <span>📍 ${[e.rue, e.num, e.cp, e.ville].filter(Boolean).join(' ') || 'Lieu non précisé'}</span>
+            <span>📞 ${e.contactNom || ''} ${e.contactPrenom || ''}</span>
           </div>
         </div>
       </div>`;
+      
     } else if (item.type === 'rehearsal') {
       const r = item.data;
-      const ev = DATA.events ? DATA.events.find(x => x.id === r.eventId) : null;
-      const evName = ev ? ev.nom : 'Inconnu';
-      return `
-      <div class="planning-card" style="border-left: 4px solid #27ae60;">
-        <div class="planning-card-header">
-          <h4 class="planning-card-title">Répétition: ${evName}</h4>
-          <span class="role-badge" style="background:rgba(39, 174, 96, 0.1); color:#27ae60;">Répétition</span>
-        </div>
-        <div class="planning-card-body">
-          <div class="planning-info-row">
-            <span>📅 ${r.date || ''} de ${r.timeDebut || ''} à ${r.timeFin || ''}</span>
-            <span>📍 ${r.lieu || 'Lieu non défini'}</span>
+      const ev = (DATA.events || []).find(x => x.id === r.eventId);
+      const evName = ev ? ev.nom : 'Évènement inconnu';
+      
+      const imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:#4CAF50; color:#fff; text-align:center; overflow:hidden;">
+        <span style="font-size:2rem;">🎭</span>
+      </div>`;
+      
+      return `<div class="portal-course-card" style="border: 1px solid #4CAF50; border-left: 4px solid #4CAF50;">
+        ${imgHtml}
+        <div class="portal-course-info" style="flex:1;">
+          <div class="portal-course-title" style="display:flex; justify-content:space-between; align-items:center; color: #4CAF50;">
+            <span>Répétition: ${evName}</span>
+          </div>
+          <div class="portal-course-meta">
+            <span>📅 ${r.date || ''} à ${r.timeDebut || ''} - ${r.timeFin || ''}</span>
+            <span>📍 ${r.lieu || 'Lieu non précisé'}</span>
           </div>
         </div>
       </div>`;
     }
+    return '';
   }).join('');
 };
 
@@ -3197,7 +3264,7 @@ function renderChildData(child) {
     items = items.concat(relevantReps.map(r => ({ type: 'rehearsal', data: r })));
 
     if (typeof window.renderProfMixedCards === 'function') {
-      window.renderProfMixedCards(items, 'parent-planning-list', 'Aucun cours ou évènement inscrit.');
+      window.renderProfMixedCards(items, 'parent-planning-list', 'Aucun cours ou évènement inscrit.', window.AUTH.currentUser, child.id);
     } else {
       renderPlanningCards(cIds, 'parent-planning-list', 'Aucun cours inscrit.', window.AUTH.currentUser, child.id);
     }
