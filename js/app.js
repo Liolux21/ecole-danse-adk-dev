@@ -752,6 +752,7 @@ async function initPortal() {
   initTabs('sub-admin-gala-tabs', ['tab-admin-gala-repets', 'tab-admin-gala-infos']);
   initTabs('sub-prof-gala-tabs', ['tab-prof-gala-repets', 'tab-prof-gala-infos']);
   initTabs('sub-parent-gala-tabs', ['tab-parent-gala-repets', 'tab-parent-gala-tenues']);
+  initTabs('sub-prof-events-tabs', ['sub-events-list', 'sub-events-reps']);
 
   // Mobile Gala select logic
   document.querySelectorAll('.gala-mobile-select').forEach(select => {
@@ -3164,20 +3165,50 @@ function renderParentDashboard(user) {
 }
 
 function renderChildData(child) {
-  const childNameEl = document.getElementById('parent-child-name');
-  if (childNameEl) childNameEl.textContent = child.firstname;
-  const namePlanEl = document.getElementById('parent-child-name-plan');
-  if (namePlanEl) namePlanEl.textContent = child.firstname + ' (' + (child.courseIds ? child.courseIds.length : 0) + ' cours)';
+    const childNameEl = document.getElementById('parent-child-name');
+    if (childNameEl) childNameEl.textContent = child.firstname;
+    const namePlanEl = document.getElementById('parent-child-name-plan');
+    if (namePlanEl) namePlanEl.textContent = child.firstname + ' (' + (child.courseIds ? child.courseIds.length : 0) + ' cours)';
+    
+    const att = DATA.getAttendanceByStudent(child.id);
+    const presents = att.filter(a => a.status === 'present').length;
+    const absents  = att.filter(a => a.status === 'absent').length;
   
-  const att = DATA.getAttendanceByStudent(child.id);
-  const presents = att.filter(a => a.status === 'present').length;
-  const absents  = att.filter(a => a.status === 'absent').length;
+    // PREPARE MIXED ITEMS FOR PLANNING
+    let items = [];
+    const cIds = child.courseIds || [];
+    
+    // 1. Courses
+    items = items.concat(cIds.map(id => ({ type: 'course', data: id })));
+    
+    // 2. Events & Rehearsals (Only those linked to child's courses or 'all')
+    const relevantEvents = (DATA.events || []).filter(e => {
+       if (!e.courses || e.courses.length === 0) return false;
+       // if the event applies to all courses, or if there's an intersection
+       if (e.courses.includes('all')) return true;
+       return e.courses.some(cId => cIds.includes(cId));
+    });
+    
+    items = items.concat(relevantEvents.map(e => ({ type: 'event', data: e })));
+    
+    const relevantReps = (DATA.eventRehearsals || []).filter(r => relevantEvents.some(e => e.id === r.eventId));
+    items = items.concat(relevantReps.map(r => ({ type: 'rehearsal', data: r })));
 
-  renderPlanningCards(child.courseIds || [], 'parent-planning-list', 'Aucun cours inscrit.', AUTH.currentUser, child.id);
-  renderWeeklyCalendar(child.courseIds || [], 'parent-planning-calendar');
+    if (typeof window.renderProfMixedCards === 'function') {
+      window.renderProfMixedCards(items, 'parent-planning-list', 'Aucun cours ou évènement inscrit.');
+    } else {
+      renderPlanningCards(cIds, 'parent-planning-list', 'Aucun cours inscrit.', window.AUTH.currentUser, child.id);
+    }
+    
+    if (typeof window.renderProfMixedCalendar === 'function') {
+      window.renderProfMixedCalendar(items, 'parent-planning-calendar');
+    } else {
+      renderWeeklyCalendar(cIds, 'parent-planning-calendar');
+    }
+  
+    document.getElementById('parent-stat-presence').textContent = presents;
+    document.getElementById('parent-stat-absence').textContent = absents;
 
-  document.getElementById('parent-stat-presence').textContent = presents;
-  document.getElementById('parent-stat-absence').textContent = absents;
   
   // Cotisation
   const isPayee = child.cotisation === 'payée' || child.cotisation === 'payee';
@@ -3969,30 +4000,59 @@ window.initTabs = initTabs;
 // EVÈNEMENTS (Profs autorisés)
 // ==========================================
 window.renderProfEvents = function(user) {
-  const tbody = document.getElementById('prof-events-list-body');
-  if (!tbody) return;
-  const events = DATA.events || [];
-  if (events.length === 0) {
-    tbody.innerHTML = '<tr class="empty-state"><td colspan="5">Aucun évènement.</td></tr>';
-    return;
+  const tbodyEvents = document.getElementById('prof-events-list-body');
+  const tbodyReps = document.getElementById('prof-event-reps-list-body');
+  
+  if (tbodyEvents) {
+    const events = DATA.events || [];
+    if (events.length === 0) {
+      tbodyEvents.innerHTML = '<tr class="empty-state"><td colspan="5">Aucun évènement.</td></tr>';
+    } else {
+      const sorted = [...events].sort((a, b) => new Date(a.dateDebut || 0) - new Date(b.dateDebut || 0));
+      tbodyEvents.innerHTML = sorted.map(e => {
+        let dateStr = e.dateDebut || '-';
+        if (e.timeDebut) dateStr += ' ' + e.timeDebut;
+        const lieuStr = [e.rue, e.num, e.cp, e.ville].filter(Boolean).join(' ');
+        return `<tr>
+          <td>${e.type || '-'}</td>
+          <td><strong>${e.nom || '-'}</strong></td>
+          <td>${dateStr}</td>
+          <td>${lieuStr || '-'}</td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="window.openEventModal('${e.id}')">✏️ Modifier</button>
+            <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="window.deleteEvent('${e.id}')">🗑️ Supprimer</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
   }
-  
-  // Sort events by date
-  const sorted = [...events].sort((a, b) => new Date(a.dateDebut || 0) - new Date(b.dateDebut || 0));
-  
-  tbody.innerHTML = sorted.map(e => {
-    let dateStr = e.dateDebut || '-';
-    if (e.timeDebut) dateStr += ' ' + e.timeDebut;
-    const lieuStr = [e.rue, e.num, e.cp, e.ville].filter(Boolean).join(' ');
-    
-    return `<tr>
-      <td>${e.type || '-'}</td>
-      <td><strong>${e.nom || '-'}</strong></td>
-      <td>${dateStr}</td>
-      <td>${lieuStr || '-'}</td>
-      <td><button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="deleteEvent('${e.id}')">X</button></td>
-    </tr>`;
-  }).join('');
+
+  if (tbodyReps) {
+    const reps = DATA.eventRehearsals || [];
+    if (reps.length === 0) {
+      tbodyReps.innerHTML = '<tr class="empty-state"><td colspan="5">Aucune répétition.</td></tr>';
+    } else {
+      const sortedReps = [...reps].sort((a, b) => {
+        const dA = a.date.split('/').reverse().join('-');
+        const dB = b.date.split('/').reverse().join('-');
+        return new Date(dA) - new Date(dB);
+      });
+      tbodyReps.innerHTML = sortedReps.map(r => {
+        const ev = (DATA.events || []).find(x => x.id === r.eventId);
+        const evName = ev ? ev.nom : 'Inconnu';
+        return `<tr>
+          <td><strong>${evName}</strong></td>
+          <td>${r.date || '-'}</td>
+          <td>${r.timeDebut || ''} - ${r.timeFin || ''}</td>
+          <td>${r.lieu || '-'}</td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="window.openEventRepModal('${r.id}')">✏️ Modifier</button>
+            <button class="btn btn-outline btn-sm" style="color:#e74c3c;border-color:#e74c3c;" onclick="window.deleteEventRep('${r.id}')">🗑️ Supprimer</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+  }
 };
 
 window.initEventModal = function() {
@@ -4029,61 +4089,124 @@ window.toggleEventAllCourses = function() {
   document.querySelectorAll('.event-course-cb').forEach(cb => cb.checked = isChecked);
 };
 
-window.saveEvent = async function() {
-  const type = document.getElementById('event-type').value;
-  const nom = document.getElementById('event-nom').value.trim();
-  if (!nom) return alert('Veuillez entrer le nom de l\'évènement.');
-  
-  const selectedCourses = Array.from(document.querySelectorAll('.event-course-cb:checked')).map(cb => cb.value);
-  
-  const eventData = {
-    type, nom,
-    contactNom: document.getElementById('event-contact-nom').value.trim(),
-    contactPrenom: document.getElementById('event-contact-prenom').value.trim(),
-    contactEmail: document.getElementById('event-contact-email').value.trim(),
-    contactTel: document.getElementById('event-contact-tel').value.trim(),
-    rue: document.getElementById('event-adresse-rue').value.trim(),
-    num: document.getElementById('event-adresse-num').value.trim(),
-    cp: document.getElementById('event-adresse-cp').value.trim(),
-    ville: document.getElementById('event-adresse-ville').value.trim(),
-    dateDebut: document.getElementById('event-date-debut').value,
-    timeDebut: document.getElementById('event-time-debut').value,
-    dateFin: document.getElementById('event-date-fin').value,
-    timeFin: document.getElementById('event-time-fin').value,
-    courses: selectedCourses,
-    authorId: window.AUTH.currentUser.email || window.AUTH.currentUser.name,
-    timestamp: Date.now()
+window.openEventModal = function(id = null) {
+    if (id) {
+      const e = DATA.events.find(x => x.id === id);
+      if (e) {
+        document.getElementById('event-id').value = e.id;
+        document.getElementById('event-type').value = e.type || 'Show';
+        document.getElementById('event-nom').value = e.nom || '';
+        document.getElementById('event-contact-nom').value = e.contactNom || '';
+        document.getElementById('event-contact-prenom').value = e.contactPrenom || '';
+        document.getElementById('event-contact-email').value = e.contactEmail || '';
+        document.getElementById('event-contact-tel').value = e.contactTel || '';
+        document.getElementById('event-adresse-rue').value = e.rue || '';
+        document.getElementById('event-adresse-num').value = e.num || '';
+        document.getElementById('event-adresse-cp').value = e.cp || '';
+        document.getElementById('event-adresse-ville').value = e.ville || '';
+        document.getElementById('event-date-debut').value = e.dateDebut || '';
+        document.getElementById('event-time-debut').value = e.timeDebut || '';
+        document.getElementById('event-date-fin').value = e.dateFin || '';
+        document.getElementById('event-time-fin').value = e.timeFin || '';
+        
+        // checkboxes
+        document.querySelectorAll('.event-course-cb').forEach(cb => {
+          cb.checked = e.courses && e.courses.includes(cb.value);
+        });
+        const allCb = document.getElementById('event-courses-all');
+        if (allCb) allCb.checked = e.courses && e.courses.includes('all');
+      }
+    } else {
+      document.getElementById('event-id').value = '';
+      document.getElementById('event-type').value = 'Show';
+      ['event-nom', 'event-contact-nom', 'event-contact-prenom', 'event-contact-email', 'event-contact-tel', 
+       'event-adresse-rue', 'event-adresse-num', 'event-adresse-cp', 'event-adresse-ville', 
+       'event-date-debut', 'event-time-debut', 'event-date-fin', 'event-time-fin'].forEach(id => {
+          if (document.getElementById(id)) document.getElementById(id).value = '';
+      });
+      document.querySelectorAll('.event-course-cb').forEach(cb => cb.checked = false);
+      const allCb = document.getElementById('event-courses-all');
+      if (allCb) allCb.checked = false;
+    }
+    window.initEventModal();
+    if (typeof openModal === 'function') openModal('modal-create-event');
+  };
+
+  window.saveEvent = async function() {
+    const id = document.getElementById('event-id').value;
+    const type = document.getElementById('event-type').value;
+    const nom = document.getElementById('event-nom').value.trim();
+    if (!nom) return alert('Veuillez entrer le nom de l\'évènement.');
+    
+    const selectedCourses = Array.from(document.querySelectorAll('.event-course-cb:checked')).map(cb => cb.value);
+    if (document.getElementById('event-courses-all') && document.getElementById('event-courses-all').checked) selectedCourses.push('all');
+    
+    const eventData = {
+      type, nom,
+      contactNom: document.getElementById('event-contact-nom').value.trim(),
+      contactPrenom: document.getElementById('event-contact-prenom').value.trim(),
+      contactEmail: document.getElementById('event-contact-email').value.trim(),
+      contactTel: document.getElementById('event-contact-tel').value.trim(),
+      rue: document.getElementById('event-adresse-rue').value.trim(),
+      num: document.getElementById('event-adresse-num').value.trim(),
+      cp: document.getElementById('event-adresse-cp').value.trim(),
+      ville: document.getElementById('event-adresse-ville').value.trim(),
+      dateDebut: document.getElementById('event-date-debut').value,
+      timeDebut: document.getElementById('event-time-debut').value,
+      dateFin: document.getElementById('event-date-fin').value,
+      timeFin: document.getElementById('event-time-fin').value,
+      courses: selectedCourses,
+      authorId: window.AUTH.currentUser.email || window.AUTH.currentUser.name,
+      timestamp: Date.now()
+    };
+    
+    try {
+      const { doc, addDoc, updateDoc, collection, db } = await import('./firebase-config.js');
+      if (id) {
+        await updateDoc(doc(db, 'events', id), eventData);
+        eventData.id = id;
+        const idx = DATA.events.findIndex(e => e.id === id);
+        if (idx !== -1) DATA.events[idx] = { ...DATA.events[idx], ...eventData };
+      } else {
+        const docRef = await addDoc(collection(db, 'events'), eventData);
+        eventData.id = docRef.id;
+        if(!DATA.events) DATA.events = [];
+        DATA.events.push(eventData);
+      }
+      
+      closeModal('modal-create-event');
+      if (typeof window.renderProfDashboard === 'function') window.renderProfDashboard(window.AUTH.currentUser);
+    } catch (err) {
+      console.error(err);
+      alert('Erreur lors de l\'enregistrement.');
+    }
   };
   
-  try {
-    const { addDoc, collection, db } = await import('./firebase-config.js');
-    const docRef = await addDoc(collection(db, 'events'), eventData);
-    eventData.id = docRef.id;
-    if(!DATA.events) DATA.events = [];
-    DATA.events.push(eventData);
-    
-    closeModal('modal-create-event');
-    if (typeof window.renderProfEvents === 'function') window.renderProfEvents(window.AUTH.currentUser);
-  } catch (err) {
-    console.error(err);
-    alert('Erreur lors de la création de l\'évènement.');
-  }
-};
+  window.deleteEvent = async function(id) {
+    if(!confirm('Supprimer cet évènement ?')) return;
+    try {
+      const { doc, deleteDoc, db } = await import('./firebase-config.js');
+      await deleteDoc(doc(db, 'events', id));
+      DATA.events = DATA.events.filter(e => e.id !== id);
+      if (typeof window.renderProfDashboard === 'function') window.renderProfDashboard(window.AUTH.currentUser);
+    } catch(err) {
+      console.error(err);
+      alert('Erreur.');
+    }
+  };
 
-window.deleteEvent = async function(id) {
-  if(!confirm('Supprimer cet évènement ?')) return;
-  try {
-    const { doc, deleteDoc, db } = await import('./firebase-config.js');
-    await deleteDoc(doc(db, 'events', id));
-    DATA.events = DATA.events.filter(e => e.id !== id);
-    if (typeof window.renderProfEvents === 'function') window.renderProfEvents(window.AUTH.currentUser);
-  } catch (err) {
-    console.error(err);
-    alert('Erreur lors de la suppression.');
-  }
-};
-
-
+  window.deleteEventRep = async function(id) {
+    if(!confirm('Supprimer cette répétition ?')) return;
+    try {
+      const { doc, deleteDoc, db } = await import('./firebase-config.js');
+      await deleteDoc(doc(db, 'event_rehearsals', id));
+      DATA.eventRehearsals = DATA.eventRehearsals.filter(r => r.id !== id);
+      if (typeof window.renderProfDashboard === 'function') window.renderProfDashboard(window.AUTH.currentUser);
+    } catch(err) {
+      console.error(err);
+      alert('Erreur.');
+    }
+  };
 // ==========================================
 // COURSE STUDENTS MANAGEMENT
 // ==========================================
@@ -13616,7 +13739,7 @@ setTimeout(async () => {
 }, 3000);
 
 
-window.openEventRepModal = function() {
+window.openEventRepModal = function(id = null) {
   const select = document.getElementById('event-rep-event-id');
   if (select) {
     select.innerHTML = '<option value="">-- Sélectionner un évènement --</option>';
@@ -13626,12 +13749,39 @@ window.openEventRepModal = function() {
       });
     }
   }
+  
+  if (id) {
+    const r = DATA.eventRehearsals.find(x => x.id === id);
+    if (r) {
+      document.getElementById('event-rep-id').value = r.id;
+      if (select) select.value = r.eventId || '';
+      
+      let dVal = r.date || '';
+      if (dVal.includes('/')) {
+        const p = dVal.split('/');
+        if (p.length === 3) dVal = `${p[2]}-${p[1]}-${p[0]}`;
+      }
+      document.getElementById('event-rep-date').value = dVal;
+      document.getElementById('event-rep-lieu').value = r.lieu || '';
+      document.getElementById('event-rep-debut').value = r.timeDebut || '';
+      document.getElementById('event-rep-fin').value = r.timeFin || '';
+    }
+  } else {
+    document.getElementById('event-rep-id').value = '';
+    if (select) select.value = '';
+    document.getElementById('event-rep-date').value = '';
+    document.getElementById('event-rep-lieu').value = '';
+    document.getElementById('event-rep-debut').value = '';
+    document.getElementById('event-rep-fin').value = '';
+  }
+
   if (typeof openModal === 'function') openModal('modal-event-rep');
 };
 
 window.saveEventRep = async function() {
+  const id = document.getElementById('event-rep-id').value;
   const eventId = document.getElementById('event-rep-event-id').value;
-  const dateStr = document.getElementById('event-rep-date').value; // Format: YYYY-MM-DD
+  const dateStr = document.getElementById('event-rep-date').value;
   const lieu = document.getElementById('event-rep-lieu').value.trim();
   const timeDebut = document.getElementById('event-rep-debut').value;
   const timeFin = document.getElementById('event-rep-fin').value;
@@ -13640,7 +13790,6 @@ window.saveEventRep = async function() {
     return alert('Veuillez remplir les champs obligatoires (Évènement, Date, Heures).');
   }
   
-  // Format to DD/MM/YYYY
   const parts = dateStr.split('-');
   let formattedDate = dateStr;
   if (parts.length === 3) formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
@@ -13656,18 +13805,25 @@ window.saveEventRep = async function() {
   };
 
   try {
-    const { addDoc, collection, db } = await import('./firebase-config.js');
-    const docRef = await addDoc(collection(db, 'event_rehearsals'), repData);
-    repData.id = docRef.id;
-    if (!DATA.eventRehearsals) DATA.eventRehearsals = [];
-    DATA.eventRehearsals.push(repData);
+    const { doc, addDoc, updateDoc, collection, db } = await import('./firebase-config.js');
+    if (id) {
+      await updateDoc(doc(db, 'event_rehearsals', id), repData);
+      repData.id = id;
+      const idx = DATA.eventRehearsals.findIndex(x => x.id === id);
+      if (idx !== -1) DATA.eventRehearsals[idx] = { ...DATA.eventRehearsals[idx], ...repData };
+    } else {
+      const docRef = await addDoc(collection(db, 'event_rehearsals'), repData);
+      repData.id = docRef.id;
+      if (!DATA.eventRehearsals) DATA.eventRehearsals = [];
+      DATA.eventRehearsals.push(repData);
+    }
     
     if (typeof closeModal === 'function') closeModal('modal-event-rep');
-    if (typeof showToast === 'function') showToast('Répétition créée avec succès');
+    if (typeof showToast === 'function') showToast('Répétition enregistrée avec succès');
     if (typeof window.renderProfDashboard === 'function') window.renderProfDashboard(window.AUTH.currentUser);
   } catch (err) {
     console.error(err);
-    alert("Erreur lors de la création de la répétition.");
+    alert("Erreur lors de l\'enregistrement.");
   }
 };
 

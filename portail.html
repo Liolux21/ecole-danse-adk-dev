@@ -446,181 +446,37 @@
                     <button class="btn btn-outline btn-sm btn-tab" data-tab="admin-gala-infos">📝 Infos tableaux</button>
         </div>
           <div class="tab-content active" id="tab-admin-gala-repets">
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-              <button class="btn btn-primary" onclick="openModal('modal-gala-rep'); initGalaRepModal();">+ Ajouter une répétition</button>
-            </div>
-            <div class="data-table-wrapper" style="overflow-x: auto;">
-              <table class="data-table">
-                <thead><tr><th>Date & Heure</th><th>Élèves concernés</th><th>Lieu</th><th>Tenues</th><th>Actions</th></tr></thead>
-                <tbody id="admin-gala-rep-body"><tr class="empty-state"><td colspan="5">Aucune répétition planifiée.</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="tab-content" id="tab-admin-gala-infos">
-            <div style="display: flex; gap:1rem; margin-bottom: 1rem; flex-wrap:wrap; justify-content:space-between; align-items:center;">
-              <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-                <select class="form-input" id="filter-admin-gala-info-style" onchange="window.renderGalaTables()" style="min-width:150px;"></select>
-                <select class="form-input" id="filter-admin-gala-info-theme" onchange="window.renderGalaTables()" style="min-width:150px;"></select>
-              </div>
-              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                <button class="btn btn-primary" onclick="openModal('modal-gala-themes'); window.renderGalaThemes();">⚙️ Gérer les thèmes</button>
-                <button class="btn btn-primary" onclick="openModal('modal-gala-info'); initGalaInfoModal();">+ Ajouter une info tableau</button>
-              </div>
-            </div>
-            <div class="data-table-wrapper" style="overflow-x: auto;">
-              <table class="data-table">
-                <thead><tr><th>Cours</th><th>Thème</th><th>Sous-thème</th><th>Musique</th><th>Tenue</th><th>Actions</th></tr></thead>
-                <tbody id="admin-gala-info-body"><tr class="empty-state"><td colspan="6">Aucune info tableau.</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab: Admin Rapports -->
-        <div class="tab-content" id="tab-admin-rapports">
-          <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-            <button class="btn btn-primary" onclick="openModal('modal-gala-note'); initGalaNoteModal();">+ Nouveau rapport</button>
-          </div>
-          <div class="data-table-wrapper" style="overflow-x: auto;">
-            <table class="data-table">
-              <thead><tr><th>Date</th><th>Présents</th><th>Actions</th></tr></thead>
-              <tbody id="admin-gala-note-body"><tr class="empty-state"><td colspan="3">Aucune note de réunion.</td></tr></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== DASHBOARD PROF ===== -->
-      <div class="dashboard-panel" id="panel-prof">
-        <div class="dash-header">
-          <div class="dash-header-left">
-            <div class="dash-avatar" id="prof-avatar">👩‍🏫</div>
-            <div>
-              <div class="dash-user-name" id="prof-name">Sophie Martin</div>
-              <div class="dash-user-role"><span class="role-badge badge-prof">👩‍🏫 Professeur.e</span></div>
-            </div>
-          </div>
-            <div class="dash-header-actions" style="display:flex; align-items:center; gap:0.5rem;">
-                  <button class="btn btn-outline btn-sm" onclick="openProfileModal()">⚙️ Mon Profil</button>
-                  <button class="btn btn-outline btn-sm" id="prof-logout">Déconnexion</button>
-              </div>
-        </div>
-<div class="dash-tabs" id="prof-tabs">
-          <button class="dash-tab active" data-tab="mon-planning">🗓️ Mon Planning</button>
-          <button class="dash-tab" data-tab="appel">📋 Feuille d'appel</button>
-          <button class="dash-tab" data-tab="mes-eleves">👥 Mes élèves</button>
-          <button class="dash-tab" data-tab="mes-heures">⏱️ Mes heures</button>
-          <button class="dash-tab" data-tab="prof-gala">🎭 Gala</button>
-          <button class="dash-tab" data-tab="prof-rapports">📋 Réunions</button>
-          <button class="dash-tab" data-tab="prof-messagerie">💬 Messagerie <span id="prof-chat-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
-            <button class="dash-tab" data-tab="prof-notifications">🔔 Notifications <span id="prof-notif-badge" class="tab-badge" style="display:none; background-color:#e74c3c; color:white; padding:0.1rem 0.4rem; border-radius:50%; font-size:0.7rem;">0</span></button>
-          <button class="dash-tab" id="prof-tab-events" style="display:none;" data-tab="prof-events">🎪 Evènements</button>
-          </div>
-          <!-- ANNONCES PROF -->
-          <div id="prof-announcements-container" style="display:none; margin-bottom: 2rem; margin-top: 1rem;">
-            <div id="prof-announcements-list" style="display:flex; flex-direction:column; gap:1rem;"></div>
-          </div>
-
-        <!-- Tab: Messagerie --><div class="tab-content" id="tab-prof-messagerie"></div>
-          <!-- Tab: Mon Planning -->
-          <div class="tab-content active" id="tab-mon-planning">
-            <div class="prof-planning-controls">
-              <button class="btn btn-outline btn-sm active" id="prof-planning-toggle-tous">Tous</button>
-                <button class="btn btn-outline btn-sm" id="prof-planning-toggle-enseignes">Cours enseignés</button>
-                <button class="btn btn-outline btn-sm" id="prof-planning-toggle-suivis">Cours suivis</button>
-                <button class="btn btn-outline btn-sm" id="prof-planning-toggle-events">Évènements</button>
-                <button class="btn btn-outline btn-sm" id="prof-planning-toggle-reps">Répétitions</button>
+            <div class="prof-planning-controls gala-desktop-tabs" id="sub-prof-events-tabs" style="margin-bottom:1rem;">
+              <button class="btn btn-outline btn-sm btn-tab active" data-tab="sub-events-list">Évènements</button>
+              <button class="btn btn-outline btn-sm btn-tab" data-tab="sub-events-reps">Répétitions</button>
             </div>
             
-            <div id="prof-planning-filters" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: flex-start;">
-              <select id="prof-planning-style" class="form-input" style="width:auto; min-width:150px; padding:0.2rem 0.5rem; font-size:0.85rem;">
-                <option value="all">Tous les styles de danse</option>
-              </select>
-              <select id="prof-planning-lieu" class="form-input" style="width:auto; min-width:150px; padding:0.2rem 0.5rem; font-size:0.85rem;">
-                <option value="all">Tous les lieux</option>
-              </select>
-            </div>
-
-            <div id="prof-planning-calendar"></div>
-          <div class="planning-cards-list" id="prof-planning-list"></div>
-        </div>
-
-        <!-- Tab: Appel -->
-        <div class="tab-content" id="tab-appel">
-          <div class="appel-date-row" style="margin-bottom: 0.5rem;">
-            <span class="appel-date-label">Choix du cours :</span>
-            <select class="form-input" id="appel-courses-select" style="width:auto;padding:0.5rem 0.75rem;min-width:200px;cursor:pointer;"></select>
-          </div>
-          <div class="appel-date-row">
-            <span class="appel-date-label">Date du cours :</span>
-            <select class="form-input" id="appel-date" style="width:auto;padding:0.5rem 0.75rem;min-width:200px;cursor:pointer;"></select>
-          </div>
-          <div class="appel-list" id="appel-list"></div>
-          
-          <!-- Prof Hours Validation -->
-          <div id="prof-hours-section" style="background: rgba(156, 88, 88, 0.05); padding: 1rem; border-radius: var(--radius); margin-top: 1rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(156, 88, 88, 0.2);">
-            <div>
-              <strong style="color: var(--primary);">Prestation du professeur</strong>
-              <div style="font-size: 0.85rem; color: var(--text-muted);" id="prof-hours-status">Confirmez vos heures pour cette session</div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <input type="number" id="prof-hours-input" step="0.25" min="0" class="form-input" style="width: 80px; text-align: center;">
-              <span>heures</span>
-            </div>
-          </div>
-
-          <div class="appel-save-row">
-            <button class="btn btn-primary btn-sm" id="appel-save-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-              Sauvegarder l'appel
-            </button>
-          </div>
-        </div>
-
-        <!-- Tab: Mes Heures -->
-        <div class="tab-content" id="tab-mes-heures">
-          <div style="background:#fff; padding:2rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:2.5rem;">
-            <h3 style="margin-top:0; color:var(--primary); display:flex; justify-content:space-between; align-items:center;">
-              <span>Total du mois en cours</span>
-              <span id="prof-heures-total" style="font-size:1.5rem; color:#9C5858;">0h</span>
-            </h3>
-            <div id="prof-heures-list" style="margin-top:1.5rem;"></div>
-          </div>
-        </div>
-
-        <!-- Tab: Mes élèves -->
-        <div class="tab-content" id="tab-mes-eleves">
-          <div class="data-table-wrapper">
-            <div class="data-table-header" style="display:flex; justify-content:space-between; align-items:center;">
-              <span class="data-table-title" id="prof-eleves-title">Mes élèves</span>
-              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <input type="text" id="prof-eleves-search" class="form-input" placeholder="🔍 Rechercher..." onkeyup="renderProfEleves()" style="min-width: 150px; padding:0.3rem 0.5rem;">
-                <select id="prof-eleves-filter" class="form-input" style="width:auto; padding:0.3rem 0.5rem;"></select>
+            <div class="tab-content active" id="sub-events-list">
+              <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                <button class="btn btn-primary" onclick="window.openEventModal();">+ Créer un nouvel évènement</button>
+              </div>
+              <div class="data-table-wrapper" style="overflow-x: auto;">
+                <table class="data-table">
+                  <thead><tr><th>Type</th><th>Nom</th><th>Date</th><th>Lieu</th><th>Actions</th></tr></thead>
+                  <tbody id="prof-events-list-body">
+                     <tr class="empty-state"><td colspan="5">Aucun évènement.</td></tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div style="overflow-x: auto;">
-              <div id="prof-eleves-body" style="display: flex; flex-direction: column; gap: 1rem; width: 100%; margin-top: 1rem;"></div>
-            </div>
-          </div>
-        </div>
-                  <!-- Tab: Prof Notifications -->
-          <div class="tab-content" id="tab-prof-notifications">
-            <div class="parent-section-header" style="color: #9C5858;">🔔 Centre de Notifications</div>
-            <div id="prof-notifications-full-list" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;"></div>
-          </div>
-          <!-- Tab: Prof Events -->
-          <div class="tab-content" id="tab-prof-events">
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-              <button class="btn btn-primary" onclick="window.openEventRepModal()">+ Créer une répétition</button>
-                <button class="btn btn-primary" onclick="openModal('modal-create-event'); window.initEventModal();">+ Créer un nouvel évènement</button>
-            </div>
-            <div class="data-table-wrapper" style="overflow-x: auto;">
-              <table class="data-table">
-                <thead><tr><th>Type</th><th>Nom</th><th>Date</th><th>Lieu</th><th>Actions</th></tr></thead>
-                <tbody id="prof-events-list-body">
-                   <tr class="empty-state"><td colspan="5">Aucun évènement.</td></tr>
-                </tbody>
-              </table>
+
+            <div class="tab-content" id="sub-events-reps">
+              <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                <button class="btn btn-primary" onclick="window.openEventRepModal()">+ Créer une répétition</button>
+              </div>
+              <div class="data-table-wrapper" style="overflow-x: auto;">
+                <table class="data-table">
+                  <thead><tr><th>Évènement</th><th>Date</th><th>Horaires</th><th>Lieu</th><th>Actions</th></tr></thead>
+                  <tbody id="prof-event-reps-list-body">
+                     <tr class="empty-state"><td colspan="5">Aucune répétition.</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           
@@ -1742,6 +1598,7 @@
       <div class="vitrine-modal-body">
         <div class="form-group">
           <label class="form-label">Évènement</label>
+          <input type="hidden" id="event-rep-id">
           <select id="event-rep-event-id" class="form-input"></select>
         </div>
         <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
@@ -1767,7 +1624,7 @@
       </div>
       <div class="vitrine-modal-footer">
         <button class="btn btn-outline" onclick="closeModal('modal-event-rep')">Annuler</button>
-        <button class="btn btn-primary" onclick="window.saveEventRep()">Créer la répétition</button>
+        <button class="btn btn-primary" onclick="window.saveEventRep()">Enregistrer</button>
       </div>
     </div>
   </div>
@@ -1782,7 +1639,8 @@
       <div class="vitrine-modal-body">
         <div class="form-group">
           <label class="form-label">Type d'évènement</label>
-          <select class="form-input" id="event-type">
+          <input type="hidden" id="event-id">
+            <select class="form-input" id="event-type">
             <option value="Show">Show</option>
             <option value="Concours">Concours</option>
             <option value="Autres">Autres évènements (Mariage, etc.)</option>
@@ -1842,7 +1700,7 @@
       </div>
       <div class="vitrine-modal-footer">
         <button class="btn btn-outline" onclick="closeModal('modal-create-event')">Annuler</button>
-        <button class="btn btn-primary" onclick="window.saveEvent()">Créer l'évènement</button>
+        <button class="btn btn-primary" onclick="window.saveEvent()">Enregistrer</button>
       </div>
     </div>
   </div>
@@ -1850,7 +1708,7 @@
   <script type="module" src="js/data.js?v=639267197813822509"></script>
   <script type="module" src="js/auth.js?v=639267197813822511"></script>
   <script type="module" src="js/chat.js?v=639267197813822509"></script>
-  <script type="module" src="js/app.js?v=639267197813822528"></script>
+  <script type="module" src="js/app.js?v=639267197813822602"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
