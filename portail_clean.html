@@ -1703,7 +1703,7 @@
   <script type="module" src="js/data.js?v=639267197813822800"></script>
   <script type="module" src="js/auth.js?v=639267197813822511"></script>
   <script type="module" src="js/chat.js?v=36"></script>
-  <script type="module" src="js/app.js?v=639267197813823525"></script>
+  <script type="module" src="js/app.js?v=639267197813823526"></script>
   <script>
     // Init emoji picker
     document.addEventListener('DOMContentLoaded', () => {
@@ -1771,6 +1771,25 @@
           <strong>Présents :</strong> <span id="note-view-presents"></span>
         </div>
         <div style="background:#f4f4f4; padding:1.5rem; border-radius:var(--radius); flex:1; min-height:300px; white-space:pre-wrap; font-size:1rem; line-height:1.7; overflow-y:auto;" id="note-view-content"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal: Gérer les Styles -->
+  <div class="vitrine-modal" id="modal-admin-styles">
+    <div class="vitrine-modal-content" style="max-width: 500px;">
+      <span class="vitrine-modal-close" onclick="closeModal('modal-admin-styles')">&times;</span>
+      <h3 style="color: var(--primary); font-family: var(--font-display); margin-top: 0;">Gérer les Styles de danse</h3>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Ajoutez, modifiez ou supprimez les catégories de cours (Styles).<br><i>Attention: si vous modifiez un style, la mise à jour s'appliquera dans les listes. Les cours existants utilisant ce style le conserveront.</i></p>
+      
+      <div id="admin-styles-list" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 300px; overflow-y: auto; margin-bottom: 1rem; padding-right: 0.5rem;">
+        <!-- Rempli dynamiquement -->
+      </div>
+      
+      <div style="display: flex; gap: 0.5rem; margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+        <input type="text" id="new-style-label" class="form-input" placeholder="Nouveau style (ex: Hip-Hop)" style="flex: 1;">
+        <button class="btn btn-primary" onclick="addStyle()">Ajouter</button>
       </div>
     </div>
   </div>

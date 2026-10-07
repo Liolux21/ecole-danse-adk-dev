@@ -204,7 +204,11 @@ window.renderProfMixedCards = function(items, containerId, emptyMsg, user = null
         if (fallbackSrc) {
             imgHtml = `<img src="${fallbackSrc}" class="portal-course-img" alt="${c.name} (${formatLieu(c.lieu)})">`;
         } else {
-            let typeLabel = c.style ? c.style.toUpperCase() : 'ADK';
+            let typeLabel = 'ADK';
+          if (c.style) {
+            const sDef = (DATA.settings && DATA.settings.styles) ? DATA.settings.styles.find(x => x.id === c.style) : null;
+            typeLabel = sDef ? sDef.label.toUpperCase() : c.style.toUpperCase();
+          }
             imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center; overflow:hidden;">
               <img src="img/apple-touch-icon.png" style="width:30px; height:30px; object-fit:contain; margin-bottom:4px;" alt="ADK">
               <strong style="font-size:0.65rem; color:var(--gold); font-family:var(--font-display); line-height:1; padding: 0 2px;">${typeLabel}</strong>
@@ -769,6 +773,7 @@ async function initPortal() {
 
   // 2. Sync from Firebase Firestore
   await DATA.syncFromFirebase();
+    populateStyles();
 
   // Si déjà connecté, afficher le bon dashboard
   
@@ -828,6 +833,7 @@ async function initPortal() {
     const user = await AUTH.login(email, password);
     if (user) {
       await DATA.syncFromFirebase();
+    populateStyles();
       showPortalDashboard(user);
     } else {
       showToast('❌ Email ou mot de passe incorrect', 'error');
@@ -2072,8 +2078,9 @@ window.exportCoursesExcel = function() {
       return `"${s}"`;
     };
     
-    let cat = (c.style || "").replace('_', ' ');
-    cat = cat.charAt(0).toUpperCase() + cat.slice(1);
+    const sDef = DATA.settings && DATA.settings.styles ? DATA.settings.styles.find(x => x.id === c.style) : null;
+    let cat = sDef ? sDef.label : (c.style || "").replace('_', ' ');
+    if (!sDef) cat = cat.charAt(0).toUpperCase() + cat.slice(1);
     
     const row = [
       formatStr(c.id),
@@ -2101,7 +2108,118 @@ window.exportCoursesExcel = function() {
   document.body.removeChild(link);
 };
 
-window.renderHolidays = function() {
+
+  
+  // ==========================================
+  // GESTION DES STYLES (Admin)
+  // ==========================================
+  window.openStylesModal = function() {
+    renderStylesList();
+    openModal('modal-admin-styles');
+  };
+
+  window.renderStylesList = function() {
+    const container = document.getElementById('admin-styles-list');
+    if (!container) return;
+    
+    const styles = DATA.settings.styles || [];
+    if (styles.length === 0) {
+      container.innerHTML = '<div class="empty-state">Aucun style défini.</div>';
+      return;
+    }
+    
+    container.innerHTML = styles.map((s, index) => `
+      <div style="display: flex; gap: 0.5rem; align-items: center; background: #f9f9f9; padding: 0.5rem; border-radius: var(--radius); border: 1px solid var(--border-color);">
+        <input type="text" class="form-input" style="flex: 1; padding: 0.4rem;" value="${s.label}" id="style-input-${index}">
+        <button class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="saveStyle(${index})">💾</button>
+        <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; color: #dc3545; border-color: #dc3545;" onclick="deleteStyle(${index})">🗑️</button>
+      </div>
+    `).join('');
+  };
+
+  window.addStyle = async function() {
+    const input = document.getElementById('new-style-label');
+    const label = input.value.trim();
+    if (!label) return;
+    
+    // Create safe ID
+    const id = label.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/(^_|_$)/g, '');
+    
+    if (!DATA.settings.styles) DATA.settings.styles = [];
+    if (DATA.settings.styles.some(s => s.id === id)) {
+      alert("Ce style existe déjà !");
+      return;
+    }
+    
+    DATA.settings.styles.push({ id, label });
+    input.value = '';
+    
+    await saveStylesToFirebase();
+    renderStylesList();
+    populateStyles();
+    renderAdminCourses();
+  };
+
+  window.saveStyle = async function(index) {
+    const input = document.getElementById(`style-input-${index}`);
+    const newLabel = input.value.trim();
+    if (!newLabel) return;
+    
+    const style = DATA.settings.styles[index];
+    if (style.label === newLabel) return; // no change
+    
+    style.label = newLabel;
+    // Note: We don't change the ID so existing courses remain linked.
+    
+    await saveStylesToFirebase();
+    populateStyles();
+    renderAdminCourses();
+    alert("Style mis à jour !");
+  };
+
+  window.deleteStyle = async function(index) {
+    if (!confirm("Supprimer ce style ? Les cours existants liés à ce style n'auront plus de catégorie valide.")) return;
+    
+    DATA.settings.styles.splice(index, 1);
+    
+    await saveStylesToFirebase();
+    renderStylesList();
+    populateStyles();
+    renderAdminCourses();
+  };
+
+  window.saveStylesToFirebase = async function() {
+    try {
+      const firebase = await import('./firebase-config.js');
+      await firebase.setDoc(firebase.doc(firebase.db, 'settings', 'general'), { styles: DATA.settings.styles }, { merge: true });
+    } catch (e) {
+      console.error("Erreur lors de la sauvegarde des styles:", e);
+      alert("Erreur lors de la sauvegarde.");
+    }
+  };
+
+  window.populateStyles = function() {
+    const styles = DATA.settings.styles || [];
+    
+    // Populate filter in Admin Cours
+    const filterEl = document.getElementById('filter-course-style');
+    if (filterEl) {
+      const currentVal = filterEl.value;
+      filterEl.innerHTML = '<option value="all">Tous les styles</option>' + 
+                           styles.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+      if (styles.some(s => s.id === currentVal)) filterEl.value = currentVal;
+    }
+    
+    // Populate add/edit course modal
+    const addEl = document.getElementById('admin-course-style');
+    if (addEl) {
+      const currentVal = addEl.value;
+      addEl.innerHTML = styles.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+      if (styles.some(s => s.id === currentVal)) addEl.value = currentVal;
+    }
+  };
+
+  window.renderHolidays = function() {
     const list = document.getElementById('settings-holidays-list');
     if (!list) return;
     if (!DATA.settings || !DATA.settings.holidays || DATA.settings.holidays.length === 0) {
@@ -2697,11 +2815,13 @@ function renderProfDashboard(user) {
     const filterLieu = document.getElementById('prof-planning-lieu');
   
     if (filterStyle && filterStyle.options.length === 1) {
-      const styles = [...new Set(DATA.courses.map(c => c.style ? c.style.toLowerCase() : '').filter(Boolean))];
-      styles.forEach(s => {
+      const allStyles = DATA.settings && DATA.settings.styles ? DATA.settings.styles : [];
+      const stylesUsed = [...new Set(DATA.courses.map(c => c.style ? c.style.toLowerCase() : '').filter(Boolean))];
+      stylesUsed.forEach(s => {
+        const sDef = allStyles.find(x => x.id === s);
         const opt = document.createElement('option');
         opt.value = s;
-        opt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+        opt.textContent = sDef ? sDef.label : s.charAt(0).toUpperCase() + s.slice(1);
         filterStyle.appendChild(opt);
       });
     }
@@ -3631,7 +3751,11 @@ function renderPlanningCards(courseIds, containerId, emptyMsg = 'Aucun cours.', 
       if (fallbackSrc) {
           imgHtml = `<img src="${fallbackSrc}" class="portal-course-img" alt="${c.name} (${formatLieu(c.lieu)})">`;
       } else {
-          let typeLabel = c.style ? c.style.toUpperCase() : 'ADK';
+          let typeLabel = 'ADK';
+          if (c.style) {
+            const sDef = (DATA.settings && DATA.settings.styles) ? DATA.settings.styles.find(x => x.id === c.style) : null;
+            typeLabel = sDef ? sDef.label.toUpperCase() : c.style.toUpperCase();
+          }
           imgHtml = `<div class="portal-course-img" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg,#2a2a2a,#111); color:#fff; text-align:center; overflow:hidden;">
             <img src="img/apple-touch-icon.png" style="width:30px; height:30px; object-fit:contain; margin-bottom:4px;" alt="ADK">
             <strong style="font-size:0.65rem; color:var(--gold); font-family:var(--font-display); line-height:1; padding: 0 2px;">${typeLabel}</strong>
@@ -4218,7 +4342,7 @@ window.initEventModal = function() {
       <input type="checkbox" id="event-courses-all" onchange="window.toggleEventAllCourses()"> Tous les élèves
     </label>`;
     html += DATA.courses.map(c => 
-      `<label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;"><input type="checkbox" class="event-course-cb" value="${c.id}"> ${c.name} (${c.style || ''})</label>`
+      `<label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;"><input type="checkbox" class="event-course-cb" value="${c.id}"> ${c.name} (${ (() => { const sDef = DATA.settings && DATA.settings.styles ? DATA.settings.styles.find(x => x.id === c.style) : null; return sDef ? sDef.label : (c.style || ''); })() })</label>`
     ).join('');
     container.innerHTML = html;
   }
@@ -4738,6 +4862,7 @@ window.submitAddStudent = async function() {
     }
 
     await DATA.syncFromFirebase();
+    populateStyles();
     if (AUTH.hasRole('admin')) {
       showPortalDashboard(AUTH.currentUser);
     }
@@ -5152,6 +5277,7 @@ window.deleteAnnonce = async function(id) {
     const firebase = await import('./firebase-config.js');
     await firebase.deleteDoc(firebase.doc(firebase.db, "announcements", id));
     await DATA.syncFromFirebase();
+    populateStyles();
     renderAdminAnnonces();
     showToast('Annonce supprimée', 'success');
   } catch (err) {

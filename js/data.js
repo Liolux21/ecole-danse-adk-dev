@@ -4,6 +4,20 @@
 import { db, collection, getDocs } from './firebase-config.js';
 
 export const DATA = {
+  defaultStyles: [
+    { id: 'classique', label: 'Classique' },
+    { id: 'jazz_contemporain', label: 'Jazz / Contemporain' },
+    { id: 'hiphop', label: 'Hip-Hop / Break' },
+    { id: 'ragga', label: 'Ragga' },
+    { id: 'girly', label: 'Girly' },
+    { id: 'eveil', label: 'Éveil / Préparatoire' },
+    { id: 'adultes', label: 'Adultes' },
+    { id: 'pole_danse', label: 'Pole Dance' },
+    { id: 'pomdance', label: 'Pomdance' },
+    { id: 'compagnie', label: 'Compagnies' },
+    { id: 'special', label: 'Spécial' }
+  ],
+
 
   school: {
     name: "École de Danse ADK",
@@ -395,22 +409,24 @@ export const DATA = {
       }
 
       // 8. Settings
-      if (results[7].status === 'fulfilled') {
-        results[7].value.forEach(doc => {
-          if (doc.id === 'general') {
-            this.settings = doc.data();
-            if (!this.settings.holidays) this.settings.holidays = [];
-          }
-          if (doc.id === 'gala') {
-            const galaData = doc.data();
-            this.galaRepets = galaData.repets || [];
-            this.galaInfos = galaData.infos || [];
-            this.galaNotes = galaData.notes || [];
-          }
-        });
-      } else {
-        console.warn("settings read error:", results[7].reason);
-      }
+        if (results[7].status === 'fulfilled') {
+          results[7].value.forEach(doc => {
+            if (doc.id === 'general') {
+              this.settings = doc.data();
+            }
+            if (doc.id === 'gala') {
+              const galaData = doc.data();
+              this.galaRepets = galaData.repets || [];
+              this.galaInfos = galaData.infos || [];
+              this.galaNotes = galaData.notes || [];
+            }
+          });
+        } else {
+          console.warn("settings read error:", results[7].reason);
+        }
+        if (!this.settings) this.settings = {};
+        if (!this.settings.holidays) this.settings.holidays = [];
+        if (!this.settings.styles) this.settings.styles = [...this.defaultStyles];
 
       const endTime = performance.now();
       console.log(`Données Firebase synchronisées avec succès en ${Math.round(endTime - startTime)}ms !`, { 
